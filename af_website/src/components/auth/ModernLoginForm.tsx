@@ -369,7 +369,7 @@ export const ModernLoginForm: React.FC = () => {
                         type="button"
                       ><X className="h-4 w-4" /></button>
                     </div>
-                    <div className="mb-1"><strong>SUPABASE_URL:</strong> <span className="text-gray-600">{SUPABASE_URL}</span></div>
+                    <div className="mb-1"><strong>VITE_API_URL:</strong> <span className="text-gray-600">{import.meta.env.VITE_API_URL || 'Not Set'}</span></div>
                     <div className="mb-1"><strong>origin:</strong> <span className="text-gray-600">{window.location.origin}</span></div>
                     <div className="mb-1"><strong>last OAuth response:</strong></div>
                     <pre className="whitespace-pre-wrap text-xs text-gray-600 max-h-40 overflow-auto">{oauthDebug ? JSON.stringify(oauthDebug, null, 2) : 'No data'}</pre>
