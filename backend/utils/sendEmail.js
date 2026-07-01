@@ -29,8 +29,11 @@ const sendEmail = async (options) => {
     });
   }
 
+  const fromName = process.env.FROM_NAME || 'AlphaFly';
+  const fromEmail = process.env.FROM_EMAIL || process.env.SMTP_USER;
+
   const message = {
-    from: `${process.env.FROM_NAME} <${process.env.FROM_EMAIL}>`,
+    from: `${fromName} <${fromEmail}>`,
     to: options.email,
     subject: options.subject,
     text: options.message,

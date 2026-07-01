@@ -11,7 +11,7 @@ router.get('/', authMiddleware, async (req, res) => {
     if (req.user.role !== 'admin' && req.user.role !== 'staff') {
       return res.status(403).json({ error: 'Access denied.' });
     }
-    const profiles = await Profile.find().select('-password');
+    const profiles = await Profile.find().select('-password').populate('course_id', 'title name');
     res.json(profiles);
   } catch (err) {
     console.error('Error fetching profiles:', err);

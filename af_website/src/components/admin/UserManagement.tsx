@@ -23,6 +23,7 @@ interface User {
   profession?: string;
   is_active: boolean;
   created_at: string;
+  course_id?: { _id: string; title?: string; name: string };
 }
 
 interface UserFormData {
@@ -32,7 +33,8 @@ interface UserFormData {
   phone: string;
   address: string;
   profession: string;
-  password: string;
+  password?: string;
+  course_id?: string;
 }
 
 export const UserManagement: React.FC = () => {
@@ -44,6 +46,7 @@ export const UserManagement: React.FC = () => {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [courses, setCourses] = useState<any[]>([]);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState<UserFormData>({
@@ -64,6 +67,7 @@ export const UserManagement: React.FC = () => {
       // Map the data and add the missing is_active property with proper type casting
       const usersWithActiveStatus = (data || []).map(user => ({
         ...user,
+        id: user._id || user.id,
         role: user.role as 'student' | 'staff' | 'admin',
         is_active: true // Default to active since we don't have this column in the database yet
       }));
@@ -79,8 +83,18 @@ export const UserManagement: React.FC = () => {
     }
   };
 
+  const fetchCourses = async () => {
+    try {
+      const { data } = await api.get('/courses');
+      setCourses(data);
+    } catch (error) {
+      console.error('Failed to fetch courses:', error);
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
+    fetchCourses();
   }, []);
 
   const filteredUsers = users.filter(user => {
@@ -102,7 +116,8 @@ export const UserManagement: React.FC = () => {
       phone: '',
       address: '',
       profession: '',
-      password: ''
+      password: '',
+      course_id: ''
     });
   };
 
@@ -128,6 +143,7 @@ export const UserManagement: React.FC = () => {
         phone: formData.phone || null,
         address: formData.address || null,
         profession: formData.profession || null,
+        course_id: formData.role === 'student' ? (formData.course_id || null) : null,
       });
 
       toast({
@@ -169,6 +185,7 @@ export const UserManagement: React.FC = () => {
         phone: formData.phone || null,
         address: formData.address || null,
         profession: formData.profession || null,
+        course_id: formData.role === 'student' ? (formData.course_id || null) : null,
       });
 
       toast({
@@ -246,7 +263,8 @@ export const UserManagement: React.FC = () => {
       phone: user.phone || '',
       address: user.address || '',
       profession: user.profession || '',
-      password: '' // Don't populate password for editing
+      password: '', // Don't populate password for editing
+      course_id: user.course_id?._id || ''
     });
     setIsEditDialogOpen(true);
   };
@@ -273,7 +291,7 @@ export const UserManagement: React.FC = () => {
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Phone</TableHead>
-                  <TableHead>Profession</TableHead>
+                  <TableHead>{role === 'student' ? 'Course' : 'Profession'}</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -285,7 +303,7 @@ export const UserManagement: React.FC = () => {
                     <TableCell className="font-medium">{user.full_name || user.name || '-'}</TableCell>
                     <TableCell>{user.email || '-'}</TableCell>
                     <TableCell>{user.phone || '-'}</TableCell>
-                    <TableCell>{user.profession || '-'}</TableCell>
+                    <TableCell>{role === 'student' ? (user.course_id?.title || user.course_id?.name || 'Not enrolled') : (user.profession || '-')}</TableCell>
                     <TableCell>
                       <Badge variant={user.is_active ? "default" : "secondary"}>
                         {user.is_active ? 'Active' : 'Inactive'}
@@ -415,6 +433,23 @@ export const UserManagement: React.FC = () => {
                   </SelectContent>
                 </Select>
               </div>
+              {formData.role === 'student' && (
+                <div className="grid gap-2">
+                  <Label htmlFor="course_id">Select Course</Label>
+                  <Select value={formData.course_id} onValueChange={(value) => setFormData({ ...formData, course_id: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Assign a course (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {courses.map(course => (
+                        <SelectItem key={course._id} value={course._id}>
+                          {course.title || course.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
               <div className="grid gap-2">
                 <Label htmlFor="phone">Phone</Label>
                 <Input
@@ -547,10 +582,27 @@ export const UserManagement: React.FC = () => {
                   <SelectItem value="student">Student</SelectItem>
                   <SelectItem value="staff">Staff</SelectItem>
                   <SelectItem value="admin">Admin</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
+                  </SelectContent>
+                </Select>
+              </div>
+              {formData.role === 'student' && (
+                <div className="grid gap-2">
+                  <Label htmlFor="edit_course_id">Select Course</Label>
+                  <Select value={formData.course_id} onValueChange={(value) => setFormData({ ...formData, course_id: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Assign a course (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {courses.map(course => (
+                        <SelectItem key={course._id} value={course._id}>
+                          {course.title || course.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              <div className="grid gap-2">
               <Label htmlFor="edit_phone">Phone</Label>
               <Input
                 id="edit_phone"

@@ -40,7 +40,7 @@ interface AuthContextType {
   resetDebug: any | null;
   setResetDebug: React.Dispatch<React.SetStateAction<any | null>>;
   resetPassword: (email: string) => Promise<{ success: boolean; message: string; }>;
-  verifyEmail: (token: string) => Promise<{ success: boolean; message: string; }>;
+  verifyEmail: (email: string, otp: string) => Promise<{ success: boolean; message: string; }>;
   updatePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; message: string; }>;
   signOut: () => Promise<void>;
   isAdmin: boolean;
@@ -140,7 +140,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string, fullName: string, userRole: string = 'student') => {
     try {
-      const { data } = await api.post('/auth/register', { 
+      await api.post('/auth/register', { 
         email, 
         password, 
         name: email.split('@')[0],
@@ -148,12 +148,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         role: userRole 
       });
       
-      localStorage.setItem('token', data.token);
-      await checkUserSession();
-      
-      if (data.user && data.user.role) {
-        navigateToRoleDashboard(data.user.role);
-      }
+      // We don't log in automatically because the user needs to verify their email via OTP.
+      // The caller will handle redirecting to the verify email page.
     } catch (error: any) {
       console.error('Sign up error:', error.response?.data || error.message);
       throw new Error(error.response?.data?.error || 'Registration failed. Please try again.');
@@ -194,9 +190,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const verifyEmail = async (token: string) => {
+  const verifyEmail = async (email: string, otp: string) => {
     try {
-      const { data } = await api.post('/auth/verify-email', { token });
+      const { data } = await api.post('/auth/verify-email', { email, otp });
       return { success: true, message: data.message };
     } catch (error: any) {
       console.error('Verify email error:', error.response?.data || error.message);

@@ -95,13 +95,9 @@ export const ModernLoginForm: React.FC = () => {
       await signUp(email, password, fullName, role);
       toast({
         title: "Account Created!",
-        description: "Welcome to AlphaFly! You can now sign in with your credentials.",
+        description: "Please check your email for the verification OTP.",
       });
-      // Clear form
-      setEmail('');
-      setPassword('');
-      setFullName('');
-      setRole('student');
+      window.location.href = `/verify-email?email=${encodeURIComponent(email)}`;
     } catch (error: any) {
       console.error('Signup error:', error);
       toast({

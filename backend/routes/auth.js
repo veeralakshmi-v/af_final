@@ -23,7 +23,7 @@ const authLimiter = rateLimit({
 // @desc    Register a new user and send verification email
 router.post('/register', authLimiter, async (req, res) => {
   try {
-    const { email, password, name, full_name, role } = req.body;
+    const { email, password, name, full_name, role, phone, address, profession, course_id } = req.body;
 
     if (!email || !password || !name) {
       return res.status(400).json({ error: 'Please provide email, password, and name' });
@@ -37,8 +37,8 @@ router.post('/register', authLimiter, async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create verification token
-    const verificationToken = crypto.randomBytes(20).toString('hex');
+    // Create verification OTP (6 digits)
+    const verificationOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
     user = new Profile({
       email,
@@ -46,18 +46,18 @@ router.post('/register', authLimiter, async (req, res) => {
       name,
       full_name: full_name || name,
       role: role || 'student',
+      phone: phone || undefined,
+      address: address || undefined,
+      profession: profession || undefined,
+      course_id: course_id || undefined,
       isEmailVerified: false,
-      emailVerificationToken: crypto.createHash('sha256').update(verificationToken).digest('hex'),
-      emailVerificationExpire: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
+      emailVerificationToken: crypto.createHash('sha256').update(verificationOtp).digest('hex'),
+      emailVerificationExpire: Date.now() + 15 * 60 * 1000 // 15 minutes
     });
 
     await user.save();
 
-    // Create verification URL
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080';
-    const verifyUrl = `${frontendUrl}/verify-email?token=${verificationToken}`;
-
-    const message = `You are receiving this email because you registered on AlphaFly. Please make a GET/POST request to: \n\n ${verifyUrl}`;
+    const message = `You are receiving this email because you registered on AlphaFly. Your email verification OTP is: \n\n ${verificationOtp} \n\nThis OTP will expire in 15 minutes.`;
 
     try {
       await sendEmail({
@@ -84,22 +84,23 @@ router.post('/register', authLimiter, async (req, res) => {
 });
 
 // @route   POST /api/auth/verify-email
-// @desc    Verify email token
+// @desc    Verify email OTP
 router.post('/verify-email', async (req, res) => {
   try {
-    const { token } = req.body;
-    if (!token) return res.status(400).json({ error: 'Token is required' });
+    const { email, otp } = req.body;
+    if (!email || !otp) return res.status(400).json({ error: 'Email and OTP are required' });
 
-    // Hash token to compare with database
-    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    // Hash OTP to compare with database
+    const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
 
     const user = await Profile.findOne({
-      emailVerificationToken: hashedToken,
+      email,
+      emailVerificationToken: hashedOtp,
       emailVerificationExpire: { $gt: Date.now() }
     });
 
     if (!user) {
-      return res.status(400).json({ error: 'Invalid or expired token' });
+      return res.status(400).json({ error: 'Invalid or expired OTP' });
     }
 
     user.isEmailVerified = true;
@@ -170,12 +171,34 @@ router.post('/google', async (req, res) => {
     const { token } = req.body;
     if (!token) return res.status(400).json({ error: 'Token is required' });
 
-    const ticket = await googleClient.verifyIdToken({
-      idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID
-    });
+    let email, name, googleId;
 
-    const { email, name, sub: googleId } = ticket.getPayload();
+    try {
+      // Try verifying as an ID token (JWT)
+      const ticket = await googleClient.verifyIdToken({
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID
+      });
+      const payload = ticket.getPayload();
+      email = payload.email;
+      name = payload.name;
+      googleId = payload.sub;
+    } catch (err) {
+      // If verification fails (e.g., because it's an OAuth access token instead of ID token),
+      // fallback to fetching user profile directly from Google API
+      const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Invalid Google token');
+      }
+      
+      const data = await response.json();
+      email = data.email;
+      name = data.name;
+      googleId = data.sub;
+    }
 
     let user = await Profile.findOne({ email });
 

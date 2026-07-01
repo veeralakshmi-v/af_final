@@ -223,7 +223,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
               {/* Quick Action Buttons */}
               <div className="flex items-center space-x-3">
-                <Link to="/admin/users/new">
+                <Link to="/admin/users">
                   <Button className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white shadow-lg">
                     <Plus className="h-4 w-4 mr-2" />
                     New User
