@@ -1,0 +1,55 @@
+# Tasks - Implementing Statistics for Data Analytics Course (Day 6 Focus)
+
+- [x] Clear/reset `students.json` hardcoded list
+- [x] Add `statsCourseData` structure in `src/courseData.jsx`
+- [x] Add `stats_course` to sub-course registries and selector in `src/pages/dashboards/Dashboard.jsx`
+- [x] Update `src/App.jsx` to import and render `stats_course`, `StatsDay1`, `StatsDay2`, `StatsDay3`, `StatsDay4`, `StatsDay5`, and `StatsDay6`
+- [x] Create Day 1 component `src/pages/statistics/StatsDay1.jsx` containing:
+  - [x] Introduction to statistics & importance for Data Analytics
+  - [x] Population vs. Sample, Parameter vs. Statistic
+  - [x] Probability & Non-Probability Sampling Methods
+  - [x] **Interactive Sampling Simulator Widget** (Dynamic sampling and average comparison)
+  - [x] Mathematics Step-by-Step Example (μ vs. X̄)
+  - [x] Python random sampling example
+  - [x] Interactive Quiz (5 Questions)
+  - [x] Homework Assignment (5 Tasks)
+- [x] Create Day 2 component `src/pages/statistics/StatsDay2.jsx` containing:
+  - [x] Inferential Stats, CLT & Sampling Distributions
+  - [x] Standard Error (SE) & Confidence Intervals (CI)
+  - [x] Hypothesis Testing Foundations (H0 vs. Ha, p-values)
+  - [x] **Interactive CLT Simulator Widget** (Visual histogram showing central limit convergence)
+  - [x] Mathematics Step-by-Step Example (SE & CI construction)
+  - [x] Python standard deviation & standard error example
+  - [x] Interactive Quiz (5 Questions)
+  - [x] Homework Assignment (5 Tasks)
+- [x] Create Day 3 component `src/pages/statistics/StatsDay3.jsx` containing:
+  - [x] Mean, Median, Mode, Weighted Mean, and Geometric Mean definition, formula, math calculation, Python example, and business use case for each
+  - [x] **Interactive Central Tendency Calculator Widget** (Computes values dynamically with sorted datasets)
+  - [x] Interactive Quiz (5 Questions)
+  - [x] Homework Assignment (5 Tasks)
+- [x] Create Day 4 component `src/pages/statistics/StatsDay4.jsx` containing:
+  - [x] Measures of Dispersion: Range, Variance, SD, Interquartile Range (IQR), Coefficient of Variation (CV) (formulas, manual math, python example, business case for each)
+  - [x] Measures of Frequency Distributions: Absolute, Relative, and Cumulative frequency
+  - [x] Measures of Position: Quartiles, Deciles, Percentiles
+  - [x] Measures of Shapes: Skewness (Asymmetry profiles) & Kurtosis (Tail weights)
+  - [x] **Interactive Dispersion & Shape Calculator Widget** (Computes values dynamically from any custom dataset)
+  - [x] Interactive Quiz (5 Questions)
+  - [x] Homework Assignment (5 Tasks)
+- [x] Create Day 5 component `src/pages/statistics/StatsDay5.jsx` containing:
+  - [x] Exploratory Data Analysis (EDA) Definition & Importance (Why EDA?)
+  - [x] Data Cleaning: Duplicates, Missing Values (mean/median/mode imputation), Outliers
+  - [x] Analysis Dimensions: Univariate, Bivariate, Multivariate analysis
+  - [x] Real-world walkthrough & customer churn Mini Project
+  - [x] **Interactive EDA Simulator Widget** (Clean dataset, run univariate summary stats, bivariate distribution charts)
+  - [x] Interactive Quiz (5 Questions)
+  - [x] Homework Assignment (5 Tasks)
+- [x] Create Day 6 component `src/pages/statistics/StatsDay6.jsx` containing:
+  - [x] Five Number Summary: Minimum, Q1, Median (Q2), Q3, Maximum (Definitions & formulas)
+  - [x] Quartiles & Percentiles landmarks explanation
+  - [x] Box Plots & Tukey Outlier Detection fences ($Q1 - 1.5 \times \text{IQR}$, $Q3 + 1.5 \times \text{IQR}$)
+  - [x] **Interactive Box Plot Builder Widget** (Visual SVG/CSS box-and-whisker plot chart generated in real-time from user dataset)
+  - [x] Interactive Quiz (5 Questions)
+  - [x] Homework Assignment (5 Tasks)
+- [x] Configure route imports and switch cases in `App.jsx`
+- [ ] Create Matplotlib playground component in `MatplotlibAIPlayground.jsx` (StatsDayPlaceholder)
+- [x] Verify local build succeeds via `npm run build` (Succeeded!)

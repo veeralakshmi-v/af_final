@@ -1,0 +1,498 @@
+/* ===================================================
+   ALPHA FLY THENI — RESPONSIVE STYLESHEET
+   Breakpoints:
+     Mobile  : max-width: 767px
+     Tablet  : 768px – 1023px
+     Desktop : 1024px+
+   =================================================== */
+
+/* ── 1. GLOBAL RESETS & BASE ────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── 2. APP SHELL — SIDEBAR + MAIN LAYOUT ──────────── */
+.app {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: row;
+  background-color: var(--bg-color);
+  position: relative;
+}
+
+/* Sidebar overlay (dark backdrop on mobile) */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 998;
+}
+
+.sidebar-overlay.mobile-open {
+  display: block;
+}
+
+/* ── 3. SIDEBAR ─────────────────────────────────────── */
+.sidebar {
+  width: 320px !important;
+  min-width: 280px;
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  z-index: 999;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── 4. MAIN CONTENT ────────────────────────────────── */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 3rem 4rem !important;
+  background-color: var(--bg-color);
+  width: 100%;
+}
+
+/* ── 5. MOBILE HEADER (hamburger bar) ───────────────── */
+.mobile-header {
+  display: none !important;
+}
+
+/* ── 6. LEARNING CARD ───────────────────────────────── */
+.learning-card {
+  padding: 2.5rem;
+}
+
+/* ── 7. TABLES — horizontal scroll on small screens ── */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  min-width: 480px;
+}
+
+/* ── 8. CODE BOXES ──────────────────────────────────── */
+.code-example-box {
+  overflow-x: auto;
+}
+
+/* ── 9. GENERIC GRID HELPERS ────────────────────────── */
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ── 10. FORM INPUTS ────────────────────────────────── */
+input, select, textarea {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ==========================================================
+   TABLET  768px – 1023px
+   ========================================================== */
+@media (max-width: 1023px) {
+  /* Sidebar slides off-screen; toggled with mobile-open class */
+  .sidebar {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    height: 100vh !important;
+    width: 290px !important;
+    transform: translateX(-100%);
+    z-index: 999;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+
+  /* Main content takes full width */
+  .main-content {
+    padding: 1.5rem 1.75rem !important;
+    height: 100vh;
+  }
+
+  /* Show the mobile top-bar */
+  .mobile-header {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--surface-border);
+    gap: 0.5rem;
+  }
+
+  .learning-card {
+    padding: 1.75rem;
+  }
+
+  /* Dashboard main-course grid: 2 columns on tablet */
+  .main-course-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Sub-course cards grid: 2 columns */
+  .sub-course-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ==========================================================
+   MOBILE  max-width: 767px
+   ========================================================== */
+@media (max-width: 767px) {
+  /* Sidebar stays hidden until toggled */
+  .sidebar {
+    width: 280px !important;
+  }
+
+  /* Main content — tighter padding */
+  .main-content {
+    padding: 1rem 1rem !important;
+  }
+
+  .learning-card {
+    padding: 1.25rem;
+    border-radius: 16px;
+  }
+
+  .panel {
+    padding: 1.25rem;
+  }
+
+  /* Code boxes */
+  .code-example-box {
+    margin-top: 1rem;
+    border-radius: 12px;
+  }
+
+  /* Dashboard main-course grid: 1 column */
+  .main-course-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Sub-course cards: 1 column */
+  .sub-course-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Buttons — full-width on very small screens */
+  .btn-full-mobile {
+    width: 100%;
+  }
+
+  /* Progress bar row — stack vertically */
+  .progress-bar-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+  }
+}
+
+/* ==========================================================
+   LANDING PAGE RESPONSIVE
+   ========================================================== */
+
+/* Hero section */
+@media (max-width: 1023px) {
+  .lp-hero-grid {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+  }
+
+  .lp-hero-cta {
+    justify-content: center !important;
+  }
+
+  .lp-hero-image {
+    display: none !important;
+  }
+
+  .lp-nav-links {
+    display: none !important;
+  }
+
+  .lp-nav-mobile-btn {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .lp-hero-title {
+    font-size: 2.2rem !important;
+  }
+
+  .lp-hero-subtitle {
+    font-size: 1rem !important;
+  }
+
+  .lp-section-title {
+    font-size: 1.8rem !important;
+  }
+
+  /* Countdown banner — stack vertically (already handled in component but reinforce) */
+  .lp-countdown-bar {
+    flex-direction: column !important;
+    text-align: center;
+    gap: 0.75rem !important;
+    padding: 1rem !important;
+  }
+
+  /* Features grid — 1 col */
+  .lp-features-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Stats row — 2 col grid */
+  .lp-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  /* Contact form — stack */
+  .lp-contact-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Video carousel — 1 card per view */
+  .lp-video-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Testimonials — 1 col */
+  .lp-testimonials-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Footer — stack */
+  .lp-footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem;
+  }
+
+  .lp-modal-box {
+    padding: 1.5rem !important;
+    margin: 1rem !important;
+  }
+}
+
+/* ==========================================================
+   DASHBOARD RESPONSIVE
+   ========================================================== */
+@media (max-width: 1023px) {
+  .dashboard-shell {
+    flex-direction: column !important;
+  }
+
+  .dashboard-sidebar {
+    width: 100% !important;
+    min-width: unset !important;
+    height: auto !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--surface-border) !important;
+    padding: 0 !important;
+  }
+
+  .dashboard-main {
+    padding: 1.5rem !important;
+  }
+
+  .dashboard-tab-btn {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    padding: 0.75rem 1.25rem !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .dashboard-main {
+    padding: 1rem !important;
+  }
+
+  .dashboard-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+
+  .dashboard-stats-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Course cards grid — 1 col */
+  .dashboard-courses-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  /* Database table container */
+  .db-table-container {
+    overflow-x: auto !important;
+  }
+
+  /* Grading table */
+  .grading-table-container {
+    overflow-x: auto !important;
+  }
+
+  /* Register form — full width inputs */
+  .register-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ==========================================================
+   COURSE LESSON PAGES — DAY CONTENT
+   ========================================================== */
+@media (max-width: 767px) {
+  /* Lesson card headings */
+  .lesson-h1 {
+    font-size: 1.5rem !important;
+  }
+
+  .lesson-h2 {
+    font-size: 1.2rem !important;
+  }
+
+  /* Code block overflow */
+  pre, code {
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* Two-col layouts in lesson pages → 1 col */
+  .lesson-two-col {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+
+  /* Quiz / interactive sections */
+  .quiz-options {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* AI Tutor button — bottom right */
+  .ai-tutor-fab {
+    bottom: 1rem !important;
+    right: 1rem !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  /* Collapse side-by-side demo panels */
+  .demo-split,
+  .code-content {
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .preview-pane {
+    border-left: none !important;
+    border-top: 1px solid var(--surface-border) !important;
+  }
+}
+
+/* ==========================================================
+   SIDEBAR — FONT SIZE TWEAKS ON TABLET
+   ========================================================== */
+@media (max-width: 1023px) {
+  .sidebar h1 {
+    font-size: 1.4rem !important;
+  }
+
+  .sidebar h2 {
+    font-size: 1.2rem !important;
+  }
+}
+
+/* ==========================================================
+   UTILITY — HIDE / SHOW HELPERS
+   ========================================================== */
+.hide-on-mobile {
+  display: initial;
+}
+
+.show-on-mobile {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  .show-on-mobile {
+    display: initial !important;
+  }
+}
+
+/* ==========================================================
+   SCROLLBAR — THINNER ON MOBILE
+   ========================================================== */
+@media (max-width: 767px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+/* ==========================================================
+   AGENTIC AI / STATS / PYTHON LESSON PAGES
+   ========================================================== */
+@media (max-width: 767px) {
+  /* Wide diagram images */
+  .diagram-img {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  /* Step/phase timeline — single col */
+  .timeline-steps {
+    flex-direction: column !important;
+  }
+
+  /* Tabs row — horizontal scroll */
+  .tabs-row {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .tab-btn {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Stats cards — 1 col */
+  .stats-cards-row {
+    flex-direction: column !important;
+  }
+
+  /* Floating action toolbar — bottom sticky */
+  .action-toolbar {
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "completedLessons": [],
+    "tasks": [],
+    "id": "1785995096518",
+    "name": "John Doe",
+    "enrolledCourse": "numpy_course",
+    "accessCode": "STU-9733",
+    "deviceId": "dev-k62lkcj3au80s7miwf68bh"
+  },
+  {
+    "completedLessons": [],
+    "tasks": [],
+    "id": "1785998705901",
+    "name": "Test Student",
+    "enrolledCourse": "core_js",
+    "accessCode": "STU-8983",
+    "deviceId": "dev-k62lkcj3au80s7miwf68bh"
+  },
+  {
+    "id": "1786185738106",
+    "name": "Jane Doe",
+    "enrolledCourse": "sql",
+    "accessCode": "STU-9894",
+    "deviceId": null,
+    "completedLessons": [],
+    "tasks": []
+  }
+]
