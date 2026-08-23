@@ -1292,9 +1292,12 @@ export const jsonCourseData = [
     id: 'json_module1',
     title: 'Day 1 - JSON Fundamentals',
     items: [
-      { id: 'intro_json', label: 'Introduction to JSON', icon: <BookOpen size={18} /> },
+      { id: 'intro_json', label: 'What is JSON?', icon: <BookOpen size={18} /> },
       { id: 'json_syntax', label: 'JSON Syntax & Types', icon: <Code size={18} /> },
       { id: 'json_methods', label: 'Parsing & Stringifying', icon: <Terminal size={18} /> },
+      { id: 'json_datatypes', label: 'JSON Data Types', icon: <Database size={18} /> },
+      { id: 'nested_objects', label: 'Nested Objects', icon: <Layers size={18} /> },
+      { id: 'array_objects', label: 'Array of Objects', icon: <Table size={18} /> },
       { id: 'quiz', label: 'Quiz & MCQs', icon: <CheckCircle size={18} /> },
       { id: 'assignment', label: 'Assignments', icon: <FileText size={18} /> }
     ]

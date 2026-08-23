@@ -54,6 +54,22 @@ export default function JSONDay1({ activeTab, onNavigate }) {
   const [parseResult, setParseResult] = useState(null);
   const [parseError, setParseError] = useState(null);
 
+  // Data types tab state
+  const [selectedType, setSelectedType] = useState('string');
+
+  // Nested objects tab state
+  const [nestedPath, setNestedPath] = useState('user.address.city');
+
+  // Array of objects tab state
+  const [arrayFilter, setArrayFilter] = useState('All');
+
+  const sampleArrayOfObjects = [
+    { id: 101, name: "Alice Johnson", role: "Developer", status: "Active", experience: 3 },
+    { id: 102, name: "Bob Smith", role: "Designer", status: "Inactive", experience: 5 },
+    { id: 103, name: "Charlie Brown", role: "Developer", status: "Active", experience: 2 },
+    { id: 104, name: "Diana Prince", role: "Manager", status: "Active", experience: 7 }
+  ];
+
   // Settings Manager States
   const [settings, setSettings] = useState({ theme: 'light', volume: 50, notifications: true });
   const [settingsJson, setSettingsJson] = useState('{\n  "theme": "light",\n  "volume": 50,\n  "notifications": true\n}');
@@ -427,6 +443,333 @@ function loadSettings() {
             <div style={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 10, padding: 10, fontFamily: 'monospace', fontSize: '0.74rem', color: '#94a3b8', maxHeight: 80, overflowY: 'auto' }}>
               <div style={{ color: '#06b6d4', fontWeight: 'bold', marginBottom: 4 }}>Trace logs console:</div>
               {settingsLogs.map((log, lIdx) => <div key={lIdx} style={{ color: log.startsWith('Error') ? '#fca5a5' : '#94a3b8' }}>&gt; {log}</div>)}
+            </div>
+
+            <div className="card-actions" style={{ marginTop: '2rem' }}>
+              <button className="btn btn-primary" onClick={() => go('json_datatypes')} style={{ background: '#06b6d4', borderColor: '#06b6d4' }}>
+                Next: JSON Data Types <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ── 4. JSON DATA TYPES ─────────────────────────────────────────── */}
+      {activeTab === 'json_datatypes' && (
+        <Section key="json_datatypes" eyebrow="JSON • Module 04" title="JSON Data Types">
+          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
+            
+            <p style={{ marginBottom: '1.5rem' }}>
+              JSON strictly supports <strong>6 primitive and composite data types</strong>. Understanding what is allowed (and what is forbidden) is critical when constructing or consuming API payloads.
+            </p>
+
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '1rem' }}>✅ Supported vs ❌ Unsupported Types</h3>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+              {/* Supported */}
+              <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 12, padding: '1.25rem' }}>
+                <h4 style={{ color: '#16a34a', marginTop: 0, marginBottom: '0.8rem', fontWeight: 800 }}>
+                  ✅ Allowed JSON Data Types (6 Only)
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.88rem', display: 'flex', flexDirection: 'column', gap: 6, color: '#334155' }}>
+                  <li><strong>String:</strong> Must be wrapped in double quotes <code>"Hello World"</code></li>
+                  <li><strong>Number:</strong> Integers or floating-point numbers <code>25</code>, <code>99.99</code></li>
+                  <li><strong>Boolean:</strong> Lowercase <code>true</code> or <code>false</code></li>
+                  <li><strong>Null:</strong> Represents empty/missing value <code>null</code></li>
+                  <li><strong>Object:</strong> Key-value collection wrapped in curly braces <code>{"{}"}</code></li>
+                  <li><strong>Array:</strong> Ordered list of values wrapped in square brackets <code>[]</code></li>
+                </ul>
+              </div>
+
+              {/* Unsupported */}
+              <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 12, padding: '1.25rem' }}>
+                <h4 style={{ color: '#dc2626', marginTop: 0, marginBottom: '0.8rem', fontWeight: 800 }}>
+                  ❌ Forbidden Data Types in JSON
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.88rem', display: 'flex', flexDirection: 'column', gap: 6, color: '#334155' }}>
+                  <li><strong>Functions:</strong> <code>function() {"{}"}</code> (cannot be serialized)</li>
+                  <li><strong>Undefined:</strong> <code>undefined</code> (keys with undefined are omitted)</li>
+                  <li><strong>Symbol:</strong> JavaScript <code>Symbol()</code> identifiers</li>
+                  <li><strong>Date Objects:</strong> Converted to ISO strings <code>"2026-08-23T12:00:00Z"</code></li>
+                  <li><strong>Comments:</strong> Single-line <code>//</code> or multi-line <code>/* */</code> comments</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Interactive Data Type Inspector */}
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>🧪 Interactive JSON Data Type Inspector</h3>
+            <p style={{ fontSize: '0.85rem', margin: '0 0 1rem' }}>Click on a data type below to view its syntax rules and real JSON code snippet:</p>
+
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.5rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.2rem' }}>
+                {[
+                  { id: 'string', label: 'String' },
+                  { id: 'number', label: 'Number' },
+                  { id: 'boolean', label: 'Boolean' },
+                  { id: 'null', label: 'Null' },
+                  { id: 'object', label: 'Object' },
+                  { id: 'array', label: 'Array' },
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => setSelectedType(item.id)}
+                    style={{
+                      padding: '0.4rem 0.9rem', borderRadius: 6, border: 'none', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer',
+                      background: selectedType === item.id ? '#06b6d4' : '#e2e8f0',
+                      color: selectedType === item.id ? '#fff' : '#475569', transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              {selectedType === 'string' && (
+                <div>
+                  <strong style={{ color: '#06b6d4', display: 'block', marginBottom: 4 }}>String Type:</strong>
+                  <p style={{ fontSize: '0.85rem', margin: '0 0 8px 0' }}>Must be enclosed in double quotes. Unicode characters and escape characters like <code>\n</code> are supported.</p>
+                  <CodeBlock title="JSON String Example" code={`{\n  "title": "Full Stack Web Development",\n  "description": "Learn HTML, CSS, JavaScript & React"\n}`} />
+                </div>
+              )}
+
+              {selectedType === 'number' && (
+                <div>
+                  <strong style={{ color: '#06b6d4', display: 'block', marginBottom: 4 }}>Number Type:</strong>
+                  <p style={{ fontSize: '0.85rem', margin: '0 0 8px 0' }}>Supports positive/negative integers, decimals, and exponential notation. Octal and hexadecimal are NOT allowed.</p>
+                  <CodeBlock title="JSON Number Example" code={`{\n  "price": 1499,\n  "discount": 0.15,\n  "temperature": -4.5\n}`} />
+                </div>
+              )}
+
+              {selectedType === 'boolean' && (
+                <div>
+                  <strong style={{ color: '#06b6d4', display: 'block', marginBottom: 4 }}>Boolean Type:</strong>
+                  <p style={{ fontSize: '0.85rem', margin: '0 0 8px 0' }}>Must be lowercase <code>true</code> or <code>false</code> (no quotes around them!).</p>
+                  <CodeBlock title="JSON Boolean Example" code={`{\n  "isCompleted": true,\n  "hasCertificate": false\n}`} />
+                </div>
+              )}
+
+              {selectedType === 'null' && (
+                <div>
+                  <strong style={{ color: '#06b6d4', display: 'block', marginBottom: 4 }}>Null Type:</strong>
+                  <p style={{ fontSize: '0.85rem', margin: '0 0 8px 0' }}>Used to represent an intentional empty value or unassigned field.</p>
+                  <CodeBlock title="JSON Null Example" code={`{\n  "middleName": null,\n  "couponCode": null\n}`} />
+                </div>
+              )}
+
+              {selectedType === 'object' && (
+                <div>
+                  <strong style={{ color: '#06b6d4', display: 'block', marginBottom: 4 }}>Object Type:</strong>
+                  <p style={{ fontSize: '0.85rem', margin: '0 0 8px 0' }}>An unordered collection of key-value pairs wrapped in curly braces.</p>
+                  <CodeBlock title="JSON Object Example" code={`{\n  "user": {\n    "id": 501,\n    "name": "Kowsalya"\n  }\n}`} />
+                </div>
+              )}
+
+              {selectedType === 'array' && (
+                <div>
+                  <strong style={{ color: '#06b6d4', display: 'block', marginBottom: 4 }}>Array Type:</strong>
+                  <p style={{ fontSize: '0.85rem', margin: '0 0 8px 0' }}>An ordered collection of values wrapped in square brackets. Values can be of mixed data types.</p>
+                  <CodeBlock title="JSON Array Example" code={`{\n  "skills": ["JavaScript", "React", "Python"],\n  "scores": [95, 88, 92]\n}`} />
+                </div>
+              )}
+            </div>
+
+            <div className="card-actions" style={{ marginTop: '2rem' }}>
+              <button className="btn btn-primary" onClick={() => go('nested_objects')} style={{ background: '#06b6d4', borderColor: '#06b6d4' }}>
+                Next: Nested Objects <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ── 5. NESTED OBJECTS ───────────────────────────────────────────── */}
+      {activeTab === 'nested_objects' && (
+        <Section key="nested_objects" eyebrow="JSON • Module 05" title="Nested Objects in JSON">
+          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
+            
+            <p style={{ marginBottom: '1.5rem' }}>
+              JSON allows objects to contain other objects as values. This is called <strong>Nested Objects</strong> and is standard practice for representing complex, real-world hierarchical data (such as user profiles, invoice details, or system settings).
+            </p>
+
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>Understanding Hierarchy &amp; Access</h3>
+            <p>To access properties inside a nested JSON object in JavaScript, chain dot notation or bracket notation:</p>
+
+            <CodeBlock title="Nested Object Definition & Property Access" code={`// JSON Data
+const company = {
+  "name": "AlphaFly Academy",
+  "location": {
+    "city": "Theni",
+    "state": "Tamil Nadu",
+    "coordinates": {
+      "lat": 10.0104,
+      "lng": 77.4768
+    }
+  }
+};
+
+// Accessing nested properties:
+console.log(company.location.city);               // Output: Theni
+console.log(company.location.coordinates.lat);     // Output: 10.0104
+
+// Safe access with Optional Chaining (?.)
+console.log(company?.location?.coordinates?.lng); // Output: 77.4768`} />
+
+            {/* Interactive Inspector */}
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>🔍 Live Nested Property Inspector</h3>
+            <p style={{ fontSize: '0.85rem', margin: '0 0 1rem' }}>Test retrieving values from the nested JSON object below by selecting a path:</p>
+
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.5rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap', marginBottom: '1.2rem' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569' }}>Select Property Path:</span>
+                {[
+                  { path: 'user.profile.name', label: 'user.profile.name' },
+                  { path: 'user.profile.role', label: 'user.profile.role' },
+                  { path: 'user.address.city', label: 'user.address.city' },
+                  { path: 'user.address.geo.lat', label: 'user.address.geo.lat' },
+                ].map(item => (
+                  <button
+                    key={item.path}
+                    onClick={() => setNestedPath(item.path)}
+                    style={{
+                      padding: '0.4rem 0.8rem', borderRadius: 6, border: 'none', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer',
+                      background: nestedPath === item.path ? '#06b6d4' : '#e2e8f0',
+                      color: nestedPath === item.path ? '#fff' : '#475569', transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+                <div style={{ background: '#0f172a', padding: 12, borderRadius: 8, color: '#a5d6ff', fontSize: '0.8rem', fontFamily: 'monospace' }}>
+                  <span style={{ color: '#8892b0', display: 'block', marginBottom: 4 }}>// Nested JSON Payload:</span>
+{`{
+  "user": {
+    "profile": {
+      "name": "Kowsalya",
+      "role": "Full Stack Engineer"
+    },
+    "address": {
+      "city": "Theni",
+      "geo": { "lat": 10.01, "lng": 77.47 }
+    }
+  }
+}`}
+                </div>
+
+                <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 8, padding: 12, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>EXPRESSION EVALUATED:</span>
+                  <code style={{ fontSize: '0.9rem', color: '#06b6d4', margin: '4px 0 10px 0', fontWeight: 'bold' }}>
+                    data.{nestedPath}
+                  </code>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>RESULT:</span>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#10b981', marginTop: 4 }}>
+                    {nestedPath === 'user.profile.name' && '"Kowsalya"'}
+                    {nestedPath === 'user.profile.role' && '"Full Stack Engineer"'}
+                    {nestedPath === 'user.address.city' && '"Theni"'}
+                    {nestedPath === 'user.address.geo.lat' && '10.01'}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="card-actions" style={{ marginTop: '2rem' }}>
+              <button className="btn btn-primary" onClick={() => go('array_objects')} style={{ background: '#06b6d4', borderColor: '#06b6d4' }}>
+                Next: Array of Objects <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ── 6. ARRAY OF OBJECTS ─────────────────────────────────────────── */}
+      {activeTab === 'array_objects' && (
+        <Section key="array_objects" eyebrow="JSON • Module 06" title="Array of Objects">
+          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
+            
+            <p style={{ marginBottom: '1.5rem' }}>
+              An <strong>Array of Objects</strong> is the single most common data structure returned by REST APIs (such as product lists, user directories, or order histories). It combines square brackets <code>[]</code> for order and curly braces <code>{"{}"}</code> for key-value fields.
+            </p>
+
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>Structure &amp; Array Iteration</h3>
+            <p>In JavaScript, you can iterate over a JSON array of objects using <code>.map()</code>, <code>.filter()</code>, or <code>.forEach()</code>:</p>
+
+            <CodeBlock title="Array of Objects & Filtering Example" code={`// JSON Array of Objects
+const students = [
+  { "id": 1, "name": "Krishna", "score": 95, "status": "Passed" },
+  { "id": 2, "name": "Arun", "score": 42, "status": "Failed" },
+  { "id": 3, "name": "Deepa", "score": 88, "status": "Passed" }
+];
+
+// 1. Iterate and display names:
+students.forEach(s => console.log(s.name));
+
+// 2. Filter passed students:
+const passed = students.filter(s => s.status === "Passed");
+console.log(passed);`} />
+
+            {/* Interactive Array Table Sandbox */}
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>📊 Live Array of Objects Table Viewer</h3>
+            <p style={{ fontSize: '0.85rem', margin: '0 0 1rem' }}>Filter the JSON array of objects dynamically below:</p>
+
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.5rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569' }}>Filter by Status / Role:</span>
+                {['All', 'Developer', 'Designer', 'Active', 'Inactive'].map(btn => (
+                  <button
+                    key={btn}
+                    onClick={() => setArrayFilter(btn)}
+                    style={{
+                      padding: '0.35rem 0.75rem', borderRadius: 6, border: 'none', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer',
+                      background: arrayFilter === btn ? '#06b6d4' : '#e2e8f0',
+                      color: arrayFilter === btn ? '#fff' : '#475569', transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {btn}
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.86rem', background: 'white', borderRadius: 8, overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                  <thead>
+                    <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1', textAlign: 'left' }}>
+                      <th style={{ padding: '8px 12px' }}>ID</th>
+                      <th style={{ padding: '8px 12px' }}>Name</th>
+                      <th style={{ padding: '8px 12px' }}>Role</th>
+                      <th style={{ padding: '8px 12px' }}>Status</th>
+                      <th style={{ padding: '8px 12px' }}>Experience</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sampleArrayOfObjects
+                      .filter(item => {
+                        if (arrayFilter === 'All') return true;
+                        if (arrayFilter === 'Developer' || arrayFilter === 'Designer') return item.role === arrayFilter;
+                        if (arrayFilter === 'Active' || arrayFilter === 'Inactive') return item.status === arrayFilter;
+                        return true;
+                      })
+                      .map(user => (
+                        <tr key={user.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                          <td style={{ padding: '8px 12px', fontWeight: 700, color: '#06b6d4' }}>#{user.id}</td>
+                          <td style={{ padding: '8px 12px', fontWeight: 600 }}>{user.name}</td>
+                          <td style={{ padding: '8px 12px' }}>{user.role}</td>
+                          <td style={{ padding: '8px 12px' }}>
+                            <span style={{
+                              padding: '2px 8px', borderRadius: 4, fontSize: '0.75rem', fontWeight: 700,
+                              background: user.status === 'Active' ? '#dcfce7' : '#fee2e2',
+                              color: user.status === 'Active' ? '#15803d' : '#b91c1c'
+                            }}>
+                              {user.status}
+                            </span>
+                          </td>
+                          <td style={{ padding: '8px 12px' }}>{user.experience} yrs</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <div className="card-actions" style={{ marginTop: '2rem' }}>
