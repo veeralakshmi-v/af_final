@@ -6,7 +6,7 @@ import {
   Laptop, Terminal, Copy, FileText, User as UserIcon, Plus, 
   AlertTriangle, Check, BookOpenCheck, HelpCircle, Sliders,
   GitBranch, Palette, Eye, Layout, ShieldAlert, Monitor, 
-  Grid, Compass, Sun, Moon
+  Grid, Compass, Sun, Moon, Lock
 } from 'lucide-react';
 
 const Section = ({ id, eyebrow, title, children }) => (
