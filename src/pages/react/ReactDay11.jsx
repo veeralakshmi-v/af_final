@@ -23,8 +23,8 @@ const CodeBlock = ({ title, code }) => {
   const [cp, setCp] = useState(false);
   const hlJS = (c) => {
     let h = c.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    h = h.replace(/(\/\/[^\n]*)/g, '<span style="color:#8892b0">$1</span>');
-    h = h.replace(/(["'`])([\s\S]*?)\1/g, '<span style="color:#a5d6ff">$1$2$1</span>');
+    h = h.replace(/(?<!=)(["'`])(?:\\.|[^\n"'`\\])*?\1/g, '<span style="color:#a5d6ff">$&</span>');
+    h = h.replace(/(?<!["':a-zA-Z0-9])(\/\/[^\n]*)/g, '<span style="color:#8892b0">$1</span>');
     ['const','let','var','return','import','export','default','function','from','if','else','async','await','try','catch','throw','new','true','false','null','undefined'].forEach(k => {
       h = h.replace(new RegExp(`\\b(${k})\\b`, 'g'), '<span style="color:#ff7b72;font-weight:bold">$1</span>');
     });

@@ -25,14 +25,14 @@ const highlightJS = (code) => {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 
+  // String literals first
+  html = html.replace(/(?<!=)(["'])(?:\\.|[^\n"'\\])*?\1/g, '<span style="color: #a5d6ff;">$&</span>');
+
   // Comments: // (lookbehind check to avoid URL protocol or quoted paths matching) or /* */
   html = html.replace(/(?<!["':a-zA-Z0-9])(\/\/[^\n]*)/g, '<span style="color: #8892b0;">$1</span>');
   html = html.replace(/(\/\*[\s\S]*?\*\/)/g, '<span style="color: #8892b0;">$1</span>');
   // Shell comments
   html = html.replace(/(#[^\n]*)/g, '<span style="color: #8892b0;">$1</span>');
-
-  // String literals
-  html = html.replace(/(["'])([\s\S]*?)\1/g, '<span style="color: #a5d6ff;">$1$2$1</span>');
 
   // Keywords
   const keywords = ['const', 'let', 'var', 'return', 'import', 'export', 'default', 'function', 'from', 'class', 'extends', 'if', 'else', 'new', 'cd', 'npm'];

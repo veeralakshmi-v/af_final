@@ -29,10 +29,13 @@ const highlightJS = (code) => {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 
+  // String literals first
+  html = html.replace(/(?<!=)(["'])(?:\\.|[^\n"'\\])*?\1/g, '<span style="color: #a5d6ff;">$&</span>');
+
+  // Comments
   html = html.replace(/(?<!["':a-zA-Z0-9])(\/\/[^\n]*)/g, '<span style="color: #8892b0;">$1</span>');
   html = html.replace(/(\/\*[\s\S]*?\*\/)/g, '<span style="color: #8892b0;">$1</span>');
   html = html.replace(/(#[^\n]*)/g, '<span style="color: #8892b0;">$1</span>');
-  html = html.replace(/(["'])([\s\S]*?)\1/g, '<span style="color: #a5d6ff;">$1$2$1</span>');
 
   const keywords = ['const', 'let', 'var', 'return', 'import', 'export', 'default', 'function', 'from', 'class', 'extends', 'if', 'else', 'new', 'typeof', 'as'];
   keywords.forEach(kw => {
