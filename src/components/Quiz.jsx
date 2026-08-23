@@ -51,9 +51,9 @@ const quizQuestions = [
     question: "Which tag is used to define an emphasized text (italic)?",
     options: [
       { id: 'a', text: '<em>', correct: true },
-      { id: 'b', text: '<i>', correct: false },
-      { id: 'c', text: '<italic>', correct: false },
-      { id: 'd', text: 'Both a and b', correct: true }, // Simplifying, we'll just say em is the semantic one. Wait, let's keep it simple.
+      { id: 'b', text: '<italic>', correct: false },
+      { id: 'c', text: '<emp>', correct: false },
+      { id: 'd', text: '<strong>', correct: false },
     ]
   },
   {
@@ -73,13 +73,22 @@ export default function Quiz({ questions = quizQuestions }) {
   const [score, setScore] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
 
-  // Fix question 5 option array
-  quizQuestions[5].options = [
-    { id: 'a', text: '<em>', correct: true },
-    { id: 'b', text: '<italic>', correct: false },
-    { id: 'c', text: '<emp>', correct: false },
-    { id: 'd', text: '<strong>', correct: false },
-  ];
+  const activeQuestions = (Array.isArray(questions) && questions.length > 0) ? questions : quizQuestions;
+  const q = activeQuestions[currentQ] || activeQuestions[0];
+
+  // Normalize options into structured objects with id, text, and correct status
+  const options = (q.options || []).map((opt, idx) => {
+    const defaultId = String.fromCharCode(97 + idx); // 'a', 'b', 'c', 'd'
+    if (typeof opt === 'string') {
+      const isCorrect = q.correctAnswer !== undefined ? q.correctAnswer === idx : false;
+      return { id: defaultId, text: opt, correct: isCorrect };
+    }
+    return {
+      id: (opt && opt.id !== undefined && opt.id !== null) ? String(opt.id) : defaultId,
+      text: opt ? (opt.text || opt.label || String(opt)) : '',
+      correct: (opt && opt.correct !== undefined) ? Boolean(opt.correct) : (q.correctAnswer !== undefined ? q.correctAnswer === idx : false)
+    };
+  });
 
   const handleSelect = (option) => {
     if (selected !== null) return; // Prevent multiple selections
@@ -95,12 +104,12 @@ export default function Quiz({ questions = quizQuestions }) {
     }
 
     setTimeout(() => {
-      if (currentQ < questions.length - 1) {
+      if (currentQ < activeQuestions.length - 1) {
         setCurrentQ(prev => prev + 1);
         setSelected(null);
       } else {
         setQuizFinished(true);
-        if (score + (isCorrect ? 1 : 0) === questions.length) {
+        if (score + (isCorrect ? 1 : 0) === activeQuestions.length) {
           if (typeof window.JSConfetti !== 'undefined') {
             const confetti = new window.JSConfetti();
             confetti.addConfetti({ emojis: ['🔥', '👑', '🚀'], confettiNumber: 150 });
@@ -121,25 +130,25 @@ export default function Quiz({ questions = quizQuestions }) {
     return (
       <div className="panel" style={{ textAlign: 'center', padding: '3rem' }}>
         <h3 style={{ fontSize: '2rem', marginBottom: '1rem', color: 'var(--accent-secondary)' }}>Quiz Completed!</h3>
-        <p style={{ fontSize: '1.25rem', marginBottom: '2rem' }}>You scored {score} out of {questions.length}</p>
+        <p style={{ fontSize: '1.25rem', marginBottom: '2rem' }}>You scored {score} out of {activeQuestions.length}</p>
         <button className="btn btn-primary" onClick={restartQuiz}>Retake Quiz</button>
       </div>
     );
   }
 
-  const q = questions[currentQ];
+  const correctOption = options.find(o => o.correct);
 
   return (
     <div className="panel" style={{ padding: '2.5rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', color: 'var(--text-secondary)' }}>
-        <span>Question {currentQ + 1} of {questions.length}</span>
+        <span>Question {currentQ + 1} of {activeQuestions.length}</span>
         <span>Score: {score}</span>
       </div>
       
       <h3 style={{ fontSize: '1.3rem', marginBottom: '2rem', color: 'var(--text-primary)' }}>{q.question}</h3>
       
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-        {q.options.map(opt => {
+        {options.map(opt => {
           let bg = 'white';
           let border = 'var(--surface-border)';
           let color = 'var(--text-primary)';
@@ -200,9 +209,14 @@ export default function Quiz({ questions = quizQuestions }) {
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          style={{ marginTop: '2rem', textAlign: 'center', fontWeight: 'bold', color: selected === q.options.find(o => o.correct).id ? '#10B981' : '#EF4444' }}
+          style={{ marginTop: '2rem', textAlign: 'center', fontWeight: 'bold', color: (correctOption && selected === correctOption.id) ? '#10B981' : '#EF4444' }}
         >
-          {selected === q.options.find(o => o.correct).id ? "Correct! Moving to next question..." : "Incorrect! Moving to next question..."}
+          {(correctOption && selected === correctOption.id) ? "Correct! Moving to next question..." : "Incorrect! Moving to next question..."}
+          {q.explanation && (
+            <div style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 'normal', marginTop: '0.5rem' }}>
+              💡 {q.explanation}
+            </div>
+          )}
         </motion.div>
       )}
     </div>

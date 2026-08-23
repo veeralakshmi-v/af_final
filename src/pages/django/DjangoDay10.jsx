@@ -295,76 +295,8 @@ def product_report_with_value(request):
     })`} />
 
             <div className="card-actions" style={{ marginTop: '2rem' }}>
-              <button className="btn btn-primary" onClick={() => go('user_passes_test')} style={{ background: '#4f46e5', borderColor: '#4f46e5' }}>
-                Next: Query Set Optimization <ArrowRight size={16} />
-              </button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ── 4. QUERY OPTIMIZATION ────────────────────────────────────── */}
-      {activeTab === 'user_passes_test' && (
-        <Section key="optimization" eyebrow="Django • Day 10 • Module 04" title="Query Optimization (select_related &amp; prefetch_related)">
-          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
-            <p>By default, Django's database queries are <strong>lazy</strong>. If you fetch products and loop through them to display their category name, Django runs a separate SQL query *per product row*. This is known as the **N+1 query problem**.</p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
-              <div style={{ background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 12, padding: '1.25rem' }}>
-                <h4 style={{ color: '#e11d48', fontWeight: 800, marginTop: 0 }}>🚫 N+1 Queries (Unoptimized)</h4>
-                <code style={{ fontSize: '0.78rem', color: '#9f1239', display: 'block', marginBottom: 8 }}>
-                  Product.objects.all()
-                </code>
-                <p style={{ fontSize: '0.74rem', color: '#475569', margin: 0 }}>
-                  Django fetches products (1 query). When rendering templates, it fetches category for product 1 (2nd query), category for product 2 (3rd query), etc. Highly inefficient!
-                </p>
-              </div>
-
-              <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 12, padding: '1.25rem' }}>
-                <h4 style={{ color: '#059669', fontWeight: 800, marginTop: 0 }}>⚡ Optimized (select_related)</h4>
-                <code style={{ fontSize: '0.78rem', color: '#065f46', display: 'block', marginBottom: 8 }}>
-                  Product.objects.select_related('category')
-                </code>
-                <p style={{ fontSize: '0.74rem', color: '#475569', margin: 0 }}>
-                  Django performs a single SQL JOIN in the database to fetch products and category fields at once. Only 1 query total!
-                </p>
-              </div>
-            </div>
-
-            <h3 style={{ fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>select_related vs prefetch_related</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.83rem', marginBottom: '1.5rem' }}>
-              <thead>
-                <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                  <th style={{ padding: '8px 12px', textAlign: 'left' }}>Method</th>
-                  <th style={{ padding: '8px 12px', textAlign: 'left' }}>Relationship Type</th>
-                  <th style={{ padding: '8px 12px', textAlign: 'left' }}>SQL Strategy</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  ['select_related', 'ForeignKey, OneToOneField (Single object links)', 'SQL JOIN statement (Fetches fields together in 1 DB trip)'],
-                  ['prefetch_related', 'ManyToManyField, Reverse ForeignKey (Multi-object links)', 'Separate SQL lookup with IN query (Aggregates lists in Python)'],
-                ].map(([method, rel, sql]) => (
-                  <tr key={method} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                    <td style={{ padding: '8px 12px', fontFamily: 'monospace', fontSize: '0.8rem', color: '#4f46e5', fontWeight: 700 }}>{method}</td>
-                    <td style={{ padding: '8px 12px', fontSize: '0.8rem', fontWeight: 600 }}>{rel}</td>
-                    <td style={{ padding: '8px 12px', fontSize: '0.8rem', color: '#64748b' }}>{sql}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            <CodeBlock title="inventory/views.py — Optimized View" code={`def inventory_view(request):
-    # Fetch category in the join query, and prefetch tags in a separate IN query
-    products = Product.objects.select_related('category').prefetch_related('tags')
-    
-    return render(request, 'inventory/inventory.html', {
-        'products': products,
-    })`} />
-
-            <div className="card-actions" style={{ marginTop: '2rem' }}>
               <button className="btn btn-primary" onClick={() => go('template_permissions')} style={{ background: '#4f46e5', borderColor: '#4f46e5' }}>
-                Next: View &amp; HTML Setup <ArrowRight size={16} />
+                Next: Relations in Templates <ArrowRight size={16} />
               </button>
             </div>
           </div>

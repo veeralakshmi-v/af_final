@@ -339,21 +339,21 @@ export default function JSDay5({ activeTab, onNavigate }) {
             <p>JavaScript supports multiple ways to define functions. Choosing the right one depends on whether you need features like hoisting, simplified syntax, or context preservation.</p>
 
             <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginTop: '1.5rem' }}>1. Function Declaration (Named Function)</h3>
-            <p>Defined with the <code>function</code> keyword. Function declarations are <strong>hoisted</strong>, meaning they can be called before they are written in the code file.</p>
-            <CB code={`// Hoisted invocation (Works!)
+            <p>Defined with the <code>function</code> keyword and a name identifier. Function declarations are <strong>hoisted</strong>, meaning they can be called before they are written in the code file.</p>
+            <CB code={`// Hoisted invocation (Works before declaration!)
 greet();
 
 function greet() {
-  console.log("Hello!");
+  document.write("Hello!");
 }`} />
 
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginTop: '1.5rem' }}>2. Function Expression (Anonymous Function)</h3>
-            <p>Defined inside an expression (usually assigned to a variable). These are <strong>not hoisted</strong>, so you must define them before calling them.</p>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginTop: '1.5rem' }}>2. Function Expression (Anonymous &amp; Named Expression)</h3>
+            <p>Defined inside an expression (usually assigned to a variable). These are <strong>not hoisted as functions</strong>, so you must define them before calling them.</p>
             <CB code={`// Calling here would throw an error!
 // sayHello();
 
 const sayHello = function() {
-  console.log("Hello from expression!");
+  document.write("Hello from expression!");
 };
 
 sayHello(); // Works!`} />
@@ -368,43 +368,38 @@ const multiply = (a, b) => {
 // Implicit return (one-line functions don't need {} or return keyword)
 const square = x => x * x;
 
-console.log(multiply(3, 4)); // 12
-console.log(square(5));       // 25`} />
+document.write("<p>Multiply: " + multiply(3, 4) + "</p>"); // 12
+document.write("<p>Square: " + square(5) + "</p>");        // 25`} />
 
             <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginTop: '1.5rem' }}>4. Immediately Invoked Function Expressions (IIFE)</h3>
             <p>An <strong>IIFE</strong> is a function that runs as soon as it is defined. It is wrapped in parentheses to form an expression, followed by <code>()</code> to immediately execute it. This is useful for creating local scopes and avoiding global variable contamination.</p>
             <CB code={`(function() {
   let tempMessage = "I run immediately and keep variables local!";
-  console.log(tempMessage);
-})(); // Output: "I run immediately and keep variables local!"
+  document.write("<p>" + tempMessage + "</p>");
+})();
 
 // Passing arguments to IIFE
 (function(name) {
-  console.log("Welcome, " + name + "!");
-})("Alice"); // Output: "Welcome, Alice!"`} />
+  document.write("<p>Welcome, " + name + "!</p>");
+})("Alice");`} />
 
             <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginTop: '1.5rem' }}>5. Anonymous Functions</h3>
             <p>An <strong>Anonymous Function</strong> is a function without a name. They are typically used where functions are treated as values, such as in function expressions or passed as arguments to other functions.</p>
-            <CB code={`// Anonymous function as callback inside setTimeout
-setTimeout(function() {
-  console.log("Executed after 2 seconds");
-}, 2000);
-
-// Anonymous arrow function as callback inside array mapping
+            <CB code={`// Anonymous arrow function as callback inside array mapping
 const doubled = [1, 2, 3].map(x => x * 2);
-console.log(doubled); // Output: [2, 4, 6]`} />
+document.write("<p>Doubled: " + doubled.join(", ") + "</p>");`} />
 
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginTop: '1.5rem' }}>6. Callback Functions</h3>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginTop: '1.5rem' }}>6. Callback Functions &amp; Higher-Order Functions</h3>
             <p>A <strong>Callback Function</strong> is a function passed into another function as an argument, which is then invoked inside the outer function to complete some routine or action.</p>
             <CB code={`// Declaring the function with callback parameter
 function processUserInput(name, callback) {
-  console.log("Processing input...");
+  document.write("<p>Processing input...</p>");
   callback(name); // Invoking callback
 }
 
 // Callback implementation
 const greetUser = (user) => {
-  console.log("Hello, " + user + "!");
+  document.write("<p>Hello, " + user + "!</p>");
 };
 
 processUserInput("Charlie", greetUser);`} />
@@ -415,7 +410,7 @@ processUserInput("Charlie", greetUser);`} />
   this.name = name;
   this.role = role;
   this.sayRole = function() {
-    console.log(this.name + " is an " + this.role);
+    document.write("<p>" + this.name + " is an " + this.role + "</p>");
   };
 }
 
@@ -429,15 +424,15 @@ guest.sayRole(); // Output: "Bob is a Guest"`} />
             <p>A <strong>Generator Function</strong> is a special function that can be paused and resumed at a later time. They are declared with <code>function*</code> and use the <code>yield</code> keyword to return values sequentially.</p>
             <CB code={`function* idGenerator() {
   let id = 1;
-  while (true) {
+  while (id <= 3) {
     yield id++;
   }
 }
 
 const gen = idGenerator();
-console.log(gen.next().value); // Output: 1
-console.log(gen.next().value); // Output: 2
-console.log(gen.next().value); // Output: 3`} />
+document.write("<p>ID 1: " + gen.next().value + "</p>");
+document.write("<p>ID 2: " + gen.next().value + "</p>");
+document.write("<p>ID 3: " + gen.next().value + "</p>");`} />
 
             <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginTop: '1.5rem' }}>Comparison of Function Types</h3>
             <div style={{ overflowX: 'auto', margin: '1rem 0' }}>

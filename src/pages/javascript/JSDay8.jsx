@@ -212,77 +212,18 @@ const firstBtn = document.querySelector(".btn-action");
 // 5. Query Selector All (Returns static NodeList of all matching elements)
 const allCards = document.querySelectorAll("div.card-item");`} />
 
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginTop: '1.5rem' }}>Traversing the DOM Tree</h3>
-            <p>Once you hold a reference to an element node, you can navigate up, down, or sideways to sibling elements using tree traversing properties:</p>
-            <CB code={`let childEl = document.getElementById("target-child");
-
-// Navigate UP to parent
-let parent = childEl.parentNode; 
-
-// Navigate DOWN to children
-let children = parent.children; // HTMLCollection of element children only
-let first = parent.firstElementChild; // First element child
-let last = parent.lastElementChild; // Last element child
-
-// Navigate SIDEWAYS to siblings
-let nextSibling = childEl.nextElementSibling; // Next sibling element
-let prevSibling = childEl.previousElementSibling; // Previous sibling element`} />
-
-            {/* Interactive Selector & Traversal Demo */}
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', borderTop: '1px solid #e2e8f0', paddingTop: '1.2rem', marginTop: '1.5rem' }}>🎮 Live Playground: Selector & Traversal</h3>
-            <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: 12, border: '1px solid #e2e8f0' }}>
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.2rem' }}>
-                <button onClick={() => setTraverseFocus('parent')} style={{ background: '#1e293b', color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: 6, cursor: 'pointer', fontSize: '0.85rem' }}>Get Parent Box</button>
-                <button onClick={() => setTraverseFocus('child1')} style={{ background: '#1e293b', color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: 6, cursor: 'pointer', fontSize: '0.85rem' }}>Get First Child</button>
-                <button onClick={() => setTraverseFocus('child2')} style={{ background: '#1e293b', color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: 6, cursor: 'pointer', fontSize: '0.85rem' }}>Get Middle Child</button>
-                <button onClick={() => setTraverseFocus('child3')} style={{ background: '#1e293b', color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: 6, cursor: 'pointer', fontSize: '0.85rem' }}>Get Last Child</button>
-                <button onClick={() => setTraverseFocus('none')} style={{ background: '#e2e8f0', border: 'none', padding: '0.4rem 0.8rem', borderRadius: 6, cursor: 'pointer', fontSize: '0.85rem' }}>Reset</button>
-              </div>
-
-              {/* Rendered DOM Mockup */}
-              <div style={{ border: traverseFocus === 'parent' ? '3px solid #fbbf24' : '1px solid #cbd5e1', borderRadius: 10, padding: '1rem', background: '#fff' }}>
-                <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontFamily: 'monospace' }}>&lt;div id="parentBox"&gt;</span>
-                
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
-                  <div style={{
-                    padding: '0.5rem', borderRadius: 6,
-                    border: traverseFocus === 'child1' ? '3px solid #ef4444' : '1px solid #e2e8f0',
-                    background: traverseFocus === 'child1' ? '#fee2e2' : '#f8fafc'
-                  }}>
-                    <span style={{ fontWeight: 600 }}>Child Item 1 (First Child)</span>
-                  </div>
-                  
-                  <div style={{
-                    padding: '0.5rem', borderRadius: 6,
-                    border: traverseFocus === 'child2' ? '3px solid #3b82f6' : '1px solid #e2e8f0',
-                    background: traverseFocus === 'child2' ? '#dbeafe' : '#f8fafc'
-                  }}>
-                    <span style={{ fontWeight: 600 }}>Child Item 2 (Middle Sibling)</span>
-                  </div>
-                  
-                  <div style={{
-                    padding: '0.5rem', borderRadius: 6,
-                    border: traverseFocus === 'child3' ? '3px solid #10b981' : '1px solid #e2e8f0',
-                    background: traverseFocus === 'child3' ? '#dcfce7' : '#f8fafc'
-                  }}>
-                    <span style={{ fontWeight: 600 }}>Child Item 3 (Last Child)</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div className="card-actions" style={{ marginTop: '2.5rem' }}>
               <button className="btn btn-primary" onClick={() => go('js_dom_content')} style={{ backgroundColor: '#ca8a04', borderColor: '#ca8a04' }}>
-                Next: Content & Class Manipulation <ArrowRight size={16} />
+                Next: Content & Style Manipulation <ArrowRight size={16} />
               </button>
             </div>
           </div>
         </Section>
       )}
 
-      {/* ════════════════ TAB 3: CONTENT & CLASS MANIPULATION ════════════════ */}
+      {/* ════════════════ TAB 3: CONTENT & STYLE MANIPULATION ════════════════ */}
       {activeTab === 'js_dom_content' && (
-        <Section eyebrow="Syllabus 03" title="Changing Content, Styles & Class Lists">
+        <Section eyebrow="Syllabus 03" title="Changing Content & Styles">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.7 }}>
             <p>JavaScript allows you to update visible text, insert styled HTML structures, toggle CSS stylesheets classes, and write custom inline styling directly.</p>
 

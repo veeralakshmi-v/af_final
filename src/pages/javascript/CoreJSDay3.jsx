@@ -107,8 +107,7 @@ export default function CoreJSDay3({ activeTab, onNavigate, openAITutor: _openAI
 
     document.write('<div class="box"><span class="label">Score:</span> <span class="value">' + score + '</span></div>');
     document.write('<div class="box"><span class="label">Grade:</span> <span class="value">' + grade + '</span></div>');
-
-    console.log("Evaluation complete. Score was", score, "resulting in Grade", grade);
+    document.write('<div class="box">Evaluation complete. Score was ' + score + ' resulting in Grade ' + grade + '</div>');
   </script>
 </body>
 </html>`);
@@ -233,52 +232,100 @@ export default function CoreJSDay3({ activeTab, onNavigate, openAITutor: _openAI
 
   const loadPresetSnippet = (name) => {
     if (name === 'ifelse') {
-      setEditorCode(`// Simple if...else Statement
-var age = 20;
+      setEditorCode(`<!DOCTYPE html>
+<html>
+<head>
+  <title>if...else Demo</title>
+</head>
+<body>
+  <h2>Age Eligibility Checker</h2>
 
-if (age >= 18) {
-  console.log("You are an adult.");
-} else {
-  console.log("You are a minor.");
-}`);
+  <script>
+    // Simple if...else Statement
+    var age = 20;
+
+    if (age >= 18) {
+      document.write("<p style='color:green;'>Status: You are an adult. ✅</p>");
+    } else {
+      document.write("<p style='color:red;'>Status: You are a minor. ⏳</p>");
+    }
+  </script>
+</body>
+</html>`);
     } else if (name === 'ladder') {
-      setEditorCode(`// if...else if...else Ladder
-var score = 78;
-console.log("Checking score:", score);
+      setEditorCode(`<!DOCTYPE html>
+<html>
+<head>
+  <title>Ladder Demo</title>
+</head>
+<body>
+  <h2>Score &amp; Grade Evaluator</h2>
 
-if (score >= 90) {
-  console.log("Grade: A");
-} else if (score >= 80) {
-  console.log("Grade: B");
-} else if (score >= 60) {
-  console.log("Grade: C");
-} else {
-  console.log("Grade: F");
-}`);
+  <script>
+    // if...else if...else Ladder
+    var score = 78;
+    document.write("<p>Checking score: " + score + "</p>");
+
+    if (score >= 90) {
+      document.write("<p>Grade: A (Excellent!)</p>");
+    } else if (score >= 80) {
+      document.write("<p>Grade: B (Good Job!)</p>");
+    } else if (score >= 60) {
+      document.write("<p>Grade: C (Average)</p>");
+    } else {
+      document.write("<p>Grade: F (Fail)</p>");
+    }
+  </script>
+</body>
+</html>`);
     } else if (name === 'switch') {
-      setEditorCode(`// Switch Statement
-var rollNo = 2;
-console.log("Checking prize for Roll No:", rollNo);
+      setEditorCode(`<!DOCTYPE html>
+<html>
+<head>
+  <title>Switch Case Demo</title>
+</head>
+<body>
+  <h2>Roll Number Prize Selector</h2>
 
-switch(rollNo) {
-  case 1:
-    console.log("First Prize: Laptop 💻");
-    break;
-  case 2:
-    console.log("Second Prize: Tablet 📱");
-    break;
-  case 3:
-    console.log("Third Prize: Smartwatch ⌚");
-    break;
-  default:
-    console.log("Participation Certificate 📄");
-}`);
+  <script>
+    // Switch Statement
+    var rollNo = 2;
+    document.write("<p>Checking prize for Roll No: " + rollNo + "</p>");
+
+    switch(rollNo) {
+      case 1:
+        document.write("<h3>First Prize: Laptop 💻</h3>");
+        break;
+      case 2:
+        document.write("<h3>Second Prize: Tablet 📱</h3>");
+        break;
+      case 3:
+        document.write("<h3>Third Prize: Smartwatch ⌚</h3>");
+        break;
+      default:
+        document.write("<h3>Participation Certificate 📄</h3>");
+    }
+  </script>
+</body>
+</html>`);
     } else if (name === 'ternary') {
-      setEditorCode(`// Ternary Operator (?:)
-var price = 120;
-var status = (price > 100) ? "Expensive" : "Affordable";
+      setEditorCode(`<!DOCTYPE html>
+<html>
+<head>
+  <title>Ternary Operator Demo</title>
+</head>
+<body>
+  <h2>Price Category Check</h2>
 
-console.log("Product is:", status);`);
+  <script>
+    // Ternary Operator (?:)
+    var price = 120;
+    var status = (price > 100) ? "Expensive" : "Affordable";
+
+    document.write("<h3>Product Price Status: " + status + "</h3>");
+  </script>
+</body>
+</html>`);
     } else if (name === 'atm') {
       setEditorCode(`<!DOCTYPE html>
 <html>
@@ -310,7 +357,7 @@ console.log("Product is:", status);`);
       document.write('<div class="box">Error: Incorrect PIN.</div>');
     }
 
-    console.log("ATM Run Complete. Balance:", balance);
+    document.write('<div class="box">ATM Run Complete. Balance: $' + balance + '</div>');
   </script>
 </body>
 </html>`);
@@ -358,13 +405,25 @@ console.log("Product is:", status);`);
               A condition is any expression that evaluates to a <strong>Boolean value</strong> (`true` or `false`). These usually utilize comparison and logical operators we studied in Day 2.
             </p>
             <div style={{ background: '#0f172a', borderRadius: '10px', padding: '1.2rem', marginBottom: '1rem' }}>
-              <SyntaxHighlighter code={`// This evaluates to true
-var hasTicket = true;
-var age = 21;
+              <SyntaxHighlighter code={`<!DOCTYPE html>
+<html>
+<head>
+  <title>JS Conditionals Demo</title>
+</head>
+<body>
+  <h2>Movie Ticket Eligibility</h2>
 
-if (age >= 18 && hasTicket) {
-  console.log("Enjoy the movie! 🎬");
-}`} />
+  <script>
+    // This condition evaluates to true
+    var hasTicket = true;
+    var age = 21;
+
+    if (age >= 18 && hasTicket) {
+      document.write("<p style='color:green;'>Enjoy the movie! 🎬</p>");
+    }
+  </script>
+</body>
+</html>`} />
             </div>
           </div>
           <div style={{ marginTop: '2rem', textAlign: 'right' }}>
@@ -384,10 +443,24 @@ if (age >= 18 && hasTicket) {
               The basic `if` statement decides whether to execute a block of code based on a single condition.
             </p>
             <div style={{ background: '#0f172a', borderRadius: '10px', padding: '1.2rem', marginBottom: '1.5rem' }}>
-              <SyntaxHighlighter code={`// Syntax:
-if (condition) {
-  // block of code to run if condition is true
-}`} />
+              <SyntaxHighlighter code={`<!DOCTYPE html>
+<html>
+<head>
+  <title>Single IF Statement</title>
+</head>
+<body>
+  <h2>Voting Check</h2>
+
+  <script>
+    var age = 20;
+
+    // Syntax: if (condition) { block of code }
+    if (age >= 18) {
+      document.write("<p style='color:green;'>Eligible to Vote! 🗳️</p>");
+    }
+  </script>
+</body>
+</html>`} />
             </div>
 
             <h3 style={{ marginBottom: '1rem', color: '#1e293b' }}>2. The "if...else" statement</h3>
@@ -395,12 +468,26 @@ if (condition) {
               Add an `else` block to execute alternative code if the condition evaluates to `false`.
             </p>
             <div style={{ background: '#0f172a', borderRadius: '10px', padding: '1.2rem', marginBottom: '1.5rem' }}>
-              <SyntaxHighlighter code={`// Syntax:
-if (condition) {
-  // code if true
-} else {
-  // code if false
-}`} />
+              <SyntaxHighlighter code={`<!DOCTYPE html>
+<html>
+<head>
+  <title>IF ELSE Statement</title>
+</head>
+<body>
+  <h2>Access Control</h2>
+
+  <script>
+    var age = 15;
+
+    // Syntax: if (condition) { true code } else { false code }
+    if (age >= 18) {
+      document.write("<p style='color:green;'>Access Granted ✅</p>");
+    } else {
+      document.write("<p style='color:red;'>Access Denied. Underage! ❌</p>");
+    }
+  </script>
+</body>
+</html>`} />
             </div>
 
             {/* Interactive check */}
@@ -437,17 +524,29 @@ if (condition) {
               When you have multiple choices or stages of evaluation, chain `else if` statements to create a ladder structure. Once a matches condition is found, its block runs, and the rest are ignored.
             </p>
             <div style={{ background: '#0f172a', borderRadius: '10px', padding: '1.2rem', marginBottom: '1.5rem' }}>
-              <SyntaxHighlighter code={`var score = 85;
+              <SyntaxHighlighter code={`<!DOCTYPE html>
+<html>
+<head>
+  <title>IF ELSE IF Ladder</title>
+</head>
+<body>
+  <h2>Grade Evaluator</h2>
 
-if (score >= 90) {
-  console.log("Excellent!");
-} else if (score >= 80) {
-  console.log("Good job!");
-} else if (score >= 60) {
-  console.log("Average.");
-} else {
-  console.log("Need improvement.");
-}`} />
+  <script>
+    var score = 85;
+
+    if (score >= 90) {
+      document.write("<p>Grade: A (Excellent!)</p>");
+    } else if (score >= 80) {
+      document.write("<p>Grade: B (Good job!)</p>");
+    } else if (score >= 60) {
+      document.write("<p>Grade: C (Average)</p>");
+    } else {
+      document.write("<p>Grade: F (Need improvement)</p>");
+    }
+  </script>
+</body>
+</html>`} />
             </div>
           </div>
 
@@ -460,18 +559,30 @@ if (score >= 90) {
               <strong>⚠️ Crucial:</strong> Remember the `break;` statement at the end of each case! If omitted, execution will "fall through" and execute subsequent cases regardless of whether they match.
             </div>
             <div style={{ background: '#0f172a', borderRadius: '10px', padding: '1.2rem', marginBottom: '1.5rem' }}>
-              <SyntaxHighlighter code={`var option = 2;
+              <SyntaxHighlighter code={`<!DOCTYPE html>
+<html>
+<head>
+  <title>Switch Statement</title>
+</head>
+<body>
+  <h2>Prize Selector</h2>
 
-switch(option) {
-  case 1:
-    console.log("You selected option 1");
-    break;
-  case 2:
-    console.log("You selected option 2");
-    break; // Stops switch execution here!
-  default:
-    console.log("No valid option chosen");
-}`} />
+  <script>
+    var option = 2;
+
+    switch(option) {
+      case 1:
+        document.write("First Prize: Laptop 💻");
+        break;
+      case 2:
+        document.write("Second Prize: Tablet 📱");
+        break; // Stops switch execution here!
+      default:
+        document.write("Participation Certificate 📄");
+    }
+  </script>
+</body>
+</html>`} />
             </div>
 
             {/* Interactive Switch Builder */}
@@ -489,32 +600,45 @@ switch(option) {
 
               <h5 style={{ color: '#7c3aed', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Source Code for this Evaluator:</h5>
               <div style={{ background: '#0f172a', padding: '1rem', borderRadius: '8px' }}>
-                <SyntaxHighlighter code={`var day = ${switchDay};
-switch (day) {
-  case 1:
-    console.log("Monday - Back to work! 💼");
-    break;
-  case 2:
-    console.log("Tuesday - Staying productive. 📈");
-    break;
-  case 3:
-    console.log("Wednesday - Midweek checkpoint. 🎯");
-    break;
-  case 4:
-    console.log("Thursday - Friday is near! 🚀");
-    break;
-  case 5:
-    console.log("Friday - Weekend vibes! 🎉");
-    break;
-  case 6:
-    console.log("Saturday - Time to relax. 🏖️");
-    break;
-  case 7:
-    console.log("Sunday - Recharge day. 🔋");
-    break;
-  default:
-    console.log("Invalid day selection!");
-}`} />
+                <SyntaxHighlighter code={`<!DOCTYPE html>
+<html>
+<head>
+  <title>Switch Weekday Evaluator</title>
+</head>
+<body>
+  <h2>Day Schedule</h2>
+
+  <script>
+    var day = ${switchDay};
+
+    switch (day) {
+      case 1:
+        document.write("Monday - Back to work! 💼");
+        break;
+      case 2:
+        document.write("Tuesday - Staying productive. 📈");
+        break;
+      case 3:
+        document.write("Wednesday - Midweek checkpoint. 🎯");
+        break;
+      case 4:
+        document.write("Thursday - Friday is near! 🚀");
+        break;
+      case 5:
+        document.write("Friday - Weekend vibes! 🎉");
+        break;
+      case 6:
+        document.write("Saturday - Time to relax. 🏖️");
+        break;
+      case 7:
+        document.write("Sunday - Recharge day. 🔋");
+        break;
+      default:
+        document.write("Invalid day selection!");
+    }
+  </script>
+</body>
+</html>`} />
               </div>
             </div>
           </div>
@@ -543,10 +667,22 @@ switch (day) {
               <span style={{ color: '#ef4444' }}>valueIfFalse</span>
             </div>
             <div style={{ background: '#0f172a', borderRadius: '10px', padding: '1.2rem', marginBottom: '1.5rem' }}>
-              <SyntaxHighlighter code={`// Example:
-var isMember = true;
-var discount = isMember ? "$5.00" : "$0.00";
-console.log(discount); // "$5.00"`} />
+              <SyntaxHighlighter code={`<!DOCTYPE html>
+<html>
+<head>
+  <title>Ternary Operator Demo</title>
+</head>
+<body>
+  <h2>Discount Check</h2>
+
+  <script>
+    var isMember = true;
+    var discount = isMember ? "$5.00" : "$0.00";
+
+    document.write("<h3>Discount Applied: " + discount + "</h3>");
+  </script>
+</body>
+</html>`} />
             </div>
           </div>
 
@@ -556,11 +692,23 @@ console.log(discount); // "$5.00"`} />
               In JavaScript, values captured from inputs or text variables are often typed as strings. To perform numeric comparisons on them safely, use **`parseInt()`** to parse string digits into an actual integer number.
             </p>
             <div style={{ background: '#0f172a', borderRadius: '10px', padding: '1.2rem', marginBottom: '1rem' }}>
-              <SyntaxHighlighter code={`// converts string digits to a number:
-var textValue = "100";
-var numberValue = parseInt(textValue);
+              <SyntaxHighlighter code={`<!DOCTYPE html>
+<html>
+<head>
+  <title>parseInt Function Demo</title>
+</head>
+<body>
+  <h2>String to Number Parsing</h2>
 
-console.log(numberValue === 100); // true`} />
+  <script>
+    // Converts string digits to a number:
+    var textValue = "100";
+    var numberValue = parseInt(textValue);
+
+    document.write("<p>Parsed Result: " + numberValue + " (Type: " + typeof numberValue + ")</p>");
+  </script>
+</body>
+</html>`} />
             </div>
           </div>
 
@@ -617,46 +765,61 @@ console.log(numberValue === 100); // true`} />
             </div>
 
             <div style={{ marginTop: '2rem', background: '#f8fafc', padding: '1.2rem', borderRadius: '10px', border: '1px solid #cbd5e1' }}>
-              <h4 style={{ color: '#0f172a', marginBottom: '0.5rem' }}>Source Code for ATM Simulator:</h4>
+              <h4 style={{ color: '#0f172a', marginBottom: '0.5rem' }}>Source Code for ATM Simulator (HTML &amp; JS):</h4>
               <p style={{ fontSize: '0.85rem', color: '#475569', marginBottom: '1rem' }}>
-                This is the complete JavaScript code running the simulation above:
+                This is the complete HTML page code with embedded JavaScript running the ATM simulation:
               </p>
               <div style={{ background: '#0f172a', padding: '1rem', borderRadius: '8px' }}>
-                <SyntaxHighlighter code={`// ATM Machine Simulation Program
-var balance = ${atmBalance};       // Current bank balance
-var pin = "1234";          // Registered secret PIN
-var enteredPin = "${enteredPin}"; // PIN entered by user
+                <SyntaxHighlighter code={`<!DOCTYPE html>
+<html>
+<head>
+  <title>ATM Machine Simulator</title>
+  <style>
+    body { font-family: sans-serif; background: #0f172a; color: #fff; padding: 20px; }
+    .atm-card { background: #1e293b; padding: 20px; border-radius: 10px; max-width: 400px; border: 2px solid #ca8a04; }
+  </style>
+</head>
+<body>
+  <div class="atm-card">
+    <h2>🏦 Bank ATM Simulator</h2>
+  </div>
 
-if (enteredPin === pin) {
-  console.log("PIN Verified successfully!");
-  
-  // Option selected by student (Withdraw/Deposit)
-  var amount = ${atmAmount || 0}; 
-  var option = "withdraw"; // Or "deposit"
-  
-  if (option === "withdraw") {
-    if (amount <= 0) {
-      console.log("Error: Invalid transaction amount!");
-    } else if (amount <= balance) {
-      balance = balance - amount; // balance -= amount
-      console.log("Withdrawal of $" + amount + " successful!");
-      console.log("Remaining Balance: $" + balance);
+  <script>
+    // ATM Machine Simulation Program
+    var balance = ${atmBalance};       // Current bank balance
+    var pin = "1234";          // Registered secret PIN
+    var enteredPin = "${enteredPin || '1234'}"; // PIN entered by user
+
+    if (enteredPin === pin) {
+      document.write("<p style='color:green;'>PIN Verified successfully! Balance: $" + balance + "</p>");
+      
+      // Option selected by student (Withdraw/Deposit)
+      var amount = ${atmAmount || 100}; 
+      var option = "withdraw"; // Or "deposit"
+      
+      if (option === "withdraw") {
+        if (amount <= 0) {
+          document.write("<p style='color:red;'>Error: Invalid transaction amount!</p>");
+        } else if (amount <= balance) {
+          balance = balance - amount; // balance -= amount
+          document.write("<p style='color:green;'>Withdrawal of $" + amount + " successful! Remaining: $" + balance + "</p>");
+        } else {
+          document.write("<p style='color:red;'>Error: Insufficient funds! Current: $" + balance + "</p>");
+        }
+      } else if (option === "deposit") {
+        if (amount <= 0) {
+          document.write("<p style='color:red;'>Error: Invalid transaction amount!</p>");
+        } else {
+          balance = balance + amount; // balance += amount
+          document.write("<p style='color:green;'>Successfully deposited $" + amount + "! New Balance: $" + balance + "</p>");
+        }
+      }
     } else {
-      console.log("Error: Insufficient funds!");
-      console.log("Current Balance: $" + balance);
+      document.write("<p style='color:red;'>Error: Incorrect PIN. Access denied!</p>");
     }
-  } else if (option === "deposit") {
-    if (amount <= 0) {
-      console.log("Error: Invalid transaction amount!");
-    } else {
-      balance = balance + amount; // balance += amount
-      console.log("Successfully deposited $" + amount);
-      console.log("New Balance: $" + balance);
-    }
-  }
-} else {
-  console.log("Error: Incorrect PIN. Access denied!");
-}`} />
+  </script>
+</body>
+</html>`} />
               </div>
             </div>
           </div>
@@ -825,6 +988,64 @@ if (enteredPin === pin) {
                   Score: {score}/{quizQuestions.length} — {score === 5 ? '🏆 Perfect!' : score >= 4 ? '🎉 Great job!' : score >= 3 ? '👍 Good effort!' : '📚 Keep practising!'}
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Topic-Wise Interview Questions */}
+          <div className="panel" style={{ marginBottom: '1.5rem', background: '#f8fafc', border: '1px solid #cbd5e1' }}>
+            <h3 style={{ marginBottom: '1.2rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              💬 Day 3 Topic-Wise Technical Interview Questions & Answers
+            </h3>
+            <div style={{ display: 'grid', gap: '1rem' }}>
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: if...else vs switch Statement Performance & Fall-Through
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: When should you prefer a <code>switch</code> statement over an <code>if...else if</code> ladder, and what happens if a <code>break</code> statement is omitted?</strong><br />
+                  <strong>Answer:</strong> A <code>switch</code> statement is preferred when evaluating a single variable against multiple discrete exact values (jump table lookup optimization). Omitting <code>break</code> causes <em>switch fall-through</em>, where execution sequentially leaks into subsequent case blocks regardless of whether their condition matches.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Truthy vs Falsy Values & String Parsing
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What are the 8 falsy values in JavaScript, and why is <code>parseInt("100px")</code> different from <code>Number("100px")</code>?</strong><br />
+                  <strong>Answer:</strong> The 8 falsy values are <code>false</code>, <code>0</code>, <code>-0</code>, <code>0n</code>, <code>""</code>, <code>null</code>, <code>undefined</code>, and <code>NaN</code>. <code>parseInt("100px")</code> parses leading digits until it hits a non-numeric character (returning <code>100</code>), whereas <code>Number("100px")</code> fails strict conversion and returns <code>NaN</code>.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Nested Conditionals & Guard Clauses
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What is a Guard Clause and why is it preferred over deep nested <code>if</code> statements?</strong><br />
+                  <strong>Answer:</strong> A Guard Clause is a premature return or exit condition at the top of a block. It flattens code structure by handling invalid or edge cases immediately, eliminating deeply nested callback/conditional pyramids (Arrow Anti-pattern).
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Switch Case Strict Matching
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: Does a JavaScript <code>switch</code> statement use strict equality (<code>===</code>) or loose equality (<code>==</code>) when comparing values?</strong><br />
+                  <strong>Answer:</strong> A <code>switch</code> statement uses strict equality (<code>===</code>) without type coercion. For example, <code>switch("10")</code> will NOT match <code>case 10:</code> because the string <code>"10"</code> is not strictly equal to the number <code>10</code>.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Lookup Tables vs If-Else Ladders
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: How can object lookup tables replace lengthy <code>switch</code> or <code>if...else if</code> ladders for better performance?</strong><br />
+                  <strong>Answer:</strong> Instead of checking 10 <code>else if</code> conditions sequentially with O(N) complexity, key-value object mappings (e.g. <code>const actions = &#123; create: fn1, delete: fn2 &#125;</code>) allow direct O(1) hash map lookups: <code>actions[type]?.()</code>.
+                </p>
+              </div>
             </div>
           </div>
 

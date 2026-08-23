@@ -88,7 +88,7 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
            courseStructure?.[0]?.id?.includes('python') ? 'Core Python & OOPs' : 
            courseStructure?.[0]?.id?.includes('agentic') ? 'Agentic AI Development' : 
            courseStructure?.[0]?.id?.includes('genai') ? 'Generative AI' : 
-           courseStructure?.[0]?.id?.includes('core_js') ? 'Core JavaScript' : 
+           courseStructure?.[0]?.id?.includes('core_js') ? 'Vanilla JS' : 
            courseStructure?.[0]?.id?.includes('react') ? 'AI powered React JS' :
            courseStructure?.[0]?.id?.includes('js') ? 'AI-Powered JavaScript' : 
            courseStructure?.[0]?.id?.includes('git') ? 'Git & GitHub' :

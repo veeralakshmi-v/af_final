@@ -93,27 +93,15 @@ const subCourses = [
     enrolledKey: 'python_course'
   },
   {
-    id: 'javascript_course',
-    mainCourseId: 'fullstack',
-    title: 'JavaScript Programming Course',
-    desc: 'Learn core scripting logic, variables, complex data types, and ES6+ features with modern AI engineering tools.',
-    icon: <Code size={24} />,
-    bgColor: 'rgba(234, 179, 8, 0.08)',
-    borderColor: '#eab308',
-    shadowColor: 'rgba(234,179,8,0.15)',
-    modulesCount: '10 Modules',
-    enrolledKey: 'javascript_course'
-  },
-  {
     id: 'core_js',
     mainCourseId: 'fullstack',
-    title: 'Core JavaScript',
-    desc: 'Master JavaScript fundamentals, variable scopes, data types, type conversions, and code execution without AI assistance.',
+    title: 'Vanilla JS',
+    desc: 'Master Vanilla JavaScript fundamentals, DOM manipulation, variables, functions, Async/Fetch API, Capstone Projects, and AI Power Tools.',
     icon: <Code size={24} />,
     bgColor: 'rgba(234, 179, 8, 0.08)',
     borderColor: '#eab308',
     shadowColor: 'rgba(234,179,8,0.15)',
-    modulesCount: '1 Day Class (1 Module)',
+    modulesCount: '10 Days + Capstone & AI Tools (12 Modules)',
     enrolledKey: 'core_js'
   },
   {
@@ -414,7 +402,6 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       python_course: CourseData.pythonCourseData,
       python_da: CourseData.pythonDaCourseData,
       generative_ai_course: CourseData.generativeAiCourseData,
-      javascript_course: CourseData.javascriptCourseData,
       react_course: CourseData.reactCourseData,
       git_github: CourseData.gitCourseData,
       json_course: CourseData.jsonCourseData,

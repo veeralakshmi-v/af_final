@@ -336,8 +336,19 @@ contacts.forEach((name, phone) => {
       {activeTab === 'sets' && (
         <Section key="sets" eyebrow="Day 7 • Built-in Collections" title="JavaScript Set Object">
           <div className="panel">
+            {/* Easy & Simple Definition Banner */}
+            <div style={{ background: '#fef9c3', border: '1px solid #fde68a', borderLeft: '4px solid #ca8a04', padding: '0.9rem 1.2rem', borderRadius: '8px', marginBottom: '1.2rem' }}>
+              <strong style={{ color: '#ca8a04', display: 'block', marginBottom: '0.2rem', fontSize: '0.95rem' }}>💡 Easy &amp; Simple Definition:</strong>
+              <p style={{ color: '#854d0e', margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
+                A <strong>Set</strong> is a collection of <strong>UNIQUE</strong> values where duplicate items are automatically forbidden. If you add the same value twice, JavaScript ignores the second one!
+              </p>
+              <div style={{ marginTop: '0.4rem', fontSize: '0.85rem', color: '#854d0e', fontWeight: 600 }}>
+                <strong>Analogy:</strong> A VIP Guest List — a guest's name can only appear once on the list.
+              </div>
+            </div>
+
             <p style={{ marginBottom: '1.5rem', color: '#475569', lineHeight: 1.7 }}>
-              A JavaScript <strong>Set</strong> is a collection of unique values. Each value can only occur once in a Set. A Set can hold any values of any data type.
+              A JavaScript <strong>Set</strong> can hold values of any data type (numbers, strings, objects). Below are the core methods for working with Sets:
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
@@ -393,159 +404,8 @@ contacts.forEach((name, phone) => {
               </div>
             </div>
           </div>
-          <div style={{ marginTop: '2rem', textAlign: 'right' }}>
-            <button style={{ background: '#ca8a04', color: '#fff', border: 'none', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('objects')}>
-              Next: Objects →
-            </button>
-          </div>
-        </Section>
-      )}
-
-      {/* ── TAB 2: OBJECTS ────────────────── */}
-      {activeTab === 'objects' && (
-        <Section key="objects" eyebrow="Day 7 • Objects" title="JavaScript Objects - In-Depth">
-          <div className="panel" style={{ marginBottom: '1.5rem' }}>
-            <p style={{ color: '#475569', lineHeight: 1.7, marginBottom: '1rem' }}>
-              An <strong>Object</strong> is a standalone entity with properties and type. A property is an association between a name (or key) and a value. A property's value can be a function, in which case the property is known as a <strong>method</strong>.
-            </p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
-              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <h4 style={{ color: '#ca8a04', marginBottom: '0.5rem', fontSize: '1rem' }}>1. Creating Objects</h4>
-                <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6, marginBottom: '0.8rem' }}>
-                  The most common way to create an object is using the <strong>Object Literal</strong> syntax. You can also use <code>new Object()</code>.
-                </p>
-                <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '6px' }}>
-                  <SyntaxHighlighter code={`// Object Literal (Recommended)
-let student = {
-  name: "Alice",
-  grade: "A"
-};
-
-// Object Constructor
-let user = new Object();
-user.username = "alice99";`} />
-                </div>
-              </div>
-
-              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <h4 style={{ color: '#ca8a04', marginBottom: '0.5rem', fontSize: '1rem' }}>2. Dot vs. Bracket Notation</h4>
-                <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6, marginBottom: '0.8rem' }}>
-                  Use <strong>Dot notation</strong> for clean syntax. Use <strong>Bracket notation</strong> if the key is a variable or contains spaces / special characters.
-                </p>
-                <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '6px' }}>
-                  <SyntaxHighlighter code={`let user = { 
-  name: "Bob",
-  "home address": "123 Main St"
-};
-
-console.log(user.name); // Bob
-console.log(user["home address"]); // 123 Main St
-
-let prop = "name";
-console.log(user[prop]); // Bob (dynamic lookup)`} />
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
-              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <h4 style={{ color: '#ca8a04', marginBottom: '0.5rem', fontSize: '1rem' }}>3. Object Methods &amp; "this"</h4>
-                <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6, marginBottom: '0.8rem' }}>
-                  A method is a function definition stored as a property. The <code>this</code> keyword refers to the current object.
-                </p>
-                <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '6px' }}>
-                  <SyntaxHighlighter code={`let user = {
-  firstName: "Jane",
-  lastName: "Doe",
-  fullName: function() {
-    return this.firstName + " " + this.lastName;
-  }
-};
-
-console.log(user.fullName()); // Jane Doe`} />
-                </div>
-              </div>
-
-              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <h4 style={{ color: '#ca8a04', marginBottom: '0.5rem', fontSize: '1rem' }}>4. Static Utility Methods</h4>
-                <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6, marginBottom: '0.8rem' }}>
-                  Built-in helper methods in the global <code>Object</code> class return structural lists:
-                </p>
-                <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '6px' }}>
-                  <SyntaxHighlighter code={`let car = { brand: "Ford", year: 2022 };
-
-console.log(Object.keys(car));
-// ["brand", "year"]
-
-console.log(Object.values(car));
-// ["Ford", 2022]
-
-console.log(Object.entries(car));
-// [["brand", "Ford"], ["year", 2022]]`} />
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
-              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <h4 style={{ color: '#ca8a04', marginBottom: '0.5rem', fontSize: '1rem' }}>5. Updating &amp; Deleting</h4>
-                <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6, marginBottom: '0.8rem' }}>
-                  Assign to a key to add/update it. Use the <code>delete</code> keyword to remove a key-value property entirely.
-                </p>
-                <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '6px' }}>
-                  <SyntaxHighlighter code={`let item = { name: "Pen", price: 2 };
-item.price = 3;      // Updates price
-item.color = "blue"; // Adds new key
-
-delete item.color;   // Removes color property`} />
-                </div>
-              </div>
-
-              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <h4 style={{ color: '#ca8a04', marginBottom: '0.5rem', fontSize: '1rem' }}>6. Looping through Object (for...in)</h4>
-                <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6, marginBottom: '0.8rem' }}>
-                  A <code>for...in</code> loop iterates through all the keys of an object sequentially, letting you read dynamic property mappings.
-                </p>
-                <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '6px' }}>
-                  <SyntaxHighlighter code={`let score = { math: 90, physics: 85 };
-
-for (let subject in score) {
-  console.log(subject + ": " + score[subject]);
-}`} />
-                </div>
-              </div>
-            </div>
-            {/* Interactive Object Inspector */}
-            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.2rem', marginTop: '1.5rem' }}>
-              <h4 style={{ color: '#1e293b', marginBottom: '1rem' }}>👤 Live Object Inspector</h4>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
-                <div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <input type="text" placeholder="Key (e.g. color)" value={newObjKey} onChange={e => setNewObjKey(e.target.value)} style={{ padding: '0.4rem', border: '1px solid #cbd5e1', borderRadius: '6px' }} />
-                    <input type="text" placeholder="Value (e.g. Red)" value={newObjVal} onChange={e => setNewObjVal(e.target.value)} style={{ padding: '0.4rem', border: '1px solid #cbd5e1', borderRadius: '6px' }} />
-                    <button onClick={setObjProp} style={{ background: '#475569', color: '#fff', border: 'none', padding: '0.5rem', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}>Set Property</button>
-                  </div>
-                </div>
-                <div>
-                  <h5 style={{ margin: '0 0 0.5rem 0', color: '#1e293b' }}>Object State:</h5>
-                  <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '6px', color: '#7ee787', fontFamily: 'monospace', fontSize: '0.9rem' }}>
-                    {"{"}
-                    {Object.keys(testObj).map(key => (
-                      <div key={key} style={{ paddingLeft: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span>{key}: "{testObj[key]}"</span>
-                        <button onClick={() => deleteObjProp(key)} style={{ background: 'none', border: 'none', color: '#ff7b72', cursor: 'pointer', fontSize: '0.8rem' }}>delete</button>
-                      </div>
-                    ))}
-                    {"}"}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
-            <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day7', 'sets')}>← Back</button>
+            <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day6', 'objects')}>← Back to Objects (Day 6)</button>
             <button style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('maps')}>Next: Maps →</button>
           </div>
         </Section>
@@ -555,6 +415,17 @@ for (let subject in score) {
       {activeTab === 'maps' && (
         <Section key="maps" eyebrow="Day 7 • Maps" title="JavaScript Map Object">
           <div className="panel">
+            {/* Easy & Simple Definition Banner */}
+            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderLeft: '4px solid #1e40af', padding: '0.9rem 1.2rem', borderRadius: '8px', marginBottom: '1.2rem' }}>
+              <strong style={{ color: '#1e40af', display: 'block', marginBottom: '0.2rem', fontSize: '0.95rem' }}>💡 Easy &amp; Simple Definition:</strong>
+              <p style={{ color: '#1e3a8a', margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
+                A <strong>Map</strong> is an advanced dictionary of key-value pairs where keys can be of <strong>ANY data type</strong> (numbers, objects, functions), and insertion order is strictly preserved.
+              </p>
+              <div style={{ marginTop: '0.4rem', fontSize: '0.85rem', color: '#1e3a8a', fontWeight: 600 }}>
+                <strong>Analogy:</strong> A Luggage Locker System — a unique key token unlocks your exact bag inside the locker.
+              </div>
+            </div>
+
             <p style={{ marginBottom: '1.5rem', color: '#475569', lineHeight: 1.7 }}>
               A <strong>Map</strong> holds key-value pairs where the keys can be of any data type. Maps preserve the insertion order of elements.
             </p>
@@ -607,6 +478,17 @@ for (let subject in score) {
 
             {/* Object vs Set vs Map Comparison */}
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem', marginTop: '2rem', marginBottom: '0.8rem' }}>⚖️ Object vs Set vs Map — Quick Comparison</h3>
+            
+            {/* Easy & Simple Summary Definition Banner */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderLeft: '4px solid #0f172a', padding: '0.9rem 1.2rem', borderRadius: '8px', marginBottom: '1.2rem' }}>
+              <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.3rem', fontSize: '0.95rem' }}>💡 Simple Definitions at a Glance:</strong>
+              <ul style={{ margin: 0, paddingLeft: '1.2rem', color: '#334155', fontSize: '0.9rem', lineHeight: 1.7 }}>
+                <li><strong>📦 Object:</strong> Key-value store for single-entity properties (e.g. <code>name: "Kavya"</code>). Keys are strings/symbols.</li>
+                <li><strong>🗺️ Map:</strong> Key-value dictionary where keys can be <strong>ANY data type</strong> and insertion order is preserved.</li>
+                <li><strong>🧺 Set:</strong> List of <strong>UNIQUE values</strong> where duplicate entries are automatically discarded.</li>
+              </ul>
+            </div>
+
             <p style={{ color: '#475569', fontSize: '0.92rem', marginBottom: '1.5rem', lineHeight: 1.6 }}>
               Choose the right structure for your collection based on your exact needs. Here is a simple explanation and comparison:
             </p>
@@ -662,6 +544,281 @@ for (let subject in score) {
 
           <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
             <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day7', 'objects')}>← Back</button>
+            <button style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('map_vs_map')}>Next: map() vs new Map() →</button>
+          </div>
+        </Section>
+      )}
+
+      {/* ── TAB 4: FRESH TOPIC - MAP() VS NEW MAP() ────────── */}
+      {activeTab === 'map_vs_map' && (
+        <Section key="map_vs_map" eyebrow="Day 7 • Key Concept Comparison" title="Array map() Function vs. Map Data Structure">
+          <div className="panel" style={{ marginBottom: '1.5rem' }}>
+            
+            {/* Easy & Simple Definition Banner */}
+            <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderLeft: '4px solid #ca8a04', padding: '0.9rem 1.2rem', borderRadius: '8px', marginBottom: '1.2rem' }}>
+              <strong style={{ color: '#ca8a04', display: 'block', marginBottom: '0.2rem', fontSize: '0.95rem' }}>💡 Easy &amp; Simple Summary:</strong>
+              <p style={{ color: '#854d0e', margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
+                <strong>Array <code>map()</code></strong> is an <em>array action method</em> that transforms list elements into a new array. <br />
+                <strong><code>new Map()</code></strong> is a <em>data structure container</em> that stores key-value pairs for fast lookup.
+              </p>
+            </div>
+
+            <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+              A very common point of confusion for JavaScript beginners is confusing the built-in <strong>Array <code>map()</code> function</strong> with the <strong>Map Data Structure (<code>new Map()</code>)</strong>. Although both use the word "map", they serve completely different purposes in JavaScript!
+            </p>
+
+            {/* Side by Side Comparison Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.2rem', marginBottom: '1.5rem' }}>
+              {/* 1. Array.prototype.map() */}
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '10px', padding: '1.2rem' }}>
+                <div style={{ fontWeight: 800, color: '#1e40af', fontSize: '1.05rem', marginBottom: '0.4rem', fontFamily: 'monospace' }}>
+                  1. Array.prototype.map()
+                </div>
+                <span style={{ display: 'inline-block', background: '#dbeafe', color: '#1e40af', fontSize: '0.75rem', fontWeight: 700, padding: '2px 8px', borderRadius: '4px', marginBottom: '0.75rem' }}>
+                  Array Transformation Function
+                </span>
+                <p style={{ fontSize: '0.86rem', color: '#334155', lineHeight: 1.6, marginBottom: '0.8rem' }}>
+                  An <strong>Array Method</strong> that loops through an existing array, applies a function to transform each element, and returns a <strong>brand new transformed array</strong> of the exact same length.
+                </p>
+
+                <div style={{ background: '#fff', border: '1px solid #bfdbfe', padding: '0.6rem 0.8rem', borderRadius: '6px', marginBottom: '0.8rem', fontSize: '0.82rem' }}>
+                  <strong style={{ color: '#1e40af', display: 'block', marginBottom: '0.2rem' }}>💡 Factory Analogy:</strong>
+                  A factory conveyor belt worker taking raw items from a box, processing each item, and outputting a box of transformed goods.
+                </div>
+
+                <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '6px' }}>
+                  <SyntaxHighlighter code={`// Transforms array elements
+var nums = [1, 2, 3];
+var doubled = nums.map(x => x * 2);
+// doubled = [2, 4, 6]`} />
+                </div>
+              </div>
+
+              {/* 2. new Map() Data Structure */}
+              <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '10px', padding: '1.2rem' }}>
+                <div style={{ fontWeight: 800, color: '#ca8a04', fontSize: '1.05rem', marginBottom: '0.4rem', fontFamily: 'monospace' }}>
+                  2. new Map()
+                </div>
+                <span style={{ display: 'inline-block', background: '#fef9c3', color: '#854d0e', fontSize: '0.75rem', fontWeight: 700, padding: '2px 8px', borderRadius: '4px', marginBottom: '0.75rem' }}>
+                  Key-Value Collection Class
+                </span>
+                <p style={{ fontSize: '0.86rem', color: '#334155', lineHeight: 1.6, marginBottom: '0.8rem' }}>
+                  A standalone <strong>Data Structure</strong> object that stores key-value pairs where keys can be of <strong>ANY data type</strong> and items maintain strict insertion order for fast key lookup.
+                </p>
+
+                <div style={{ background: '#fff', border: '1px solid #fde68a', padding: '0.6rem 0.8rem', borderRadius: '6px', marginBottom: '0.8rem', fontSize: '0.82rem' }}>
+                  <strong style={{ color: '#ca8a04', display: 'block', marginBottom: '0.2rem' }}>💡 Locker Room Analogy:</strong>
+                  A luggage deposit room where you present key ticket #101 to instantly retrieve your assigned suitcase.
+                </div>
+
+                <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '6px' }}>
+                  <SyntaxHighlighter code={`// Key-Value Dictionary Store
+var userMap = new Map();
+userMap.set("id1", "Kavya");
+// userMap.get("id1") -> "Kavya"`} />
+                </div>
+              </div>
+            </div>
+
+            {/* Complete Runnable HTML Code Block */}
+            <h4 style={{ color: '#0f172a', marginBottom: '0.5rem', fontSize: '0.98rem' }}>
+              📄 Complete Runnable HTML Code (Array <code>map()</code> vs. <code>new Map()</code>):
+            </h4>
+            <div style={{ background: '#0f172a', borderRadius: '10px', padding: '1.2rem' }}>
+              <SyntaxHighlighter code={`<!DOCTYPE html>
+<html>
+<head>
+  <title>Array map() vs new Map() Demo</title>
+</head>
+<body>
+  <h2>Difference Between Array map() and Map Data Structure</h2>
+
+  <script>
+    // 1. Array map() Function: Transforms Array Elements
+    var pricesInUSD = [10, 20, 30];
+    var pricesInINR = pricesInUSD.map(function(price) {
+      return price * 83; // Converts USD to INR
+    });
+
+    document.write("<h3>1. Array map() Transformation:</h3>");
+    document.write("<p>USD Prices: " + pricesInUSD.join(", ") + "</p>");
+    document.write("<p>INR Prices (Transformed): " + pricesInINR.join(", ") + "</p>");
+
+    // 2. Map Data Structure: Key-Value Dictionary
+    var capitals = new Map();
+    capitals.set("India", "New Delhi");
+    capitals.set("Japan", "Tokyo");
+    capitals.set("France", "Paris");
+
+    document.write("<h3>2. Map Data Structure (new Map()):</h3>");
+    document.write("<p>Capital of India: " + capitals.get("India") + "</p>");
+    document.write("<p>Capital of Japan: " + capitals.get("Japan") + "</p>");
+    document.write("<p>Total Map Items Count (size): " + capitals.size + "</p>");
+  </script>
+</body>
+</html>`} />
+            </div>
+          </div>
+
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
+            <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day7', 'maps')}>← Back to Maps</button>
+            <button style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('set_vs_set')}>Next: new Set() vs .set() Method →</button>
+          </div>
+        </Section>
+      )}
+
+      {/* ── TAB 5: FRESH TOPIC - NEW SET() VS .SET() METHOD ────────── */}
+      {activeTab === 'set_vs_set' && (
+        <Section key="set_vs_set" eyebrow="Day 7 • Key Concept Comparison" title="new Set() Data Structure vs. .set() Method &amp; Setter Functions">
+          <div className="panel" style={{ marginBottom: '1.5rem' }}>
+            
+            {/* Easy & Simple Definition Banner */}
+            <div style={{ background: '#fef9c3', border: '1px solid #fde68a', borderLeft: '4px solid #ca8a04', padding: '0.9rem 1.2rem', borderRadius: '8px', marginBottom: '1.2rem' }}>
+              <strong style={{ color: '#ca8a04', display: 'block', marginBottom: '0.2rem', fontSize: '0.95rem' }}>💡 Easy &amp; Simple Summary:</strong>
+              <p style={{ color: '#854d0e', margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
+                <strong><code>new Set()</code></strong> is a <em>standalone Data Structure class</em> that holds a list of <strong>UNIQUE values</strong>. <br />
+                <strong><code>.set(key, value)</code></strong> is a <em>built-in action function / method</em> used on Map objects to insert or update key-value pairs!
+              </p>
+            </div>
+
+            <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+              Just like with "map", the word <strong>"set"</strong> appears in JavaScript in two completely different contexts: as a standalone <strong>Data Structure (<code>new Set()</code>)</strong> for unique items, and as a <strong>Method / Function (<code>map.set()</code> or Object Setter)</strong> used to assign values.
+            </p>
+
+            {/* 2 Side-by-Side Comparison Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.2rem', marginBottom: '1.5rem' }}>
+              
+              {/* 1. new Set() Data Structure */}
+              <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '10px', padding: '1.2rem' }}>
+                <div style={{ fontWeight: 800, color: '#047857', fontSize: '1.05rem', marginBottom: '0.4rem', fontFamily: 'monospace' }}>
+                  1. new Set()
+                </div>
+                <span style={{ display: 'inline-block', background: '#d1fae5', color: '#047857', fontSize: '0.75rem', fontWeight: 700, padding: '2px 8px', borderRadius: '4px', marginBottom: '0.75rem' }}>
+                  Unique List Collection Class
+                </span>
+                <p style={{ fontSize: '0.86rem', color: '#334155', lineHeight: 1.6, marginBottom: '0.8rem' }}>
+                  A standalone <strong>Data Structure Class</strong> that stores a collection of <strong>unique values</strong>. Duplicate entries are automatically rejected.
+                </p>
+
+                <div style={{ background: '#fff', border: '1px solid #a7f3d0', padding: '0.6rem 0.8rem', borderRadius: '6px', marginBottom: '0.8rem', fontSize: '0.82rem' }}>
+                  <strong style={{ color: '#047857', display: 'block', marginBottom: '0.2rem' }}>💡 Guest List Analogy:</strong>
+                  A VIP party guest list where a guest's name can only be added once. Re-adding the same name is ignored!
+                </div>
+
+                <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '6px' }}>
+                  <SyntaxHighlighter code={`// Data Structure Class
+var tags = new Set();
+tags.add("JS");
+tags.add("JS"); // Duplicate ignored!
+// tags.size -> 1`} />
+                </div>
+              </div>
+
+              {/* 2. map.set() Method */}
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '10px', padding: '1.2rem' }}>
+                <div style={{ fontWeight: 800, color: '#1e40af', fontSize: '1.05rem', marginBottom: '0.4rem', fontFamily: 'monospace' }}>
+                  2. map.set(key, value)
+                </div>
+                <span style={{ display: 'inline-block', background: '#dbeafe', color: '#1e40af', fontSize: '0.75rem', fontWeight: 700, padding: '2px 8px', borderRadius: '4px', marginBottom: '0.75rem' }}>
+                  Map Key-Value Action Function
+                </span>
+                <p style={{ fontSize: '0.86rem', color: '#334155', lineHeight: 1.6, marginBottom: '0.8rem' }}>
+                  A built-in <strong>Method / Function</strong> on a <code>Map</code> object used to store or update an entry mapping a key to a specific value.
+                </p>
+
+                <div style={{ background: '#fff', border: '1px solid #bfdbfe', padding: '0.6rem 0.8rem', borderRadius: '6px', marginBottom: '0.8rem', fontSize: '0.82rem' }}>
+                  <strong style={{ color: '#1e40af', display: 'block', marginBottom: '0.2rem' }}>💡 Locker Stamp Analogy:</strong>
+                  Stamping locker key token #101 onto suitcase "Red Bag" inside a deposit room catalog.
+                </div>
+
+                <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '6px' }}>
+                  <SyntaxHighlighter code={`// Action Method on Map Instance
+var userMap = new Map();
+userMap.set("role", "Admin");
+// Stores pair ("role" => "Admin")`} />
+                </div>
+              </div>
+
+            </div>
+
+            {/* Side-by-Side Comparison Table */}
+            <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>
+              📊 Quick Comparison Table:
+            </h4>
+            <div style={{ overflowX: 'auto', marginBottom: '1.5rem' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem', border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden' }}>
+                <thead>
+                  <tr style={{ background: '#ca8a04', color: '#fff' }}>
+                    <th style={{ padding: '0.75rem 1rem', textAlign: 'left' }}>Feature</th>
+                    <th style={{ padding: '0.75rem 1rem', textAlign: 'left' }}>new Set() (Data Structure)</th>
+                    <th style={{ padding: '0.75rem 1rem', textAlign: 'left' }}>.set(key, val) (Map Function)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style={{ background: '#fff', borderBottom: '1px solid #e2e8f0' }}>
+                    <td style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>What is it?</td>
+                    <td style={{ padding: '0.75rem 1rem' }}>Standalone Collection Class</td>
+                    <td style={{ padding: '0.75rem 1rem' }}>Built-in Action Method on Map</td>
+                  </tr>
+                  <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                    <td style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Primary Goal</td>
+                    <td style={{ padding: '0.75rem 1rem' }}>Store list of unique values</td>
+                    <td style={{ padding: '0.75rem 1rem' }}>Insert key-value pair in a Map</td>
+                  </tr>
+                  <tr style={{ background: '#fff', borderBottom: '1px solid #e2e8f0' }}>
+                    <td style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>How to invoke?</td>
+                    <td style={{ padding: '0.75rem 1rem' }}><code>new Set([1, 2])</code></td>
+                    <td style={{ padding: '0.75rem 1rem' }}><code>myMap.set("k", "v")</code></td>
+                  </tr>
+                  <tr style={{ background: '#f8fafc' }}>
+                    <td style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Stores Key-Value?</td>
+                    <td style={{ padding: '0.75rem 1rem' }}>No (Values only)</td>
+                    <td style={{ padding: '0.75rem 1rem' }}>Yes (Key &amp; Value)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Complete Runnable HTML Code Block */}
+            <h4 style={{ color: '#0f172a', marginBottom: '0.5rem', fontSize: '0.98rem' }}>
+              📄 Complete Runnable HTML Code (new Set() vs. map.set()):
+            </h4>
+            <div style={{ background: '#0f172a', borderRadius: '10px', padding: '1.2rem' }}>
+              <SyntaxHighlighter code={`<!DOCTYPE html>
+<html>
+<head>
+  <title>new Set() vs .set() Method Demo</title>
+</head>
+<body>
+  <h2>Difference Between new Set() and .set() Method</h2>
+
+  <script>
+    // 1. new Set() DATA STRUCTURE: Stores Unique Values
+    var uniqueSkills = new Set();
+    uniqueSkills.add("HTML");
+    uniqueSkills.add("CSS");
+    uniqueSkills.add("HTML"); // Duplicate ignored!
+
+    document.write("<h3>1. new Set() Data Structure Output:</h3>");
+    document.write("<p>Total Unique Skills Count (size): " + uniqueSkills.size + "</p>");
+    document.write("<p>Has CSS? " + uniqueSkills.has("CSS") + "</p>");
+
+    // 2. .set() MAP METHOD: Stores Key-Value Pair inside Map
+    var studentScores = new Map();
+    studentScores.set("Kavya", 95);  // .set() function call
+    studentScores.set("Ananya", 88); // .set() function call
+
+    document.write("<h3>2. Map .set(key, value) Method Output:</h3>");
+    document.write("<p>Kavya's Score: " + studentScores.get("Kavya") + "</p>");
+    document.write("<p>Ananya's Score: " + studentScores.get("Ananya") + "</p>");
+  </script>
+</body>
+</html>`} />
+            </div>
+          </div>
+
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
+            <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day7', 'map_vs_map')}>← Back to map() vs new Map()</button>
             <button style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('contact_manager')}>Next: Contact Manager Project →</button>
           </div>
         </Section>
@@ -675,9 +832,9 @@ for (let subject in score) {
               This project integrates all three concepts: a <strong>Map</strong> for phone-to-name lookup, a <strong>Set</strong> for listing unique group names, and an <strong>Object</strong> for display configurations.
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', alignItems: 'start', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'flex-start' }}>
               {/* App View */}
-              <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', border: '2px solid #ca8a04', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
+              <div style={{ flex: '1 1 360px', maxWidth: '460px', background: '#fff', borderRadius: '12px', padding: '1.5rem', border: '2px solid #ca8a04', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', boxSizing: 'border-box' }}>
                 <h4 style={{ color: '#ca8a04', marginBottom: '1.2rem', fontSize: '1.2rem', borderBottom: '2px solid #ca8a04', paddingBottom: '0.5rem' }}>📞 Store Contact Book</h4>
                 
                 {/* Inputs */}
@@ -689,7 +846,7 @@ for (let subject in score) {
                 </div>
 
                 {/* Groups */}
-                <h5 style={{ margin: '1rem 0 0.5rem 0', color: '#1e293b' }}>Active Groups:</h5>
+                <h5 style={{ margin: '1rem 0 0.5rem 0', color: '#1e293b' }}>Active Groups (Unique Set):</h5>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '1rem' }}>
                   {Array.from(groups).map(g => (
                     <span key={g} style={{ background: '#fef9c3', border: '1px solid #fde68a', color: '#854d0e', padding: '3px 8px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 600 }}>{g}</span>
@@ -713,27 +870,96 @@ for (let subject in score) {
               </div>
 
               {/* Code View */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <h4 style={{ color: '#1e293b', margin: 0 }}>Roster Source Code:</h4>
-                <div style={{ background: '#0f172a', padding: '1rem', borderRadius: '10px', overflowY: 'auto', maxHeight: '380px' }}>
-                  <SyntaxHighlighter code={`// 1. Initial Storage Structs
-let contacts = new Map();
-let groups = new Set();
+              <div style={{ flex: '2 1 450px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%' }}>
+                <h4 style={{ color: '#1e293b', margin: 0 }}>Full Contact Book HTML &amp; JS Source Code:</h4>
+                <div style={{ background: '#0f172a', padding: '1rem', borderRadius: '10px', overflowX: 'auto', maxHeight: '500px', width: '100%', boxSizing: 'border-box' }}>
+                  <SyntaxHighlighter code={`<!DOCTYPE html>
+<html>
+<head>
+  <title>Contact Book Manager</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f8fafc; }
+    .card { background: #fff; padding: 20px; border-radius: 8px; max-width: 450px; border: 2px solid #ca8a04; }
+    input, button { padding: 8px; margin: 4px 0; width: 100%; box-sizing: border-box; }
+    button { background: #ca8a04; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+    .tag { background: #fef9c3; border: 1px solid #fde68a; color: #854d0e; padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; margin-right: 4px; display: inline-block; }
+    ul { list-style: none; padding: 0; }
+    li { background: #f1f5f9; padding: 8px; margin-bottom: 4px; border-radius: 4px; display: flex; justify-content: space-between; }
+    .btn-del { width: auto; background: #ef4444; font-size: 0.75rem; padding: 2px 8px; }
+  </style>
+</head>
+<body>
 
-const settings = {
-  icon: "👤"
-};
+  <div class="card">
+    <h2>📞 Contact Book Manager</h2>
+    <input type="text" id="name" placeholder="Contact Name">
+    <input type="text" id="phone" placeholder="Phone Number">
+    <input type="text" id="group" placeholder="Group (e.g. Work)">
+    <button onclick="addContact()">Save Contact</button>
 
-// 2. Add contact
-function addContact(phone, name, group) {
-  contacts.set(phone, name);
-  groups.add(group);
-}
+    <h3>Active Groups (Unique Set):</h3>
+    <div id="groupsDisplay"></div>
 
-// 3. Delete contact
-function deleteContact(phone) {
-  contacts.delete(phone);
-}`} />
+    <h3>All Contacts (<span id="count">0</span>):</h3>
+    <div id="contactsDisplay"></div>
+  </div>
+
+  <script>
+    // 1. Data Structures Initialization
+    var contacts = new Map([["9876543210", "Ananya"], ["9123456789", "Kavya"]]);
+    var groups = new Set(["Work", "Friends"]);
+
+    // 2. Render Function using DOM updates
+    function renderBook() {
+      // Render Groups (Set)
+      var groupHtml = "";
+      groups.forEach(function(g) {
+        groupHtml += "<span class='tag'>" + g + "</span>";
+      });
+      document.getElementById("groupsDisplay").innerHTML = groupHtml;
+
+      // Render Contacts (Map)
+      var contactHtml = "<ul>";
+      contacts.forEach(function(name, phone) {
+        contactHtml += "<li><span>👤 <strong>" + name + "</strong> (" + phone + ")</span> " +
+                       "<button class='btn-del' onclick='deleteContact(\"" + phone + "\")'>Delete</button></li>";
+      });
+      contactHtml += "</ul>";
+      document.getElementById("contactsDisplay").innerHTML = contactHtml;
+      document.getElementById("count").innerText = contacts.size;
+    }
+
+    // 3. Add Contact (Map & Set Operations)
+    function addContact() {
+      var n = document.getElementById("name").value.trim();
+      var p = document.getElementById("phone").value.trim();
+      var g = document.getElementById("group").value.trim();
+
+      if (!n || !p || !g) {
+        alert("Please enter Name, Phone, and Group!");
+        return;
+      }
+
+      contacts.set(p, n); // Map: key = phone, val = name
+      groups.add(g);      // Set: automatically ignores duplicate groups!
+
+      document.getElementById("name").value = "";
+      document.getElementById("phone").value = "";
+      document.getElementById("group").value = "";
+      renderBook();
+    }
+
+    // 4. Delete Contact
+    function deleteContact(phone) {
+      contacts.delete(phone);
+      renderBook();
+    }
+
+    // Initial render
+    renderBook();
+  </script>
+</body>
+</html>`} />
                 </div>
               </div>
             </div>
@@ -902,6 +1128,64 @@ function deleteContact(phone) {
                   Score: {score}/{quizQuestions.length} — {score === 5 ? '🏆 Perfect!' : score >= 4 ? '🎉 Great job!' : score >= 3 ? '👍 Good effort!' : '📚 Keep practising!'}
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Topic-Wise Interview Questions */}
+          <div className="panel" style={{ marginBottom: '1.5rem', background: '#f8fafc', border: '1px solid #cbd5e1' }}>
+            <h3 style={{ marginBottom: '1.2rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              💬 Day 7 Topic-Wise Technical Interview Questions & Answers
+            </h3>
+            <div style={{ display: 'grid', gap: '1rem' }}>
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Map vs Plain JavaScript Object
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What are the key advantages of using ES6 <code>Map</code> over a standard Object literal for key-value storage?</strong><br />
+                  <strong>Answer:</strong> <code>Map</code> allows keys of ANY data type (including objects, functions, and numbers), preserves insertion order during iteration, has an O(1) <code>.size</code> property, and provides built-in high-performance <code>set()</code>/<code>get()</code>/<code>has()</code>/<code>delete()</code> API methods without inheriting prototype pollution keys.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Set Unique Storage & Reference Uniqueness
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: Why does <code>new Set([{}, {}]).size</code> return <code>2</code> while <code>new Set([1, 1]).size</code> returns <code>1</code>?</strong><br />
+                  <strong>Answer:</strong> <code>Set</code> checks uniqueness using SameValueZero algorithm. Primitive numbers <code>1 === 1</code> are equal, so duplicate numbers are ignored. However, JavaScript object literals <code>{}</code> instantiate distinct heap memory references, so two different object references are considered unique elements.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: WeakMap & WeakSet Garbage Collection
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What is a <code>WeakMap</code> and how does garbage collection differ between <code>Map</code> and <code>WeakMap</code>?</strong><br />
+                  <strong>Answer:</strong> A <code>WeakMap</code> only accepts objects as keys and holds weak references to them. If a key object has no other strong references in the program, it can be garbage collected automatically, preventing memory leaks (ideal for private data storage or DOM metadata caching).
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Shallow Copy vs Deep Copy
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What is the difference between a Shallow Copy and a Deep Copy of an object?</strong><br />
+                  <strong>Answer:</strong> A Shallow Copy (e.g. <code>Object.assign()</code> or Spread operator <code>&#123;...obj&#125;</code>) duplicates top-level properties but copies nested object references by pointer. A Deep Copy (e.g. <code>structuredClone(obj)</code>) recursively duplicates all nested sub-objects into entirely new heap memory locations.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Property Descriptors & Immutability
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: How do <code>Object.freeze()</code> and <code>Object.seal()</code> protect objects against mutation?</strong><br />
+                  <strong>Answer:</strong> <code>Object.freeze()</code> makes an object completely immutable: properties cannot be added, deleted, or modified. <code>Object.seal()</code> prevents adding or deleting properties, but allows modifying existing property values.
+                </p>
+              </div>
             </div>
           </div>
 

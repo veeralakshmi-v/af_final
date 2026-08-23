@@ -996,7 +996,7 @@ print("Count of 'l' in text   :", text.count("l"))`}
             <CodeBlock title="immutability_and_escapes.py">
               {c('# Escape sequences')}<br/>
               {fn('print')}({st('"Line 1\\nLine 2"')}) {ok('# Prints across 2 lines')}<br/>
-              {fn('print')}({st('"Name:\\tKowsalya"')}) {ok('# Tab space between Name: and Kowsalya')}<br/><br/>
+              {fn('print')}({st('"Name:\\tKavya"')}) {ok('# Tab space between Name: and Kavya')}<br/><br/>
               {c('# Raw strings (useful for file paths & regex)')}<br/>
               path = r{st('"C:\\new\\folder\\file.txt"')}<br/>
               {fn('print')}(path) {ok('# "C:\\new\\folder\\file.txt" (no newline on \\n)')}

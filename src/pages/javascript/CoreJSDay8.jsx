@@ -63,6 +63,7 @@ export default function CoreJSDay8({ activeTab, onNavigate, openAITutor: _openAI
   // Interactive selectors states
   const [selectorDemoText, setSelectorDemoText] = useState("Change me using selectors!");
   const [selectorDemoStyle, setSelectorDemoStyle] = useState({ color: '#1e293b', fontSize: '1.2rem', fontWeight: 'bold' });
+  const [widgetCodeTab, setWidgetCodeTab] = useState('js');
 
   // Class manipulation states
   const [classStateActive, setClassStateActive] = useState(false);
@@ -200,37 +201,7 @@ console.log("Appended button to preview.");
 // Set attribute
 btn.setAttribute("id", "myJsBtn");
 console.log("Button ID set to:", btn.getAttribute("id"));`);
-    } else if (name === 'traversal') {
-      setEditorCode(`// DOM Traversal Demo
-var list = document.createElement("ul");
-list.id = "myList";
-for (var i = 1; i <= 3; i++) {
-  var item = document.createElement("li");
-  item.textContent = "Item " + i;
-  list.appendChild(item);
-}
-document.body.appendChild(list);
 
-// Traverse
-var parent = list.parentNode;
-var children = list.children;
-console.log("Parent Node Tag:", parent.nodeName);
-console.log("List children count:", children.length);
-console.log("First child text:", list.firstChild.textContent);`);
-    } else if (name === 'classes') {
-      setEditorCode(`// Class manipulation demo
-var box = document.createElement("div");
-box.style.width = "100px";
-box.style.height = "100px";
-box.style.border = "1px solid #000";
-document.body.appendChild(box);
-
-// add, remove, toggle classList
-box.classList.add("my-style-class");
-console.log("Has class? ", box.classList.contains("my-style-class"));
-
-box.classList.toggle("another-class");
-console.log("Class list:", box.className);`);
     } else if (name === 'builder') {
       setEditorCode(`// Live Interactive DOM Tree Builder Script
 function createCard(title, text) {
@@ -347,6 +318,8 @@ createCard("Card Title", "This card was built dynamically by constructing nodes!
 
               </div>
             </div>
+
+
           </div>
           <div style={{ marginTop: '2rem', textAlign: 'right' }}>
             <button style={{ background: '#ca8a04', color: '#fff', border: 'none', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('selectors')}>
@@ -415,9 +388,104 @@ createCard("Card Title", "This card was built dynamically by constructing nodes!
                 </div>
               </div>
               <div>
-                <h4 style={{ color: '#1e293b', marginBottom: '0.8rem', marginTop: 0 }}>💻 Widget JavaScript:</h4>
-                <div style={{ background: '#0f172a', padding: '0.8rem 1rem', borderRadius: '8px', overflowX: 'auto' }}>
-                  <SyntaxHighlighter code={`// 1. Change textContent
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  <h4 style={{ color: '#1e293b', margin: 0 }}>💻 Widget Source Code:</h4>
+                  <div style={{ display: 'flex', gap: '0.3rem', background: '#dbeafe', padding: '3px', borderRadius: '6px' }}>
+                    {[
+                      { id: 'html', label: 'HTML' },
+                      { id: 'css', label: 'CSS' },
+                      { id: 'js', label: 'JS' },
+                      { id: 'all', label: 'All Code' },
+                    ].map(tab => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setWidgetCodeTab(tab.id)}
+                        style={{
+                          padding: '0.25rem 0.65rem',
+                          borderRadius: '4px',
+                          border: 'none',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          background: widgetCodeTab === tab.id ? '#1e40af' : 'transparent',
+                          color: widgetCodeTab === tab.id ? '#fff' : '#1e40af',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ background: '#0f172a', padding: '0.8rem 1rem', borderRadius: '8px', overflowX: 'auto', maxHeight: '340px' }}>
+                  <SyntaxHighlighter code={
+                    widgetCodeTab === 'html' ? `<!-- HTML Structure -->
+<div class="content-box">
+  <span id="demo-span">Change me using selectors!</span>
+</div>
+
+<div class="button-group">
+  <button onclick="changeText()" class="btn-blue">Change textContent</button>
+  <button onclick="setRedStyle()" class="btn-red">Set Red Style</button>
+  <button onclick="resetStyle()" class="btn-gray">Reset</button>
+</div>` :
+                    widgetCodeTab === 'css' ? `/* CSS Styles */
+.content-box {
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #bfdbfe;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+}
+
+#demo-span {
+  color: #1e293b;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.btn-blue {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-red {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-gray {
+  background: #64748b;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}` :
+                    widgetCodeTab === 'js' ? `// JavaScript Logic
+
+// 1. Change textContent
 function changeText() {
   var el = document.querySelector("#demo-span");
   el.textContent = "Bold content updated!";
@@ -439,7 +507,69 @@ function resetStyle() {
   el.textContent = "Reset Default Text";
   el.style.color = "#1e293b";
   el.style.textDecoration = "none";
-}`} />
+}` :
+                    `<!-- HTML Structure -->
+<div class="content-box">
+  <span id="demo-span">Change me using selectors!</span>
+</div>
+
+<div class="button-group">
+  <button onclick="changeText()" class="btn-blue">Change textContent</button>
+  <button onclick="setRedStyle()" class="btn-red">Set Red Style</button>
+  <button onclick="resetStyle()" class="btn-gray">Reset</button>
+</div>
+
+/* CSS Styles */
+.content-box {
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #bfdbfe;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+}
+
+#demo-span {
+  color: #1e293b;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.btn-blue { background: #3b82f6; color: white; }
+.btn-red  { background: #ef4444; color: white; }
+.btn-gray { background: #64748b; color: white; }
+
+// JavaScript Logic
+function changeText() {
+  var el = document.querySelector("#demo-span");
+  el.textContent = "Bold content updated!";
+  el.style.color = "#ca8a04";
+  el.style.fontSize = "1.3rem";
+}
+
+function setRedStyle() {
+  var el = document.querySelector("#demo-span");
+  el.textContent = "Red Alert Style!";
+  el.style.color = "#ef4444";
+  el.style.textDecoration = "underline";
+}
+
+function resetStyle() {
+  var el = document.querySelector("#demo-span");
+  el.textContent = "Reset Default Text";
+  el.style.color = "#1e293b";
+  el.style.textDecoration = "none";
+}`
+                  } />
                 </div>
               </div>
             </div>
@@ -491,224 +621,6 @@ link.removeAttribute("title");`} />
 
           <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
             <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day8', 'selectors')}>← Back</button>
-            <button style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('traversal')}>Next: Traversing DOM →</button>
-          </div>
-        </Section>
-      )}
-
-      {/* ── TAB 4: TRAVERSAL ──────────────── */}
-      {activeTab === 'traversal' && (
-        <Section key="traversal" eyebrow="Day 8 • Traversal" title="Traversing the DOM Tree">
-          <div className="panel" style={{ marginBottom: '1.5rem' }}>
-            <p style={{ marginBottom: '1.2rem', color: '#475569', lineHeight: 1.7 }}>
-              DOM Traversal is the act of moving from one element to another related element (parent, child, or sibling) using properties built into JavaScript.
-            </p>
-
-            {/* Insight Box: Node vs Element */}
-            <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '10px', padding: '1.2rem', marginBottom: '2rem' }}>
-              <h4 style={{ color: '#92400e', marginTop: 0, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <AlertTriangle size={18} /> Crucial Concept: Node vs. Element Traversal
-              </h4>
-              <p style={{ fontSize: '0.9rem', color: '#475569', lineHeight: 1.6, margin: '0 0 1rem 0' }}>
-                Standard **Node Traversal** properties include text nodes (whitespace, line breaks) and comments. **Element Traversal** properties bypass text/comment nodes and interact strictly with HTML tags.
-              </p>
-              
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-                <thead>
-                  <tr style={{ borderBottom: '2px solid #ca8a04', textAlign: 'left' }}>
-                    <th style={{ padding: '0.4rem', color: '#854d0e' }}>Relation</th>
-                    <th style={{ padding: '0.4rem', color: '#854d0e' }}>Node Traversal (Any Node)</th>
-                    <th style={{ padding: '0.4rem', color: '#854d0e' }}>Element Traversal (Strictly HTML Tags)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr style={{ borderBottom: '1px solid #fef08a' }}>
-                    <td style={{ padding: '0.4rem', fontWeight: 600 }}>Parent</td>
-                    <td style={{ padding: '0.4rem', fontFamily: 'monospace' }}>parentNode</td>
-                    <td style={{ padding: '0.4rem', fontFamily: 'monospace' }}>parentElement</td>
-                  </tr>
-                  <tr style={{ borderBottom: '1px solid #fef08a' }}>
-                    <td style={{ padding: '0.4rem', fontWeight: 600 }}>Children List</td>
-                    <td style={{ padding: '0.4rem', fontFamily: 'monospace' }}>childNodes</td>
-                    <td style={{ padding: '0.4rem', fontFamily: 'monospace' }}>children</td>
-                  </tr>
-                  <tr style={{ borderBottom: '1px solid #fef08a' }}>
-                    <td style={{ padding: '0.4rem', fontWeight: 600 }}>First Child</td>
-                    <td style={{ padding: '0.4rem', fontFamily: 'monospace' }}>firstChild</td>
-                    <td style={{ padding: '0.4rem', fontFamily: 'monospace' }}>firstElementChild</td>
-                  </tr>
-                  <tr style={{ borderBottom: '1px solid #fef08a' }}>
-                    <td style={{ padding: '0.4rem', fontWeight: 600 }}>Last Child</td>
-                    <td style={{ padding: '0.4rem', fontFamily: 'monospace' }}>lastChild</td>
-                    <td style={{ padding: '0.4rem', fontFamily: 'monospace' }}>lastElementChild</td>
-                  </tr>
-                  <tr style={{ borderBottom: '1px solid #fef08a' }}>
-                    <td style={{ padding: '0.4rem', fontWeight: 600 }}>Next Sibling</td>
-                    <td style={{ padding: '0.4rem', fontFamily: 'monospace' }}>nextSibling</td>
-                    <td style={{ padding: '0.4rem', fontFamily: 'monospace' }}>nextElementSibling</td>
-                  </tr>
-                  <tr style={{ borderBottom: '1px solid #fef08a' }}>
-                    <td style={{ padding: '0.4rem', fontWeight: 600 }}>Previous Sibling</td>
-                    <td style={{ padding: '0.4rem', fontFamily: 'monospace' }}>previousSibling</td>
-                    <td style={{ padding: '0.4rem', fontFamily: 'monospace' }}>previousElementSibling</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            {/* Detail Blocks */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-              <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', padding: '1.2rem', borderRadius: '8px' }}>
-                <h4 style={{ color: '#1e293b', marginTop: 0, marginBottom: '0.5rem' }}>1. Parent Traversal</h4>
-                <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6, marginBottom: '0.8rem' }}>
-                  To travel upward to the containing node, use <code>parentElement</code>:
-                </p>
-                <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '6px' }}>
-                  <SyntaxHighlighter code={`let btn = document.querySelector("#myBtn");\nlet card = btn.parentElement; // moves 1 level up\ncard.style.borderColor = "red";`} />
-                </div>
-              </div>
-
-              <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', padding: '1.2rem', borderRadius: '8px' }}>
-                <h4 style={{ color: '#1e293b', marginTop: 0, marginBottom: '0.5rem' }}>2. Child Traversal</h4>
-                <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6, marginBottom: '0.8rem' }}>
-                  Access array-like lists of tags with <code>children</code> or individual extreme children:
-                </p>
-                <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '6px' }}>
-                  <SyntaxHighlighter code={`let list = document.querySelector("#myList");\nlet first = list.firstElementChild; // first LI tag\nlet last = list.lastElementChild; // last LI tag`} />
-                </div>
-              </div>
-            </div>
-
-            {/* Interactive Traversal Visualizer */}
-            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '12px', padding: '1.2rem' }}>
-              <h4 style={{ color: '#1e40af', marginTop: 0, marginBottom: '0.8rem' }}>🌳 Interactive Family Traversal Inspector</h4>
-              <p style={{ fontSize: '0.85rem', color: '#475569', marginBottom: '1.2rem' }}>
-                Click on any child list item below to select it. Watch the visualizer highlight the **Parent Element** (blue outline), the **Selected Element** (gold border), and its **Sibling Elements** (red borders) using pure DOM traversing rules!
-              </p>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', alignItems: 'start' }}>
-                <div>
-                  <h5 style={{ margin: '0 0 0.8rem 0', color: '#1e40af' }}>Select Node:</h5>
-                  <div style={{
-                    padding: '1rem', background: '#fff', borderRadius: '8px', border: selectedTraversedNode ? '2px solid #3b82f6' : '1px solid #cbd5e1',
-                    boxShadow: selectedTraversedNode ? '0 4px 12px rgba(59,130,246,0.1)' : 'none'
-                  }}>
-                    <strong style={{ display: 'block', marginBottom: '0.8rem', color: '#1e40af' }}>#list-parent (Container)</strong>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      {[
-                        { key: 'a', name: 'Child Item A' },
-                        { key: 'b', name: 'Child Item B' },
-                        { key: 'c', name: 'Child Item C' },
-                      ].map(item => {
-                        let outline = '1px solid #cbd5e1'; let bg = '#fff';
-                        if (selectedTraversedNode === item.key) { outline = '2px solid #ca8a04'; bg = '#fffbeb'; }
-                        else if ((selectedTraversedNode === 'b' && (item.key === 'a' || item.key === 'c')) || (selectedTraversedNode === 'a' && item.key === 'b') || (selectedTraversedNode === 'c' && item.key === 'b')) {
-                          outline = '2px dashed #ef4444'; bg = '#fef2f2';
-                        }
-                        return (
-                          <button key={item.key} onClick={() => setSelectedTraversedNode(item.key)}
-                            style={{ padding: '0.5rem', borderRadius: '6px', border: outline, background: bg, textAlign: 'left', cursor: 'pointer', fontWeight: selectedTraversedNode === item.key ? 700 : 500 }}>
-                            {item.name} {selectedTraversedNode === item.key && '🎯 (Selected)'}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h5 style={{ margin: '0 0 0.8rem 0', color: '#1e40af' }}>Traversed Node Metadata:</h5>
-                  <div style={{ background: '#fff', border: '1px solid #cbd5e1', padding: '1rem', borderRadius: '8px', fontSize: '0.88rem' }}>
-                    <div style={{ marginBottom: '0.5rem' }}>
-                      <span style={{ color: '#64748b', fontWeight: 600 }}>Selected Element:</span>{' '}
-                      <code style={{ background: '#fffbeb', color: '#b45309', padding: '2px 6px', borderRadius: '4px', border: '1px solid #fde68a' }}>
-                        Child Item {selectedTraversedNode.toUpperCase()}
-                      </code>
-                    </div>
-                    <div style={{ marginBottom: '0.5rem' }}>
-                      <span style={{ color: '#64748b', fontWeight: 600 }}>.parentElement:</span>{' '}
-                      <code style={{ background: '#eff6ff', color: '#1d4ed8', padding: '2px 6px', borderRadius: '4px', border: '1px solid #bfdbfe' }}>
-                        #list-parent Container
-                      </code>
-                    </div>
-                    <div style={{ marginBottom: '0.5rem' }}>
-                      <span style={{ color: '#64748b', fontWeight: 600 }}>.previousElementSibling:</span>{' '}
-                      {selectedTraversedNode === 'a' ? (
-                        <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>null (none)</span>
-                      ) : (
-                        <code style={{ background: '#fef2f2', color: '#b91c1c', padding: '2px 6px', borderRadius: '4px', border: '1px solid #fecaca' }}>
-                          Child Item {selectedTraversedNode === 'b' ? 'A' : 'B'}
-                        </code>
-                      )}
-                    </div>
-                    <div>
-                      <span style={{ color: '#64748b', fontWeight: 600 }}>.nextElementSibling:</span>{' '}
-                      {selectedTraversedNode === 'c' ? (
-                        <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>null (none)</span>
-                      ) : (
-                        <code style={{ background: '#fef2f2', color: '#b91c1c', padding: '2px 6px', borderRadius: '4px', border: '1px solid #fecaca' }}>
-                          Child Item {selectedTraversedNode === 'a' ? 'B' : 'C'}
-                        </code>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
-            <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day8', 'manipulation')}>← Back</button>
-            <button style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('classes')}>Next: Class List Manipulation →</button>
-          </div>
-        </Section>
-      )}
-
-      {/* ── TAB 5: CLASSES ────────────────── */}
-      {activeTab === 'classes' && (
-        <Section key="classes" eyebrow="Day 8 • Classes" title="ClassList Manipulation">
-          <div className="panel" style={{ marginBottom: '1.5rem' }}>
-            <p style={{ color: '#475569', marginBottom: '1.5rem', lineHeight: 1.7 }}>
-              Manipulating CSS classes on elements is the best way to dynamic-style a page. Access classes using the <code>classList</code> object.
-            </p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-              {[
-                { name: 'classList.add("className")', desc: 'Adds a class to the element.' },
-                { name: 'classList.remove("className")', desc: 'Removes a class from the element.' },
-                { name: 'classList.toggle("className")', desc: 'Adds class if missing, removes it if present.' },
-                { name: 'classList.contains("className")', desc: 'Checks if element has a class. Returns boolean.' },
-              ].map(m => (
-                <div key={m.name} style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px', padding: '1rem' }}>
-                  <div style={{ fontWeight: 700, color: '#1e40af', marginBottom: '0.25rem', fontFamily: 'monospace', fontSize: '0.85rem' }}>{m.name}</div>
-                  <div style={{ fontSize: '0.82rem', color: '#475569' }}>{m.desc}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Interactive Toggle Demo */}
-            <div style={{ background: '#f3f4f6', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '1.2rem', display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-              <div style={{
-                width: '120px', height: '120px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.9rem',
-                background: classStateActive ? '#3b82f6' : '#fff', color: classStateActive ? '#fff' : '#475569', border: classStateActive ? 'none' : '2px dashed #94a3b8',
-                boxShadow: classStateActive ? '0 10px 15px rgba(59,130,246,0.3)' : 'none', transition: 'all 0.3s ease'
-              }}>
-                {classStateActive ? "ACTIVE CLASS" : "NO CLASS"}
-              </div>
-              <div>
-                <h4 style={{ margin: '0 0 0.5rem 0', color: '#1e293b' }}>Try Toggling ClassList:</h4>
-                <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1rem' }}>See the styles transform dynamically by clicking below.</p>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <button onClick={() => setClassStateActive(true)} style={{ background: '#10b981', color: 'white', border: 'none', padding: '0.45rem 1rem', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}>classList.add()</button>
-                  <button onClick={() => setClassStateActive(false)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.45rem 1rem', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}>classList.remove()</button>
-                  <button onClick={() => setClassStateActive(prev => !prev)} style={{ background: '#ca8a04', color: 'white', border: 'none', padding: '0.45rem 1rem', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}>classList.toggle()</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
-            <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day8', 'traversal')}>← Back</button>
             <button style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('dom_programs')}>Next: DOM Programs →</button>
           </div>
         </Section>
@@ -1028,7 +940,7 @@ function showChildren() {
           </div>
 
           <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
-            <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day8', 'classes')}>← Back</button>
+            <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day8', 'manipulation')}>← Back</button>
             <button style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('dom_builder')}>Next: DOM Builder Project →</button>
           </div>
         </Section>
@@ -1131,8 +1043,6 @@ function removeElement(childElement) {
               {[
                 ['selectors',     '🎯 Select & Modify'],
                 ['manipulation',  '🏗️ Create & Attribute'],
-                ['traversal',     '📚 Traverse Tree'],
-                ['classes',       '🎨 classList Toggle'],
                 ['builder',       '🧩 Card Builder Script'],
               ].map(([key, label]) => (
                 <button key={key} onClick={() => loadPresetSnippet(key)}
@@ -1276,6 +1186,64 @@ function removeElement(childElement) {
                   Score: {score}/{quizQuestions.length} — {score === 5 ? '🏆 Perfect!' : score >= 4 ? '🎉 Great job!' : score >= 3 ? '👍 Good effort!' : '📚 Keep practising!'}
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Topic-Wise Interview Questions */}
+          <div className="panel" style={{ marginBottom: '1.5rem', background: '#f8fafc', border: '1px solid #cbd5e1' }}>
+            <h3 style={{ marginBottom: '1.2rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              💬 Day 8 Topic-Wise Technical Interview Questions & Answers
+            </h3>
+            <div style={{ display: 'grid', gap: '1rem' }}>
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: HTMLCollection vs NodeList & Live vs Static Ref
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What is the difference between an <code>HTMLCollection</code> (returned by <code>getElementsByClassName</code>) and a <code>NodeList</code> (returned by <code>querySelectorAll</code>)?</strong><br />
+                  <strong>Answer:</strong> An <code>HTMLCollection</code> is a <em>live collection</em> that automatically updates when DOM elements are added or removed, containing element nodes only. A <code>NodeList</code> returned by <code>querySelectorAll</code> is a <em>static snapshot</em> that does not update dynamically, but supports native <code>.forEach()</code> iteration and includes element, text, and comment nodes.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: DOM Reflow & Repaint Optimization
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What are Reflow and Repaint, and how can DocumentFragment prevent performance degradation when inserting 1000 items?</strong><br />
+                  <strong>Answer:</strong> Reflow recalculates element layout positions; Repaint redraws pixels. Appending 1000 elements individually triggers 1000 reflows. Utilizing a <code>DocumentFragment</code> batches all 1000 nodes off-screen in memory first and appends them to the live DOM tree in a single operation, triggering only 1 reflow.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: classList API vs className Assignment
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: Why is <code>element.classList.add("active")</code> safer than <code>element.className += " active"</code>?</strong><br />
+                  <strong>Answer:</strong> <code>classList</code> provides safe atomic operations (<code>add</code>, <code>remove</code>, <code>toggle</code>, <code>contains</code>) without risking string concatenation bugs (like missing leading spaces or wiping existing utility classes).
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: textContent vs innerText
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What is the main difference between <code>textContent</code> and <code>innerText</code>?</strong><br />
+                  <strong>Answer:</strong> <code>innerText</code> is aware of rendered CSS styles (it triggers layout reflow, respects <code>display: none</code>, and hidden text is omitted). <code>textContent</code> retrieves raw text content of all elements (including <code>&lt;script&gt;</code> and hidden tags) without triggering reflow.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: DOM Traversal Nodes vs Elements
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: Compare <code>childNodes</code> / <code>parentNode</code> with <code>children</code> / <code>parentElement</code>?</strong><br />
+                  <strong>Answer:</strong> <code>childNodes</code> and <code>parentNode</code> return all Node types (including element nodes, text whitespace nodes, and comment nodes). <code>children</code> and <code>parentElement</code> strictly filter out non-element nodes, returning only HTML Element nodes.
+                </p>
+              </div>
             </div>
           </div>
 

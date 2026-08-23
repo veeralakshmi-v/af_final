@@ -225,7 +225,7 @@ import CoreJSDay7 from './pages/javascript/CoreJSDay7';
 import CoreJSDay8 from './pages/javascript/CoreJSDay8';
 import CoreJSDay9 from './pages/javascript/CoreJSDay9';
 import CoreJSDay10 from './pages/javascript/CoreJSDay10';
-import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, javascriptCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData } from './courseData';
+import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData } from './courseData';
 import TallyCourseDay from './pages/tally/TallyCourseDay';
 import './index.css';
 
@@ -390,7 +390,6 @@ function App() {
       python_course: pythonCourseData,
       python_da: pythonDaCourseData,
       generative_ai_course: generativeAiCourseData,
-      javascript_course: javascriptCourseData,
       react_course: reactCourseData,
       git_github: gitCourseData,
       json_course: jsonCourseData,
@@ -459,8 +458,8 @@ function App() {
         setActiveNode({ moduleId: 'python_day1', tabId: 'intro' });
       } else if (course === 'generative_ai_course') {
         setActiveNode({ moduleId: 'genai_module1', tabId: 'day1' });
-      } else if (course === 'javascript_course') {
-        setActiveNode({ moduleId: 'js_module1', tabId: 'intro_js' });
+      } else if (course === 'core_js') {
+        setActiveNode({ moduleId: 'core_js_day1', tabId: 'intro' });
       } else if (course === 'react_course') {
         setActiveNode({ moduleId: 'react_module1', tabId: 'intro_react' });
       } else if (course === 'git_github') {
@@ -497,7 +496,6 @@ function App() {
           python_course: pythonCourseData,
           python_da: pythonDaCourseData,
           generative_ai_course: generativeAiCourseData,
-          javascript_course: javascriptCourseData,
           react_course: reactCourseData,
           git_github: gitCourseData,
           json_course: jsonCourseData,
@@ -610,7 +608,6 @@ function App() {
   else if (activeCourse === 'python_course') currentCourseData = pythonCourseData;
   else if (activeCourse === 'python_da') currentCourseData = pythonDaCourseData;
   else if (activeCourse === 'generative_ai_course') currentCourseData = generativeAiCourseData;
-  else if (activeCourse === 'javascript_course') currentCourseData = javascriptCourseData;
   else if (activeCourse === 'react_course') currentCourseData = reactCourseData;
   else if (activeCourse === 'git_github') currentCourseData = gitCourseData;
   else if (activeCourse === 'json_course') currentCourseData = jsonCourseData;
@@ -794,17 +791,7 @@ function App() {
                 {activeNode.moduleId === 'sql_da_day8' && <SQLDADay8 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'sql_da_final_project' && <SQLDAFinalProject activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
-                {/* JavaScript Course Rendering */}
-                {activeNode.moduleId === 'js_module1' && <JSDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'js_module2' && <JSDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'js_module3' && <JSDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'js_module4' && <JSDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'js_module5' && <JSDay5 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'js_module6' && <JSDay6 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'js_module7' && <JSDay7 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'js_module8' && <JSDay8 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'js_module9' && <JSDay9 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'js_module10' && <JSDay10 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {/* JavaScript Capstone & AI Tools */}
                 {activeNode.moduleId === 'js_final_projects' && <JSFinalProjects activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'js_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="js" />}
 

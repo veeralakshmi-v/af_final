@@ -4,7 +4,7 @@ import {
   Code, CheckCircle, LayoutGrid, Layers, MonitorPlay, MousePointerClick,
   Video, Edit3, Palette, Layout, Brush, FileCode2, Target, Type as TypeIcon,
   Wand2, FastForward, Move3d, Clapperboard, Smartphone, Database, Table, Columns, List, Terminal, ShieldAlert, PenTool, Settings, PieChart, Link, Activity, Store,
-  Briefcase, Map, Zap, Brain, Bot, Cpu, GitBranch, Rocket, Eye, Sliders, Filter, Trophy, Shield, FileSpreadsheet, Music, RefreshCw, Sparkles, Hash, Globe, Wifi, AlertTriangle, Home, Compass, User, Lock, ShoppingCart, Folder, Server, Trash2, Plus, LogIn, LogOut, UserPlus, Users, UserCheck, BarChart2, GitMerge, Radio, Key
+  Briefcase, Map, Zap, Brain, Bot, Cpu, GitBranch, Rocket, Eye, Sliders, Filter, Trophy, Shield, FileSpreadsheet, Music, RefreshCw, Sparkles, Hash, Globe, Wifi, AlertTriangle, Home, Compass, User, Lock, ShoppingCart, Folder, Server, Trash2, Plus, LogIn, LogOut, UserPlus, Users, UserCheck, BarChart2, GitMerge, Radio, Key, Copy
 } from 'lucide-react';
 
 
@@ -96,20 +96,22 @@ export const htmlCourseData = [
   },
   {
     id: 'module6',
-    title: 'Day 7 - Modern Layouts',
+    title: 'Day 6 - Modern Layouts',
     items: [
-      { id: 'flexbox_intro', label: 'Flexbox Intro', icon: <LayoutGrid size={18} /> },
-      { id: 'flex_container', label: 'Flex Container', icon: <Box size={18} /> },
-      { id: 'flex_items', label: 'Flex Items', icon: <Layers size={18} /> },
       { id: 'grid_intro', label: 'CSS Grid Intro', icon: <LayoutGrid size={18} /> },
-      { id: 'grid_container', label: 'Grid Container', icon: <Box size={18} /> },
+      { id: 'grid_structure', label: 'Grid Structure', icon: <Box size={18} /> },
+      { id: 'grid_spacing_align', label: 'Spacing & Alignment', icon: <LayoutTemplate size={18} /> },
+      { id: 'grid_items', label: 'Grid Item Placement', icon: <Layers size={18} /> },
+      { id: 'grid_auto_flow', label: 'Auto Flow & Dense', icon: <Sliders size={18} /> },
+      { id: 'grid_responsive', label: 'Responsive Grid Areas', icon: <Columns size={18} /> },
       { id: 'playground', label: 'Live Coding', icon: <Code size={18} /> },
+      { id: 'project', label: 'Mini Project', icon: <MousePointerClick size={18} /> },
       { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> }
     ]
   },
   {
     id: 'module7',
-    title: 'Day 8 - CSS Units & Pseudo',
+    title: 'Day 7 - CSS Units & Pseudo',
     items: [
       { id: 'absolute_units', label: 'Absolute Units', icon: <Target size={18} /> },
       { id: 'relative_units', label: 'Relative Units', icon: <Layers size={18} /> },
@@ -121,8 +123,9 @@ export const htmlCourseData = [
   },
   {
     id: 'module8',
-    title: 'Day 9 - Animations & Media',
+    title: 'Day 8 - Animations & Media',
     items: [
+      { id: 'effects_intro', label: 'Intro to CSS Effects', icon: <Sparkles size={18} /> },
       { id: 'transitions', label: 'CSS Transitions', icon: <FastForward size={18} /> },
       { id: 'transforms', label: '2D/3D Transforms', icon: <Move3d size={18} /> },
       { id: 'keyframes', label: 'Keyframe Animations', icon: <Clapperboard size={18} /> },
@@ -134,7 +137,7 @@ export const htmlCourseData = [
   },
   {
     id: 'bootstrap_day1',
-    title: 'Day 10 - Bootstrap Basics',
+    title: 'Day 9 - Bootstrap Basics',
     items: [
       { id: 'intro', label: 'Introduction to Bootstrap', icon: <BookOpen size={18} /> },
       { id: 'containers', label: 'Containers & Spacing', icon: <LayoutTemplate size={18} /> },
@@ -148,7 +151,7 @@ export const htmlCourseData = [
   },
   {
     id: 'bootstrap_day2',
-    title: 'Day 11 - Bootstrap Grid & Components',
+    title: 'Day 10 - Bootstrap Grid & Components',
     items: [
       { id: 'grid_system', label: 'Responsive Grid System', icon: <LayoutGrid size={18} /> },
       { id: 'navbar', label: 'Navigation Bar (Navbar)', icon: <Columns size={18} /> },
@@ -161,7 +164,7 @@ export const htmlCourseData = [
   },
   {
     id: 'module9',
-    title: 'Day 12 - HTML, CSS & Bootstrap Final Project',
+    title: 'Day 11 - HTML, CSS & Bootstrap Final Project',
     items: [
       { id: 'project_brief', label: 'Project Brief', icon: <Target size={18} /> },
       { id: 'project_demo', label: 'Live Demo', icon: <MonitorPlay size={18} /> },
@@ -845,15 +848,20 @@ export const pythonCourseData = [
   },
   {
     id: 'python_day8',
-    title: 'Day 8 - File & Exception Handling',
+    title: 'Day 8 - Comprehensive File & Exception Handling',
     items: [
-      { id: 'intro', label: 'Overview', icon: <BookOpen size={18} /> },
-      { id: 'file_handling', label: 'File Handling Basics', icon: <Cpu size={18} /> },
-      { id: 'pickle', label: 'Object Pickling', icon: <Terminal size={18} /> },
-      { id: 'exception_handling', label: 'Exception Safety', icon: <Filter size={18} /> },
-      { id: 'practice', label: '💾 Notes Application', icon: <Code size={18} /> },
+      { id: 'intro', label: 'Overview & Storage', icon: <BookOpen size={18} /> },
+      { id: 'file_modes', label: 'Opening Modes & Encoding', icon: <Cpu size={18} /> },
+      { id: 'file_reading', label: 'Reading Files & Iteration', icon: <FileText size={18} /> },
+      { id: 'file_writing', label: 'Writing, Appending & Flush', icon: <Terminal size={18} /> },
+      { id: 'file_copying', label: 'Copying Files (File to File)', icon: <Copy size={18} /> },
+      { id: 'context_managers', label: 'Context Managers (with)', icon: <Sliders size={18} /> },
+      { id: 'structured_data', label: 'JSON, CSV & Pickle', icon: <Database size={18} /> },
+      { id: 'os_pathlib', label: 'OS & Pathlib Operations', icon: <Folder size={18} /> },
+      { id: 'exception_handling', label: 'Exception Handling Safety', icon: <ShieldAlert size={18} /> },
+      { id: 'practice', label: '💾 Log & File Capstone', icon: <Code size={18} /> },
       { id: 'assignment_work', label: '📝 Assignment (10 Tasks)', icon: <BookOpen size={18} /> },
-      { id: 'quiz', label: 'Quiz (12 Questions)', icon: <Zap size={18} /> },
+      { id: 'quiz', label: 'Quiz (15 Questions)', icon: <Zap size={18} /> },
     ]
   },
   {
@@ -1006,188 +1014,7 @@ export const generativeAiCourseData = [
   }
 ];
 
-export const javascriptCourseData = [
-  {
-    id: 'js_module1',
-    title: 'Day 1 - Introduction to JavaScript',
-    items: [
-      { id: 'intro_js', label: 'Introduction to JS', icon: <BookOpen size={18} /> },
-      { id: 'js_variables', label: 'Variables (var, let, const)', icon: <Code size={18} /> },
-      { id: 'js_datatypes', label: 'Data Types', icon: <Database size={18} /> },
-      { id: 'js_console', label: 'Console Output', icon: <Terminal size={18} /> },
-      { id: 'js_comments', label: 'Comments', icon: <PenTool size={18} /> },
-      { id: 'js_typeconversion', label: 'Type Conversion (Bonus)', icon: <Sliders size={18} /> },
-      { id: 'js_playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
-      { id: 'assignment', label: 'Day 1 Assignment', icon: <FileText size={18} /> },
-    ]
-  },
-  {
-    id: 'js_module2',
-    title: 'Day 2 - Operators & User Interaction',
-    items: [
-      { id: 'js_arithmetic', label: 'Arithmetic Operators', icon: <Zap size={18} /> },
-      { id: 'js_assignment_ops', label: 'Assignment Operators', icon: <Code size={18} /> },
-      { id: 'js_comparison', label: 'Comparison Operators', icon: <Sliders size={18} /> },
-      { id: 'js_logical', label: 'Logical Operators', icon: <GitBranch size={18} /> },
-      { id: 'js_user_interaction', label: 'alert / prompt / confirm', icon: <MousePointerClick size={18} /> },
-      { id: 'js_operators', label: 'Operators Deep Dive (Bonus)', icon: <Sliders size={18} /> },
-      { id: 'js_expressions', label: 'Expressions (Bonus)', icon: <Code size={18} /> },
-      { id: 'js_calculator', label: 'Interactive Calculator', icon: <Terminal size={18} /> },
-      { id: 'js_playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
-      { id: 'assignment', label: 'Day 2 Assignment', icon: <FileText size={18} /> },
-    ]
-  },
-  {
-    id: 'js_module3',
-    title: 'Day 3 - Conditional Statements',
-    items: [
-      { id: 'js_if_else', label: 'if / else if / else', icon: <GitBranch size={18} /> },
-      { id: 'js_switch', label: 'Switch Statement', icon: <Layers size={18} /> },
-      { id: 'js_ternary', label: 'Ternary Operator', icon: <Zap size={18} /> },
-      { id: 'js_nested_if', label: 'Nested if Statements', icon: <Code size={18} /> },
-      { id: 'js_playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
-      { id: 'assignment', label: 'Day 3 Assignment', icon: <FileText size={18} /> },
-    ]
-  },
-  {
-    id: 'js_module4',
-    title: 'Day 4 - Loops',
-    items: [
-      { id: 'js_for_loop', label: 'for Loop', icon: <RefreshCw size={18} /> },
-      { id: 'js_while_loop', label: 'while Loop', icon: <RefreshCw size={18} /> },
-      { id: 'js_do_while', label: 'do...while Loop', icon: <RefreshCw size={18} /> },
-      { id: 'js_break_continue', label: 'break & continue', icon: <Zap size={18} /> },
-      { id: 'js_nested_loop', label: 'Nested Loops', icon: <Layers size={18} /> },
-      { id: 'js_for_in_of', label: 'for...in / for...of (Bonus)', icon: <Layers size={18} /> },
-      { id: 'js_foreach', label: 'forEach() Method (Bonus)', icon: <List size={18} /> },
-      { id: 'js_playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
-      { id: 'assignment', label: 'Day 4 Assignment', icon: <FileText size={18} /> },
-    ]
-  },
-  {
-    id: 'js_module5',
-    title: 'Day 5 - Functions',
-    items: [
-      { id: 'js_func_declaration', label: 'Function Declaration', icon: <Zap size={18} /> },
-      { id: 'js_params_args', label: 'Parameters & Arguments', icon: <Code size={18} /> },
-      { id: 'js_return_stmt', label: 'Return Statement', icon: <GitBranch size={18} /> },
-      { id: 'js_arrow_functions', label: 'Arrow Functions', icon: <Rocket size={18} /> },
-      { id: 'js_scope', label: 'Scope', icon: <Shield size={18} /> },
-      { id: 'js_types', label: 'Types of Functions', icon: <Layers size={18} /> },
-      { id: 'js_math', label: 'Math Functions', icon: <Zap size={18} /> },
-      { id: 'js_inventory', label: 'Inventory Manager', icon: <Briefcase size={18} /> },
-      { id: 'js_cart', label: 'Shopping Cart', icon: <Store size={18} /> },
-      { id: 'js_playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
-      { id: 'assignment', label: 'Day 5 Assignment', icon: <FileText size={18} /> },
-    ]
-  },
-  {
-    id: 'js_module6',
-    title: 'Day 6 - Arrays & Objects',
-    items: [
-      { id: 'js_arrays_intro', label: 'Arrays', icon: <List size={18} /> },
-      { id: 'js_array_methods', label: 'Array Methods', icon: <Layers size={18} /> },
-      { id: 'js_objects_intro', label: 'Objects', icon: <Database size={18} /> },
-      { id: 'js_object_properties', label: 'Object Properties', icon: <Code size={18} /> },
-      { id: 'js_object_methods', label: 'Object Methods', icon: <Settings size={18} /> },
-      { id: 'js_set', label: 'JavaScript Set', icon: <Layers size={18} /> },
-      { id: 'js_object', label: 'Advanced Objects', icon: <Code size={18} /> },
-      { id: 'js_map', label: 'JavaScript Map', icon: <Database size={18} /> },
-      { id: 'js_miniproject6', label: 'Mini Project: Contact Book', icon: <Terminal size={18} /> },
-      { id: 'js_playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
-      { id: 'assignment', label: 'Day 6 Assignment', icon: <FileText size={18} /> },
-    ]
-  },
-  {
-    id: 'js_module7',
-    title: 'Day 7 - String & Array Methods',
-    items: [
-      { id: 'js_string_methods', label: 'String Methods', icon: <Code size={18} /> },
-      { id: 'js_array_iteration', label: 'Array Iteration', icon: <RefreshCw size={18} /> },
-      { id: 'js_map_filter', label: 'map() / filter() / forEach()', icon: <Zap size={18} /> },
-      { id: 'js_product_list', label: 'Mini Project: Product List', icon: <Store size={18} /> },
-      { id: 'js_miniproject5', label: 'Mini Project: Student List', icon: <Terminal size={18} /> },
-      { id: 'js_playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
-      { id: 'assignment', label: 'Day 7 Assignment', icon: <FileText size={18} /> },
-    ]
-  },
-  {
-    id: 'js_module8',
-    title: 'Day 8 - DOM Manipulation',
-    items: [
-      { id: 'js_dom_intro', label: 'DOM Intro & Nodes', icon: <BookOpen size={18} /> },
-      { id: 'js_dom_selectors', label: 'Selecting Elements', icon: <Zap size={18} /> },
-      { id: 'js_dom_content', label: 'Changing HTML & CSS', icon: <Settings size={18} /> },
-      { id: 'js_dom_create', label: 'Creating & Removing Elements', icon: <Code size={18} /> },
-      { id: 'js_form_validation', label: 'Form Validation', icon: <Shield size={18} /> },
-      { id: 'js_playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
-      { id: 'assignment', label: 'Day 8 Assignment', icon: <FileText size={18} /> },
-    ]
-  },
-  {
-    id: 'js_module9',
-    title: 'Day 9 - Events & Browser Storage',
-    items: [
-      { id: 'js_event_handlers', label: 'Event Listeners', icon: <MousePointerClick size={18} /> },
-      { id: 'js_mouse_keyboard', label: 'Mouse & Keyboard Events', icon: <Zap size={18} /> },
-      { id: 'js_local_storage', label: 'Local Storage', icon: <Database size={18} /> },
-      { id: 'js_json_basics', label: 'JSON Basics', icon: <Code size={18} /> },
-      { id: 'js_todo_project', label: 'Mini Project: To-Do List', icon: <CheckCircle size={18} /> },
-      { id: 'js_event_propagation', label: 'Event Propagation (Bonus)', icon: <FastForward size={18} /> },
-      { id: 'js_bom_objects', label: 'BOM Objects (Bonus)', icon: <Smartphone size={18} /> },
-      { id: 'js_playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
-      { id: 'assignment', label: 'Day 9 Assignment', icon: <FileText size={18} /> },
-    ]
-  },
-  {
-    id: 'js_module10',
-    title: 'Day 10 - Modern JavaScript & Project',
-    items: [
-      { id: 'js_fetch_api', label: 'Fetch API Basics', icon: <Zap size={18} /> },
-      { id: 'js_async_await', label: 'Async & Await', icon: <RefreshCw size={18} /> },
-      { id: 'js_promises', label: 'Promises', icon: <Rocket size={18} /> },
-      { id: 'js_error_handling', label: 'Error Handling', icon: <ShieldAlert size={18} /> },
-      { id: 'js_final_project', label: 'Final Project Development', icon: <Trophy size={18} /> },
-      { id: 'js_project_demo', label: 'Live Task Manager Demo', icon: <Activity size={18} /> },
-      { id: 'js_project_source', label: 'Project Source Code', icon: <Code size={18} /> },
-      { id: 'js_playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
-    ]
-  },
 
-  {
-    id: 'js_final_projects',
-    title: 'JavaScript Capstone Projects',
-    items: [
-      { id: 'project_weather', label: '1. Weather Forecast Dashboard', icon: <Zap size={18} /> },
-      { id: 'project_cart', label: '2. E-Commerce Shopping Portal', icon: <Settings size={18} /> },
-      { id: 'project_kanban', label: '3. Task Management Kanban Board', icon: <Layers size={18} /> },
-      { id: 'project_quiz', label: '4. Interactive Quiz Portal', icon: <Terminal size={18} /> },
-      { id: 'project_contacts', label: '5. Contact Management Hub', icon: <PenTool size={18} /> },
-    ]
-  },
-  {
-    id: 'js_ai_module',
-    title: '🤖 AI Power Tools for JS',
-    items: [
-      { id: 'ai_code_review', label: '🔍 AI Code Reviewer', icon: <Eye size={18} /> },
-      { id: 'ai_debugging', label: '🐛 AI Debugging', icon: <Bot size={18} /> },
-      { id: 'ai_ui_gen', label: '🎨 AI UI Generation', icon: <Wand2 size={18} /> },
-      { id: 'ai_component', label: '🧩 AI Component Dev', icon: <Layers size={18} /> },
-      { id: 'ai_prompt_eng', label: '💬 AI Prompt Engineering', icon: <Sparkles size={18} /> },
-      { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> },
-    ]
-  }
-];
 
 export const reactCourseData = [
   {
@@ -1621,7 +1448,6 @@ export const djangoCourseData = [
       { id: 'intro_roles', label: 'Model Relationships', icon: <Shield size={18} /> },
       { id: 'groups_permissions', label: 'Declaring Relationships', icon: <Users size={18} /> },
       { id: 'permission_required', label: 'F Expressions & Filtering', icon: <Zap size={18} /> },
-      { id: 'user_passes_test', label: 'Query Optimization JOINs', icon: <Lock size={18} /> },
       { id: 'template_permissions', label: 'Relations in Templates', icon: <Code size={18} /> },
       { id: 'admin_roles', label: 'Admin Relationships', icon: <Settings size={18} /> },
       { id: 'interactive_roles', label: 'Live Relations Sandbox', icon: <Terminal size={18} /> },
@@ -2046,6 +1872,7 @@ export const coreJsCourseData = [
     title: 'Day 1 - JavaScript Basics',
     items: [
       { id: 'intro', label: 'Introduction to JS', icon: <BookOpen size={18} /> },
+      { id: 'connecting_js', label: 'Connecting JS & innerHTML', icon: <Link size={18} /> },
       { id: 'variables', label: 'JS Variables & Scope', icon: <Layers size={18} /> },
       { id: 'datatypes', label: 'JS Data Types', icon: <Database size={18} /> },
       { id: 'conversions', label: 'Type Conversions & Equality', icon: <RefreshCw size={18} /> },
@@ -2099,6 +1926,8 @@ export const coreJsCourseData = [
     items: [
       { id: 'intro', label: 'Functions Introduction', icon: <BookOpen size={18} /> },
       { id: 'function_types', label: 'Types of Functions', icon: <Layers size={18} /> },
+      { id: 'rest_spread', label: 'Rest & Spread Operators', icon: <Activity size={18} /> },
+      { id: 'array_methods', label: 'map(), filter() & reduce()', icon: <Table size={18} /> },
       { id: 'inventory_manager', label: 'Inventory Manager', icon: <Database size={18} /> },
       { id: 'shopping_cart', label: 'Shopping Cart', icon: <ShoppingCart size={18} /> },
       { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
@@ -2107,24 +1936,26 @@ export const coreJsCourseData = [
   },
   {
     id: 'core_js_day6',
-    title: 'Day 6 - Built-in Objects & Arrays',
+    title: 'Day 6 - Data Structures (Part 1)',
     items: [
-      { id: 'math_functions', label: 'Math Functions', icon: <Activity size={18} /> },
-      { id: 'string_functions', label: 'String Functions', icon: <Layers size={18} /> },
-      { id: 'array_concepts', label: 'Array Operations', icon: <Table size={18} /> },
-      { id: 'student_manager', label: 'Student Manager', icon: <Database size={18} /> },
+      { id: 'math_functions', label: 'Math Object Utilities', icon: <Activity size={18} /> },
+      { id: 'string_functions', label: 'Strings & String Methods', icon: <Layers size={18} /> },
+      { id: 'array_concepts', label: 'Arrays & Array Operations', icon: <Table size={18} /> },
+      { id: 'objects', label: 'JavaScript Objects', icon: <Database size={18} /> },
+      { id: 'student_manager', label: 'Student Record Manager', icon: <Briefcase size={18} /> },
       { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
       { id: 'assessment', label: 'Day 6 Assessment', icon: <FileText size={18} /> }
     ]
   },
   {
     id: 'core_js_day7',
-    title: 'Day 7 - Set, Object, Map',
+    title: 'Day 7 - Data Structures (Part 2)',
     items: [
-      { id: 'sets', label: 'JavaScript Sets', icon: <Layers size={18} /> },
-      { id: 'objects', label: 'JavaScript Objects', icon: <Database size={18} /> },
-      { id: 'maps', label: 'JavaScript Maps', icon: <Map size={18} /> },
-      { id: 'contact_manager', label: 'Contact Book', icon: <Briefcase size={18} /> },
+      { id: 'sets', label: 'JavaScript Sets (Unique Lists)', icon: <Layers size={18} /> },
+      { id: 'maps', label: 'JavaScript Maps (Key-Value)', icon: <Map size={18} /> },
+      { id: 'map_vs_map', label: 'map() vs new Map()', icon: <GitMerge size={18} /> },
+      { id: 'set_vs_set', label: 'new Set() vs .set() Method', icon: <GitBranch size={18} /> },
+      { id: 'contact_manager', label: 'Contact Book Project', icon: <Briefcase size={18} /> },
       { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
       { id: 'assessment', label: 'Day 7 Assessment', icon: <FileText size={18} /> }
     ]
@@ -2136,8 +1967,6 @@ export const coreJsCourseData = [
       { id: 'intro', label: 'Introduction to DOM', icon: <Compass size={18} /> },
       { id: 'selectors', label: 'DOM Selectors', icon: <Layers size={18} /> },
       { id: 'manipulation', label: 'DOM Node Manipulation', icon: <Plus size={18} /> },
-      { id: 'traversal', label: 'Traversing the DOM', icon: <Activity size={18} /> },
-      { id: 'classes', label: 'Class Manipulation', icon: <Sliders size={18} /> },
       { id: 'dom_programs', label: 'DOM Programs', icon: <Terminal size={18} /> },
       { id: 'dom_builder', label: 'DOM Element Tree Builder', icon: <Database size={18} /> },
       { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
@@ -2148,8 +1977,7 @@ export const coreJsCourseData = [
     id: 'core_js_day9',
     title: 'Day 9 - Event Listeners & BOM',
     items: [
-      { id: 'handlers', label: 'Event Handlers', icon: <Zap size={18} /> },
-      { id: 'propagation', label: 'Event Propagation', icon: <Activity size={18} /> },
+      { id: 'handlers', label: 'Event Handlers & Types', icon: <Zap size={18} /> },
       { id: 'listeners', label: 'addEventListener()', icon: <Plus size={18} /> },
       { id: 'bom_core', label: 'BOM – window, navigator', icon: <MonitorPlay size={18} /> },
       { id: 'bom_location', label: 'Location & History', icon: <Compass size={18} /> },
@@ -2171,6 +1999,29 @@ export const coreJsCourseData = [
       { id: 'mini_project_1', label: 'Demo: Weather Dashboard', icon: <Activity size={18} /> },
       { id: 'mini_project_2', label: 'Demo: GitHub User Finder', icon: <Eye size={18} /> },
       { id: 'submissions', label: 'Submission Projects', icon: <Briefcase size={18} /> }
+    ]
+  },
+  {
+    id: 'js_final_projects',
+    title: 'JavaScript Capstone Projects',
+    items: [
+      { id: 'project_weather', label: '1. Weather Forecast Dashboard', icon: <Zap size={18} /> },
+      { id: 'project_cart', label: '2. E-Commerce Shopping Portal', icon: <Settings size={18} /> },
+      { id: 'project_kanban', label: '3. Task Management Kanban Board', icon: <Layers size={18} /> },
+      { id: 'project_quiz', label: '4. Interactive Quiz Portal', icon: <Terminal size={18} /> },
+      { id: 'project_contacts', label: '5. Contact Management Hub', icon: <PenTool size={18} /> },
+    ]
+  },
+  {
+    id: 'js_ai_module',
+    title: '🤖 AI Power Tools for JS',
+    items: [
+      { id: 'ai_code_review', label: '🔍 AI Code Reviewer', icon: <Eye size={18} /> },
+      { id: 'ai_debugging', label: '🐛 AI Debugging', icon: <Bot size={18} /> },
+      { id: 'ai_ui_gen', label: '🎨 AI UI Generation', icon: <Wand2 size={18} /> },
+      { id: 'ai_component', label: '🧩 AI Component Dev', icon: <Layers size={18} /> },
+      { id: 'ai_prompt_eng', label: '💬 AI Prompt Engineering', icon: <Sparkles size={18} /> },
+      { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> },
     ]
   }
 ];

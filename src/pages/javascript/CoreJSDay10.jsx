@@ -1197,6 +1197,64 @@ async function searchUser() {
             </div>
           </div>
 
+          {/* Topic-Wise Interview Questions */}
+          <div className="panel" style={{ marginBottom: '1.5rem', background: '#f8fafc', border: '1px solid #cbd5e1' }}>
+            <h3 style={{ marginBottom: '1.2rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              💬 Day 10 Topic-Wise Technical Interview Questions & Answers
+            </h3>
+            <div style={{ display: 'grid', gap: '1rem' }}>
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Promises vs Async / Await & Microtask Queue
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: How does the Event Loop prioritize Promise microtasks versus setTimeout macrotasks?</strong><br />
+                  <strong>Answer:</strong> When a Promise resolves, its <code>.then()</code> or <code>await</code> continuation is queued in the <strong>Microtask Queue</strong>. The Event Loop empties the entire Microtask Queue before processing even a single macrotask (like <code>setTimeout</code> or <code>setInterval</code>) from the Callback Queue.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Fetch API Error Handling (HTTP Statuses)
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: Why doesn't <code>fetch()</code> reject a Promise on HTTP 404 or 500 status codes?</strong><br />
+                  <strong>Answer:</strong> <code>fetch()</code> only rejects a Promise if a network failure occurs or CORS blocks the request. For HTTP error status codes (like 404 Not Found or 500 Internal Server Error), the Promise resolves successfully. Developers must explicitly check <code>if (!response.ok)</code> to handle HTTP errors.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Promise.all vs Promise.allSettled vs Promise.race
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: Compare <code>Promise.all()</code>, <code>Promise.allSettled()</code>, and <code>Promise.race()</code>?</strong><br />
+                  <strong>Answer:</strong> <code>Promise.all()</code> fails fast if any promise rejects. <code>Promise.allSettled()</code> waits for all promises to finish (fulfilled or rejected) and returns an array of status objects. <code>Promise.race()</code> resolves or rejects as soon as the very first promise settles.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Promise States & Immutability
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What are the 3 states of a JavaScript Promise, and can a resolved promise change state later?</strong><br />
+                  <strong>Answer:</strong> A Promise can be <strong>Pending</strong>, <strong>Fulfilled</strong>, or <strong>Rejected</strong>. Once a Promise settles (fulfilled or rejected), its state and payload value become immutable and cannot be changed or re-resolved ever again.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: async/await Error Handling with try...catch
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: How does error handling differ between promise chaining (<code>.catch()</code>) and <code>async/await</code> syntax?</strong><br />
+                  <strong>Answer:</strong> Promise chains use a <code>.catch(err =&gt; ...)`</code> callback attached to the tail of the chain. <code>async/await</code> functions use synchronous-style <code>try...catch</code> blocks around <code>await</code> calls, allowing both asynchronous network errors and synchronous runtime errors to be caught in a unified <code>catch(err)</code> block.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
             <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day10', 'playground')}>← Back to Playground</button>
             <button style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('mini_project_1')}>Next: Demo Projects →</button>

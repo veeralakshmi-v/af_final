@@ -21,6 +21,12 @@ const Section = ({ id, eyebrow, title, children }) => (
 
 export default function CSSDay6({ activeTab, onNavigate }) {
   const [hoveredBox, setHoveredBox] = useState(null);
+  const [simulatedWidth, setSimulatedWidth] = useState(1024);
+
+  // Keyframes State
+  const [selectedKeyframe, setSelectedKeyframe] = useState('bounce');
+  const [animDuration, setAnimDuration] = useState(2);
+  const [animIteration, setAnimIteration] = useState('infinite');
 
   const handleContinue = (nextSectionId) => {
     if (typeof window.JSConfetti !== 'undefined' && (nextSectionId === 'quiz' || nextSectionId === 'project')) {
@@ -382,27 +388,198 @@ export default function CSSDay6({ activeTab, onNavigate }) {
         </Section>
       )}
 
-      {activeTab === 'animations' && (
-        <Section key="animations" id="animations" eyebrow="Keyframes" title="CSS Animations">
+      {(activeTab === 'keyframes' || activeTab === 'animations') && (
+        <Section key="keyframes" id="keyframes" eyebrow="Keyframes" title="CSS @keyframes Animations">
           <div className="panel">
-            <p>CSS animations enable the creation of animated effects without requiring JavaScript. They allow elements to gradually change from one style to another over time.</p>
             
+            <div style={{ background: 'linear-gradient(135deg, #0f172a, #312e81)', color: 'white', padding: '1.8rem', borderRadius: '14px', marginBottom: '2rem', border: '1px solid #4338ca' }}>
+              <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.8rem', fontWeight: 800 }}>🎬 Multi-Step CSS Animation with `@keyframes`</h3>
+              <p style={{ color: '#c7d2fe', lineHeight: 1.7, margin: 0, fontSize: '1.02rem' }}>
+                While transitions only animate between 2 states (Start and End), <strong><code>@keyframes</code> animations</strong> allow you to control intermediate steps (0%, 25%, 50%, 75%, 100%) for complex loading spinners, pulse effects, and loops!
+              </p>
+            </div>
+
+            {/* SECTION 1: KEYFRAME PROPERTIES */}
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.8rem' }}>1. Key Animation Sub-Properties</h3>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.2rem', marginBottom: '2.5rem' }}>
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #6366f1', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.4rem', color: '#0f172a', fontSize: '1.05rem', fontWeight: 700 }}>@keyframes</h4>
+                <p style={{ fontSize: '0.82rem', color: '#64748b' }}>Defines style changes at specific timeline percentages (0% to 100%).</p>
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #8b5cf6', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.4rem', color: '#0f172a', fontSize: '1.05rem', fontWeight: 700 }}>animation-name</h4>
+                <p style={{ fontSize: '0.82rem', color: '#64748b' }}>Links an HTML element to your custom `@keyframes` rule identifier.</p>
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #ec4899', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.4rem', color: '#0f172a', fontSize: '1.05rem', fontWeight: 700 }}>animation-iteration-count</h4>
+                <p style={{ fontSize: '0.82rem', color: '#64748b' }}>Defines repetition cycles (e.g. <code>1</code>, <code>5</code>, or <code>infinite</code>).</p>
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #10b981', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.4rem', color: '#0f172a', fontSize: '1.05rem', fontWeight: 700 }}>animation-direction</h4>
+                <p style={{ fontSize: '0.82rem', color: '#64748b' }}>Sets loop direction: <code>normal</code>, <code>reverse</code>, or <code>alternate</code>.</p>
+              </div>
+            </div>
+
+            {/* SECTION 2: SYNTAX */}
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.8rem' }}>2. Syntax Example</h3>
             <div className="code-example-box" style={{ marginBottom: '2rem' }}>
               <div className="code-pane">
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(animationCode, Prism.languages.css, 'css') }}></pre>
               </div>
             </div>
 
-            <h3 style={{ marginBottom: '1rem' }}>Animation Properties</h3>
-            <ul style={{ paddingLeft: '20px', lineHeight: '2', color: 'var(--text-secondary)' }}>
-              <li><strong>@keyframes:</strong> Defines the sequence of styles (using percentages 0% to 100%).</li>
-              <li><strong>animation-name:</strong> Links the element to the @keyframes rule.</li>
-              <li><strong>animation-duration:</strong> Time to complete one cycle.</li>
-              <li><strong>animation-iteration-count:</strong> Number of times to run (e.g., <code>infinite</code>).</li>
-              <li><strong>animation-direction:</strong> Play forwards, backwards, or <code>alternate</code>.</li>
-            </ul>
+            {/* SECTION 3: INTERACTIVE KEYFRAME SIMULATOR */}
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.6rem' }}>🎮 Interactive `@keyframes` Animation Playground</h3>
+            <p style={{ color: '#64748b', fontSize: '0.92rem', marginBottom: '1.5rem' }}>
+              Select an animation preset, adjust duration, and toggle iteration count to watch Framer Motion render keyframe effects live!
+            </p>
 
-            <div className="card-actions" style={{ marginTop: '2rem' }}>
+            <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '14px', border: '1px solid #cbd5e1', marginBottom: '2rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
+                
+                <div>
+                  <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#0f172a', marginBottom: '0.6rem' }}>
+                    Keyframe Preset: <span style={{ color: '#6366f1' }}>{selectedKeyframe}</span>
+                  </label>
+                  <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                    {['bounce', 'spin', 'pulse', 'glow', 'flip'].map(preset => (
+                      <button
+                        key={preset}
+                        onClick={() => setSelectedKeyframe(preset)}
+                        style={{
+                          padding: '0.4rem 0.8rem',
+                          borderRadius: '6px',
+                          fontWeight: 700,
+                          fontSize: '0.82rem',
+                          cursor: 'pointer',
+                          border: selectedKeyframe === preset ? '2px solid #6366f1' : '1px solid #cbd5e1',
+                          background: selectedKeyframe === preset ? '#6366f1' : 'white',
+                          color: selectedKeyframe === preset ? 'white' : '#1e293b'
+                        }}
+                      >
+                        {preset}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#0f172a', marginBottom: '0.6rem' }}>
+                    animation-duration: <span style={{ color: '#8b5cf6' }}>{animDuration}s</span>
+                  </label>
+                  <input 
+                    type="range" 
+                    min="0.5" 
+                    max="5" 
+                    step="0.5" 
+                    value={animDuration} 
+                    onChange={(e) => setAnimDuration(Number(e.target.value))} 
+                    style={{ width: '100%' }} 
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#0f172a', marginBottom: '0.6rem' }}>
+                    iteration-count: <span style={{ color: '#ec4899' }}>{animIteration}</span>
+                  </label>
+                  <div style={{ display: 'flex', gap: '0.4rem' }}>
+                    {['1', '3', 'infinite'].map(count => (
+                      <button
+                        key={count}
+                        onClick={() => setAnimIteration(count)}
+                        style={{
+                          padding: '0.4rem 0.8rem',
+                          borderRadius: '6px',
+                          fontWeight: 700,
+                          fontSize: '0.82rem',
+                          cursor: 'pointer',
+                          border: animIteration === count ? '2px solid #ec4899' : '1px solid #cbd5e1',
+                          background: animIteration === count ? '#ec4899' : 'white',
+                          color: animIteration === count ? 'white' : '#1e293b'
+                        }}
+                      >
+                        {count}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Animation Live Canvas */}
+            <div style={{ background: '#0f172a', padding: '3rem 2rem', borderRadius: '14px', marginBottom: '2rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <motion.div
+                key={`${selectedKeyframe}-${animDuration}-${animIteration}`}
+                animate={
+                  selectedKeyframe === 'bounce' 
+                    ? { y: [0, -40, 0] }
+                    : selectedKeyframe === 'spin'
+                    ? { rotate: [0, 360] }
+                    : selectedKeyframe === 'pulse'
+                    ? { scale: [1, 1.25, 1] }
+                    : selectedKeyframe === 'glow'
+                    ? { boxShadow: ['0 0 0px #6366f1', '0 0 35px #6366f1', '0 0 0px #6366f1'] }
+                    : { rotateY: [0, 180, 0] }
+                }
+                transition={{
+                  duration: animDuration,
+                  repeat: animIteration === 'infinite' ? Infinity : Number(animIteration) - 1,
+                  ease: 'easeInOut'
+                }}
+                style={{
+                  width: '120px',
+                  height: '120px',
+                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                  color: 'white',
+                  borderRadius: '16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 800,
+                  fontSize: '0.9rem',
+                  boxShadow: '0 10px 25px -5px rgba(99, 102, 241, 0.5)'
+                }}
+              >
+                ✨ {selectedKeyframe.toUpperCase()}
+                <span style={{ fontSize: '0.7rem', fontWeight: 400, marginTop: '4px', opacity: 0.8 }}>{animDuration}s {animIteration}</span>
+              </motion.div>
+            </div>
+
+            {/* Generated CSS Code */}
+            <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
+              <div className="code-header">Active Keyframe CSS Rule</div>
+              <div className="code-content">
+                <div className="code-pane" style={{ gridColumn: 'span 2' }}>
+                  <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(
+`.animated-box {
+  animation-name: ${selectedKeyframe}Anim;
+  animation-duration: ${animDuration}s;
+  animation-iteration-count: ${animIteration};
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes ${selectedKeyframe}Anim {
+${selectedKeyframe === 'bounce' 
+  ? '  0%, 100% { transform: translateY(0); }\n  50% { transform: translateY(-40px); }'
+  : selectedKeyframe === 'spin'
+  ? '  0% { transform: rotate(0deg); }\n  100% { transform: rotate(360deg); }'
+  : selectedKeyframe === 'pulse'
+  ? '  0%, 100% { transform: scale(1); }\n  50% { transform: scale(1.25); }'
+  : selectedKeyframe === 'glow'
+  ? '  0%, 100% { box-shadow: 0 0 0px #6366f1; }\n  50% { box-shadow: 0 0 35px #6366f1; }'
+  : '  0%, 100% { transform: rotateY(0deg); }\n  50% { transform: rotateY(180deg); }'}
+}`, Prism.languages.css, 'css') }}></pre>
+                </div>
+              </div>
+            </div>
+
+            <div className="card-actions">
               <button className="btn btn-primary" onClick={() => handleContinue('media_queries')}>Continue (+10 XP)</button>
             </div>
           </div>
@@ -410,25 +587,190 @@ export default function CSSDay6({ activeTab, onNavigate }) {
       )}
 
       {activeTab === 'media_queries' && (
-        <Section key="media_queries" id="media_queries" eyebrow="Responsiveness" title="Media Queries">
+        <Section key="media_queries" id="media_queries" eyebrow="Responsive Design" title="CSS Media Queries & Breakpoints">
           <div className="panel">
-            <p>A media query uses the <code>@media</code> rule to apply a block of CSS properties only if a certain condition is true (like screen width).</p>
             
+            <div style={{ background: 'linear-gradient(135deg, #0f172a, #1e3a8a)', color: 'white', padding: '1.8rem', borderRadius: '14px', marginBottom: '2rem', border: '1px solid #1e40af' }}>
+              <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.8rem', fontWeight: 800 }}>📱 Responsive Web Design with `@media`</h3>
+              <p style={{ color: '#bfdbfe', lineHeight: 1.7, margin: 0, fontSize: '1.02rem' }}>
+                Media queries allow your website to automatically adapt its styles depending on the user's device screen width, orientation, resolution, or system theme settings!
+              </p>
+            </div>
+
+            {/* SECTION 1: BREAKPOINT CHEAT SHEET */}
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.8rem' }}>1. Standard Industry Breakpoints</h3>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.2rem', marginBottom: '2.5rem' }}>
+              
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #ef4444', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.4rem', color: '#0f172a', fontSize: '1.05rem', fontWeight: 700 }}>📱 Mobile Devices</h4>
+                <code style={{ background: '#fee2e2', color: '#991b1b', padding: '3px 8px', borderRadius: '4px', fontSize: '0.82rem', fontWeight: 700 }}>max-width: 480px</code>
+                <p style={{ fontSize: '0.82rem', color: '#64748b', marginTop: '0.6rem' }}>Single column layouts, larger tap targets, hidden sidebars.</p>
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #f59e0b', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.4rem', color: '#0f172a', fontSize: '1.05rem', fontWeight: 700 }}>📱 Tablets & iPads</h4>
+                <code style={{ background: '#fef3c7', color: '#92400e', padding: '3px 8px', borderRadius: '4px', fontSize: '0.82rem', fontWeight: 700 }}>min-width: 481px to 768px</code>
+                <p style={{ fontSize: '0.82rem', color: '#64748b', marginTop: '0.6rem' }}>2-column grids, collapsible navigation menus.</p>
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #10b981', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.4rem', color: '#0f172a', fontSize: '1.05rem', fontWeight: 700 }}>💻 Laptops & Notebooks</h4>
+                <code style={{ background: '#d1fae5', color: '#065f46', padding: '3px 8px', borderRadius: '4px', fontSize: '0.82rem', fontWeight: 700 }}>min-width: 769px to 1024px</code>
+                <p style={{ fontSize: '0.82rem', color: '#64748b', marginTop: '0.6rem' }}>3-column layouts, expanded sidebars, hover animations.</p>
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #3b82f6', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.4rem', color: '#0f172a', fontSize: '1.05rem', fontWeight: 700 }}>🖥️ Desktops & Monitors</h4>
+                <code style={{ background: '#dbeafe', color: '#1e40af', padding: '3px 8px', borderRadius: '4px', fontSize: '0.82rem', fontWeight: 700 }}>min-width: 1025px+</code>
+                <p style={{ fontSize: '0.82rem', color: '#64748b', marginTop: '0.6rem' }}>4-column container grids, fixed headers, max-width centering.</p>
+              </div>
+
+            </div>
+
+            {/* SECTION 2: SYNTAX EXAMPLES */}
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.8rem' }}>2. `@media` Syntax & Features</h3>
             <div className="code-example-box" style={{ marginBottom: '2rem' }}>
               <div className="code-pane">
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(mediaQueryCode, Prism.languages.css, 'css') }}></pre>
               </div>
             </div>
 
-            <h3 style={{ marginBottom: '1rem' }}>Common Media Features</h3>
-            <ul style={{ paddingLeft: '20px', lineHeight: '2', color: 'var(--text-secondary)' }}>
-              <li><strong>max-width:</strong> Applies styles when the viewport width is <em>less than or equal to</em> the value (Mobile First).</li>
-              <li><strong>min-width:</strong> Applies styles when the viewport width is <em>greater than or equal to</em> the value (Desktop First).</li>
-              <li><strong>orientation:</strong> Checks if the device is in portrait or landscape mode.</li>
-              <li><strong>media-type:</strong> <code>screen</code> (default), <code>print</code>, <code>all</code>.</li>
-            </ul>
+            {/* SECTION 3: INTERACTIVE SCREEN RESIZER SIMULATOR */}
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.6rem' }}>🎮 Interactive Screen Resizer Simulator</h3>
+            <p style={{ color: '#64748b', fontSize: '0.92rem', marginBottom: '1.5rem' }}>
+              Drag the viewport width slider or click a preset below to see how the layout box changes state live based on `@media` rules!
+            </p>
 
-            <div className="card-actions" style={{ marginTop: '2rem' }}>
+            <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '14px', border: '1px solid #cbd5e1', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                  <label style={{ fontWeight: 700, fontSize: '0.95rem', color: '#0f172a' }}>
+                    Simulated Screen Width: <span style={{ color: '#2563eb', fontSize: '1.1rem' }}>{simulatedWidth}px</span>
+                    <span style={{ marginLeft: '10px', fontSize: '0.82rem', color: '#64748b', fontWeight: 400 }}>
+                      ({simulatedWidth <= 480 ? '📱 Mobile View' : simulatedWidth <= 768 ? '📱 Tablet View' : simulatedWidth <= 1024 ? '💻 Laptop View' : '🖥️ Desktop View'})
+                    </span>
+                  </label>
+
+                  {/* Preset Buttons */}
+                  <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                    {[
+                      { label: '📱 Mobile (375px)', val: 375 },
+                      { label: '📱 Tablet (768px)', val: 768 },
+                      { label: '💻 Laptop (992px)', val: 992 },
+                      { label: '🖥️ Desktop (1280px)', val: 1280 }
+                    ].map(btn => (
+                      <button
+                        key={btn.val}
+                        onClick={() => setSimulatedWidth(btn.val)}
+                        style={{
+                          padding: '0.4rem 0.8rem',
+                          borderRadius: '6px',
+                          fontWeight: 700,
+                          fontSize: '0.82rem',
+                          cursor: 'pointer',
+                          border: simulatedWidth === btn.val ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                          background: simulatedWidth === btn.val ? '#2563eb' : 'white',
+                          color: simulatedWidth === btn.val ? 'white' : '#1e293b'
+                        }}
+                      >
+                        {btn.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <input 
+                  type="range" 
+                  min="320" 
+                  max="1400" 
+                  value={simulatedWidth} 
+                  onChange={(e) => setSimulatedWidth(Number(e.target.value))} 
+                  style={{ width: '100%' }} 
+                />
+
+              </div>
+            </div>
+
+            {/* Dynamic Viewport Canvas */}
+            <div style={{ background: '#0f172a', padding: '2rem 1.5rem', borderRadius: '14px', marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem', width: '100%', textAlign: 'left' }}>
+                Interactive Simulated Container Boundary ({simulatedWidth}px width container)
+              </div>
+
+              <motion.div
+                layout
+                style={{
+                  width: `${Math.min(100, (simulatedWidth / 1400) * 100)}%`,
+                  maxWidth: '100%',
+                  background: simulatedWidth <= 480 ? '#ef4444' : simulatedWidth <= 768 ? '#f59e0b' : simulatedWidth <= 1024 ? '#10b981' : '#3b82f6',
+                  color: 'white',
+                  padding: '1.5rem',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800 }}>
+                    {simulatedWidth <= 480 ? '📱 Mobile Layout' : simulatedWidth <= 768 ? '📱 Tablet Layout' : simulatedWidth <= 1024 ? '💻 Laptop Layout' : '🖥️ Desktop Layout'}
+                  </h4>
+                  <span style={{ background: 'rgba(255,255,255,0.2)', padding: '4px 10px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 700 }}>
+                    {simulatedWidth}px
+                  </span>
+                </div>
+
+                {/* Simulated Grid Cards inside */}
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: simulatedWidth <= 480 ? '1fr' : simulatedWidth <= 768 ? '1fr 1fr' : simulatedWidth <= 1024 ? '1fr 1fr 1fr' : 'repeat(4, 1fr)', 
+                  gap: '10px' 
+                }}>
+                  <div style={{ background: 'rgba(255,255,255,0.2)', padding: '12px', borderRadius: '6px', textAlign: 'center', fontWeight: 700, fontSize: '0.85rem' }}>Card 1</div>
+                  <div style={{ background: 'rgba(255,255,255,0.2)', padding: '12px', borderRadius: '6px', textAlign: 'center', fontWeight: 700, fontSize: '0.85rem' }}>Card 2</div>
+                  <div style={{ background: 'rgba(255,255,255,0.2)', padding: '12px', borderRadius: '6px', textAlign: 'center', fontWeight: 700, fontSize: '0.85rem' }}>Card 3</div>
+                  <div style={{ background: 'rgba(255,255,255,0.2)', padding: '12px', borderRadius: '6px', textAlign: 'center', fontWeight: 700, fontSize: '0.85rem' }}>Card 4</div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Code */}
+            <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
+              <div className="code-header">Active Media Query Rule Applied</div>
+              <div className="code-content">
+                <div className="code-pane" style={{ gridColumn: 'span 2' }}>
+                  <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(
+simulatedWidth <= 480 ? `/* 📱 Mobile Rule (<= 480px) */
+@media screen and (max-width: 480px) {
+  .app-grid {
+    grid-template-columns: 1fr; /* Single Column */
+    background-color: #ef4444;
+  }
+}` : simulatedWidth <= 768 ? `/* 📱 Tablet Rule (481px to 768px) */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+  .app-grid {
+    grid-template-columns: 1fr 1fr; /* 2 Columns */
+    background-color: #f59e0b;
+  }
+}` : simulatedWidth <= 1024 ? `/* 💻 Laptop Rule (769px to 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .app-grid {
+    grid-template-columns: 1fr 1fr 1fr; /* 3 Columns */
+    background-color: #10b981;
+  }
+}` : `/* 🖥️ Desktop Rule (> 1025px) */
+@media screen and (min-width: 1025px) {
+  .app-grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 Columns */
+    background-color: #3b82f6;
+  }
+}`, Prism.languages.css, 'css') }}></pre>
+                </div>
+              </div>
+            </div>
+
+            <div className="card-actions">
               <button className="btn btn-primary" onClick={() => handleContinue('playground')}>Continue (+10 XP)</button>
             </div>
           </div>

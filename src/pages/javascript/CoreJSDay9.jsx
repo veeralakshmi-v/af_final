@@ -65,6 +65,14 @@ export default function CoreJSDay9({ activeTab, onNavigate, openAITutor: _openAI
   const [useCapturing, setUseCapturing] = useState(false);
   const [activeStep, setActiveStep] = useState('');
 
+  // Event Types Tester interactive states
+  const [activeEvtTypeTab, setActiveEvtTypeTab] = useState('mouse');
+  const [evtLogs, setEvtLogs] = useState([]);
+  const [keyInputVal, setKeyInputVal] = useState('');
+  const [lastKeyEvent, setLastKeyEvent] = useState(null);
+  const [formInputVal, setFormInputVal] = useState('');
+  const [formStatus, setFormStatus] = useState('Idle (Focus or Edit field)');
+
   // BOM Monitor Mini Program States
   const [eventTrackerLogs, setEventTrackerLogs] = useState(["Tracker initiated. Try clicking, resizing, or hovering!"]);
   const [windowDimensions, setWindowDimensions] = useState({ w: window.innerWidth, h: window.innerHeight });
@@ -165,12 +173,7 @@ window.alert("Welcome to Day 9 Live Sandbox!");`);
       setEditorCode(`// HTML Attribute Handler Example
 // Equivalent to: <button onclick="alert('Clicked!')">Click</button>
 console.log("Listening to clicks...");`);
-    } else if (name === 'propagation') {
-      setEditorCode(`// Event propagation bubbling vs capturing
-// If parent click listener useCapture is true (third param), parent runs first!
-document.addEventListener("click", function() {
-  console.log("Document Clicked (Bubbling)");
-});`);
+
     } else if (name === 'listener') {
       setEditorCode(`// Adding Multiple Event Listeners to same element
 var btn = document.createElement("button");
@@ -216,22 +219,193 @@ window.setTimeout(function() {
               An <strong>Event Handler</strong> is JavaScript code associated with a particular tag element and event. It triggers whenever the user interacts with the page (e.g. click, keydown, hover).
             </p>
 
-            <h3 style={{ marginBottom: '1rem', color: '#1e293b' }}>Interactive Event Types</h3>
+            <h3 style={{ marginBottom: '1rem', color: '#1e293b' }}>Interactive Event Types &amp; Examples</h3>
             <p style={{ color: '#475569', marginBottom: '1.2rem', lineHeight: 1.6 }}>
-              Events fall into standard categories based on the user's action:
+              Events fall into standard categories based on the user's action. Below are the key event categories along with practical JavaScript code examples:
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
               {[
-                { type: 'Mouse Events', list: 'click, dblclick, mousemove, mouseover, mouseout', bg: '#eff6ff', border: '#bfdbfe', color: '#1e40af' },
-                { type: 'Keyboard Events', list: 'keydown, keypress, keyup', bg: '#ecfdf5', border: '#a7f3d0', color: '#065f46' },
-                { type: 'Form Events', list: 'submit, change, focus, blur', bg: '#fffbeb', border: '#fde68a', color: '#854d0e' },
-                { type: 'Window Events', list: 'load, resize, scroll', bg: '#fdf2f8', border: '#fbcfe8', color: '#9d174d' },
+                { 
+                  type: 'Mouse Events', 
+                  list: 'click, dblclick, mousemove, mouseover, mouseout', 
+                  code: `// Mouse Event Example\nelement.addEventListener("click", (e) => {\n  console.log("Clicked at X:" + e.clientX + " Y:" + e.clientY);\n});\nelement.addEventListener("dblclick", () => console.log("Double clicked!"));`,
+                  bg: '#eff6ff', border: '#bfdbfe', color: '#1e40af' 
+                },
+                { 
+                  type: 'Keyboard Events', 
+                  list: 'keydown, keypress, keyup', 
+                  code: `// Keyboard Event Example\ninput.addEventListener("keydown", (e) => {\n  console.log("Pressed key:", e.key, "Code:", e.code);\n});`,
+                  bg: '#ecfdf5', border: '#a7f3d0', color: '#065f46' 
+                },
+                { 
+                  type: 'Form Events', 
+                  list: 'submit, change, focus, blur, input', 
+                  code: `// Form Event Example\nform.addEventListener("submit", (e) => {\n  e.preventDefault(); // Prevents page reload\n  console.log("Submitted!");\n});`,
+                  bg: '#fffbeb', border: '#fde68a', color: '#854d0e' 
+                },
+                { 
+                  type: 'Window Events', 
+                  list: 'load, resize, scroll', 
+                  code: `// Window Event Example\nwindow.addEventListener("resize", () => {\n  console.log("Width: " + window.innerWidth);\n});`,
+                  bg: '#fdf2f8', border: '#fbcfe8', color: '#9d174d' 
+                },
               ].map(evt => (
-                <div key={evt.type} style={{ background: evt.bg, border: `1px solid ${evt.border}`, borderRadius: '10px', padding: '1rem' }}>
-                  <div style={{ fontWeight: 700, color: evt.color, marginBottom: '0.25rem' }}>{evt.type}</div>
-                  <div style={{ fontSize: '0.85rem', color: '#475569', fontFamily: 'monospace' }}>{evt.list}</div>
+                <div key={evt.type} style={{ background: evt.bg, border: `1px solid ${evt.border}`, borderRadius: '10px', padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div>
+                    <div style={{ fontWeight: 700, color: evt.color, marginBottom: '0.25rem', fontSize: '1rem' }}>{evt.type}</div>
+                    <div style={{ fontSize: '0.82rem', color: '#475569', fontFamily: 'monospace', marginBottom: '0.75rem' }}>{evt.list}</div>
+                  </div>
+                  <div style={{ background: '#0f172a', padding: '0.6rem', borderRadius: '6px', fontSize: '0.75rem' }}>
+                    <SyntaxHighlighter code={evt.code} />
+                  </div>
                 </div>
               ))}
+            </div>
+
+            {/* Live Interactive Event Types Sandbox */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '1.2rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <h4 style={{ color: '#1e293b', margin: 0, fontSize: '1.05rem', fontWeight: 700 }}>⚡ Interactive Live Event Tester</h4>
+                <div style={{ display: 'flex', gap: '0.3rem', background: '#e2e8f0', padding: '3px', borderRadius: '6px' }}>
+                  {[
+                    { id: 'mouse', label: 'Mouse' },
+                    { id: 'keyboard', label: 'Keyboard' },
+                    { id: 'form', label: 'Form' },
+                    { id: 'window', label: 'Window' },
+                  ].map(tab => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveEvtTypeTab(tab.id)}
+                      style={{
+                        padding: '0.25rem 0.75rem', borderRadius: '4px', border: 'none', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
+                        background: activeEvtTypeTab === tab.id ? '#ca8a04' : 'transparent',
+                        color: activeEvtTypeTab === tab.id ? '#fff' : '#475569', transition: 'all 0.2s ease'
+                      }}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.2rem', alignItems: 'start' }}>
+                {/* Active Interactive Widget */}
+                <div>
+                  {activeEvtTypeTab === 'mouse' && (
+                    <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px', padding: '1rem', textAlign: 'center' }}>
+                      <h5 style={{ margin: '0 0 0.5rem 0', color: '#1e40af' }}>Mouse Events Box</h5>
+                      <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.8rem' }}>Single click, double click, hover, or right click below!</p>
+                      <div
+                        onClick={(e) => setEvtLogs(prev => [`[click] at (${e.nativeEvent.offsetX}, ${e.nativeEvent.offsetY})`, ...prev.slice(0, 5)])}
+                        onDoubleClick={() => setEvtLogs(prev => [`[dblclick] Double Clicked!`, ...prev.slice(0, 5)])}
+                        onMouseEnter={() => setEvtLogs(prev => [`[mouseenter] Mouse entered box`, ...prev.slice(0, 5)])}
+                        onMouseLeave={() => setEvtLogs(prev => [`[mouseleave] Mouse left box`, ...prev.slice(0, 5)])}
+                        onContextMenu={(e) => { e.preventDefault(); setEvtLogs(prev => [`[contextmenu] Right clicked!`, ...prev.slice(0, 5)]); }}
+                        style={{
+                          background: '#fff', border: '2px dashed #3b82f6', borderRadius: '8px', padding: '1.5rem', cursor: 'pointer',
+                          fontWeight: 'bold', color: '#1d4ed8', userSelect: 'none'
+                        }}
+                      >
+                        🖱️ Click, Hover, or Right-Click Me
+                      </div>
+                    </div>
+                  )}
+
+                  {activeEvtTypeTab === 'keyboard' && (
+                    <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '8px', padding: '1rem' }}>
+                      <h5 style={{ margin: '0 0 0.5rem 0', color: '#065f46' }}>Keyboard Events Input</h5>
+                      <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.8rem' }}>Type keys inside the field below:</p>
+                      <input
+                        type="text"
+                        value={keyInputVal}
+                        onChange={(e) => setKeyInputVal(e.target.value)}
+                        onKeyDown={(e) => {
+                          setLastKeyEvent({ key: e.key, code: e.code });
+                          setEvtLogs(prev => [`[keydown] Key: "${e.key}" (Code: ${e.code})`, ...prev.slice(0, 5)]);
+                        }}
+                        onKeyUp={(e) => {
+                          setEvtLogs(prev => [`[keyup] Released: "${e.key}"`, ...prev.slice(0, 5)]);
+                        }}
+                        placeholder="Type something here..."
+                        style={{ width: '100%', padding: '0.6rem', borderRadius: '6px', border: '1px solid #a7f3d0', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}
+                      />
+                      {lastKeyEvent && (
+                        <div style={{ marginTop: '0.6rem', fontSize: '0.8rem', color: '#047857', background: '#fff', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid #a7f3d0' }}>
+                          Last Pressed: <strong>Key = "{lastKeyEvent.key}"</strong> | <strong>Code = "{lastKeyEvent.code}"</strong>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {activeEvtTypeTab === 'form' && (
+                    <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '8px', padding: '1rem' }}>
+                      <h5 style={{ margin: '0 0 0.5rem 0', color: '#854d0e' }}>Form Events Playground</h5>
+                      <form onSubmit={(e) => {
+                        e.preventDefault();
+                        setEvtLogs(prev => [`[submit] Form submitted! e.preventDefault() stopped reload.`, ...prev.slice(0, 5)]);
+                      }} style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                        <input
+                          type="text"
+                          value={formInputVal}
+                          onChange={(e) => {
+                            setFormInputVal(e.target.value);
+                            setEvtLogs(prev => [`[change/input] Value: "${e.target.value}"`, ...prev.slice(0, 5)]);
+                          }}
+                          onFocus={() => {
+                            setFormStatus('Focused 🎯');
+                            setEvtLogs(prev => [`[focus] Input gained focus`, ...prev.slice(0, 5)]);
+                          }}
+                          onBlur={() => {
+                            setFormStatus('Blurred 💤');
+                            setEvtLogs(prev => [`[blur] Input lost focus`, ...prev.slice(0, 5)]);
+                          }}
+                          placeholder="Click to focus / change text..."
+                          style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #fde68a', fontSize: '0.85rem' }}
+                        />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontSize: '0.8rem', color: '#b45309', fontWeight: 600 }}>Field Status: {formStatus}</span>
+                          <button type="submit" style={{ background: '#ca8a04', color: '#fff', border: 'none', padding: '0.4rem 1rem', borderRadius: '6px', fontWeight: 700, cursor: 'pointer', fontSize: '0.8rem' }}>
+                            Submit Form
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  )}
+
+                  {activeEvtTypeTab === 'window' && (
+                    <div style={{ background: '#fdf2f8', border: '1px solid #fbcfe8', borderRadius: '8px', padding: '1rem' }}>
+                      <h5 style={{ margin: '0 0 0.5rem 0', color: '#9d174d' }}>Window Events Monitor</h5>
+                      <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.8rem' }}>Try resizing your browser window or scrolling the page!</p>
+                      <div style={{ background: '#fff', padding: '0.75rem', borderRadius: '6px', border: '1px solid #fbcfe8', fontSize: '0.85rem', color: '#9d174d' }}>
+                        <div><strong>Window Width:</strong> {windowDimensions.w}px</div>
+                        <div><strong>Window Height:</strong> {windowDimensions.h}px</div>
+                      </div>
+                      <button onClick={() => setEvtLogs(prev => [`[resize] Current viewport: ${window.innerWidth}x${window.innerHeight}`, ...prev.slice(0, 5)])} style={{ marginTop: '0.6rem', background: '#9d174d', color: '#fff', border: 'none', padding: '0.35rem 0.8rem', borderRadius: '6px', fontSize: '0.78rem', cursor: 'pointer', fontWeight: 600 }}>
+                        Log Current Window Metrics
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Live Event Log Stream */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <h5 style={{ margin: 0, color: '#1e40af', fontSize: '0.88rem' }}>📋 Live Event Log Stream:</h5>
+                    <button onClick={() => setEvtLogs([])} style={{ background: '#cbd5e1', border: 'none', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>Clear</button>
+                  </div>
+                  <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '8px', minHeight: '140px', maxHeight: '180px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.8rem', color: '#38bdf8' }}>
+                    {evtLogs.length === 0 ? (
+                      <span style={{ color: '#64748b', fontStyle: 'italic' }}>Interact with the tester box on the left to see live event logs...</span>
+                    ) : (
+                      evtLogs.map((log, i) => (
+                        <div key={i} style={{ paddingBottom: '3px', borderBottom: '1px solid #1e293b' }}>
+                          <span style={{ color: '#fbbf24' }}>#{evtLogs.length - i}:</span> {log}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
 
             <h3 style={{ marginBottom: '1rem', color: '#1e293b' }}>Inline HTML Event Handler Attributes</h3>
@@ -244,332 +418,13 @@ window.setTimeout(function() {
           </div>
 
           <div style={{ marginTop: '2rem', textAlign: 'right' }}>
-            <button style={{ background: '#ca8a04', color: '#fff', border: 'none', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('propagation')}>
-              Next: Event Propagation →
+            <button style={{ background: '#ca8a04', color: '#fff', border: 'none', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('listeners')}>
+              Next: addEventListener() →
             </button>
           </div>
         </Section>
       )}
 
-      {/* ── TAB 2: PROPAGATION ───────────── */}
-      {activeTab === 'propagation' && (
-        <Section key="propagation" eyebrow="Day 9 • Propagation" title="Event Propagation (Bubbling vs Capturing)">
-          <div className="panel">
-            <p style={{ marginBottom: '1.5rem', color: '#475569', lineHeight: 1.7 }}>
-              Event propagation is the process by which an event travels through the DOM tree. When an element is clicked, the event ripples through three phases:
-            </p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.2rem', marginBottom: '2rem' }}>
-              {[
-                { name: '1. Capturing Phase', desc: 'The event travels down from the window object, through parents, to the target node.' },
-                { name: '2. Target Phase', desc: 'The event reaches the clicked element itself where handlers run.' },
-                { name: '3. Bubbling Phase', desc: 'The event bubbles back up from the target element to the window. This is the default.' },
-              ].map(phase => (
-                <div key={phase.name} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1rem' }}>
-                  <h4 style={{ color: '#ca8a04', margin: '0 0 0.5rem 0' }}>{phase.name}</h4>
-                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>{phase.desc}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Interactive Propagation Playground */}
-            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '12px', padding: '1.2rem' }}>
-              <h4 style={{ color: '#1e40af', marginTop: 0, marginBottom: '0.5rem' }}>🌊 Bubbling vs. Capturing Sandbox</h4>
-              <p style={{ fontSize: '0.85rem', color: '#475569', marginBottom: '1rem' }}>
-                Toggle capturing phase. Clicking "Click Child Button" bubbles or captures click handlers.
-              </p>
-
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
-                <label style={{ fontSize: '0.88rem', fontWeight: 600, color: '#475569' }}>
-                  <input type="checkbox" checked={useCapturing} onChange={e => { setUseCapturing(e.target.checked); setPropagationLogs([]); }} style={{ marginRight: '0.5rem' }} />
-                  Enable Capturing (useCapture = true)
-                </label>
-                <button onClick={() => setPropagationLogs([])} style={{ background: '#64748b', color: '#fff', border: 'none', padding: '0.3rem 0.8rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>Clear logs</button>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.2rem', alignItems: 'start' }}>
-                {/* Interactive Demo */}
-                <div 
-                  onClick={() => {
-                    if (!useCapturing) {
-                      handleParentClick('bubbling');
-                    }
-                  }}
-                  onClickCapture={() => {
-                    if (useCapturing) {
-                      handleParentClick('capturing');
-                    }
-                  }}
-                  style={{ background: '#bfdbfe', border: '2px solid #1d4ed8', padding: '2.5rem', borderRadius: '8px', cursor: 'pointer', textAlign: 'center' }}
-                >
-                  <span style={{ display: 'block', fontWeight: 700, color: '#1d4ed8', marginBottom: '1rem', fontSize: '0.9rem' }}>PARENT CONTAINER</span>
-                  
-                  <button onClick={() => {
-                    handleChildClick();
-                  }} style={{ background: '#3b82f6', color: '#fff', border: 'none', padding: '0.6rem 1.5rem', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
-                    Click Child Button
-                  </button>
-                </div>
-
-                {/* Logs */}
-                <div>
-                  <h5 style={{ margin: '0 0 0.5rem 0', color: '#1e40af' }}>Propagation Trigger Order:</h5>
-                  <div style={{ background: '#fff', border: '1px solid #cbd5e1', padding: '0.8rem', borderRadius: '6px', minHeight: '120px', fontSize: '0.85rem' }}>
-                    {propagationLogs.length === 0 ? (
-                      <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>Logs empty. Click the button above.</span>
-                    ) : (
-                      propagationLogs.map((log, idx) => <div key={idx} style={{ color: '#ca8a04', fontWeight: 600, paddingBottom: '4px' }}>{idx + 1}. {log}</div>)
-                    )}
-                  </div>
-                </div>
-
-                {/* Source Code */}
-                <div>
-                  <h5 style={{ margin: '0 0 0.5rem 0', color: '#1e293b' }}>💻 Source Code:</h5>
-                  <div style={{ background: '#0f172a', padding: '0.75rem', borderRadius: '8px', overflowY: 'auto', maxHeight: '220px' }}>
-                    <SyntaxHighlighter code={useCapturing ? `// HTML
-<div id="parent">
-  <button id="child">Click Me</button>
-</div>
-
-<script>
-let parent = document.getElementById("parent");
-let child = document.getElementById("child");
-
-// 1. Parent intercepts first in Capture Phase (3rd param is true)
-parent.addEventListener("click", function() {
-  console.log("1. Parent clicked (Capturing)");
-}, true);
-
-// 2. Child runs second
-child.addEventListener("click", function() {
-  console.log("2. Child clicked (Target)");
-});
-</script>` : `// HTML
-<div id="parent">
-  <button id="child">Click Me</button>
-</div>
-
-<script>
-let parent = document.getElementById("parent");
-let child = document.getElementById("child");
-
-// 1. Child fires first (Target Phase)
-child.addEventListener("click", function() {
-  console.log("1. Child clicked (Target)");
-});
-
-// 2. Parent fires second (Bubbling Phase - default)
-parent.addEventListener("click", function() {
-  console.log("2. Parent clicked (Bubbling)");
-});
-</script>`} />
-                  </div>
-                  {useCapturing ? (
-                    <p style={{ marginTop: '0.75rem', fontSize: '0.82rem', color: '#475569', lineHeight: 1.5, background: '#f8fafc', padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1', margin: '0.75rem 0 0 0' }}>
-                      <strong>How it works:</strong> Setting the third parameter to <code>true</code> means <strong>"Parent goes first!"</strong>. The parent catches the click event on its way down to the child, so parent runs first and child runs second.
-                    </p>
-                  ) : (
-                    <p style={{ marginTop: '0.75rem', fontSize: '0.82rem', color: '#475569', lineHeight: 1.5, background: '#f8fafc', padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1', margin: '0.75rem 0 0 0' }}>
-                      <strong>How it works:</strong> By default (no third parameter), JavaScript uses <strong>"Child goes first!"</strong> (Bubbling). The child button runs its click event first, and then the event bubbles up to run the parent container's click event second.
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Detailed Explanation Content */}
-          <div style={{ marginTop: '2.5rem', background: '#ffffff', borderRadius: '12px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
-            <h3 style={{ color: '#0f172a', borderBottom: '2px solid #e2e8f0', paddingBottom: '0.75rem', marginBottom: '1.5rem', fontSize: '1.4rem', fontWeight: 700 }}>
-              💡 Simple Guide to Event Propagation
-            </h3>
-            
-            {/* What is Event Propagation in Simple Terms */}
-            <div style={{ marginBottom: '2rem' }}>
-              <h4 style={{ color: '#1e293b', fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.6rem' }}>🤔 What is Event Propagation in Simple Terms?</h4>
-              <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.7, margin: 0 }}>
-                Imagine you have two nested gift boxes: an <strong>Outer Box</strong> (Parent Container) and an <strong>Inner Box</strong> (Child Button). 
-                If you poke the Inner Box with a stick, you are technically poking the Outer Box as well because the inner box is inside it. 
-                In web development, this "poke" is a click event. How this click travels through the parent and child elements is called <strong>Event Propagation</strong>.
-              </p>
-            </div>
-
-            {/* Why Do We Need Event Propagation */}
-            <div style={{ marginBottom: '2rem' }}>
-              <h4 style={{ color: '#1e293b', fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.6rem' }}>🚀 Why Do We Need Event Propagation?</h4>
-              <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '1rem' }}>
-                Event propagation is extremely useful for two main reasons:
-              </p>
-              <ul style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.7, paddingLeft: '20px', margin: 0 }}>
-                <li style={{ marginBottom: '0.5rem' }}>
-                  <strong>Event Delegation (Efficiency)</strong>: Instead of adding click listeners to 100 individual buttons, you can add just <em>one</em> click listener to their parent container. When any button is clicked, the event bubbles up to the parent, where you can handle it. This saves memory and keeps code clean.
-                </li>
-                <li>
-                  <strong>Event Interception (Control)</strong>: By using the Capturing phase, you can catch, log, or stop events on a parent level before they even reach the child buttons.
-                </li>
-              </ul>
-            </div>
-
-            {/* Visual Graphic Representation of Event Flow */}
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
-              <h4 style={{ color: '#0f172a', margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                🗺️ How Event Propagation is Processed (Event Flow Diagram)
-              </h4>
-              <p style={{ color: '#64748b', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-                Below is the visual lifecycle of an event. When you click the <strong>Target</strong> element, the event cycles through all three phases:
-              </p>
-              
-              {/* CSS Flow Diagram */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', maxWidth: '600px', margin: '0 auto', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                {/* Level 1: Window */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  background: activeStep === 'window-cap' ? '#fef3c7' : (activeStep === 'window-bub' ? '#e0f2fe' : '#f1f5f9'),
-                  border: activeStep === 'window-cap' ? '2px solid #d97706' : (activeStep === 'window-bub' ? '2px solid #0284c7' : '1px solid #cbd5e1'),
-                  boxShadow: activeStep === 'window-cap' ? '0 0 12px rgba(217,119,6,0.4)' : (activeStep === 'window-bub' ? '0 0 12px rgba(2,132,199,0.4)' : 'none'),
-                  transition: 'all 0.3s ease',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '6px'
-                }}>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#475569' }}>Window</span>
-                  <div style={{ display: 'flex', gap: '2rem', fontSize: '0.78rem' }}>
-                    <span style={{ color: activeStep === 'window-cap' ? '#b45309' : '#d97706', fontWeight: 700 }}>1. Start Capturing ↓</span>
-                    <span style={{ color: activeStep === 'window-bub' ? '#0369a1' : '#0284c7', fontWeight: 700 }}>3. Finish Bubbling ↑</span>
-                  </div>
-                </div>
-                {/* Arrow down and up */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 2.5rem', color: '#94a3b8', fontSize: '0.9rem' }}>
-                  <span>↓</span>
-                  <span>↑</span>
-                </div>
-                {/* Level 2: Document */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  background: activeStep === 'doc-cap' ? '#fef3c7' : (activeStep === 'doc-bub' ? '#e0f2fe' : '#f1f5f9'),
-                  border: activeStep === 'doc-cap' ? '2px solid #d97706' : (activeStep === 'doc-bub' ? '2px solid #0284c7' : '1px solid #cbd5e1'),
-                  boxShadow: activeStep === 'doc-cap' ? '0 0 12px rgba(217,119,6,0.4)' : (activeStep === 'doc-bub' ? '0 0 12px rgba(2,132,199,0.4)' : 'none'),
-                  transition: 'all 0.3s ease',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '6px'
-                }}>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#475569' }}>Document</span>
-                  <div style={{ display: 'flex', gap: '2rem', fontSize: '0.78rem' }}>
-                    <span style={{ color: activeStep === 'doc-cap' ? '#b45309' : '#d97706', fontWeight: activeStep === 'doc-cap' ? 700 : 400 }}>Capturing Phase ↓</span>
-                    <span style={{ color: activeStep === 'doc-bub' ? '#0369a1' : '#0284c7', fontWeight: activeStep === 'doc-bub' ? 700 : 400 }}>Bubbling Phase ↑</span>
-                  </div>
-                </div>
-                {/* Arrow down and up */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 2.5rem', color: '#94a3b8', fontSize: '0.9rem' }}>
-                  <span>↓</span>
-                  <span>↑</span>
-                </div>
-                {/* Level 3: Parent Container */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  background: activeStep === 'parent-cap' ? '#fef3c7' : (activeStep === 'parent-bub' ? '#e0f2fe' : '#eff6ff'),
-                  border: activeStep === 'parent-cap' ? '2px solid #d97706' : (activeStep === 'parent-bub' ? '2px solid #0284c7' : '1px solid #bfdbfe'),
-                  boxShadow: activeStep === 'parent-cap' ? '0 0 12px rgba(217,119,6,0.4)' : (activeStep === 'parent-bub' ? '0 0 12px rgba(2,132,199,0.4)' : 'none'),
-                  transition: 'all 0.3s ease',
-                  padding: '0.6rem 1rem',
-                  borderRadius: '6px'
-                }}>
-                  <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#1e40af' }}>Parent Container &lt;div&gt;</span>
-                  <div style={{ display: 'flex', gap: '2rem', fontSize: '0.78rem' }}>
-                    <span style={{ color: activeStep === 'parent-cap' ? '#b45309' : '#d97706', fontWeight: 700 }}>Captured Here</span>
-                    <span style={{ color: activeStep === 'parent-bub' ? '#0369a1' : '#0284c7', fontWeight: 700 }}>Bubbled Here</span>
-                  </div>
-                </div>
-                {/* Arrow down and up */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 2.5rem', color: '#94a3b8', fontSize: '0.9rem' }}>
-                  <span>↓</span>
-                  <span>↑</span>
-                </div>
-                {/* Level 4: Child Target */}
-                <div style={{
-                  background: activeStep === 'target' ? '#d1fae5' : '#ecfdf5',
-                  border: activeStep === 'target' ? '2px solid #10b981' : '1px solid #a7f3d0',
-                  boxShadow: activeStep === 'target' ? '0 0 16px rgba(16,185,129,0.5)' : 'none',
-                  transform: activeStep === 'target' ? 'scale(1.02)' : 'scale(1)',
-                  transition: 'all 0.3s ease',
-                  padding: '0.8rem 1rem',
-                  borderRadius: '6px',
-                  textAlign: 'center'
-                }}>
-                  <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#065f46', display: 'block', marginBottom: '0.2rem' }}>
-                    Child Button &lt;button&gt; (Target Element)
-                  </span>
-                  <span style={{ fontSize: '0.75rem', background: activeStep === 'target' ? '#059669' : '#34d399', color: activeStep === 'target' ? '#ffffff' : '#065f46', padding: '0.15rem 0.6rem', borderRadius: '10px', fontWeight: 700, display: 'inline-block', transition: 'all 0.3s ease' }}>
-                    2. Target Phase (Fires Click Event)
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-              {/* Bubbling Card */}
-              <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '1.5rem' }}>
-                <h4 style={{ color: '#0284c7', marginTop: 0, marginBottom: '0.8rem', fontSize: '1.15rem' }}>🌊 1. Event Bubbling (Default)</h4>
-                <p style={{ fontSize: '0.9rem', color: '#475569', lineHeight: 1.6, marginBottom: '1rem' }}>
-                  The event starts at the target (the child button) and bubbles <strong>upwards</strong> to parent elements.
-                </p>
-                <div style={{ background: '#0f172a', padding: '0.8rem', borderRadius: '6px', overflowX: 'auto', fontSize: '0.82rem', marginBottom: '1rem' }}>
-                  <code style={{ color: '#38bdf8', fontFamily: 'monospace' }}>
-                    {`// Child fires first, then Parent\n`}
-                    {`child.addEventListener("click", () => {\n`}
-                    {`  console.log("Child clicked");\n`}
-                    {`});\n\n`}
-                    {`parent.addEventListener("click", () => {\n`}
-                    {`  console.log("Parent clicked");\n`}
-                    {`});`}
-                  </code>
-                </div>
-                <div style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: 600 }}>
-                  Output: 1. Child clicked → 2. Parent clicked
-                </div>
-              </div>
-
-              {/* Capturing Card */}
-              <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '1.5rem' }}>
-                <h4 style={{ color: '#0d9488', marginTop: 0, marginBottom: '0.8rem', fontSize: '1.15rem' }}>🪂 2. Event Capturing (Trickle Down)</h4>
-                <p style={{ fontSize: '0.9rem', color: '#475569', lineHeight: 1.6, marginBottom: '1rem' }}>
-                  The event travels <strong>downwards</strong> from the parent to the target element. Enabled by passing <code>true</code> as the 3rd parameter.
-                </p>
-                <div style={{ background: '#0f172a', padding: '0.8rem', borderRadius: '6px', overflowX: 'auto', fontSize: '0.82rem', marginBottom: '1rem' }}>
-                  <code style={{ color: '#38bdf8', fontFamily: 'monospace' }}>
-                    {`// Parent intercepts first during capture phase\n`}
-                    {`parent.addEventListener("click", () => {\n`}
-                    {`  console.log("Parent clicked");\n`}
-                    {`}, true); // <--- capture = true\n\n`}
-                    {`child.addEventListener("click", () => {\n`}
-                    {`  console.log("Child clicked");\n`}
-                    {`});`}
-                  </code>
-                </div>
-                <div style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: 600 }}>
-                  Output: 1. Parent clicked → 2. Child clicked
-                </div>
-              </div>
-            </div>
-
-            {/* Precedence/Stop Propagation Note */}
-            <div style={{ background: '#fffbeb', borderLeft: '4px solid #d97706', padding: '1rem 1.25rem', borderRadius: '6px', fontSize: '0.92rem', color: '#78350f', lineHeight: 1.6 }}>
-              💡 <strong>Stopping Propagation:</strong> You can prevent an event from bubbling up or capturing down by calling <code>event.stopPropagation()</code> inside any event listener.
-            </div>
-          </div>
-
-          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
-            <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day9', 'handlers')}>← Back</button>
-            <button style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('listeners')}>Next: Event Listeners →</button>
-          </div>
-        </Section>
-      )}
 
       {/* ── TAB 3: LISTENERS ─────────────── */}
       {activeTab === 'listeners' && (
@@ -608,7 +463,7 @@ btn.removeEventListener("click", myAlert);`} />
           </div>
 
           <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
-            <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day9', 'propagation')}>← Back</button>
+            <button style={{ color: '#ca8a04', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #ca8a04' }} onClick={() => onNavigate('core_js_day9', 'handlers')}>← Back</button>
             <button style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('bom_core')}>Next: BOM core →</button>
           </div>
         </Section>
@@ -782,7 +637,6 @@ logEvent("Loaded platform: " + device);`} />
             <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
               {[
                 ['handler',      '🎯 HTML Event Handlers'],
-                ['propagation',  '🌊 Bubble vs Capture'],
                 ['listener',     '➕ addEventListener'],
                 ['bom',          '💻 BOM Window metrics'],
                 ['timers',       '⏰ Timeout timers'],
@@ -928,6 +782,64 @@ logEvent("Loaded platform: " + device);`} />
                   Score: {score}/{quizQuestions.length} — {score === 5 ? '🏆 Perfect!' : score >= 4 ? '🎉 Great job!' : score >= 3 ? '👍 Good effort!' : '📚 Keep practising!'}
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Topic-Wise Interview Questions */}
+          <div className="panel" style={{ marginBottom: '1.5rem', background: '#f8fafc', border: '1px solid #cbd5e1' }}>
+            <h3 style={{ marginBottom: '1.2rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              💬 Day 9 Topic-Wise Technical Interview Questions & Answers
+            </h3>
+            <div style={{ display: 'grid', gap: '1rem' }}>
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Event Propagation (Bubbling vs Capturing vs Delegation)
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: Explain Event Bubbling vs Event Capturing, and how Event Delegation improves memory efficiency?</strong><br />
+                  <strong>Answer:</strong> Event Capturing travels down from the <code>window</code> to the target element (3rd param of <code>addEventListener</code> set to <code>true</code>). Event Bubbling travels upward from target to <code>window</code>. Event Delegation attaches a single listener on a common parent, utilizing <code>event.target</code> to handle dynamically added child elements without binding individual listeners to each node.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: event.stopPropagation() vs event.preventDefault()
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What is the exact difference between <code>event.stopPropagation()</code> and <code>event.preventDefault()</code>?</strong><br />
+                  <strong>Answer:</strong> <code>event.stopPropagation()</code> halts the event from bubbling up to parent ancestors. <code>event.preventDefault()</code> cancels the browser's default native browser action (such as preventing a form submit refresh or anchor link navigation), but does NOT stop event propagation.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Browser Storage (localStorage vs sessionStorage vs Cookies)
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: Compare storage capacity, expiration, and server header transmission for LocalStorage, SessionStorage, and Cookies?</strong><br />
+                  <strong>Answer:</strong> <code>localStorage</code> stores ~5MB persistently until manually deleted. <code>sessionStorage</code> stores ~5MB cleared when the browser tab closes. Cookies store ~4KB, support expiration dates, and are sent automatically in HTTP headers with every request to the server.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Debouncing vs Throttling
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What is the difference between Debouncing and Throttling in event handling?</strong><br />
+                  <strong>Answer:</strong> <strong>Debouncing</strong> delays function execution until a specified delay has elapsed since the <em>last</em> event call (ideal for search input auto-complete). <strong>Throttling</strong> enforces a maximum rate limit, executing the callback at most once per fixed time interval (ideal for scroll or window resize handlers).
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: BOM Timers (setTimeout vs setInterval Minimum Delay)
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: Why does <code>setTimeout(fn, 0)</code> not execute immediately in 0ms?</strong><br />
+                  <strong>Answer:</strong> <code>setTimeout(fn, 0)</code> puts the callback into the Macrotask Callback Queue. The browser must wait for the current Call Stack to clear completely and process pending microtasks before the Event Loop can dequeue and execute the timer callback (HTML spec also enforces a 4ms minimum nesting delay).
+                </p>
+              </div>
             </div>
           </div>
 

@@ -984,6 +984,64 @@ console.log(x);   // function call statement`} />
             </div>
           </div>
 
+          {/* Topic-Wise Interview Questions */}
+          <div className="panel" style={{ marginBottom: '1.5rem', background: '#f8fafc', border: '1px solid #cbd5e1' }}>
+            <h3 style={{ marginBottom: '1.2rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              💬 Day 2 Topic-Wise Technical Interview Questions & Answers
+            </h3>
+            <div style={{ display: 'grid', gap: '1rem' }}>
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Arithmetic & Assignment Operators
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What is the difference between Prefix Increment (<code>++x</code>) and Postfix Increment (<code>x++</code>)?</strong><br />
+                  <strong>Answer:</strong> Prefix increment (<code>++x</code>) increments the variable first and returns the newly incremented value. Postfix increment (<code>x++</code>) evaluates and returns the current value first, then increments the variable afterwards.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Logical Operators & Short-Circuit Evaluation
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What is Short-Circuit Evaluation in JavaScript logical operators (<code>&&</code>, <code>||</code>, <code>??</code>)?</strong><br />
+                  <strong>Answer:</strong> Logical <code>&&</code> stops and returns the first falsy operand encountered. Logical <code>||</code> returns the first truthy operand. Nullish Coalescing (<code>??</code>) returns the right-hand operand only if the left-hand operand is strictly <code>null</code> or <code>undefined</code> (unlike <code>||</code> which coerces <code>0</code> or <code>""</code> to falsy).
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Bitwise & Ternary Operators
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: How does the bitwise XOR (<code>^</code>) operator work and how can it be used to swap two numbers without a temporary variable?</strong><br />
+                  <strong>Answer:</strong> Bitwise XOR operates on 32-bit binary representations, returning 1 where corresponding bits differ. Two numbers can be swapped using: <code>a = a ^ b; b = a ^ b; a = a ^ b;</code> without allocating temporary memory.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Equality Operator Coercion (`[] == ![]`)
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: Why does <code>[] == ![]</code> evaluate to <code>true</code> in JavaScript?</strong><br />
+                  <strong>Answer:</strong> <code>![]</code> evaluates to <code>false</code> (since an array is truthy). So the comparison becomes <code>[] == false</code>. To compare an Object with a Boolean under loose equality, JavaScript coerces both sides to numbers: <code>Number([])</code> becomes <code>0</code> and <code>Number(false)</code> becomes <code>0</code>. Since <code>0 === 0</code>, it yields <code>true</code>.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Operator Precedence & Associativity
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What is the difference between Left-to-Right and Right-to-Left operator associativity in JavaScript?</strong><br />
+                  <strong>Answer:</strong> Most operators (like <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>) have left-to-right associativity (<code>a - b - c</code> is evaluated as <code>(a - b) - c</code>). However, assignment operators (<code>=</code>, <code>+=</code>) and exponentiation (<code>**</code>) have right-to-left associativity (<code>a = b = 5</code> is evaluated as <code>a = (b = 5)</code>).
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Assignments */}
           <div className="panel" style={{ background: '#fffbeb', border: '1px solid #fde68a' }}>
             <h3 style={{ marginBottom: '1rem', color: '#92400e', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

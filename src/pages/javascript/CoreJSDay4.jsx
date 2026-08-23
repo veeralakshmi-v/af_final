@@ -795,6 +795,64 @@ console.log(filtered);`} />
             </div>
           </div>
 
+          {/* Topic-Wise Interview Questions */}
+          <div className="panel" style={{ marginBottom: '1.5rem', background: '#f8fafc', border: '1px solid #cbd5e1' }}>
+            <h3 style={{ marginBottom: '1.2rem', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              💬 Day 4 Topic-Wise Technical Interview Questions & Answers
+            </h3>
+            <div style={{ display: 'grid', gap: '1rem' }}>
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: for...in vs for...of Loops
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What is the key difference between <code>for...in</code> and <code>for...of</code> loops in JavaScript?</strong><br />
+                  <strong>Answer:</strong> <code>for...in</code> iterates over the <em>enumerable keys/property names</em> of an object or array (including prototype chain keys). <code>for...of</code> iterates over the <em>values</em> of an iterable data structure (like Arrays, Strings, Sets, and Maps), ignoring object keys.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: break vs continue vs return inside forEach()
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: Why can't you use <code>break</code> or <code>continue</code> statements inside an Array <code>.forEach()</code> loop?</strong><br />
+                  <strong>Answer:</strong> <code>.forEach()</code> expects a callback function. <code>break</code> and <code>continue</code> are loop control keywords valid only inside native loop blocks (<code>for</code>/<code>while</code>). Using <code>return</code> inside a <code>.forEach()</code> callback only exits the current callback invocation for that item, without stopping iteration for remaining elements.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Loop Closure Traps (var in for loop)
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: Why does <code>for (var i = 0; i &lt; 3; i++) &#123; setTimeout(() =&gt; console.log(i), 1000); &#125;</code> print 3 three times?</strong><br />
+                  <strong>Answer:</strong> Because <code>var</code> is function-scoped, all 3 iterations share the exact same variable binding <code>i</code> in memory. By the time the async <code>setTimeout</code> callbacks execute after 1 second, the loop has already completed and <code>i</code> equals 3. Using <code>let i</code> creates a fresh block-scoped binding for each iteration.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: while vs do...while Loops
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: What is the main structural difference between a <code>while</code> loop and a <code>do...while</code> loop?</strong><br />
+                  <strong>Answer:</strong> A <code>while</code> loop tests its condition <em>before</em> executing the loop body (entry-controlled loop), so it may execute 0 times if initial condition is false. A <code>do...while</code> loop tests its condition <em>after</em> executing the loop body (exit-controlled loop), guaranteeing execution at least once.
+                </p>
+              </div>
+
+              <div style={{ background: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Non-Blocking Loop Chunking
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  <strong>Q: How can processing a large array with 1,000,000 items be prevented from freezing the browser UI thread?</strong><br />
+                  <strong>Answer:</strong> By splitting the dataset into smaller batches (e.g. 1,000 items per chunk) and scheduling consecutive chunks using <code>setTimeout(processChunk, 0)</code> or <code>requestAnimationFrame()</code>, yielding execution back to the browser event loop between chunks.
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Assignments */}
           <div className="panel" style={{ background: '#fffbeb', border: '1px solid #fde68a' }}>
             <h3 style={{ marginBottom: '1rem', color: '#92400e', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

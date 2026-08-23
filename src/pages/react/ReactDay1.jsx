@@ -87,6 +87,7 @@ export default function ReactDay1({ activeTab, onNavigate }) {
   const [vdomList, setVdomList] = useState(['Item 1', 'Item 2', 'Item 3']);
   const [activeLifecycleStage, setActiveLifecycleStage] = useState('mounting');
   const [zoomedImage, setZoomedImage] = useState(null);
+  const [vdomStep, setVdomStep] = useState(1);
   
   // JSX Playground states
   const [jsxUserText, setJsxUserText] = useState('Student');
@@ -228,27 +229,119 @@ export default function ReactDay1({ activeTab, onNavigate }) {
               Traditional JavaScript applications directly manipulate the browser's Document Object Model (DOM) to update the interface. In contrast, React utilizes a lightweight copy of the DOM (Virtual DOM) in memory to run reconciliation checks before updating elements.
             </p>
 
-            <div className="grid-2col" style={{ margin: '2rem 0' }}>
-              <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '1.5rem' }}>
-                <h4 style={{ color: '#ef4444', fontWeight: 800, marginTop: 0, marginBottom: '0.8rem' }}>
+            <div className="grid-2col" style={{ margin: '2rem 0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.2rem' }}>
+              <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '16px', padding: '1.5rem' }}>
+                <h4 style={{ color: '#ef4444', fontWeight: 800, marginTop: 0, marginBottom: '0.8rem', fontSize: '1.15rem' }}>
                   Real (Actual) DOM
                 </h4>
-                <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '0.6rem', color: '#475569' }}>
                   <li>Real DOM is the actual structure represented in the User Interface.</li>
                   <li>The Real DOM (Document Object Model) represents the structure of an HTML document in the form of a tree, where each node corresponds to an element in the document.</li>
                   <li>Direct updates to the Real DOM are slow and force the browser to recalculate element sizes, coordinates, and trigger a repaint of the page layout.</li>
                 </ul>
               </div>
 
-              <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '1.5rem' }}>
-                <h4 style={{ color: '#10b981', fontWeight: 800, marginTop: 0, marginBottom: '0.8rem' }}>
+              <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '16px', padding: '1.5rem' }}>
+                <h4 style={{ color: '#10b981', fontWeight: 800, marginTop: 0, marginBottom: '0.8rem', fontSize: '1.15rem' }}>
                   Virtual DOM
                 </h4>
-                <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '0.6rem', color: '#475569' }}>
                   <li>A virtual DOM object is the same as a real DOM object, except that it is a lightweight copy.</li>
                   <li>This means that it cannot manipulate on-screen elements.</li>
                   <li>Moreover, upon any change of a property, it only updates the corresponding nodes and not the entire tree.</li>
                 </ul>
+              </div>
+            </div>
+
+            {/* Feature Comparison Table */}
+            <h4 style={{ color: '#1e293b', marginBottom: '0.8rem', fontWeight: 700, fontSize: '1.1rem' }}>📊 Feature Comparison Table</h4>
+            <div style={{ overflowX: 'auto', marginBottom: '2rem' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
+                <thead>
+                  <tr style={{ background: '#f8fafc', borderBottom: '2px solid #cbd5e1', textAlign: 'left' }}>
+                    <th style={{ padding: '0.6rem 1rem', color: '#1e293b' }}>Feature</th>
+                    <th style={{ padding: '0.6rem 1rem', color: '#ef4444' }}>Real (Actual) DOM</th>
+                    <th style={{ padding: '0.6rem 1rem', color: '#10b981' }}>Virtual DOM</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                    <td style={{ padding: '0.6rem 1rem', fontWeight: 600 }}>Nature</td>
+                    <td style={{ padding: '0.6rem 1rem' }}>Actual UI elements rendered on screen</td>
+                    <td style={{ padding: '0.6rem 1rem' }}>Lightweight JavaScript object in memory</td>
+                  </tr>
+                  <tr style={{ borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
+                    <td style={{ padding: '0.6rem 1rem', fontWeight: 600 }}>Updates Speed</td>
+                    <td style={{ padding: '0.6rem 1rem' }}>Slower (triggers layout reflow &amp; repaint)</td>
+                    <td style={{ padding: '0.6rem 1rem' }}>Faster (modifies memory objects instantly)</td>
+                  </tr>
+                  <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                    <td style={{ padding: '0.6rem 1rem', fontWeight: 600 }}>Direct UI Access</td>
+                    <td style={{ padding: '0.6rem 1rem' }}>Directly updates elements on screen</td>
+                    <td style={{ padding: '0.6rem 1rem' }}>Cannot alter on-screen elements directly</td>
+                  </tr>
+                  <tr style={{ borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
+                    <td style={{ padding: '0.6rem 1rem', fontWeight: 600 }}>Efficiency</td>
+                    <td style={{ padding: '0.6rem 1rem' }}>Rebuilds entire element tree / large sections</td>
+                    <td style={{ padding: '0.6rem 1rem' }}>Diffing algorithm updates only changed nodes</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Explanation Workflow Diagram */}
+            <h4 style={{ color: '#1e293b', marginBottom: '0.8rem', fontWeight: 700, fontSize: '1.1rem' }}>🗺️ Virtual DOM Update Workflow Diagram</h4>
+            <p style={{ color: '#475569', fontSize: '0.88rem', marginBottom: '1.2rem', lineHeight: 1.6 }}>
+              Click through the steps below to see how state changes trigger Virtual DOM diffing and update the Real DOM efficiently:
+            </p>
+
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.2rem' }}>
+                {[
+                  { id: 1, label: '1. State Change' },
+                  { id: 2, label: '2. New VDOM' },
+                  { id: 3, label: '3. Diffing' },
+                  { id: 4, label: '4. Reconciliation' },
+                  { id: 5, label: '5. Real DOM Patch' },
+                ].map(step => (
+                  <button
+                    key={step.id}
+                    onClick={() => setVdomStep(step.id)}
+                    style={{
+                      padding: '0.4rem 0.8rem', borderRadius: '6px', border: 'none', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer',
+                      background: vdomStep === step.id ? '#2563eb' : '#e2e8f0',
+                      color: vdomStep === step.id ? '#fff' : '#475569', transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {step.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Workflow Graphic Container */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', maxWidth: '650px', margin: '0 auto' }}>
+                {[
+                  { id: 1, title: 'Step 1: User Action / State Change', desc: 'A user clicks a button or new data is fetched from an API.', color: '#3b82f6', bg: '#eff6ff' },
+                  { id: 2, title: 'Step 2: New Virtual DOM Created', desc: 'A lightweight JS copy of the entire DOM tree is created in memory instantly.', color: '#10b981', bg: '#ecfdf5' },
+                  { id: 3, title: 'Step 3: Diffing Algorithm Executed', desc: 'React compares the New Virtual DOM with the Previous Virtual DOM snapshot.', color: '#f59e0b', bg: '#fffbeb' },
+                  { id: 4, title: 'Step 4: Pinpoint Changed Nodes (Reconciliation)', desc: 'Only the exact modified node is isolated, ignoring unchanged parts of the tree.', color: '#ef4444', bg: '#fef2f2' },
+                  { id: 5, title: 'Step 5: Batch Update to Real DOM', desc: 'Only the changed element is updated in the Real DOM, rendering the screen smoothly.', color: '#8b5cf6', bg: '#f5f3ff' },
+                ].map(item => (
+                  <div
+                    key={item.id}
+                    style={{
+                      background: vdomStep === item.id ? item.bg : '#fff',
+                      border: vdomStep === item.id ? `2px solid ${item.color}` : '1px solid #cbd5e1',
+                      borderRadius: '8px', padding: '0.8rem 1rem', transition: 'all 0.3s ease',
+                      boxShadow: vdomStep === item.id ? '0 4px 12px rgba(0,0,0,0.08)' : 'none'
+                    }}
+                  >
+                    <div style={{ fontWeight: 700, color: item.color, fontSize: '0.9rem', marginBottom: '0.2rem' }}>
+                      {item.title} {vdomStep === item.id && '🎯 (Active Step)'}
+                    </div>
+                    <div style={{ fontSize: '0.84rem', color: '#475569' }}>{item.desc}</div>
+                  </div>
+                ))}
               </div>
             </div>
 

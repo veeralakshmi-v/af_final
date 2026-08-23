@@ -20,6 +20,11 @@ const Section = ({ id, eyebrow, title, children }) => (
 );
 
 export default function CSSDay3({ activeTab, onNavigate }) {
+  const [demoOrder, setDemoOrder] = React.useState(0);
+  const [demoGrow, setDemoGrow] = React.useState(1);
+  const [demoShrink, setDemoShrink] = React.useState(0);
+  const [demoBasis, setDemoBasis] = React.useState('150px');
+  const [demoAlignSelf, setDemoAlignSelf] = React.useState('center');
 
   const handleContinue = (nextSectionId) => {
     if (typeof window.JSConfetti !== 'undefined' && (nextSectionId === 'quiz' || nextSectionId === 'project')) {
@@ -507,96 +512,363 @@ export default function CSSDay3({ activeTab, onNavigate }) {
       )}
 
       {activeTab === 'flex_items' && (
-        <Section key="flex_items" id="flex_items" eyebrow="Children" title="Flex Item Properties">
+        <Section key="flex_items" id="flex_items" eyebrow="Children Ordering & Alignment" title="Flex Item Properties (Order & Align Self)">
           <div className="panel">
-            <p>These properties apply to the <strong>children</strong> elements within the flex container. They allow items to be positioned individually.</p>
             
-            <div className="code-example-box" style={{ marginBottom: '2rem' }}>
-              <div className="code-pane">
-                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(flexItemCode, Prism.languages.css, 'css') }}></pre>
-              </div>
+            <div style={{ background: 'linear-gradient(135deg, #0f172a, #1e293b)', color: 'white', padding: '1.8rem', borderRadius: '14px', marginBottom: '2rem', border: '1px solid #334155' }}>
+              <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.8rem', fontWeight: 800 }}>📌 Ordering &amp; Self Alignment</h3>
+              <p style={{ color: '#94a3b8', lineHeight: 1.7, margin: 0, fontSize: '1.02rem' }}>
+                These properties allow individual flex children to override container alignment or visually re-order themselves without changing the HTML structure!
+              </p>
             </div>
 
-            <h3 style={{ marginBottom: '1rem' }}>Important Child Properties</h3>
-            <ul style={{ paddingLeft: '20px', lineHeight: '2', color: 'var(--text-secondary)' }}>
-              <li><strong>order:</strong> Changes the display position of an item (default is 0).</li>
-              <li><strong>align-self:</strong> Overrides the container's <code>align-items</code> property for this specific item only.</li>
-            </ul>
-
-            <h3 style={{ marginBottom: '1rem', marginTop: '2rem' }}>Visual Examples</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-              <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '8px' }}>
-                <p style={{ color: 'white', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>order</p>
-                <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '10px' }}>Item 2 has <code>order: -1</code></p>
-                <div style={{ display: 'flex', gap: '5px', background: '#0f172a', padding: '10px', borderRadius: '4px' }}>
-                  <div style={{ background: '#3b82f6', color: 'white', padding: '10px', borderRadius: '4px', flex: 1, textAlign: 'center', order: 0 }}>1</div>
-                  <div style={{ background: '#ef4444', color: 'white', padding: '10px', borderRadius: '4px', flex: 1, textAlign: 'center', order: -1 }}>2</div>
-                  <div style={{ background: '#3b82f6', color: 'white', padding: '10px', borderRadius: '4px', flex: 1, textAlign: 'center', order: 0 }}>3</div>
+            {/* ─── DEFINITION CARDS ─── */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
+              
+              {/* Order */}
+              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', borderLeft: '5px solid #2563eb', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.6rem', color: '#0f172a', fontSize: '1.15rem', fontWeight: 700 }}>1. CSS order</h4>
+                <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '0.8rem' }}>
+                  Determines the visual sequence of an item inside its parent flex container. Default value is <code>0</code>.
+                </p>
+                <div style={{ background: '#eff6ff', padding: '0.8rem', borderRadius: '8px', borderLeft: '4px solid #2563eb' }}>
+                  <strong style={{ color: '#1e40af', fontSize: '0.85rem' }}>💡 Simple Rule:</strong>
+                  <p style={{ margin: '0.2rem 0 0', fontSize: '0.88rem', color: '#1e3a8a' }}>
+                    Items are laid out in ascending order. Lower values (like <code>-1</code>) appear first; higher values (like <code>2</code>) appear last.
+                  </p>
                 </div>
               </div>
 
-              <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '8px' }}>
-                <p style={{ color: 'white', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>align-self</p>
-                <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '10px' }}>Item 2 has <code>align-self: flex-end</code></p>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '5px', background: '#0f172a', padding: '10px', borderRadius: '4px', height: '120px' }}>
-                  <div style={{ background: '#10b981', color: 'white', padding: '10px', borderRadius: '4px', flex: 1, textAlign: 'center' }}>1</div>
-                  <div style={{ background: '#f59e0b', color: 'white', padding: '10px', borderRadius: '4px', flex: 1, textAlign: 'center', alignSelf: 'flex-end' }}>2</div>
-                  <div style={{ background: '#10b981', color: 'white', padding: '10px', borderRadius: '4px', flex: 1, textAlign: 'center' }}>3</div>
+              {/* Align Self */}
+              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', borderLeft: '5px solid #8b5cf6', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.6rem', color: '#0f172a', fontSize: '1.15rem', fontWeight: 700 }}>2. CSS align-self</h4>
+                <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '0.8rem' }}>
+                  Overrides the flex container's global <code>align-items</code> setting for just this specific flex child.
+                </p>
+                <div style={{ background: '#f5f3ff', padding: '0.8rem', borderRadius: '8px', borderLeft: '4px solid #8b5cf6' }}>
+                  <strong style={{ color: '#5b21b6', fontSize: '0.85rem' }}>💡 Simple Rule:</strong>
+                  <p style={{ margin: '0.2rem 0 0', fontSize: '0.88rem', color: '#4c1d95' }}>
+                    Values include <code>flex-start</code> (top), <code>center</code> (middle), <code>flex-end</code> (bottom), and <code>stretch</code> (full height).
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            {/* ─── INTERACTIVE PLAYGROUND ─── */}
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.6rem' }}>🎮 Order &amp; Align Self Sandbox</h3>
+            <p style={{ color: '#64748b', fontSize: '0.92rem', marginBottom: '1.5rem' }}>
+              Click buttons to adjust <strong>Box 2 (Orange Target Box)</strong> position and alignment!
+            </p>
+
+            <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '14px', border: '1px solid #cbd5e1', marginBottom: '2rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                
+                {/* Order control */}
+                <div>
+                  <label style={{ display: 'block', fontWeight: 700, fontSize: '0.9rem', color: '#0f172a', marginBottom: '0.5rem' }}>
+                    order: <span style={{ color: '#2563eb' }}>{demoOrder}</span>
+                  </label>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    {[-1, 0, 1, 2].map(val => (
+                      <button
+                        key={val}
+                        onClick={() => setDemoOrder(val)}
+                        style={{
+                          padding: '0.45rem 0.9rem',
+                          borderRadius: '6px',
+                          fontWeight: 700,
+                          fontSize: '0.85rem',
+                          cursor: 'pointer',
+                          border: demoOrder === val ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                          background: demoOrder === val ? '#2563eb' : 'white',
+                          color: demoOrder === val ? 'white' : '#1e293b'
+                        }}
+                      >
+                        {val}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Align Self control */}
+                <div>
+                  <label style={{ display: 'block', fontWeight: 700, fontSize: '0.9rem', color: '#0f172a', marginBottom: '0.5rem' }}>
+                    align-self: <span style={{ color: '#8b5cf6' }}>{demoAlignSelf}</span>
+                  </label>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    {['flex-start', 'center', 'flex-end', 'stretch'].map(val => (
+                      <button
+                        key={val}
+                        onClick={() => setDemoAlignSelf(val)}
+                        style={{
+                          padding: '0.45rem 0.9rem',
+                          borderRadius: '6px',
+                          fontWeight: 700,
+                          fontSize: '0.85rem',
+                          cursor: 'pointer',
+                          border: demoAlignSelf === val ? '2px solid #8b5cf6' : '1px solid #cbd5e1',
+                          background: demoAlignSelf === val ? '#8b5cf6' : 'white',
+                          color: demoAlignSelf === val ? 'white' : '#1e293b'
+                        }}
+                      >
+                        {val}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Canvas */}
+            <div style={{ padding: '2rem 1.5rem', background: '#0f172a', borderRadius: '14px', marginBottom: '2rem' }}>
+              <div style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem' }}>
+                Flex Container (`display: flex; height: 160px; align-items: flex-start;`)
+              </div>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', height: '160px', background: '#1e293b', padding: '1rem', borderRadius: '10px', border: '2px dashed #475569' }}>
+                
+                <div style={{ background: '#3b82f6', color: 'white', padding: '1rem', borderRadius: '8px', fontWeight: 700, width: '120px', height: '70px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                  Box 1<br /><span style={{ fontSize: '0.7rem', fontWeight: 400 }}>order: 0</span>
+                </div>
+
+                <motion.div 
+                  layout
+                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  style={{ 
+                    background: '#f97316', 
+                    color: 'white', 
+                    padding: '1rem', 
+                    borderRadius: '8px', 
+                    fontWeight: 700, 
+                    order: demoOrder, 
+                    alignSelf: demoAlignSelf, 
+                    width: '140px',
+                    minHeight: demoAlignSelf === 'stretch' ? 'auto' : '75px',
+                    boxShadow: '0 8px 16px rgba(249, 115, 22, 0.35)', 
+                    border: '2px solid white',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
+                >
+                  🎯 Target Box 2<br />
+                  <span style={{ fontSize: '0.72rem', fontWeight: 400, marginTop: '0.2rem' }}>
+                    order: {demoOrder} | align-self: {demoAlignSelf}
+                  </span>
+                </motion.div>
+
+                <div style={{ background: '#3b82f6', color: 'white', padding: '1rem', borderRadius: '8px', fontWeight: 700, width: '120px', height: '70px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                  Box 3<br /><span style={{ fontSize: '0.7rem', fontWeight: 400 }}>order: 0</span>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Code */}
+            <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
+              <div className="code-header">CSS Rule</div>
+              <div className="code-content">
+                <div className="code-pane" style={{ gridColumn: 'span 2' }}>
+                  <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(
+`.target-box {
+  order: ${demoOrder};            /* ${demoOrder < 0 ? 'Positions item before siblings' : demoOrder > 0 ? 'Positions item after siblings' : 'Default position'} */
+  align-self: ${demoAlignSelf};   /* ${demoAlignSelf === 'center' ? 'Centers vertically' : demoAlignSelf === 'flex-end' ? 'Aligns to bottom' : demoAlignSelf === 'stretch' ? 'Stretches full height' : 'Aligns to top'} */
+}`, Prism.languages.css, 'css') }}></pre>
                 </div>
               </div>
             </div>
 
-            <div className="card-actions" style={{ marginTop: '2rem' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('flex_grow_shrink')}>Continue (+10 XP)</button>
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => handleContinue('flex_grow_shrink')}>Continue to Grow, Shrink &amp; Basis (+10 XP)</button>
             </div>
           </div>
         </Section>
       )}
 
       {activeTab === 'flex_grow_shrink' && (
-        <Section key="flex_grow_shrink" id="flex_grow_shrink" eyebrow="Children Details" title="Grow, Shrink & Basis">
+        <Section key="flex_grow_shrink" id="flex_grow_shrink" eyebrow="Child Sizing & Expansion" title="Flex Item Sizing (Grow, Shrink & Basis)">
           <div className="panel">
-            <p>These properties control how a flex item sizes itself relative to the space available in the flex container.</p>
             
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '2rem', marginTop: '2rem' }}>
+            <div style={{ background: 'linear-gradient(135deg, #0f172a, #1e293b)', color: 'white', padding: '1.8rem', borderRadius: '14px', marginBottom: '2rem', border: '1px solid #334155' }}>
+              <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.8rem', fontWeight: 800 }}>📐 Flex Sizing Mechanics</h3>
+              <p style={{ color: '#94a3b8', lineHeight: 1.7, margin: 0, fontSize: '1.02rem' }}>
+                These three properties control how a flex item calculates its starting width, expands to absorb extra container space, or contracts when container space is tight!
+              </p>
+            </div>
+
+            {/* ─── 3 CARDS ─── */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.2rem', marginBottom: '2.5rem' }}>
               
-              <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '8px' }}>
-                <p style={{ color: 'white', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>flex-grow</p>
-                <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '10px' }}>Item 1: <code>grow: 1</code> | Item 2: <code>grow: 3</code></p>
-                <div style={{ display: 'flex', gap: '5px', background: '#0f172a', padding: '10px', borderRadius: '4px' }}>
-                  <div style={{ flexGrow: 1, background: '#60a5fa', color: '#1e3a8a', padding: '10px', borderRadius: '4px', textAlign: 'center', fontWeight: 'bold' }}>1</div>
-                  <div style={{ flexGrow: 3, background: '#2563eb', color: 'white', padding: '10px', borderRadius: '4px', textAlign: 'center', fontWeight: 'bold' }}>3</div>
-                </div>
-              </div>
-              
-              <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '8px' }}>
-                <p style={{ color: 'white', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>flex-shrink</p>
-                <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '10px' }}>Container is too small!</p>
-                <div style={{ display: 'flex', gap: '5px', background: '#0f172a', padding: '10px', borderRadius: '4px', width: '100%', overflow: 'hidden' }}>
-                  <div style={{ flexShrink: 1, width: '150px', background: '#f87171', color: '#7f1d1d', padding: '10px', borderRadius: '4px', textAlign: 'center', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Shrinks (1)</div>
-                  <div style={{ flexShrink: 0, width: '150px', background: '#dc2626', color: 'white', padding: '10px', borderRadius: '4px', textAlign: 'center', fontWeight: 'bold', whiteSpace: 'nowrap' }}>No Shrink (0)</div>
-                </div>
+              {/* Flex Grow */}
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #10b981', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.5rem', color: '#0f172a', fontSize: '1.1rem', fontWeight: 700 }}>1. flex-grow</h4>
+                <p style={{ fontSize: '0.88rem', color: '#334155', lineHeight: 1.5, margin: 0 }}>
+                  Defines how much the item expands relative to siblings to fill free empty container space. <code>flex-grow: 0</code> means fixed size; <code>flex-grow: 1</code> absorbs free space.
+                </p>
               </div>
 
-              <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '8px' }}>
-                <p style={{ color: 'white', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>flex-basis</p>
-                <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '10px' }}>Item 1: <code>basis: 100px</code> | Item 2: <code>auto</code></p>
-                <div style={{ display: 'flex', gap: '5px', background: '#0f172a', padding: '10px', borderRadius: '4px' }}>
-                  <div style={{ flexBasis: '100px', flexGrow: 0, flexShrink: 0, background: '#34d399', color: '#064e3b', padding: '10px', borderRadius: '4px', textAlign: 'center', fontWeight: 'bold' }}>100px</div>
-                  <div style={{ flex: 1, background: '#059669', color: 'white', padding: '10px', borderRadius: '4px', textAlign: 'center', fontWeight: 'bold' }}>Auto</div>
-                </div>
+              {/* Flex Shrink */}
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #ef4444', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.5rem', color: '#0f172a', fontSize: '1.1rem', fontWeight: 700 }}>2. flex-shrink</h4>
+                <p style={{ fontSize: '0.88rem', color: '#334155', lineHeight: 1.5, margin: 0 }}>
+                  Determines how much the item shrinks when space is constrained. <code>flex-shrink: 0</code> prevents shrinking/distortion; <code>flex-shrink: 1</code> allows shrinking.
+                </p>
+              </div>
+
+              {/* Flex Basis */}
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #f59e0b', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.5rem', color: '#0f172a', fontSize: '1.1rem', fontWeight: 700 }}>3. flex-basis</h4>
+                <p style={{ fontSize: '0.88rem', color: '#334155', lineHeight: 1.5, margin: 0 }}>
+                  Sets the initial base size of the element (e.g. <code>200px</code> or <code>auto</code>) before space distribution calculations take place.
+                </p>
               </div>
 
             </div>
 
-            <div style={{ padding: '1.5rem', background: '#fef3c7', borderRadius: '8px', border: '1px solid #fde68a' }}>
-              <h4 style={{ color: '#d97706', marginBottom: '0.5rem' }}>The Shorthand: flex</h4>
-              <p style={{ color: '#92400e', fontSize: '0.95rem' }}>It is recommended to use the <code>flex</code> shorthand property rather than setting the individual properties. The order is: <code>flex-grow</code>, <code>flex-shrink</code>, <code>flex-basis</code>.</p>
-              <pre style={{ background: 'white', padding: '10px', borderRadius: '4px', marginTop: '10px', color: '#b45309' }}>flex: 1 0 200px;</pre>
+            {/* Shorthand Box */}
+            <div style={{ background: '#fef3c7', border: '1px solid #fde68a', padding: '1.2rem 1.5rem', borderRadius: '12px', marginBottom: '2.5rem' }}>
+              <h4 style={{ margin: '0 0 0.4rem', color: '#92400e', fontSize: '1.05rem', fontWeight: 700 }}>⚡ The `flex` Shorthand Formula</h4>
+              <p style={{ color: '#78350f', fontSize: '0.9rem', margin: 0, lineHeight: 1.6 }}>
+                Instead of setting grow, shrink, and basis individually, use the <code>flex</code> shorthand property:
+                <br />
+                <code style={{ background: '#ffffff', color: '#b45309', padding: '0.3rem 0.6rem', borderRadius: '6px', fontSize: '0.92rem', fontWeight: 700, display: 'inline-block', marginTop: '0.4rem' }}>
+                  flex: &lt;flex-grow&gt; &lt;flex-shrink&gt; &lt;flex-basis&gt;; /* e.g. flex: 1 0 200px; */
+                </code>
+              </p>
             </div>
 
-            <div className="card-actions" style={{ marginTop: '2rem' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('playground')}>Continue (+10 XP)</button>
+            {/* ─── INTERACTIVE SIZING PLAYGROUND ─── */}
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.6rem' }}>🎮 Interactive Sizing Controls</h3>
+            <p style={{ color: '#64748b', fontSize: '0.92rem', marginBottom: '1.5rem' }}>
+              Test how <code>flex-grow</code> and <code>flex-basis</code> dynamically resize <strong>Box 2 (Emerald Target Box)</strong>!
+            </p>
+
+            <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '14px', border: '1px solid #cbd5e1', marginBottom: '2rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.2rem' }}>
+                
+                {/* Flex Grow control */}
+                <div>
+                  <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#0f172a', marginBottom: '0.4rem' }}>
+                    flex-grow: <span style={{ color: '#10b981' }}>{demoGrow}</span>
+                  </label>
+                  <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                    {[0, 1, 2, 3].map(val => (
+                      <button
+                        key={val}
+                        onClick={() => setDemoGrow(val)}
+                        style={{
+                          padding: '0.4rem 0.8rem',
+                          borderRadius: '6px',
+                          fontWeight: 700,
+                          fontSize: '0.82rem',
+                          cursor: 'pointer',
+                          border: demoGrow === val ? '2px solid #10b981' : '1px solid #cbd5e1',
+                          background: demoGrow === val ? '#10b981' : 'white',
+                          color: demoGrow === val ? 'white' : '#1e293b'
+                        }}
+                      >
+                        {val}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Flex Basis control */}
+                <div>
+                  <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#0f172a', marginBottom: '0.4rem' }}>
+                    flex-basis: <span style={{ color: '#f59e0b' }}>{demoBasis}</span>
+                  </label>
+                  <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                    {['auto', '100px', '180px', '250px'].map(val => (
+                      <button
+                        key={val}
+                        onClick={() => setDemoBasis(val)}
+                        style={{
+                          padding: '0.4rem 0.8rem',
+                          borderRadius: '6px',
+                          fontWeight: 700,
+                          fontSize: '0.82rem',
+                          cursor: 'pointer',
+                          border: demoBasis === val ? '2px solid #f59e0b' : '1px solid #cbd5e1',
+                          background: demoBasis === val ? '#f59e0b' : 'white',
+                          color: demoBasis === val ? 'white' : '#1e293b'
+                        }}
+                      >
+                        {val}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Canvas */}
+            <div style={{ padding: '2rem 1.5rem', background: '#0f172a', borderRadius: '14px', marginBottom: '2rem' }}>
+              <div style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem' }}>
+                Flex Container (`display: flex; gap: 12px;`)
+              </div>
+              <div style={{ display: 'flex', gap: '12px', background: '#1e293b', padding: '1rem', borderRadius: '10px', border: '2px dashed #475569' }}>
+                
+                <div style={{ background: '#3b82f6', color: 'white', padding: '1rem', borderRadius: '8px', fontWeight: 700, flexGrow: 1, height: '70px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                  Box 1<br /><span style={{ fontSize: '0.7rem', fontWeight: 400 }}>flex-grow: 1</span>
+                </div>
+
+                <motion.div 
+                  layout
+                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  style={{ 
+                    background: '#10b981', 
+                    color: 'white', 
+                    padding: '1rem', 
+                    borderRadius: '8px', 
+                    fontWeight: 700, 
+                    flexGrow: demoGrow, 
+                    flexBasis: demoBasis, 
+                    height: '70px',
+                    boxShadow: '0 8px 16px rgba(16, 185, 129, 0.35)', 
+                    border: '2px solid white',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
+                >
+                  🎯 Target Box 2<br />
+                  <span style={{ fontSize: '0.72rem', fontWeight: 400, marginTop: '0.2rem' }}>
+                    grow: {demoGrow} | basis: {demoBasis}
+                  </span>
+                </motion.div>
+
+                <div style={{ background: '#3b82f6', color: 'white', padding: '1rem', borderRadius: '8px', fontWeight: 700, flexGrow: 1, height: '70px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                  Box 3<br /><span style={{ fontSize: '0.7rem', fontWeight: 400 }}>flex-grow: 1</span>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Code */}
+            <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
+              <div className="code-header">CSS Rule</div>
+              <div className="code-content">
+                <div className="code-pane" style={{ gridColumn: 'span 2' }}>
+                  <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(
+`.target-box {
+  flex-grow: ${demoGrow};        /* ${demoGrow > 0 ? 'Expands to absorb extra container space' : 'Fixed size, does not grow'} */
+  flex-shrink: ${demoShrink};      /* ${demoShrink === 0 ? 'Does not shrink when container space contracts' : 'Shrinks proportionally'} */
+  flex-basis: ${demoBasis};     /* Starting base size before grow/shrink calculations */
+  
+  /* Equivalent Shorthand: */
+  flex: ${demoGrow} ${demoShrink} ${demoBasis};
+}`, Prism.languages.css, 'css') }}></pre>
+                </div>
+              </div>
+            </div>
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => handleContinue('playground')}>Continue to Live Coding (+10 XP)</button>
             </div>
           </div>
         </Section>

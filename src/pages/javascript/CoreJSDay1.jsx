@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Layers, FileText, CheckCircle,
-  AlertTriangle, Activity
+  AlertTriangle, Activity, Link, Code
 } from 'lucide-react';
 
 const Section = ({ eyebrow, title, children }) => (
@@ -56,6 +56,9 @@ export default function CoreJSDay1({ activeTab, onNavigate, openAITutor: _openAI
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [checkedQuestions, setCheckedQuestions] = useState({});
   const [score, setScore] = useState(null);
+
+  // Tab 1.5: Connecting JS State
+  const [selectedJsConnectMethod, setSelectedJsConnectMethod] = useState('inline');
 
   // Tab 2: Scope Inspector States
   const [activeScopeType, setActiveScopeType] = useState('block');
@@ -226,8 +229,8 @@ export default function CoreJSDay1({ activeTab, onNavigate, openAITutor: _openAI
 
 console.log("1. Before declaring studentName:", studentName); // undefined (hoisted!)
 
-var studentName = "Kowsalya";
-console.log("2. After declaring studentName:", studentName);  // Kowsalya
+var studentName = "Kavya";
+console.log("2. After declaring studentName:", studentName);  // Kavya
 
 // var allows REDECLARATION — same variable name, new value
 var studentName = "Advanced Student";
@@ -581,9 +584,193 @@ console.log("typeof grade   →", typeof grade);    // object (JS quirk!)`);
               <button
                 className="btn"
                 style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
+                onClick={() => handleContinue('connecting_js')}
+              >
+                Continue to Connecting JS & innerHTML (+10 XP)
+              </button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* CONNECTING JS & INNERHTML TAB */}
+      {activeTab === 'connecting_js' && (
+        <Section key="connecting_js" id="connecting_js" eyebrow="HTML & JS Integration" title="Connecting JavaScript in HTML & innerHTML DOM Manipulation">
+          <div className="panel">
+            
+            <div style={{ background: 'linear-gradient(135deg, #0f172a, #1e293b)', color: 'white', padding: '1.8rem', borderRadius: '14px', marginBottom: '2rem', border: '1px solid #334155' }}>
+              <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.8rem', fontWeight: 800 }}>🔌 How JavaScript Connects to HTML Documents</h3>
+              <p style={{ color: '#94a3b8', lineHeight: 1.7, margin: 0, fontSize: '1.02rem' }}>
+                JavaScript needs to be embedded inside or linked to an HTML document to execute in a web browser. There are 3 main methods to include JS code into HTML: <strong>Inline</strong>, <strong>Internal</strong>, and <strong>External</strong>, plus key DOM properties like <strong><code>innerHTML</code></strong> to manipulate page content dynamically!
+              </p>
+            </div>
+
+            {/* SECTION 1: 3 WAYS TO CONNECT JS */}
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.8rem' }}>1. Three Ways to Include JavaScript in HTML</h3>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
+              
+              {/* 1. INLINE */}
+              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', border: '1px solid #cbd5e1', borderTop: '4px solid #ef4444' }}>
+                <h4 style={{ margin: '0 0 0.5rem', color: '#0f172a', fontSize: '1.1rem', fontWeight: 700 }}>⚡ 1. Inline JavaScript</h4>
+                <p style={{ fontSize: '0.88rem', color: '#475569', lineHeight: 1.6, marginBottom: '1rem' }}>
+                  Written directly inside HTML element event attributes like <code>onclick</code>, <code>onmouseover</code>, or <code>onsubmit</code>.
+                </p>
+                <div style={{ background: '#0f172a', padding: '0.8rem', borderRadius: '6px' }}>
+                  <SyntaxHighlighter code={`<button onclick="alert('Button Clicked!')">\n  Click Me\n</button>`} />
+                </div>
+                <div style={{ marginTop: '0.8rem', fontSize: '0.8rem', color: '#dc2626', fontWeight: 700 }}>
+                  ⚠️ Not recommended for production (violates separation of concerns).
+                </div>
+              </div>
+
+              {/* 2. INTERNAL */}
+              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', border: '1px solid #cbd5e1', borderTop: '4px solid #f59e0b' }}>
+                <h4 style={{ margin: '0 0 0.5rem', color: '#0f172a', fontSize: '1.1rem', fontWeight: 700 }}>📜 2. Internal JavaScript</h4>
+                <p style={{ fontSize: '0.88rem', color: '#475569', lineHeight: 1.6, marginBottom: '1rem' }}>
+                  Written inside <code>&lt;script&gt;</code> tags placed within the HTML <code>&lt;head&gt;</code> or right before <code>&lt;/body&gt;</code>.
+                </p>
+                <div style={{ background: '#0f172a', padding: '0.8rem', borderRadius: '6px' }}>
+                  <SyntaxHighlighter code={`<script>\n  function showMessage() {\n    console.log("Hello from Internal JS!");\n  }\n</script>`} />
+                </div>
+                <div style={{ marginTop: '0.8rem', fontSize: '0.8rem', color: '#d97706', fontWeight: 700 }}>
+                  💡 Great for single-page scripts or small quick prototypes.
+                </div>
+              </div>
+
+              {/* 3. EXTERNAL */}
+              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', border: '1px solid #cbd5e1', borderTop: '4px solid #10b981' }}>
+                <h4 style={{ margin: '0 0 0.5rem', color: '#0f172a', fontSize: '1.1rem', fontWeight: 700 }}>🔗 3. External JavaScript (Best Practice)</h4>
+                <p style={{ fontSize: '0.88rem', color: '#475569', lineHeight: 1.6, marginBottom: '1rem' }}>
+                  Code is saved in a separate <code>.js</code> file (e.g. <code>app.js</code>) and linked in HTML using the <code>src</code> attribute.
+                </p>
+                <div style={{ background: '#0f172a', padding: '0.8rem', borderRadius: '6px' }}>
+                  <SyntaxHighlighter code={`<!-- In index.html -->\n<script src="script.js" defer></script>\n\n// In script.js\nconsole.log("External JS Loaded!");`} />
+                </div>
+                <div style={{ marginTop: '0.8rem', fontSize: '0.8rem', color: '#059669', fontWeight: 700 }}>
+                  ✅ Standard for real-world production (reusable, clean & cached).
+                </div>
+              </div>
+
+            </div>
+
+            {/* SECTION 2: DOM & INNERHTML EXPLANATION */}
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.8rem' }}>2. DOM Manipulation & `innerHTML`</h3>
+            <p style={{ color: '#475569', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+              The <strong>Document Object Model (DOM)</strong> allows JavaScript to read, edit, add, or delete HTML elements dynamically while the page is running in the browser!
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.2rem', marginBottom: '2.5rem' }}>
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #2563eb', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.4rem', color: '#0f172a', fontSize: '1rem', fontWeight: 700 }}>document.getElementById("id")</h4>
+                <p style={{ fontSize: '0.82rem', color: '#64748b', margin: 0 }}>Selects a specific HTML element using its unique `id` attribute.</p>
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #ca8a04', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.4rem', color: '#0f172a', fontSize: '1rem', fontWeight: 700 }}>element.innerHTML</h4>
+                <p style={{ fontSize: '0.82rem', color: '#64748b', margin: 0 }}>Reads or replaces the <strong>HTML content & tags</strong> inside the element.</p>
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', borderLeft: '5px solid #10b981', border: '1px solid #cbd5e1', borderLeftWidth: '5px' }}>
+                <h4 style={{ margin: '0 0 0.4rem', color: '#0f172a', fontSize: '1rem', fontWeight: 700 }}>element.innerText</h4>
+                <p style={{ fontSize: '0.82rem', color: '#64748b', margin: 0 }}>Sets or returns only the <strong>visible human-readable text</strong> (strips HTML tags).</p>
+              </div>
+            </div>
+
+            {/* CODE EXAMPLE OF INNERHTML */}
+            <h4 style={{ fontSize: '1.1rem', color: '#0f172a', marginBottom: '0.8rem' }}>Example: Live DOM Modification with `innerHTML`</h4>
+            <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
+              <div className="code-pane">
+                <SyntaxHighlighter code={`<!DOCTYPE html>
+<html>
+<body>
+
+  <h2 id="heading">Original Title</h2>
+  <div id="content">Default Paragraph Content</div>
+
+  <button onclick="changeContent()">Update Content with innerHTML</button>
+
+  <script>
+    function changeContent() {
+      // 1. Select the element by ID
+      let contentDiv = document.getElementById("content");
+      
+      // 2. Modify its innerHTML with new HTML tags
+      contentDiv.innerHTML = "<h3 style='color: #2563eb;'>🎉 Updated via JavaScript innerHTML!</h3><p>This content was inserted dynamically without refreshing!</p>";
+    }
+  </script>
+
+</body>
+</html>`} />
+              </div>
+            </div>
+
+            {/* SECTION 3: INTERACTIVE DOM SIMULATOR */}
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.6rem' }}>🎮 Interactive JS Connection & innerHTML Simulator</h3>
+            <p style={{ color: '#64748b', fontSize: '0.92rem', marginBottom: '1.5rem' }}>
+              Select a JavaScript connection method below to test how `innerHTML` modifies the rendered HTML output in real time!
+            </p>
+
+            <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '14px', border: '1px solid #cbd5e1', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+                {[
+                  { id: 'inline', label: '⚡ Inline JS Method' },
+                  { id: 'internal', label: '📜 Internal JS Method' },
+                  { id: 'external', label: '🔗 External JS Method' }
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => setSelectedJsConnectMethod(item.id)}
+                    style={{
+                      padding: '0.5rem 1rem',
+                      borderRadius: '8px',
+                      fontWeight: 700,
+                      fontSize: '0.88rem',
+                      cursor: 'pointer',
+                      border: selectedJsConnectMethod === item.id ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                      background: selectedJsConnectMethod === item.id ? '#2563eb' : 'white',
+                      color: selectedJsConnectMethod === item.id ? 'white' : '#1e293b'
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Dynamic Output Box */}
+              <div style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', border: '2px solid #2563eb' }}>
+                <div style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 800, marginBottom: '0.8rem' }}>
+                  Simulated Browser Rendered Output ({selectedJsConnectMethod.toUpperCase()} MODE)
+                </div>
+
+                <div 
+                  dangerouslySetInnerHTML={{
+                    __html: selectedJsConnectMethod === 'inline'
+                      ? `<div style="background: #fef2f2; padding: 1.2rem; border-radius: 8px; border: 1px solid #fca5a5;">
+                          <h4 style="color: #991b1b; margin: 0 0 0.5rem;">Inline JS Trigger</h4>
+                          <button style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold;" onclick="alert('Inline JS Executed!')">Click Me (Inline Event)</button>
+                        </div>`
+                      : selectedJsConnectMethod === 'internal'
+                      ? `<div style="background: #fef3c7; padding: 1.2rem; border-radius: 8px; border: 1px solid #fde68a;">
+                          <h4 style="color: #92400e; margin: 0 0 0.5rem;">Internal Script Result</h4>
+                          <p style="margin: 0; color: #78350f; font-weight: 600;">innerHTML set this text via &lt;script&gt; block in HTML!</p>
+                        </div>`
+                      : `<div style="background: #ecfdf5; padding: 1.2rem; border-radius: 8px; border: 1px solid #6ee7b7;">
+                          <h4 style="color: #065f46; margin: 0 0 0.5rem;">External app.js Loaded</h4>
+                          <p style="margin: 0; color: #047857; font-weight: 600;">Linked via &lt;script src="app.js" defer&gt;&lt;/script&gt;.</p>
+                        </div>`
+                  }}
+                />
+              </div>
+            </div>
+
+            <div style={{ marginTop: '3rem', display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                className="btn"
+                style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
                 onClick={() => handleContinue('variables')}
               >
-                Continue to Variables & Scope
+                Continue to Variables & Scope (+10 XP)
               </button>
             </div>
           </div>
@@ -771,11 +958,37 @@ console.log("typeof grade   →", typeof grade);    // object (JS quirk!)`);
 
       {/* DATA TYPES TAB */}
       {activeTab === 'datatypes' && (
-        <Section key="datatypes" id="datatypes" eyebrow="Day 1 • JavaScript Variables" title="JavaScript Data Types">
+        <Section key="datatypes" id="datatypes" eyebrow="Day 1 • Core Foundations" title="JavaScript Data Types">
           <div className="panel">
+            {/* DEFINITION CARD */}
+            <div style={{ background: '#fefce8', border: '1px solid #fef08a', padding: '1.5rem', borderRadius: '12px', marginBottom: '2rem' }}>
+              <h3 style={{ color: '#854d0e', margin: '0 0 0.8rem 0', fontSize: '1.25rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                📖 What is a Data Type?
+              </h3>
+              <p style={{ color: '#713f12', fontSize: '0.95rem', lineHeight: 1.7, margin: '0 0 1rem 0' }}>
+                A <strong>Data Type</strong> defines the type or category of value a variable holds in computer memory. It informs the JavaScript engine how much memory to allocate for the value, how the bits are stored, and what operations (such as math addition, string concatenation, or logical comparison) can be legitimately performed on that variable.
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
+                <div style={{ background: '#fff', padding: '1rem', borderRadius: '8px', border: '1px solid #fef08a' }}>
+                  <strong style={{ color: '#854d0e', display: 'block', marginBottom: '0.3rem', fontSize: '0.9rem' }}>⚡ Dynamic (Weakly) Typed</strong>
+                  <p style={{ color: '#713f12', fontSize: '0.85rem', margin: 0, lineHeight: 1.5 }}>
+                    JavaScript is dynamically typed. Data types are associated with <em>values</em>, not variable declarations. A variable can hold a number initially and later be reassigned to a string or object.
+                  </p>
+                </div>
+
+                <div style={{ background: '#fff', padding: '1rem', borderRadius: '8px', border: '1px solid #fef08a' }}>
+                  <strong style={{ color: '#854d0e', display: 'block', marginBottom: '0.3rem', fontSize: '0.9rem' }}>🔍 The typeof Operator</strong>
+                  <p style={{ color: '#713f12', fontSize: '0.85rem', margin: 0, lineHeight: 1.5 }}>
+                    Use <code>typeof variable</code> to inspect the runtime data type of any value (e.g. <code>typeof 42</code> returns <code>"number"</code>, <code>typeof "hello"</code> returns <code>"string"</code>).
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <h3 style={{ marginBottom: '1rem', color: '#1e293b' }}>1. Data Type Categories</h3>
             <p style={{ marginBottom: '1.5rem', color: '#475569', lineHeight: 1.6 }}>
-              JavaScript values fall into one of two fundamental classifications: **Primitive** types and **Non-Primitive** (Reference) types.
+              JavaScript values fall into one of two fundamental classifications: <strong>Primitive</strong> types and <strong>Non-Primitive</strong> (Reference) types.
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginBottom: '2.5rem' }}>
@@ -1283,23 +1496,62 @@ console.log("typeof grade   →", typeof grade);    // object (JS quirk!)`);
                 <SyntaxHighlighter code={`// Var declarations have global/function scope and are hoisted\n{\n  var variable; // declared but undefined\n  document.write(variable + "<br>");\n}\ndocument.write(variable + "<br>"); // Still accessible outside the block!\n\nvar var1 = "DF";\ndocument.write("Variable's value is " + var1 + "<br>");\n\n// var allows redeclaration\nvar var1 = "DataFlair";\ndocument.write("Variable's value is " + var1);`} />
               </div>
               <p style={{ color: '#475569', fontSize: '0.88rem', margin: 0 }}>
-                💡 <strong>Key takeaway:</strong> Because <code>var</code> is hoisted and does not respect block boundaries (like brackets <code>{`{}`}</code>), it exists throughout the scope. If we used <code>let variable;</code> instead, accessing it outside the brackets would throw a <code>ReferenceError</code>.
+                💡 <strong>Key takeaway:</strong> Because <code>var</code> is hoisted and does not respect block boundaries (like brackets <code>{`{}`}</code>), it exists throughout the scope. If we used <code>let variable;</code> instead, accessing it outside the block would throw a ReferenceError.
               </p>
             </div>
 
             {/* Interview Prep Questions */}
-            <h3 style={{ color: '#1e293b', marginBottom: '1.2rem' }}>💬 Interview Questions</h3>
+            <h3 style={{ color: '#1e293b', marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              💬 Day 1 Topic-Wise Technical Interview Questions & Answers
+            </h3>
             <div style={{ display: 'grid', gap: '1.2rem', marginBottom: '3rem' }}>
-              <div style={{ padding: '1.2rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>Q1. What is the temporal dead zone (TDZ) and when does it occur?</strong>
+              <div style={{ padding: '1.2rem', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: JS Connection & Script Execution (Inline, Internal, External)
+                </strong>
                 <p style={{ color: '#475569', margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
-                  The Temporal Dead Zone (TDZ) is the period from the entry of a block scope until the variable declaration statement is executed. During this zone, accessing variables declared with <code>let</code> and <code>const</code> throws a ReferenceError.
+                  <strong>Q: Why is loading external JS files using the <code>defer</code> attribute considered best practice over placing scripts directly in the <code>&lt;head&gt;</code> tag?</strong><br />
+                  <strong>Answer:</strong> Placing scripts in the <code>&lt;head&gt;</code> without attributes blocks HTML DOM parsing while the browser downloads and runs the script. Adding <code>defer</code> allows the browser to download the script asynchronously in parallel with HTML parsing, and guarantees execution only after the entire DOM is parsed, preventing parser blocking without requiring <code>DOMContentLoaded</code> wrappers.
                 </p>
               </div>
-              <div style={{ padding: '1.2rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>Q2. What is hoisting? How does var hoisting differ from let/const hoisting?</strong>
+
+              <div style={{ padding: '1.2rem', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Variables & Scopes (var vs let vs const)
+                </strong>
                 <p style={{ color: '#475569', margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
-                  Hoisting is JavaScript's compilation behavior where variable and function declarations are moved to the top of their enclosing scope. While <code>var</code> is hoisted and initialized to <code>undefined</code>, variables declared with <code>let</code> and <code>const</code> are hoisted but remain uninitialized (in the TDZ), causing errors if accessed early.
+                  <strong>Q: What is the Temporal Dead Zone (TDZ) and how does it affect <code>let</code> and <code>const</code> variable hoisting?</strong><br />
+                  <strong>Answer:</strong> While <code>var</code> is hoisted and initialized to <code>undefined</code>, <code>let</code> and <code>const</code> variables are hoisted but left uninitialized in an inaccessible zone called the <em>Temporal Dead Zone (TDZ)</em>. Any attempt to read or write a <code>let</code>/<code>const</code> variable in the TDZ throws a <code>ReferenceError</code>.
+                </p>
+              </div>
+
+              <div style={{ padding: '1.2rem', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Data Types & Coercion (Primitives vs Objects, == vs ===)
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
+                  <strong>Q: Why does <code>typeof null</code> evaluate to <code>"object"</code> and why does <code>0 == false</code> return <code>true</code> while <code>0 === false</code> returns <code>false</code>?</strong><br />
+                  <strong>Answer:</strong> <code>typeof null === "object"</code> is a legacy JavaScript bug from 1995 where object type tags were represented as <code>000</code>. Loose equality (<code>==</code>) performs implicit type coercion, converting boolean <code>false</code> to number <code>0</code> before comparing (<code>0 == 0</code> &rarr; <code>true</code>). Strict equality (<code>===</code>) checks both type and value without coercion, returning <code>false</code>.
+                </p>
+              </div>
+
+              <div style={{ padding: '1.2rem', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: DOM Manipulation & innerHTML
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
+                  <strong>Q: What is the difference between <code>innerHTML</code> and <code>innerText</code> / <code>textContent</code>, and what security concern comes with <code>innerHTML</code>?</strong><br />
+                  <strong>Answer:</strong> <code>innerHTML</code> parses text as HTML markup and instantiates DOM elements, whereas <code>textContent</code> treats all input strictly as plain text. Using <code>innerHTML</code> with un-sanitized user input exposes applications to <strong>Cross-Site Scripting (XSS)</strong> attacks.
+                </p>
+              </div>
+
+              <div style={{ padding: '1.2rem', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem' }}>
+                  📌 Topic: Memory Storage (Call Stack vs Heap Memory)
+                </strong>
+                <p style={{ color: '#475569', margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
+                  <strong>Q: How does memory allocation differ between Primitive data types and Non-Primitive (Reference) data types in JavaScript?</strong><br />
+                  <strong>Answer:</strong> Primitive values (number, string, boolean, null, undefined, symbol, bigint) are stored directly on the fast execution <strong>Call Stack</strong> as fixed-size memory slots. Non-Primitive values (Objects, Arrays, Functions) are dynamically allocated in the <strong>Memory Heap</strong>, while the Call Stack holds a memory address reference pointing to that heap location.
                 </p>
               </div>
             </div>
@@ -1333,9 +1585,11 @@ console.log("typeof grade   →", typeof grade);    // object (JS quirk!)`);
                               cursor: 'pointer',
                               display: 'flex',
                               alignItems: 'center',
-                              gap: '10px',
+                              justifyContent: 'flex-start',
+                              gap: '12px',
                               fontSize: '0.9rem',
-                              color: '#334155'
+                              color: '#334155',
+                              textAlign: 'left'
                             }}
                           >
                             <input
@@ -1343,9 +1597,9 @@ console.log("typeof grade   →", typeof grade);    // object (JS quirk!)`);
                               name={`quiz-${q.id}`}
                               checked={isSelected}
                               onChange={() => handleSelectOption(q.id, optIdx)}
-                              style={{ accentColor: '#ca8a04' }}
+                              style={{ accentColor: '#ca8a04', margin: 0, flexShrink: 0 }}
                             />
-                            {opt}
+                            <span style={{ textAlign: 'left', flex: 1 }}>{opt}</span>
                           </label>
                         );
                       })}

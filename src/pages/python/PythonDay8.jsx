@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Code, Play, RefreshCw, BookOpen, Cpu, Filter, Terminal, Trophy, Zap, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowRight, Code, Play, RefreshCw, BookOpen, Cpu, Filter, Terminal, Trophy, Zap, CheckCircle, XCircle, FileText, Folder, ShieldAlert, Sliders, Database, Layers, Copy } from 'lucide-react';
 
 /* ─────────────────────────────────────────────
    SHARED UI HELPERS
@@ -40,39 +40,121 @@ const ok = t => <span style={{ color: '#10b981' }}>{t}</span>;
 class VirtualFileHandle {
   constructor(filename, mode, vfs) {
     this.filename = filename;
-    this.mode = mode.replace(/['"]/g, '').trim();
+    this.mode = (mode || 'r').replace(/['"]/g, '').trim();
     this.vfs = vfs;
     this.closed = false;
+    this.pos = 0;
+
+    if (this.mode.includes('x')) {
+      if (this.filename in this.vfs) {
+        throw new Error(`FileExistsError: [Errno 17] File exists: '${this.filename}'`);
+      }
+      this.vfs[this.filename] = '';
+    } else if (this.mode.includes('w')) {
+      this.vfs[this.filename] = '';
+    } else if (this.mode.includes('r')) {
+      if (!(this.filename in this.vfs)) {
+        throw new Error(`FileNotFoundError: [Errno 2] No such file or directory: '${this.filename}'`);
+      }
+    } else if (this.mode.includes('a')) {
+      if (!(this.filename in this.vfs)) {
+        this.vfs[this.filename] = '';
+      }
+      this.pos = (this.vfs[this.filename] || '').length;
+    }
   }
 
-  read() {
-    if (this.closed) {
-      throw new Error("ValueError: I/O operation on closed file.");
-    }
-    if (this.mode !== 'r' && !this.mode.includes('+')) {
+  read(size) {
+    if (this.closed) throw new Error("ValueError: I/O operation on closed file.");
+    if (!this.mode.includes('r') && !this.mode.includes('+')) {
       throw new Error("UnsupportedOperation: not readable");
     }
-    if (!(this.filename in this.vfs)) {
-      throw new Error(`FileNotFoundError: [Errno 2] No such file or directory: '${this.filename}'`);
+    const content = this.vfs[this.filename] || '';
+    if (size === undefined || size === null || size < 0) {
+      const res = content.slice(this.pos);
+      this.pos = content.length;
+      return res;
     }
-    return this.vfs[this.filename];
+    const res = content.slice(this.pos, this.pos + size);
+    this.pos += res.length;
+    return res;
   }
 
-  write(content) {
-    if (this.closed) {
-      throw new Error("ValueError: I/O operation on closed file.");
+  readline() {
+    if (this.closed) throw new Error("ValueError: I/O operation on closed file.");
+    if (!this.mode.includes('r') && !this.mode.includes('+')) {
+      throw new Error("UnsupportedOperation: not readable");
     }
-    if (this.mode === 'r') {
-      throw new Error("UnsupportedOperation: not writable");
+    const content = this.vfs[this.filename] || '';
+    if (this.pos >= content.length) return '';
+    const nextNewline = content.indexOf('\n', this.pos);
+    if (nextNewline === -1) {
+      const line = content.slice(this.pos);
+      this.pos = content.length;
+      return line;
+    } else {
+      const line = content.slice(this.pos, nextNewline + 1);
+      this.pos = nextNewline + 1;
+      return line;
     }
+  }
 
-    const textToWrite = String(content);
-    if (this.mode.startsWith('w')) {
-      this.vfs[this.filename] = textToWrite;
-    } else if (this.mode.startsWith('a')) {
-      const current = this.vfs[this.filename] || '';
-      this.vfs[this.filename] = current + textToWrite;
+  readlines() {
+    if (this.closed) throw new Error("ValueError: I/O operation on closed file.");
+    const lines = [];
+    while (true) {
+      const l = this.readline();
+      if (!l) break;
+      lines.push(l);
     }
+    return lines;
+  }
+
+  write(text) {
+    if (this.closed) throw new Error("ValueError: I/O operation on closed file.");
+    if (this.mode === 'r') throw new Error("UnsupportedOperation: not writable");
+    const str = String(text);
+    const content = this.vfs[this.filename] || '';
+    if (this.mode.includes('a')) {
+      this.vfs[this.filename] = content + str;
+      this.pos = this.vfs[this.filename].length;
+    } else {
+      const prefix = content.slice(0, this.pos);
+      this.vfs[this.filename] = prefix + str;
+      this.pos += str.length;
+    }
+    return str.length;
+  }
+
+  writelines(lines) {
+    if (this.closed) throw new Error("ValueError: I/O operation on closed file.");
+    let count = 0;
+    if (Array.isArray(lines)) {
+      for (const line of lines) {
+        count += this.write(line);
+      }
+    }
+    return count;
+  }
+
+  tell() {
+    if (this.closed) throw new Error("ValueError: I/O operation on closed file.");
+    return this.pos;
+  }
+
+  seek(offset, whence = 0) {
+    if (this.closed) throw new Error("ValueError: I/O operation on closed file.");
+    const content = this.vfs[this.filename] || '';
+    let target = 0;
+    if (whence === 0) target = offset;
+    else if (whence === 1) target = this.pos + offset;
+    else if (whence === 2) target = content.length + offset;
+    this.pos = Math.max(0, Math.min(content.length, target));
+    return this.pos;
+  }
+
+  flush() {
+    if (this.closed) throw new Error("ValueError: I/O operation on closed file.");
     return null;
   }
 
@@ -88,11 +170,9 @@ function mergeMultiLineStatements(code) {
   const rawLines = code.split('\n');
   const mergedLines = [];
   let currentLine = '';
-  let openParens = 0;
-  let openBrackets = 0;
-  let openBraces = 0;
-  let inStr = false;
-  let strChar = '';
+  let openParens = 0, openBrackets = 0, openBraces = 0;
+  let inStr = false, strChar = '';
+
   for (let rIdx = 0; rIdx < rawLines.length; rIdx++) {
     const line = rawLines[rIdx];
     let idx = 0;
@@ -138,7 +218,7 @@ function parsePython(code) {
         break;
       }
       if (indent === baseIndent) {
-        if (trimLine.startsWith('import ')) {
+        if (trimLine.startsWith('import ') || trimLine.startsWith('from ')) {
           block.push({ type: 'pass' });
           i++;
           continue;
@@ -170,11 +250,13 @@ function parsePython(code) {
         }
 
         if (trimLine.startsWith('with open(')) {
-          const match = trimLine.match(/^with\s+open\((.+?),\s*(.+?)\)\s+as\s+([a-zA-Z_]\w*)\s*:$/);
+          const match = trimLine.match(/^with\s+open\((.+?)\)\s+as\s+([a-zA-Z_]\w*)\s*:$/);
           if (match) {
-            const filenameExpr = match[1];
-            const modeExpr = match[2];
-            const varName = match[3];
+            const argsStr = match[1];
+            const varName = match[2];
+            const parts = splitByTopLevelCommas(argsStr);
+            const filenameExpr = parts[0];
+            const modeExpr = parts[1] || '"r"';
             i++;
             const body = parseBlock(baseIndent + 4);
             block.push({ type: 'with_open', filenameExpr, modeExpr, varName, body });
@@ -214,6 +296,7 @@ function parsePython(code) {
           i++;
           const body = parseBlock(baseIndent + 4);
           const handlers = [];
+          let else_body = null;
           let finally_body = null;
 
           while (i < lines.length) {
@@ -227,6 +310,9 @@ function parsePython(code) {
               i++;
               const handlerBody = parseBlock(baseIndent + 4);
               handlers.push({ errClass, errVar, body: handlerBody });
+            } else if (nextTrim.startsWith('else:')) {
+              i++;
+              else_body = parseBlock(baseIndent + 4);
             } else if (nextTrim.startsWith('finally:')) {
               i++;
               finally_body = parseBlock(baseIndent + 4);
@@ -235,7 +321,7 @@ function parsePython(code) {
               break;
             }
           }
-          block.push({ type: 'try', body, handlers, finally_body });
+          block.push({ type: 'try', body, handlers, else_body, finally_body });
           continue;
         }
 
@@ -277,6 +363,13 @@ function parsePython(code) {
           continue;
         }
 
+        if (trimLine.startsWith('raise ')) {
+          const errExpr = trimLine.slice(6).trim();
+          block.push({ type: 'raise', errExpr });
+          i++;
+          continue;
+        }
+
         if (trimLine.startsWith('print(')) {
           block.push({ type: 'print', line: trimLine });
           i++;
@@ -304,50 +397,28 @@ function parsePython(code) {
 
 function splitByTopLevelCommas(text) {
   const args = [];
-  let depth = 0;
-  let inStr = false;
-  let strChar = '';
-  let cur = '';
+  let depth = 0, inStr = false, strChar = '', cur = '';
   for (let idx = 0; idx < text.length; idx++) {
     const c = text[idx];
-    if (!inStr && (c === '"' || c === "'")) {
-      inStr = true;
-      strChar = c;
-      cur += c;
-    } else if (inStr && c === strChar) {
-      inStr = false;
-      cur += c;
-    } else if (!inStr && (c === '(' || c === '[' || c === '{')) {
-      depth++;
-      cur += c;
-    } else if (!inStr && (c === ')' || c === ']' || c === '}')) {
-      depth--;
-      cur += c;
-    } else if (!inStr && c === ',' && depth === 0) {
-      args.push(cur.trim());
-      cur = '';
-    } else {
-      cur += c;
-    }
+    if (!inStr && (c === '"' || c === "'")) { inStr = true; strChar = c; cur += c; }
+    else if (inStr && c === strChar) { inStr = false; cur += c; }
+    else if (!inStr && (c === '(' || c === '[' || c === '{')) { depth++; cur += c; }
+    else if (!inStr && (c === ')' || c === ']' || c === '}')) { depth--; cur += c; }
+    else if (!inStr && c === ',' && depth === 0) { args.push(cur.trim()); cur = ''; }
+    else { cur += c; }
   }
-  if (cur.trim()) {
-    args.push(cur.trim());
-  }
+  if (cur.trim()) args.push(cur.trim());
   return args;
 }
 
 function translateTuplesToArrays(text) {
   let result = '';
-  let inStr = false;
-  let strChar = '';
-  let i = 0;
+  let inStr = false, strChar = '', i = 0;
   while (i < text.length) {
     const c = text[i];
-    if (!inStr && (c === '"' || c === "'")) {
-      inStr = true; strChar = c; result += c; i++;
-    } else if (inStr && c === strChar) {
-      inStr = false; result += c; i++;
-    } else if (!inStr && c === '(') {
+    if (!inStr && (c === '"' || c === "'")) { inStr = true; strChar = c; result += c; i++; }
+    else if (inStr && c === strChar) { inStr = false; result += c; i++; }
+    else if (!inStr && c === '(') {
       const prevTrimmed = result.trim();
       const isFuncCall = prevTrimmed && /[a-zA-Z0-9_]/.test(prevTrimmed[prevTrimmed.length - 1]);
       let depth = 1, j = i + 1, hasComma = false, innerText = '';
@@ -400,11 +471,6 @@ function interpretPython(ast, env, inputs, output, virtualFiles = {}) {
 
     if (/^input\(.*\)$/.test(expr)) return getInput();
 
-    // raw string matches
-    if (/^r["']/.test(expr)) {
-      return expr.slice(2, -1);
-    }
-
     // Method calls
     const methodMatch = expr.match(/^([a-zA-Z_]\w*)\.([a-zA-Z_]\w*)\((.*)\)$/);
     if (methodMatch) {
@@ -414,10 +480,15 @@ function interpretPython(ast, env, inputs, output, virtualFiles = {}) {
       const args = argStr ? splitByTopLevelCommas(argStr).map(x => evalExpr(x.trim(), scope)) : [];
       const obj = scope[varName] !== undefined ? scope[varName] : env[varName];
 
-      // If virtual file handle method call
       if (obj instanceof VirtualFileHandle) {
-        if (method === 'read') return obj.read();
+        if (method === 'read') return obj.read(args[0]);
+        if (method === 'readline') return obj.readline();
+        if (method === 'readlines') return obj.readlines();
         if (method === 'write') return obj.write(args[0]);
+        if (method === 'writelines') return obj.writelines(args[0]);
+        if (method === 'tell') return obj.tell();
+        if (method === 'seek') return obj.seek(args[0], args[1] !== undefined ? args[1] : 0);
+        if (method === 'flush') return obj.flush();
         if (method === 'close') { obj.close(); return null; }
       }
 
@@ -427,6 +498,7 @@ function interpretPython(ast, env, inputs, output, virtualFiles = {}) {
           if (method === 'insert') { obj.splice(args[0], 0, args[1]); return null; }
           if (method === 'pop') { return args.length > 0 ? obj.splice(args[0], 1)[0] : obj.pop(); }
           if (method === 'remove') { const pos = obj.indexOf(args[0]); if (pos !== -1) obj.splice(pos, 1); return null; }
+          if (method === 'join') return obj.join(args[0] !== undefined ? args[0] : '');
         } else if (typeof obj === 'string') {
           if (method === 'lower') return obj.toLowerCase();
           if (method === 'upper') return obj.toUpperCase();
@@ -475,36 +547,67 @@ function interpretPython(ast, env, inputs, output, virtualFiles = {}) {
         const len = (x) => x ? x.length : 0;
         const input = () => getInput();
 
-        const range = (start, stop, step) => {
-          if (stop === undefined) { stop = start; start = 0; }
-          if (step === undefined) { step = 1; }
-          const arr = [];
-          if (step > 0) { for (let i = start; i < stop; i += step) arr.push(i); }
-          else { for (let i = start; i > stop; i += step) arr.push(i); }
-          return arr;
+        const open = (filename, mode = 'r') => new VirtualFileHandle(filename, mode, virtualFiles);
+
+        const shutil = {
+          copy: (src, dst) => { virtualFiles[dst] = virtualFiles[src]; return dst; },
+          copyfile: (src, dst) => { virtualFiles[dst] = virtualFiles[src]; return dst; }
         };
 
-        const list = (x) => { if (!x) return []; if (Array.isArray(x)) return [...x]; if (typeof x === 'string') return x.split(''); return Array.from(x); };
-        const tuple = (x) => list(x);
-        const map = (fn, iterable) => (Array.isArray(iterable) ? iterable : Array.from(iterable)).map(fn);
-        const filter = (fn, iterable) => (Array.isArray(iterable) ? iterable : Array.from(iterable)).filter(fn);
-        const zip = (...arrs) => { const len = Math.min(...arrs.map(a=>a.length)); const result=[]; for(let i=0;i<len;i++) result.push(arrs.map(a=>a[i])); return result; };
-        const sorted = (arr) => { const copy=[...arr]; copy.sort((a,b)=>a>b?1:-1); return copy; };
-        const reversed = (arr) => [...arr].reverse();
-        const sum = (arr) => arr.reduce((a,b)=>a+b, 0);
-        const min = (...args) => { const arr = args.length===1&&Array.isArray(args[0])?args[0]:args; return Math.min(...arr); };
-        const max = (...args) => { const arr = args.length===1&&Array.isArray(args[0])?args[0]:args; return Math.max(...arr); };
-        const abs = (x) => Math.abs(x);
-        const round = (x, n) => n !== undefined ? parseFloat(x.toFixed(n)) : Math.round(x);
-        
-        const open = (filename, mode = 'r') => {
-          return new VirtualFileHandle(filename, mode, virtualFiles);
+        const json = {
+          dumps: (obj, indent) => JSON.stringify(obj, null, indent ? 2 : undefined),
+          loads: (s) => JSON.parse(s),
+          dump: (obj, f) => { f.write(JSON.stringify(obj, null, 2)); return null; },
+          load: (f) => JSON.parse(f.read())
+        };
+
+        const csv = {
+          reader: (f) => {
+            const text = typeof f === 'string' ? f : f.read();
+            return text.split('\\n').filter(l => l.trim().length > 0).map(l => l.split(',').map(c => c.trim()));
+          },
+          writer: (f) => ({
+            writerow: (row) => { f.write(row.join(',') + '\\n'); },
+            writerows: (rows) => { rows.forEach(r => f.write(r.join(',') + '\\n')); }
+          }),
+          DictReader: (f) => {
+            const text = typeof f === 'string' ? f : f.read();
+            const lines = text.split('\\n').filter(l => l.trim().length > 0);
+            if (lines.length === 0) return [];
+            const headers = lines[0].split(',').map(h => h.trim());
+            return lines.slice(1).map(line => {
+              const cells = line.split(',').map(c => c.trim());
+              const dict = {};
+              headers.forEach((h, idx) => { dict[h] = cells[idx] !== undefined ? cells[idx] : ''; });
+              return dict;
+            });
+          }
         };
 
         const pickle = {
           dump: (obj, f) => { f.write(JSON.stringify(obj)); return null; },
-          load: (f) => { return JSON.parse(f.read()); }
+          load: (f) => JSON.parse(f.read())
         };
+
+        const os = {
+          path: {
+            exists: (p) => p in virtualFiles,
+            isfile: (p) => p in virtualFiles,
+            isdir: (p) => false,
+            getsize: (p) => (virtualFiles[p] || '').length,
+            join: (...parts) => parts.join('/')
+          },
+          listdir: () => Object.keys(virtualFiles),
+          remove: (p) => { if (p in virtualFiles) delete virtualFiles[p]; else throw new Error("FileNotFoundError"); },
+          rename: (oldP, newP) => { if (oldP in virtualFiles) { virtualFiles[newP] = virtualFiles[oldP]; delete virtualFiles[oldP]; } else throw new Error("FileNotFoundError"); }
+        };
+
+        const Path = (filename) => ({
+          read_text: () => virtualFiles[filename] || '',
+          write_text: (txt) => { virtualFiles[filename] = String(txt); return txt.length; },
+          exists: () => filename in virtualFiles,
+          unlink: () => { delete virtualFiles[filename]; }
+        });
 
         ${uniqueKeys.map(k => {
         const v = scope[k] !== undefined ? scope[k] : env[k];
@@ -565,11 +668,7 @@ function interpretPython(ast, env, inputs, output, virtualFiles = {}) {
       }
 
       if (node.type === 'def') {
-        env[node.name] = {
-          type: 'function',
-          params: node.params,
-          body: node.body
-        };
+        env[node.name] = { type: 'function', params: node.params, body: node.body };
       } else if (node.type === 'return') {
         const val = evalExpr(node.expr, scope);
         return { type: 'return', value: val };
@@ -585,29 +684,33 @@ function interpretPython(ast, env, inputs, output, virtualFiles = {}) {
         } finally {
           fileObj.close();
         }
+      } else if (node.type === 'raise') {
+        const err = evalExpr(node.errExpr, scope);
+        throw new Error(String(err));
       } else if (node.type === 'try') {
+        let exceptionThrown = null;
         try {
           const status = execBlock(node.body, scope);
           if (status) return status;
         } catch (e) {
+          exceptionThrown = e;
           let handled = false;
           const errMsg = e.message;
           for (const handler of node.handlers) {
             if (errMsg.includes(handler.errClass) || handler.errClass === 'Exception') {
               const localEnv = { ...scope };
-              if (handler.errVar) {
-                localEnv[handler.errVar] = errMsg;
-              }
+              if (handler.errVar) localEnv[handler.errVar] = errMsg;
               const status = execBlock(handler.body, localEnv);
               if (status) return status;
               handled = true;
               break;
             }
           }
-          if (!handled) {
-            throw e;
-          }
+          if (!handled) throw e;
         } finally {
+          if (!exceptionThrown && node.else_body) {
+            execBlock(node.else_body, scope);
+          }
           if (node.finally_body) {
             execBlock(node.finally_body, scope);
           }
@@ -621,9 +724,7 @@ function interpretPython(ast, env, inputs, output, virtualFiles = {}) {
           const varName = itemMatch[1];
           const key = evalExpr(itemMatch[2], scope);
           const obj = scope[varName] !== undefined ? scope[varName] : env[varName];
-          if (obj && typeof obj === 'object') {
-            obj[key] = val;
-          }
+          if (obj && typeof obj === 'object') obj[key] = val;
         } else {
           if (op !== '=') {
             const cur = scope[name] !== undefined ? scope[name] : (env[name] !== undefined ? env[name] : 0);
@@ -631,9 +732,7 @@ function interpretPython(ast, env, inputs, output, virtualFiles = {}) {
             else if (op === '-=') val = cur - val;
           }
           scope[name] = val;
-          if (scope === env) {
-            env[name] = val;
-          }
+          if (scope === env) env[name] = val;
         }
       } else if (node.type === 'print') {
         parsePrint(node.line, scope);
@@ -642,7 +741,7 @@ function interpretPython(ast, env, inputs, output, virtualFiles = {}) {
       } else if (node.type === 'continue') {
         return 'continue';
       } else if (node.type === 'pass') {
-        // no-op
+        // pass
       } else if (node.type === 'expr') {
         evalExpr(node.expr, scope);
       } else if (node.type === 'if') {
@@ -667,7 +766,10 @@ function interpretPython(ast, env, inputs, output, virtualFiles = {}) {
           if (status) return status;
         }
       } else if (node.type === 'for') {
-        const items = evalExpr(node.iterExpr, scope);
+        let items = evalExpr(node.iterExpr, scope);
+        if (items instanceof VirtualFileHandle) {
+          items = items.readlines();
+        }
         if (Array.isArray(items) || typeof items === 'string') {
           for (const item of items) {
             scope[node.varName] = item;
@@ -683,7 +785,6 @@ function interpretPython(ast, env, inputs, output, virtualFiles = {}) {
           if (status === 'break') break;
           if (status === 'continue') continue;
           if (status) return status;
-
           totalInstructions++;
           if (totalInstructions > instructionLimit) {
             throw new Error("TimeLimitExceeded: Infinite loop detected.");
@@ -709,9 +810,7 @@ function interpretPython(ast, env, inputs, output, virtualFiles = {}) {
       buffer = '';
     }
   }
-  if (buffer) {
-    formattedOutput.push(buffer);
-  }
+  if (buffer) formattedOutput.push(buffer);
 
   return { lines: formattedOutput.length ? formattedOutput : ['(no output)'], isError: false, vfs: virtualFiles };
 }
@@ -753,7 +852,6 @@ function Playground({ id, defaultCode, inputs = [], title = 'VFS Python Console'
         </button>
       </div>
 
-      {/* VIRTUAL FILES SYSTEM PREVIEW */}
       <div style={{ background: '#09111e', padding: '0.75rem 1.4rem', borderBottom: '1px solid #1e293b' }}>
         <div style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.45rem' }}>🗄️ Virtual Filesystem State:</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
@@ -763,7 +861,7 @@ function Playground({ id, defaultCode, inputs = [], title = 'VFS Python Console'
             Object.entries(vfs).map(([name, content]) => (
               <div key={name} style={{ background: '#1e293b', border: '1px solid #475569', borderRadius: '8px', padding: '0.4rem 0.8rem', fontSize: '0.8rem', color: '#e2e8f0', display: 'flex', flexDirection: 'column' }}>
                 <span style={{ fontWeight: 700, color: '#38bdf8' }}>📄 {name}</span>
-                <span style={{ color: '#94a3b8', fontSize: '0.72rem', marginTop: '0.1rem', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px', whiteSpace: 'nowrap' }}>
+                <span style={{ color: '#94a3b8', fontSize: '0.72rem', marginTop: '0.1rem', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '220px', whiteSpace: 'nowrap' }}>
                   "{content}"
                 </span>
               </div>
@@ -785,7 +883,7 @@ function Playground({ id, defaultCode, inputs = [], title = 'VFS Python Console'
         </div>
       )}
       <textarea value={code} onChange={e => setCode(e.target.value)} spellCheck={false}
-        style={{ width: '100%', minHeight: '180px', background: '#0d1b2a', color: '#e2e8f0', fontFamily: 'monospace', fontSize: '0.89rem', lineHeight: 1.8, padding: '1.1rem', border: 'none', outline: 'none', resize: 'vertical', borderBottom: '1px solid #1e293b', boxSizing: 'border-box' }} />
+        style={{ width: '100%', minHeight: '190px', background: '#0d1b2a', color: '#e2e8f0', fontFamily: 'monospace', fontSize: '0.89rem', lineHeight: 1.8, padding: '1.1rem', border: 'none', outline: 'none', resize: 'vertical', borderBottom: '1px solid #1e293b', boxSizing: 'border-box' }} />
       <div style={{ padding: '0.75rem 1.4rem', display: 'flex', alignItems: 'center', gap: '1rem', background: '#111827' }}>
         <button onClick={run}
           style={{ background: 'linear-gradient(135deg,#3b82f6,#2563eb)', color: 'white', border: 'none', padding: '0.52rem 1.5rem', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', boxShadow: '0 4px 12px rgba(59,130,246,0.3)' }}>
@@ -806,21 +904,24 @@ function Playground({ id, defaultCode, inputs = [], title = 'VFS Python Console'
 }
 
 /* ─────────────────────────────────────────────
-   QUIZ DATA
+   COMPREHENSIVE 15-QUESTION QUIZ DATA
 ───────────────────────────────────────────── */
 const quizData = [
-  { q: "Which parameter is used in open() to open a file for appending data?", opts: ["'r'", "'w'", "'a'", "'x'"], ans: 2, exp: "The 'a' mode opens a file for appending. New data is written to the end of the file." },
-  { q: "Which block in exception handling ALWAYS runs regardless of whether an error occurred?", opts: ["except", "else", "finally", "try"], ans: 2, exp: "The finally block is guaranteed to execute at the end, making it ideal for cleaning up resources like closing files." },
-  { q: "What happens when you open a non-existent file in write ('w') mode?", opts: ["Throws FileNotFoundError", "Creates a new empty file", "Throws a ValueError", "No-op"], ans: 1, exp: "Write mode ('w') automatically creates a new file if it does not already exist on the filesystem." },
-  { q: "Which keyword is used in Python to trigger/throw a custom exception manually?", opts: ["trigger", "throw", "raise", "except"], ans: 2, exp: "The raise keyword is used to trigger/raise custom exceptions (e.g. raise ValueError)." },
-  { q: "What is the safest way to open files in Python ensuring they are closed automatically?", opts: ["f = open()", "try/except", "using the with open() context manager", "f.close()"], ans: 2, exp: "The 'with open(...) as f:' context manager automatically closes the file handle when the block is exited, even if errors occur." },
-  { q: "Which exception class matches dividing a number by zero?", opts: ["ValueError", "TypeError", "ZeroDivisionError", "IndexError"], ans: 2, exp: "ZeroDivisionError is raised when the denominator in a division or modulo operation is zero." },
-  { q: "What happens when you try to write to a file opened in read ('r') mode?", opts: ["Automatically changes to write mode", "Throws an UnsupportedOperation error", "Successfully writes", "Quietly fails"], ans: 1, exp: "Opening a file in read-only mode throws an UnsupportedOperation exception if you attempt a .write() call." },
-  { q: "Which except block structure handles ANY unclassified runtime error?", opts: ["except FileNotFoundError:", "except: (or except Exception:)", "except Value:", "except Error:"], ans: 1, exp: "A general 'except:' or 'except Exception:' block catches all standard exceptions that inherit from the BaseException class." },
-  { q: "What is the file closing method?", opts: ".stop()", opts: [".stop()", ".end()", ".close()", ".quit()"], ans: 2, exp: "The .close() method flushes and closes the file stream wrapper." },
-  { q: "Which parameter mode opens a file in binary mode?", opts: ["'r'", "'b'", "'t'", "'+'"], ans: 1, exp: "The 'b' parameter suffix denotes binary mode, used for non-text files like images or zip archives." },
-  { q: "What is the purpose of the else block in try-except statements?", opts: ["Runs if an exception is raised", "Runs only if no exceptions were raised", "Always runs", "Acts as default handler"], ans: 1, exp: "The else block runs only if the code inside the try block executes successfully without raising any exceptions." },
-  { q: "Which exception is raised when conversion from string to integer fails, like int('hello')?", opts: ["TypeError", "ValueError", "NameError", "KeyError"], ans: 1, exp: "ValueError is raised when an argument has the right type but an inappropriate value." }
+  { q: "Which parameter is used in open() to open a file for appending data without truncating existing content?", opts: ["'r'", "'w'", "'a'", "'x'"], ans: 2, exp: "The 'a' (append) mode opens a file for appending data to the end of the file without deleting current contents." },
+  { q: "Which method is best suited for copying content line-by-line from a source file into a target destination file?", opts: ["for line in src: dest.write(line)", "dest.copy(src)", "src.transfer(dest)", "dest.read(src)"], ans: 0, exp: "Streaming line-by-line using `for line in src:` and `dest.write(line)` copies large files memory-efficiently." },
+  { q: "Which keyword is used to implement context managers in Python that automatically close file streams?", opts: ["using", "with", "manage", "auto"], ans: 1, exp: "The 'with' statement creates a context manager that guarantees the file handle will be closed upon block exit." },
+  { q: "What exception is raised when attempting to open a non-existent file in read ('r') mode?", opts: ["FileExistsError", "FileNotFoundError", "IOError", "PermissionError"], ans: 1, exp: "FileNotFoundError is raised when trying to open a non-existent file path in read mode." },
+  { q: "What happens when you open a file using exclusive creation mode ('x') if the file already exists?", opts: ["It overwrites the file", "It appends to the file", "It raises FileExistsError", "It ignores the operation"], ans: 2, exp: "Mode 'x' fails and raises FileExistsError if the target file already exists." },
+  { q: "Which method reads all remaining lines from a file and returns them as a Python list of strings?", opts: ["readline()", "readlines()", "readall()", "extractlines()"], ans: 1, exp: "f.readlines() reads all lines from the current cursor position to EOF and returns a list." },
+  { q: "What is the primary advantage of iterating directly over a file object (`for line in f:`)?", opts: ["It auto-formats text to uppercase", "It is memory efficient by streaming line-by-line", "It sorts lines alphabetically", "It converts lines into numbers"], ans: 1, exp: "Streaming line-by-line avoids loading multi-gigabyte files entirely into RAM at once." },
+  { q: "Which Python standard library module provides built-in high-level file copying utilities like `shutil.copy()`?", opts: ["os", "sys", "shutil", "pathlib"], ans: 2, exp: "The shutil module provides high-level file copy operations like shutil.copy(src, dst)." },
+  { q: "How can you open both a source file for reading and a destination file for writing in a single `with` statement?", opts: ["with open('src') as s, open('dst', 'w') as d:", "with open('src') and open('dst'):", "with open('src' -> 'dst'):", "with open('src') + open('dst'):"], ans: 0, exp: "Python allows comma-separated context managers: `with open('src') as s, open('dst', 'w') as d:`." },
+  { q: "Which method forces unwritten buffered data in memory to be flushed directly to physical disk storage?", opts: ["sync()", "save()", "flush()", "commit()"], ans: 2, exp: "f.flush() flushes the write buffer without closing the file handle." },
+  { q: "Which module in Python's standard library is designed for serializing complex Python objects into binary bytes?", opts: ["json", "pickle", "csv", "pathlib"], ans: 1, exp: "The pickle module serializes Python objects (lists, dicts, custom objects) into binary streams." },
+  { q: "What is the difference between `json.dumps()` and `json.dump()`?", opts: ["dumps writes to a string, dump writes to a file stream", "dump converts to string, dumps writes to file", "They are identical aliases", "dumps works only on lists"], ans: 0, exp: "json.dumps(obj) converts object to a JSON formatted string, whereas json.dump(obj, file) writes directly to a file handle." },
+  { q: "Which block in exception handling always executes regardless of whether an exception occurred?", opts: ["except", "else", "finally", "catch"], ans: 2, exp: "The finally block always runs at the end, making it ideal for cleanup operations like stream teardown." },
+  { q: "What does the `else` block do in a `try-except-else-finally` statement?", opts: ["Executes if an exception occurs", "Executes ONLY if NO exception was raised in the try block", "Executes before the try block", "Reraises the exception"], ans: 1, exp: "The else block executes only when the try block completes successfully with zero exceptions." },
+  { q: "Which method in the modern `pathlib.Path` class reads all text contents of a file directly as a string?", opts: ["read_text()", "get_string()", "load_content()", "fetch()"], ans: 0, exp: "Path('data.txt').read_text() opens, reads, and closes the text file in a single line." }
 ];
 
 /* ─────────────────────────────────────────────
@@ -836,306 +937,741 @@ export default function PythonDay8({ activeTab, onNavigate }) {
   return (
     <AnimatePresence mode="wait">
 
-      {/* ─── TAB 1: INTRO ─── */}
+      {/* ─── TAB 1: OVERVIEW & STORAGE ─── */}
       {activeTab === 'intro' && (
-        <Section key="intro" eyebrow="Day 8 • Overview" title="File & Exception Handling">
+        <Section key="intro" eyebrow="Day 8 • Overview" title="File Handling & Data Persistence">
           <div className="panel">
             <div style={{ background: 'linear-gradient(135deg,#0f172a,#1e293b)', color: 'white', padding: '2rem', borderRadius: '16px', marginBottom: '2rem', border: '1px solid #334155' }}>
-              <h3 style={{ fontSize: '1.6rem', margin: '0 0 1rem', fontWeight: 800 }}>Persistence & Robustness</h3>
+              <h3 style={{ fontSize: '1.6rem', margin: '0 0 1rem', fontWeight: 800 }}>💾 Why Data Persistence Matters</h3>
               <p style={{ color: '#94a3b8', lineHeight: 1.7, margin: 0, fontSize: '1.05rem' }}>
-                Day 8 introduces two core software engineering concepts: **File Handling** (reading/writing data to files permanently) and **Exception Handling** (gracefully intercepting and managing runtime code crashes).
+                Variables, lists, and dictionaries in Python reside in <strong>RAM (Volatile Memory)</strong>. When a script finishes running or power is lost, RAM is cleared. <strong>File Handling</strong> enables permanent data persistence on hard drives or SSDs.
               </p>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.2rem', marginBottom: '2rem' }}>
               <div style={{ background: '#f8fafc', borderRadius: '12px', padding: '1.3rem', border: '1px solid #e2e8f0' }}>
-                <h4 style={{ margin: '0 0 0.5rem', color: '#0f172a' }}>💾 1. File Handling</h4>
-                <p style={{ margin: 0, color: '#475569', fontSize: '0.88rem', lineHeight: 1.5 }}>
-                  Learn to save user logs, configuration, and variables permanently. Create, read, edit, and append data using Python's file objects.
+                <h4 style={{ margin: '0 0 0.5rem', color: '#0f172a' }}>📄 Text Files vs Binary Files</h4>
+                <p style={{ margin: 0, color: '#475569', fontSize: '0.88rem', lineHeight: 1.6 }}>
+                  • <strong>Text Files (.txt, .csv, .json, .log):</strong> Human-readable characters encoded in UTF-8 or ASCII with newline terminators (<code>\n</code>).<br />
+                  • <strong>Binary Files (.png, .dat, .pkl, .exe):</strong> Raw byte streams without newline translations, read by specific software or serializers.
                 </p>
               </div>
               <div style={{ background: '#f8fafc', borderRadius: '12px', padding: '1.3rem', border: '1px solid #e2e8f0' }}>
-                <h4 style={{ margin: '0 0 0.5rem', color: '#0f172a' }}>🛡️ 2. Exception Handling</h4>
-                <p style={{ margin: 0, color: '#475569', fontSize: '0.88rem', lineHeight: 1.5 }}>
-                  Prevent program crashes! Learn to catch, manage, and bypass standard Python exceptions (like <code>ValueError</code> or <code>FileNotFoundError</code>).
+                <h4 style={{ margin: '0 0 0.5rem', color: '#0f172a' }}>🔄 File Stream Lifecycle</h4>
+                <p style={{ margin: 0, color: '#475569', fontSize: '0.88rem', lineHeight: 1.6 }}>
+                  1. <strong>Open:</strong> Create file stream handle using <code>open(filename, mode)</code>.<br />
+                  2. <strong>Process:</strong> Perform <code>read()</code>, <code>write()</code>, or copy operations.<br />
+                  3. <strong>Flush/Close:</strong> Release stream buffer & unlock OS file descriptors using <code>close()</code>.
                 </p>
               </div>
             </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.2rem', marginBottom: '2rem' }}>
+              <div style={{ background: '#eff6ff', borderRadius: '12px', padding: '1.3rem', border: '1px solid #bfdbfe' }}>
+                <h4 style={{ margin: '0 0 0.5rem', color: '#1e3a8a' }}>💾 1. File Handling</h4>
+                <p style={{ margin: 0, color: '#475569', fontSize: '0.88rem', lineHeight: 1.5 }}>
+                  Learn to create, read, edit, append, and copy user logs, configuration files, and data structures permanently.
+                </p>
+              </div>
+              <div style={{ background: '#eff6ff', borderRadius: '12px', padding: '1.3rem', border: '1px solid #bfdbfe' }}>
+                <h4 style={{ margin: '0 0 0.5rem', color: '#1e3a8a' }}>🛡️ 2. Exception Handling</h4>
+                <p style={{ margin: 0, color: '#475569', fontSize: '0.88rem', lineHeight: 1.5 }}>
+                  Prevent program crashes! Intercept runtime errors (like <code>FileNotFoundError</code> or <code>ValueError</code>) using <code>try/except</code>.
+                </p>
+              </div>
+            </div>
+
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '1rem' }}>💻 Program Examples:</h3>
+
+            <CodeBlock title="program_1_basic_file_handling.py">
+              {c('# Program 1: Creating, writing, reading, and closing a file stream')}<br />
+              {c('# Step 1: Open file for writing')}<br />
+              file_out = {fn('open')}({st('"user_profile.txt"')}, {st('"w"')})<br />
+              file_out.write({st('"Username: Alex\\n"')})<br />
+              file_out.write({st('"Role: Senior Developer\\n"')})<br />
+              file_out.close() {c('# Always close streams')}<br /><br />
+              {c('# Step 2: Open file for reading')}<br />
+              file_in = {fn('open')}({st('"user_profile.txt"')}, {st('"r"')})<br />
+              data = file_in.read()<br />
+              {fn('print')}({st('"--- File Output ---"')})<br />
+              {fn('print')}(data)<br />
+              file_in.close()<br />
+              {fn('print')}({st('"Is stream closed?"')}, file_in.closed)
+            </CodeBlock>
+
+            <CodeBlock title="program_2_file_properties.py">
+              {c('# Program 2: Inspecting File Object Metadata Properties')}<br />
+              f = {fn('open')}({st('"user_profile.txt"')}, {st('"r"')})<br />
+              {fn('print')}({st('"File Name:"')}, f.name)<br />
+              {fn('print')}({st('"File Mode:"')}, f.mode)<br />
+              {fn('print')}({st('"Is Closed?"')}, f.closed)<br />
+              f.close()<br />
+              {fn('print')}({st('"Is Closed after .close()?"')}, f.closed)
+            </CodeBlock>
 
             <Playground
               id="intro"
-              title="Interactive File Previewer"
-              initialFiles={{ "hello.txt": "Hello Python World!" }}
-              defaultCode={`# Let's open hello.txt and read it!
-with open("hello.txt", "r") as f:
-    text = f.read()
-    print("File Content:", text)`}
+              title="Interactive File Stream Console"
+              initialFiles={{ "welcome.txt": "Welcome to Python Data Persistence!\nLine 2: Permanent file storage." }}
+              defaultCode={`# Program: Basic Open, Read, and Close
+f = open("welcome.txt", "r")
+content = f.read()
+print("--- Read File Content ---")
+print(content)
+print("File Name:", f.name)
+print("File Mode:", f.mode)
+f.close()
+print("Stream Closed Successfully:", f.closed)`}
             />
 
             <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('file_handling')}>Next: File Handling <ArrowRight size={18} /></button>
+              <button className="btn btn-primary" onClick={() => nav('file_modes')}>Next: Opening Modes & Encoding <ArrowRight size={18} /></button>
             </div>
           </div>
         </Section>
       )}
 
-      {/* ─── TAB 2: FILE HANDLING ─── */}
-      {activeTab === 'file_handling' && (
-        <Section key="file_handling" eyebrow="Day 8 • Persistence" title="Opening, Reading & Writing Files">
+      {/* ─── TAB 2: OPENING MODES & ENCODING ─── */}
+      {activeTab === 'file_modes' && (
+        <Section key="file_modes" eyebrow="Day 8 • File Modes" title="File Opening Modes & Character Encodings">
           <div className="panel">
             <p style={{ color: '#475569', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-              To work with files, Python uses the built-in <code>open(filename, mode)</code> function.
+              The <code>open(filename, mode, encoding)</code> function requires specifying mode flags to dictate permissions and pointer behaviors.
             </p>
 
-            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.5rem' }}>📂 Common Opening Modes:</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-              {[
-                { m: "'r'", d: "Read mode (Default). Fails if file does not exist." },
-                { m: "'w'", d: "Write mode. Creates file, overrides all existing content." },
-                { m: "'a'", d: "Append mode. Appends new data to the end of the file." }
-              ].map((x, i) => (
-                <div key={i} style={{ background: '#eff6ff', borderRadius: '8px', padding: '1rem', border: '1px solid #bfdbfe' }}>
-                  <code style={{ fontSize: '1rem', color: '#1d4ed8', fontWeight: 700 }}>{x.m}</code>
-                  <p style={{ margin: '0.3rem 0 0 0', fontSize: '0.82rem', color: '#475569', lineHeight: 1.5 }}>{x.d}</p>
-                </div>
-              ))}
-            </div>
-
-            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.5rem' }}>🛡️ The Context Manager: <code>with open()</code></h3>
-            <p style={{ color: '#475569', fontSize: '0.95rem', marginBottom: '1rem' }}>
-              The <code>with</code> keyword ensures that the file handle is closed automatically as soon as the block is exited, protecting the stream from data corruption:
-            </p>
-
-            <CodeBlock title="context_manager.py">
-              {c('# Writing data safely')}<br />
-              {kw('with')} {fn('open')}({st('"data.txt"')}, {st('"w"')}) {kw('as')} f:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;f.write({st('"Python persistence text."')})<br /><br />
-              {c('# Reading data safely')}<br />
-              {kw('with')} {fn('open')}({st('"data.txt"')}, {st('"r"')}) {kw('as')} f:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;content = f.read()<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}(content) {ok('# "Python persistence text."')}
-            </CodeBlock>
-
-            <Playground
-              id="file_handling_play"
-              title="Test Virtual Writing"
-              defaultCode={`# Write to a file
-with open("user_log.txt", "w") as myfile:
-    myfile.write("Log Entry #1: User logged in.\\n")
-
-# Append to the file
-with open("user_log.txt", "a") as myfile:
-    myfile.write("Log Entry #2: User loaded dashboard.\\n")
-
-# Read the file
-with open("user_log.txt", "r") as myfile:
-    print(myfile.read())`}
-            />
-
-            <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('exception_handling')}>Next: Exception Handling <ArrowRight size={18} /></button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ─── TAB 3: EXCEPTION HANDLING ─── */}
-      {activeTab === 'exception_handling' && (
-        <Section key="exception_handling" eyebrow="Day 8 • Robustness" title="Exception Handling: try / except">
-          <div className="panel">
-            <p style={{ color: '#475569', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-              Runtime errors in Python are called <strong>Exceptions</strong>. Exception handling uses the <code>try</code>, <code>except</code>, <code>else</code>, and <code>finally</code> block syntax to intercept and manage crashes.
-            </p>
-
-            <div style={{ background: '#eff6ff', borderRadius: '12px', padding: '1.3rem', border: '1px solid #bfdbfe', marginBottom: '2rem' }}>
-              <h4 style={{ margin: '0 0 0.5rem', color: '#1e3a8a', display: 'flex', alignItems: 'center', gap: '6px' }}>🛡️ The Exception Syntax:</h4>
-              <p style={{ margin: 0, color: '#475569', fontSize: '0.88rem', lineHeight: 1.6 }}>
-                <strong>try:</strong> Runs code block that might fail.<br />
-                <strong>except Error:</strong> Runs code block if specified exception occurs.<br />
-                <strong>else:</strong> Runs if no exceptions were thrown in try block.<br />
-                <strong>finally:</strong> Always runs at the end (useful for closing file streams).
-              </p>
-            </div>
-
-            <CodeBlock title="try_except_example.py">
-              {kw('try')}:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;num = {fn('int')}({fn('input')}({st('"Enter divisor: "')}))<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;result = {nm('10')} / num<br />
-              {kw('except')} ZeroDivisionError:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Error: Cannot divide by zero!"')})<br />
-              {kw('except')} ValueError:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Error: Please enter a valid number!"')})<br />
-              {kw('else')}:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Division result:"')}, result)<br />
-              {kw('finally')}:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Execution complete."')})
-            </CodeBlock>
-
-            <Playground
-              id="try_except_play"
-              title="Test Exceptions in Real Time"
-              inputs={[{ label: 'Divisor input =', default: '0' }]}
-              defaultCode={`try:
-    num = int(input("Enter number: "))
-    result = 100 / num
-    print("Result:", result)
-except ZeroDivisionError:
-    print("Caught division by zero exception!")
-except ValueError:
-    print("Caught type conversion value exception!")
-finally:
-    print("This runs no matter what!")`}
-            />
-
-            <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('pickle')}>Next: Object Pickling <ArrowRight size={18} /></button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ─── TAB 4: OBJECT PICKLING ─── */}
-      {activeTab === 'pickle' && (
-        <Section key="pickle" eyebrow="Day 8 • Serialization" title="Object Pickling & Unpickling">
-          <div className="panel">
-            <p style={{ color: '#475569', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-              When working with files, we often need to store complex data structures (like <strong>lists</strong> or <strong>dictionaries</strong>) permanently. Plain text mode only supports string data. To solve this, Python provides the <strong>Pickle</strong> module.
-            </p>
-
-            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.8rem' }}>🧠 Terminology & Core Concepts:</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.2rem', marginBottom: '2rem' }}>
-              <div style={{ background: '#fafafa', borderRadius: '10px', padding: '1rem', border: '1px solid #e2e8f0' }}>
-                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.3rem' }}>🥒 Serialization (Pickling)</strong>
-                <span style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.5 }}>
-                  The process of converting a Python object hierarchy (lists, dictionaries, custom class instances) into a byte stream. It uses <code>pickle.dump(obj, file)</code>.
-                </span>
-              </div>
-              <div style={{ background: '#fafafa', borderRadius: '10px', padding: '1rem', border: '1px solid #e2e8f0' }}>
-                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.3rem' }}>🔓 Deserialization (Unpickling)</strong>
-                <span style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.5 }}>
-                  The inverse operation, where a byte stream from a file is converted back into an active Python object in memory. It uses <code>pickle.load(file)</code>.
-                </span>
-              </div>
-            </div>
-
-            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.8rem' }}>📂 Summary of File Handling Modes Covered:</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2.2rem', fontSize: '0.9rem', textAlign: 'left' }}>
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.8rem' }}>📊 Complete File Mode Matrix:</h3>
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2rem', fontSize: '0.9rem', textAlign: 'left' }}>
               <thead>
-                <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
-                  <th style={{ padding: '0.75rem 0.5rem', color: '#0f172a', fontWeight: 700 }}>Mode Parameter</th>
-                  <th style={{ padding: '0.75rem 0.5rem', color: '#0f172a', fontWeight: 700 }}>Description & Behavior</th>
+                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f1f5f9' }}>
+                  <th style={{ padding: '0.75rem 0.8rem', color: '#0f172a' }}>Mode</th>
+                  <th style={{ padding: '0.75rem 0.8rem', color: '#0f172a' }}>Access Type</th>
+                  <th style={{ padding: '0.75rem 0.8rem', color: '#0f172a' }}>If File Exists</th>
+                  <th style={{ padding: '0.75rem 0.8rem', color: '#0f172a' }}>If File Missing</th>
                 </tr>
               </thead>
               <tbody>
-                <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '0.75rem 0.5rem' }}><code style={{ color: '#3b82f6', fontWeight: 700 }}>'r'</code></td>
-                  <td style={{ padding: '0.75rem 0.5rem', color: '#475569' }}>Opens a text file for reading. Raises <code>FileNotFoundError</code> if missing.</td>
+                <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                  <td style={{ padding: '0.75rem 0.8rem' }}><code style={{ color: '#2563eb', fontWeight: 700 }}>'r'</code></td>
+                  <td style={{ padding: '0.75rem 0.8rem' }}>Read Only</td>
+                  <td style={{ padding: '0.75rem 0.8rem' }}>Pointer at start (0)</td>
+                  <td style={{ padding: '0.75rem 0.8rem', color: '#ef4444', fontWeight: 600 }}>Raises FileNotFoundError</td>
                 </tr>
-                <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '0.75rem 0.5rem' }}><code style={{ color: '#3b82f6', fontWeight: 700 }}>'w'</code></td>
-                  <td style={{ padding: '0.75rem 0.5rem', color: '#475569' }}>Opens a text file for writing. Overwrites or creates if missing.</td>
+                <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                  <td style={{ padding: '0.75rem 0.8rem' }}><code style={{ color: '#2563eb', fontWeight: 700 }}>'w'</code></td>
+                  <td style={{ padding: '0.75rem 0.8rem' }}>Write Only</td>
+                  <td style={{ padding: '0.75rem 0.8rem', color: '#d97706', fontWeight: 600 }}>Truncates (deletes) contents</td>
+                  <td style={{ padding: '0.75rem 0.8rem', color: '#10b981', fontWeight: 600 }}>Creates new file</td>
                 </tr>
-                <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '0.75rem 0.5rem' }}><code style={{ color: '#3b82f6', fontWeight: 700 }}>'a'</code></td>
-                  <td style={{ padding: '0.75rem 0.5rem', color: '#475569' }}>Opens for appending data to end. Creates file if missing.</td>
+                <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                  <td style={{ padding: '0.75rem 0.8rem' }}><code style={{ color: '#2563eb', fontWeight: 700 }}>'a'</code></td>
+                  <td style={{ padding: '0.75rem 0.8rem' }}>Append Only</td>
+                  <td style={{ padding: '0.75rem 0.8rem' }}>Pointer at end of file</td>
+                  <td style={{ padding: '0.75rem 0.8rem', color: '#10b981', fontWeight: 600 }}>Creates new file</td>
                 </tr>
-                <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '0.75rem 0.5rem' }}><code style={{ color: '#3b82f6', fontWeight: 700 }}>'wb' / 'rb'</code></td>
-                  <td style={{ padding: '0.75rem 0.5rem', color: '#475569' }}><strong>Binary modes</strong>. Necessary for Pickle operations. Write Binary / Read Binary.</td>
+                <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                  <td style={{ padding: '0.75rem 0.8rem' }}><code style={{ color: '#2563eb', fontWeight: 700 }}>'x'</code></td>
+                  <td style={{ padding: '0.75rem 0.8rem' }}>Exclusive Write</td>
+                  <td style={{ padding: '0.75rem 0.8rem', color: '#ef4444', fontWeight: 600 }}>Raises FileExistsError</td>
+                  <td style={{ padding: '0.75rem 0.8rem', color: '#10b981', fontWeight: 600 }}>Creates new file</td>
                 </tr>
-                <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '0.75rem 0.5rem' }}><code style={{ color: '#3b82f6', fontWeight: 700 }}>'+' (e.g. 'r+')</code></td>
-                  <td style={{ padding: '0.75rem 0.5rem', color: '#475569' }}><strong>Read & Write mode</strong>. Opens file for both reading and writing simultaneously.</td>
+                <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                  <td style={{ padding: '0.75rem 0.8rem' }}><code style={{ color: '#2563eb', fontWeight: 700 }}>'r+'</code></td>
+                  <td style={{ padding: '0.75rem 0.8rem' }}>Read & Write</td>
+                  <td style={{ padding: '0.75rem 0.8rem' }}>Pointer at start (0)</td>
+                  <td style={{ padding: '0.75rem 0.8rem', color: '#ef4444', fontWeight: 600 }}>Raises FileNotFoundError</td>
                 </tr>
               </tbody>
             </table>
 
-            <CodeBlock title="pickle_example.py">
-              {kw('import')} pickle<br /><br />
-              user_profile = &#123;<span style={{ color: '#a5b4fc' }}>"username"</span>: <span style={{ color: '#a5b4fc' }}>"alex"</span>, <span style={{ color: '#a5b4fc' }}>"score"</span>: <span style={{ color: '#fbbf24' }}>95</span>&#125;<br /><br />
-              {c('# Pickling (Serialization) to binary file')}<br />
-              {kw('with')} {fn('open')}({st('"data.pkl"')}, {st('"wb"')}) {kw('as')} f:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;pickle.dump(user_profile, f)<br /><br />
-              {c('# Unpickling (Deserialization) from binary file')}<br />
-              {kw('with')} {fn('open')}({st('"data.pkl"')}, {st('"rb"')}) {kw('as')} f:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;loaded_profile = pickle.load(f)<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}(loaded_profile[<span style={{ color: '#a5b4fc' }}>"username"</span>]) {ok('# Output: alex')}
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '1rem' }}>💻 Mode Demonstration Programs:</h3>
+
+            <CodeBlock title="program_1_mode_comparison.py">
+              {c('# Program 1: Mode Comparison - Write vs Append')}<br />
+              {c('# Mode "w" overwrites file completely')}<br />
+              {kw('with')} {fn('open')}({st('"demo.txt"')}, {st('"w"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;f.write({st('"First Line\\n"')})<br /><br />
+              {c('# Mode "a" appends without deleting existing content')}<br />
+              {kw('with')} {fn('open')}({st('"demo.txt"')}, {st('"a"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;f.write({st('"Second Line Appended\\n"')})<br /><br />
+              {kw('with')} {fn('open')}({st('"demo.txt"')}, {st('"r"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}(f.read())
+            </CodeBlock>
+
+            <CodeBlock title="program_2_exclusive_mode.py">
+              {c('# Program 2: Exclusive Creation Mode "x" Prevents Accidental Overwrites')}<br />
+              filename = {st('"system_config.txt"')}<br />
+              {kw('try')}:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('with')} {fn('open')}(filename, {st('"x"')}, encoding={st('"utf-8"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f.write({st('"PORT=8080\\nENVIRONMENT=production\\n"')})<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Configuration file created!"')})<br />
+              {kw('except')} FileExistsError:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}(f{st('"Warning: File {filename} already exists! Cannot overwrite."')})
             </CodeBlock>
 
             <Playground
-              id="pickle_play"
-              title="Test Pickling Sandbox"
-              defaultCode={`import pickle
+              id="file_modes_play"
+              title="Test Exclusive Creation & Append Modes"
+              initialFiles={{ "app.log": "[INFO] Server started\n" }}
+              defaultCode={`# Program: Safe File Creation & Logging
+try:
+    with open("app.log", "x") as f:
+        f.write("Header: New Log File\\n")
+except FileExistsError:
+    print("Caught FileExistsError: app.log already exists! Appending instead.")
 
-user_state = {"username": "Alex", "score": 98, "active": True}
+# Append new log line
+with open("app.log", "a") as f:
+    f.write("[INFO] User authenticated successfully\\n")
 
-# 1. Pickle the dictionary object into user_state.pkl
-with open("user_state.pkl", "wb") as f:
-    pickle.dump(user_state, f)
-    print("State pickled successfully!")
-
-# 2. Unpickle back into memory
-with open("user_state.pkl", "rb") as f:
-    loaded_data = pickle.load(f)
-    print("Unpickled Object:", loaded_data)
-    print("Verified score:", loaded_data["score"])`}
+# Read final file content
+with open("app.log", "r") as f:
+    print("\\n--- Current app.log Content ---")
+    print(f.read())`}
             />
 
             <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('practice')}>Next: Notes Taking App <ArrowRight size={18} /></button>
+              <button className="btn btn-primary" onClick={() => nav('file_reading')}>Next: Reading Files & Iteration <ArrowRight size={18} /></button>
             </div>
           </div>
         </Section>
       )}
 
-      {/* ─── TAB 4: PRACTICE NOTE-TAKING APP ─── */}
-      {activeTab === 'practice' && (
-        <Section key="practice" eyebrow="Day 8 • Capstone" title="💾 Notes Taking Application">
+      {/* ─── TAB 3: READING FILES & ITERATION ─── */}
+      {activeTab === 'file_reading' && (
+        <Section key="file_reading" eyebrow="Day 8 • Reading" title="Reading Files & Memory-Efficient Iteration">
           <div className="panel">
-            <div style={{ background: 'linear-gradient(135deg,#0c4a6e,#0284c7)', color: 'white', padding: '2rem', borderRadius: '16px', marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.8rem', fontWeight: 800 }}>Day 8 Capstone: Virtual Notes Database</h3>
-              <p style={{ color: '#bae6fd', margin: 0, lineHeight: 1.7 }}>
-                Build a program that handles user logs. Appends note texts, displays saved contents, and handles <code>FileNotFoundError</code> exceptions if students look up non-existent note cards.
-              </p>
-            </div>
+            <p style={{ color: '#475569', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
+              Python provides four distinct methods to read content from an open file handle depending on file size and performance needs.
+            </p>
 
-            <CodeBlock title="notes_app.py">
-              {c('# Save a note')}<br />
-              {kw('with')} {fn('open')}({st('"notes.txt"')}, {st('"a"')}) {kw('as')} f:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;f.write({st('"Study file operations\\n"')})<br /><br />
-              {c('# Read notes with FileNotFoundError check')}<br />
-              {kw('try')}:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('with')} {fn('open')}({st('"notes.txt"')}, {st('"r"')}) {kw('as')} f:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}(f.read())<br />
-              {kw('except')} FileNotFoundError:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Warning: No notes exist yet. Writing notes..."')})
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '1rem' }}>💻 Practical Reading Programs:</h3>
+
+            <CodeBlock title="program_1_read_all_vs_chunks.py">
+              {c('# Program 1: Reading All Content vs Specific Byte Chunks')}<br />
+              {kw('with')} {fn('open')}({st('"sample.txt"')}, {st('"w"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;f.write({st('"Python File Handling Tutorial for Beginners"')})<br /><br />
+              {kw('with')} {fn('open')}({st('"sample.txt"')}, {st('"r"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;chunk1 = f.read(<span style={{ color: '#fbbf24' }}>6</span>) {c('# Reads first 6 characters')}<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;chunk2 = f.read(<span style={{ color: '#fbbf24' }}>13</span>) {c('# Reads next 13 characters')}<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Chunk 1:"')}, chunk1) {c('# Output: Python')}<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Chunk 2:"')}, chunk2) {c('# Output:  File Handling')}
+            </CodeBlock>
+
+            <CodeBlock title="program_2_readline_and_readlines.py">
+              {c('# Program 2: readline() vs readlines()')}<br />
+              {kw('with')} {fn('open')}({st('"fruits.txt"')}, {st('"w"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;f.write({st('"Apple\\nBanana\\nCherry\\n"')})<br /><br />
+              {c('# readline() reads 1 line at a time')}<br />
+              {kw('with')} {fn('open')}({st('"fruits.txt"')}, {st('"r"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;line1 = f.readline()<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Line 1:"')}, line1.strip())<br /><br />
+              {c('# readlines() returns a list of all lines')}<br />
+              {kw('with')} {fn('open')}({st('"fruits.txt"')}, {st('"r"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;lines_list = f.readlines()<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"List of lines:"')}, lines_list)
+            </CodeBlock>
+
+            <CodeBlock title="program_3_streaming_line_by_line.py">
+              {c('# Program 3: Memory-Efficient Streaming for Large Files (for line in f:)')}<br />
+              {kw('with')} {fn('open')}({st('"server.log"')}, {st('"r"')}) {kw('as')} file:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('for')} line_num, line {kw('in')} {fn('enumerate')}(file, <span style={{ color: '#fbbf24' }}>1</span>):<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} {st('"ERROR"')} {kw('in')} line:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}(f{st('"Error on line {line_num}: {line.strip()}"')})
             </CodeBlock>
 
             <Playground
-              id="notes_play"
-              title="Test Note Taking Database"
+              id="reading_play"
+              title="Test Reading Methods Console"
+              initialFiles={{ "data.txt": "Item 1: Apples\nItem 2: Bananas\nItem 3: Cherries\nItem 4: Dates" }}
+              defaultCode={`# Program: Compare Reading Techniques
+# 1. f.readline()
+with open("data.txt", "r") as f:
+    print("Readline 1:", f.readline().strip())
+    print("Readline 2:", f.readline().strip())
+
+# 2. f.readlines()
+with open("data.txt", "r") as f:
+    lines = f.readlines()
+    print("\\nTotal Lines Count:", len(lines))
+
+# 3. Stream line by line (Best Practice for large files)
+print("\\n--- Streaming Line by Line ---")
+with open("data.txt", "r") as f:
+    for idx, line in enumerate(f, 1):
+        print(f"Line {idx}: {line.strip()}")`}
+            />
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => nav('file_writing')}>Next: Writing, Appending & Flush <ArrowRight size={18} /></button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ─── TAB 4: WRITING, APPENDING & FLUSH ─── */}
+      {activeTab === 'file_writing' && (
+        <Section key="file_writing" eyebrow="Day 8 • Writing" title="Writing, Appending & Stream Flushing">
+          <div className="panel">
+            <p style={{ color: '#475569', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
+              Writing to files in Python is accomplished using <code>write()</code>, <code>writelines()</code>, and forcing buffer disk synchronization via <code>flush()</code>.
+            </p>
+
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '1rem' }}>💻 Practical Writing Programs:</h3>
+
+            <CodeBlock title="program_1_write_vs_writelines.py">
+              {c('# Program 1: f.write() vs f.writelines()')}<br />
+              {c('# f.write() takes a single string')}<br />
+              {kw('with')} {fn('open')}({st('"notes.txt"')}, {st('"w"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;f.write({st('"Python Programming\\n"')})<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;f.write({st('"File I/O Operations\\n"')})<br /><br />
+              {c('# f.writelines() writes a list of strings')}<br />
+              chapters = [<span style={{ color: '#a5b4fc' }}>"Chapter 1: Basics\n"</span>, <span style={{ color: '#a5b4fc' }}>"Chapter 2: Functions\n"</span>, <span style={{ color: '#a5b4fc' }}>"Chapter 3: Files\n"</span>]<br />
+              {kw('with')} {fn('open')}({st('"index.txt"')}, {st('"w"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;f.writelines(chapters)<br /><br />
+              {kw('with')} {fn('open')}({st('"index.txt"')}, {st('"r"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}(f.read())
+            </CodeBlock>
+
+            <CodeBlock title="program_2_flush_buffers.py">
+              {c('# Program 2: Stream Buffer Flushing using f.flush()')}<br />
+              {kw('import')} time<br /><br />
+              {kw('with')} {fn('open')}({st('"live_log.txt"')}, {st('"w"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;f.write({st('"Log entry 1: System boot\\n"')})<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;f.flush() {c('# Force write from RAM buffer to physical disk immediately')}<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Log entry 1 written and flushed to disk!"')})
+            </CodeBlock>
+
+            <Playground
+              id="writing_play"
+              title="Test Writing & Flushing Console"
+              defaultCode={`# Program: Writing List of Strings & Flushing
+lines = [
+    "Student Report Card\\n",
+    "-------------------\\n",
+    "Alice: Grade A\\n",
+    "Bob: Grade B\\n"
+]
+
+with open("report_card.txt", "w") as f:
+    written_bytes = f.writelines(lines)
+    f.flush()
+    print("Report card written and flushed!")
+
+with open("report_card.txt", "r") as f:
+    print("\\n--- Output ---")
+    print(f.read())`}
+            />
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => nav('file_copying')}>Next: Copying Files (File to File) <ArrowRight size={18} /></button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ─── TAB 5: COPYING FILES (FILE TO FILE) ─── */}
+      {activeTab === 'file_copying' && (
+        <Section key="file_copying" eyebrow="Day 8 • File Operations" title="📋 Copying Content: Saving One File into Another File">
+          <div className="panel">
+            <div style={{ background: 'linear-gradient(135deg,#0284c7,#0369a1)', color: 'white', padding: '1.8rem', borderRadius: '14px', marginBottom: '2rem' }}>
+              <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.6rem', fontWeight: 800 }}>📂 File-to-File Data Copying</h3>
+              <p style={{ color: '#e0f2fe', margin: 0, lineHeight: 1.7, fontSize: '1.02rem' }}>
+                Copying data from a source file and saving it into a target destination file is a fundamental file handling task in software development (used for backups, data migration, log archiving, and file filtering).
+              </p>
+            </div>
+
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '1rem' }}>💻 Complete File Copying Programs:</h3>
+
+            <CodeBlock title="program_1_basic_file_copy.py">
+              {c('# Program 1: Basic Read & Write Copy from source.txt to backup.txt')}<br />
+              {c('# Step 1: Read content from source file')}<br />
+              {kw('with')} {fn('open')}({st('"source.txt"')}, {st('"r"')}) {kw('as')} src_file:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;content = src_file.read()<br /><br />
+              {c('# Step 2: Save content into destination backup file')}<br />
+              {kw('with')} {fn('open')}({st('"backup.txt"')}, {st('"w"')}) {kw('as')} dest_file:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;dest_file.write(content)<br /><br />
+              {fn('print')}({st('"Successfully copied source.txt to backup.txt!"')})
+            </CodeBlock>
+
+            <CodeBlock title="program_2_simultaneous_dual_context_copy.py">
+              {c('# Program 2: Efficient Single-Line Dual Context Manager Copy')}<br />
+              {c('# Opens source and destination streams simultaneously')}<br />
+              {kw('with')} {fn('open')}({st('"original.txt"')}, {st('"r"')}) {kw('as')} src, {fn('open')}({st('"copy_target.txt"')}, {st('"w"')}) {kw('as')} dest:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;dest.write(src.read())<br /><br />
+              {fn('print')}({st('"Dual stream file copy finished successfully!"')})
+            </CodeBlock>
+
+            <CodeBlock title="program_3_streaming_line_copy.py">
+              {c('# Program 3: Memory-Efficient Line-by-Line Stream Copy (For Huge Files)')}<br />
+              {kw('with')} {fn('open')}({st('"large_source.txt"')}, {st('"r"')}) {kw('as')} src, {fn('open')}({st('"large_dest.txt"')}, {st('"w"')}) {kw('as')} dest:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;line_count = <span style={{ color: '#fbbf24' }}>0</span><br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('for')} line {kw('in')} src:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dest.write(line)<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;line_count += <span style={{ color: '#fbbf24' }}>1</span><br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}(f{st('"Streamed and copied {line_count} lines into large_dest.txt!"')})
+            </CodeBlock>
+
+            <CodeBlock title="program_4_filtered_copy.py">
+              {c('# Program 4: Copying with Text Transformation / Filtering (e.g. Save Only Errors)')}<br />
+              {kw('with')} {fn('open')}({st('"app.log"')}, {st('"r"')}) {kw('as')} src, {fn('open')}({st('"errors_only.log"')}, {st('"w"')}) {kw('as')} dest:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('for')} line {kw('in')} src:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} {st('"ERROR"')} {kw('in')} line:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dest.write(line)<br />
+              {fn('print')}({st('"Filtered error logs copied to errors_only.log!"')})
+            </CodeBlock>
+
+            <CodeBlock title="program_5_shutil_copy.py">
+              {c('# Program 5: High-Level File Copy using Built-in shutil module')}<br />
+              {kw('import')} shutil<br /><br />
+              {c('# shutil.copy(source, destination)')}<br />
+              shutil.copy({st('"data.txt"')}, {st('"data_backup.txt"')})<br />
+              {fn('print')}({st('"shutil.copy() executed successfully!"')})
+            </CodeBlock>
+
+            <Playground
+              id="copy_play"
+              title="Interactive File Copy Sandbox"
+              initialFiles={{
+                "source_data.txt": "Line 1: Account Records\nLine 2: [ERROR] Payment failed\nLine 3: User logged out\nLine 4: [ERROR] Database timeout"
+              }}
+              defaultCode={`# Program: Copy & Filter Errors from source_data.txt to error_report.txt
+with open("source_data.txt", "r") as src, open("error_report.txt", "w") as dest:
+    copied_count = 0
+    for line in src:
+        if "[ERROR]" in line:
+            dest.write(line)
+            copied_count += 1
+
+print(f"Copied {copied_count} error records into error_report.txt!")
+
+# Verify error_report.txt content
+with open("error_report.txt", "r") as f:
+    print("\\n--- error_report.txt Output ---")
+    print(f.read())`}
+            />
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => nav('context_managers')}>Next: Context Managers (with) <ArrowRight size={18} /></button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ─── TAB 6: CONTEXT MANAGERS (WITH STATEMENT) ─── */}
+      {activeTab === 'context_managers' && (
+        <Section key="context_managers" eyebrow="Day 8 • Safety" title="Context Managers: The `with` Statement">
+          <div className="panel">
+            <p style={{ color: '#475569', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
+              Manual file handling using <code>f = open() ... f.close()</code> is error-prone. If an exception occurs before <code>f.close()</code>, the file handle remains leaked open in memory!
+            </p>
+
+            <div style={{ background: '#f0fdf4', borderRadius: '12px', padding: '1.3rem', border: '1px solid #bbf7d0', marginBottom: '2rem' }}>
+              <h4 style={{ margin: '0 0 0.5rem', color: '#166534', display: 'flex', alignItems: 'center', gap: '6px' }}>🛡️ Why `with open(...) as f:` is Superior:</h4>
+              <p style={{ margin: 0, color: '#15803d', fontSize: '0.88rem', lineHeight: 1.6 }}>
+                The <code>with</code> statement invokes Python Context Managers (via <code>__enter__</code> and <code>__exit__</code> protocol methods). It **guarantees** the file handle will be closed automatically upon block exit — even if unhandled runtime exceptions crash your code!
+              </p>
+            </div>
+
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '1rem' }}>💻 Context Manager Programs:</h3>
+
+            <CodeBlock title="program_1_safe_context_manager.py">
+              {c('# Program 1: Safe File Handling with context manager')}<br />
+              {kw('with')} {fn('open')}({st('"user_data.txt"')}, {st('"w"')}) {kw('as')} file:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;file.write({st('"User 1: Kavya\\n"')})<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;file.write({st('"User 2: Alex\\n"')})<br /><br />
+              {c('# Outside the block, file is guaranteed to be closed')}<br />
+              {fn('print')}({st('"Is file closed outside with block?"')}, file.closed) {ok('# True')}
+            </CodeBlock>
+
+            <CodeBlock title="program_2_multi_file_merger.py">
+              {c('# Program 2: Merging contents from 2 files into a 3rd combined file')}<br />
+              {kw('with')} {fn('open')}({st('"file1.txt"')}, {st('"w"')}) {kw('as')} f1, {fn('open')}({st('"file2.txt"')}, {st('"w"')}) {kw('as')} f2:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;f1.write({st('"Header: Part 1\\n"')})<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;f2.write({st('"Header: Part 2\\n"')})<br /><br />
+              {c('# Merge files into combined.txt')}<br />
+              {kw('with')} {fn('open')}({st('"file1.txt"')}, {st('"r"')}) {kw('as')} f1, {fn('open')}({st('"file2.txt"')}, {st('"r"')}) {kw('as')} f2, {fn('open')}({st('"combined.txt"')}, {st('"w"')}) {kw('as')} out:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;out.write(f1.read() + f2.read())<br /><br />
+              {fn('print')}({st('"Files merged into combined.txt successfully!"')})
+            </CodeBlock>
+
+            <Playground
+              id="context_play"
+              title="Test Context Managers Console"
+              initialFiles={{ "file1.txt": "Part 1 Data\n", "file2.txt": "Part 2 Data\n" }}
+              defaultCode={`# Program: Merge file1.txt & file2.txt into merged.txt
+with open("file1.txt", "r") as f1, open("file2.txt", "r") as f2, open("merged.txt", "w") as out:
+    out.write(f1.read() + f2.read())
+    print("Files merged successfully!")
+
+# Verify merged file
+with open("merged.txt", "r") as f:
+    print("Merged Output:", f.read().strip())`}
+            />
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => nav('structured_data')}>Next: JSON, CSV & Pickle <ArrowRight size={18} /></button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ─── TAB 7: STRUCTURED DATA (JSON, CSV, PICKLE) ─── */}
+      {activeTab === 'structured_data' && (
+        <Section key="structured_data" eyebrow="Day 8 • Serialization" title="Structured Data Files: JSON, CSV & Pickle">
+          <div className="panel">
+            <p style={{ color: '#475569', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
+              Plain text mode only stores raw strings. To store structured Python data (dictionaries, lists, numbers), Python provides standard serializers: <strong>JSON</strong>, <strong>CSV</strong>, and <strong>Pickle</strong>.
+            </p>
+
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '1rem' }}>💻 Structured Data Programs:</h3>
+
+            <CodeBlock title="program_1_json_serialization.py">
+              {c('# Program 1: JSON dump and load')}<br />
+              {kw('import')} json<br /><br />
+              user_data = &#123;<span style={{ color: '#a5b4fc' }}>"id"</span>: <span style={{ color: '#fbbf24' }}>101</span>, <span style={{ color: '#a5b4fc' }}>"username"</span>: <span style={{ color: '#a5b4fc' }}>"alex"</span>, <span style={{ color: '#a5b4fc' }}>"roles"</span>: [<span style={{ color: '#a5b4fc' }}>"admin"</span>, <span style={{ color: '#a5b4fc' }}>"user"</span>]&#125;<br /><br />
+              {c('# Save dictionary as JSON file')}<br />
+              {kw('with')} {fn('open')}({st('"user.json"')}, {st('"w"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;json.dump(user_data, f, indent=<span style={{ color: '#fbbf24' }}>2</span>)<br /><br />
+              {c('# Read JSON file back to dictionary object')}<br />
+              {kw('with')} {fn('open')}({st('"user.json"')}, {st('"r"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;loaded_dict = json.load(f)<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Loaded User Roles:"')}, loaded_dict[<span style={{ color: '#a5b4fc' }}>"roles"</span>])
+            </CodeBlock>
+
+            <CodeBlock title="program_2_csv_processing.py">
+              {c('# Program 2: CSV DictWriter and DictReader')}<br />
+              {kw('import')} csv<br /><br />
+              students = [<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&#123;<span style={{ color: '#a5b4fc' }}>"name"</span>: <span style={{ color: '#a5b4fc' }}>"Kavya"</span>, <span style={{ color: '#a5b4fc' }}>"score"</span>: <span style={{ color: '#fbbf24' }}>95</span>&#125;,<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&#123;<span style={{ color: '#a5b4fc' }}>"name"</span>: <span style={{ color: '#a5b4fc' }}>"Bob"</span>, <span style={{ color: '#a5b4fc' }}>"score"</span>: <span style={{ color: '#fbbf24' }}>88</span>&#125;<br />
+              ]<br /><br />
+              {c('# Write CSV with headers')}<br />
+              {kw('with')} {fn('open')}({st('"scores.csv"')}, {st('"w"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;writer = csv.DictWriter(f, fieldnames=[<span style={{ color: '#a5b4fc' }}>"name"</span>, <span style={{ color: '#a5b4fc' }}>"score"</span>])<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;writer.writeheader()<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;writer.writerows(students)<br /><br />
+              {c('# Read CSV with DictReader')}<br />
+              {kw('with')} {fn('open')}({st('"scores.csv"')}, {st('"r"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;reader = csv.DictReader(f)<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('for')} row {kw('in')} reader:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}(f{st('"{row[\'name\']} scored {row[\'score\']}"')})
+            </CodeBlock>
+
+            <CodeBlock title="program_3_pickle_binary.py">
+              {c('# Program 3: Binary Serialization using Pickle')}<br />
+              {kw('import')} pickle<br /><br />
+              complex_state = &#123;<span style={{ color: '#a5b4fc' }}>"session_id"</span>: <span style={{ color: '#st' }}>"99812"</span>, <span style={{ color: '#a5b4fc' }}>"matrix"</span>: [[<span style={{ color: '#fbbf24' }}>1</span>, <span style={{ color: '#fbbf24' }}>2</span>], [<span style={{ color: '#fbbf24' }}>3</span>, <span style={{ color: '#fbbf24' }}>4</span>]]&#125;<br /><br />
+              {c('# Write Binary mode "wb"')}<br />
+              {kw('with')} {fn('open')}({st('"state.pkl"')}, {st('"wb"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;pickle.dump(complex_state, f)<br /><br />
+              {c('# Read Binary mode "rb"')}<br />
+              {kw('with')} {fn('open')}({st('"state.pkl"')}, {st('"rb"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;restored = pickle.load(f)<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Restored Session ID:"')}, restored[<span style={{ color: '#a5b4fc' }}>"session_id"</span>])
+            </CodeBlock>
+
+            <Playground
+              id="structured_play"
+              title="Test Serialization Console"
+              defaultCode={`import json
+import csv
+import pickle
+
+data = {"name": "Kavya", "course": "Python LMS", "modules_completed": 8}
+
+# 1. JSON
+with open("data.json", "w") as f:
+    json.dump(data, f)
+
+with open("data.json", "r") as f:
+    print("JSON Loaded:", json.load(f))
+
+# 2. Pickle
+with open("data.pkl", "wb") as f:
+    pickle.dump(data, f)
+
+with open("data.pkl", "rb") as f:
+    print("Pickle Loaded:", pickle.load(f))` }
+            />
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => nav('os_pathlib')}>Next: OS & Pathlib Operations <ArrowRight size={18} /></button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ─── TAB 8: OS & PATHLIB FILE SYSTEM OPERATIONS ─── */}
+      {activeTab === 'os_pathlib' && (
+        <Section key="os_pathlib" eyebrow="Day 8 • System Tools" title="OS & Pathlib File System Operations">
+          <div className="panel">
+            <p style={{ color: '#475569', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
+              Before performing file operations, programmers verify file existence, sizes, and directory paths using the built-in <code>os</code> module and modern <code>pathlib</code>.
+            </p>
+
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '1rem' }}>💻 File System Utility Programs:</h3>
+
+            <CodeBlock title="program_1_os_file_utilities.py">
+              {c('# Program 1: Checking Existence, Sizes, Renaming and Deleting Files')}<br />
+              {kw('import')} os<br /><br />
+              filename = {st('"temp_data.txt"')}<br />
+              {kw('with')} {fn('open')}(filename, {st('"w"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;f.write({st('"Temporary file contents for testing."')})<br /><br />
+              {kw('if')} os.path.exists(filename):<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;size = os.path.getsize(filename)<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}(f{st('"File {filename} exists! Size: {size} bytes"')})<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;os.rename(filename, {st('"renamed_data.txt"')})<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Renamed to renamed_data.txt!"')})<br /><br />
+              {c('# Clean up file')}<br />
+              os.remove({st('"renamed_data.txt"')})<br />
+              {fn('print')}({st('"Deleted renamed_data.txt!"')})
+            </CodeBlock>
+
+            <CodeBlock title="program_2_pathlib_modern.py">
+              {c('# Program 2: Clean 1-Line File I/O using pathlib.Path')}<br />
+              {kw('from')} pathlib {kw('import')} Path<br /><br />
+              p = Path({st('"quick_notes.txt"')})<br /><br />
+              {c('# One line text write')}<br />
+              p.write_text({st('"Pathlib streamlines file reads and writes!"')})<br /><br />
+              {c('# One line text read')}<br />
+              content = p.read_text()<br />
+              {fn('print')}({st('"Pathlib Read:"')}, content)<br />
+              {fn('print')}({st('"Exists?"')}, p.exists())
+            </CodeBlock>
+
+            <Playground
+              id="os_play"
+              title="Test File System Console"
+              initialFiles={{ "document.txt": "Important records" }}
+              defaultCode={`import os
+from pathlib import Path
+
+# 1. os.path check
+if os.path.exists("document.txt"):
+    print("document.txt exists! Size:", os.path.getsize("document.txt"), "bytes")
+    os.rename("document.txt", "archived_doc.txt")
+    print("Renamed file to archived_doc.txt!")
+
+# 2. pathlib Path check
+p = Path("archived_doc.txt")
+print("Pathlib Content:", p.read_text())`}
+            />
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => nav('exception_handling')}>Next: Exception Safety <ArrowRight size={18} /></button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ─── TAB 9: EXCEPTION HANDLING SAFETY ─── */}
+      {activeTab === 'exception_handling' && (
+        <Section key="exception_handling" eyebrow="Day 8 • Robustness" title="Exception Safety: try / except / else / finally">
+          <div className="panel">
+            <p style={{ color: '#475569', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
+              Runtime crashes in Python are called <strong>Exceptions</strong>. Exception handling intercepts errors before they terminate your application.
+            </p>
+
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '1rem' }}>💻 Exception Safety Programs:</h3>
+
+            <CodeBlock title="program_1_file_not_found_handling.py">
+              {c('# Program 1: Handling FileNotFoundError')}<br />
+              {kw('try')}:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('with')} {fn('open')}({st('"missing_file.txt"')}, {st('"r"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text = f.read()<br />
+              {kw('except')} FileNotFoundError:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Error: The file missing_file.txt could not be found!"')})
+            </CodeBlock>
+
+            <CodeBlock title="program_2_full_try_except_else_finally.py">
+              {c('# Program 2: Complete try-except-else-finally Lifecycle')}<br />
+              {kw('def')} {fn('parse_config')}(filename):<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('try')}:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('with')} {fn('open')}(filename, {st('"r"')}) {kw('as')} f:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;val = {fn('int')}(f.read().strip())<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('except')} FileNotFoundError:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Exception: Config file missing."')})<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('except')} ValueError:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Exception: Invalid integer value in config file."')})<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('else')}:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Success! Parsed config integer:"')}, val)<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('finally')}:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Parsing procedure completed."')})<br /><br />
+              parse_config({st('"missing.txt"')})
+            </CodeBlock>
+
+            <Playground
+              id="try_play"
+              title="Test Try-Except-Else-Finally Console"
+              inputs={[{ label: 'Divisor =', default: '0' }]}
+              defaultCode={`try:
+    num = int(input("Enter number: "))
+    result = 100 / num
+except ZeroDivisionError:
+    print("Caught ZeroDivisionError: Cannot divide by 0!")
+except ValueError:
+    print("Caught ValueError: Input was not a number!")
+else:
+    print("Success! Result:", result)
+finally:
+    print("This finally block always executes!")`}
+            />
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => nav('practice')}>Next: Log & File Capstone <ArrowRight size={18} /></button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ─── TAB 10: CAPSTONE ─── */}
+      {activeTab === 'practice' && (
+        <Section key="practice" eyebrow="Day 8 • Capstone" title="💾 Log & File System Manager Application">
+          <div className="panel">
+            <div style={{ background: 'linear-gradient(135deg,#0c4a6e,#0284c7)', color: 'white', padding: '2rem', borderRadius: '16px', marginBottom: '2rem' }}>
+              <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.8rem', fontWeight: 800 }}>Day 8 Capstone: System Log Analyzer & File Backup Manager</h3>
+              <p style={{ color: '#bae6fd', margin: 0, lineHeight: 1.7 }}>
+                Build a real-world system logger application that appends timestamped activities, reads logs safely, copies backup files, and handles missing files gracefully.
+              </p>
+            </div>
+
+            <Playground
+              id="capstone_play"
+              title="Test System Log & Backup Manager Console"
               inputs={[
-                { label: 'Choose Option (1=Read, 2=Write) =', default: '2', width: '60px' },
-                { label: 'Note Text (for Write) =', default: 'Finish python Day 8 assignment!', width: '200px' }
+                { label: 'Action (1=Read, 2=Log Activity, 3=Backup Log) =', default: '3', width: '60px' },
+                { label: 'Log Message =', default: 'System health check completed', width: '200px' }
               ]}
-              initialFiles={{}}
-              defaultCode={`# Interactive Notes Manager
+              initialFiles={{ "system.log": "[INFO] System initialized\n[ERROR] Database timeout\n" }}
+              defaultCode={`# Capstone: Interactive System Log & Backup Manager
 choice = input("Choice: ")
 
 if choice == "1":
     try:
-        with open("notes.txt", "r") as f:
-            print("--- Saved Notes ---")
-            print(f.read())
+        with open("system.log", "r") as f:
+            print("--- System Logs ---")
+            lines = f.readlines()
+            for idx, line in enumerate(lines, 1):
+                print(f"{idx}. {line.strip()}")
+            print(f"Total Log Entries: {len(lines)}")
     except FileNotFoundError:
-        print("Error: No note card has been created yet!")
+        print("Error: system.log file does not exist!")
 elif choice == "2":
-    note_text = input("Note: ")
-    with open("notes.txt", "a") as f:
-        f.write(note_text + "\\n")
-    print("Note successfully saved to file notes.txt!")
+    log_text = input("Log: ")
+    with open("system.log", "a") as f:
+        f.write(f"[LOG] {log_text}\\n")
+        f.flush()
+    print("Successfully logged activity to system.log!")
+elif choice == "3":
+    # Copy system.log to system_backup.log
+    try:
+        with open("system.log", "r") as src, open("system_backup.log", "w") as dest:
+            dest.write(src.read())
+        print("Backup created: system.log copied to system_backup.log!")
+    except FileNotFoundError:
+        print("Backup failed: Source log file does not exist.")
 else:
-    print("Invalid option.")`}
+    print("Invalid option selection.")`}
             />
 
             <div className="card-actions">
@@ -1145,26 +1681,26 @@ else:
         </Section>
       )}
 
-      {/* ─── TAB 5: ASSIGNMENT ─── */}
+      {/* ─── TAB 11: ASSIGNMENT ─── */}
       {activeTab === 'assignment_work' && (
-        <Section key="assignment_work" eyebrow="Day 8 • Assignment" title="📝 Day 8 Assignment">
+        <Section key="assignment_work" eyebrow="Day 8 • Assignment" title="📝 Day 8 Hands-on Assignment">
           <div className="panel">
             <div style={{ background: 'linear-gradient(135deg,#1f2937,#111827)', padding: '1.8rem', borderRadius: '14px', color: 'white', marginBottom: '2.5rem' }}>
-              <h3 style={{ margin: '0 0 0.6rem', fontSize: '1.4rem', fontWeight: 800 }}>Rules</h3>
-              <p style={{ color: '#94a3b8', margin: 0, lineHeight: 1.7 }}>Save your script as <code style={{ color: '#fde68a' }}>day8_assignment.py</code>. Write modular functions using built-in file methods or try-except blocks.</p>
+              <h3 style={{ margin: '0 0 0.6rem', fontSize: '1.4rem', fontWeight: 800 }}>Assignment Instructions</h3>
+              <p style={{ color: '#94a3b8', margin: 0, lineHeight: 1.7 }}>Complete the following 10 coding exercises using <code>with open()</code> context managers, file copying, <code>json</code>, and <code>try-except</code> exception safety.</p>
             </div>
 
             {[
-              { n: 1, t: 'File Creator', diff: 'Easy', col: '#10b981', desc: 'Write a function write_file(filename, text) that creates a file and writes the text into it.' },
-              { n: 2, t: 'File Safe Reader', diff: 'Easy', col: '#10b981', desc: 'Write a function read_file_safe(filename) that reads a file and returns its content. Catch FileNotFoundError and return a friendly error message.' },
-              { n: 3, t: 'Logging Logger', diff: 'Easy', col: '#10b981', desc: 'Write a function log_activity(log_text) that appends log_text followed by a newline into user_log.txt.' },
-              { n: 4, t: 'Vowel Counter in File', diff: 'Medium', col: '#f59e0b', desc: 'Write a function count_vowels_in_file(filename) that reads a file and returns the number of vowels present. Handle errors if the file does not exist.' },
-              { n: 5, t: 'Word Count in File', diff: 'Medium', col: '#f59e0b', desc: 'Write a function count_words(filename) that counts and returns the number of words inside a text file.' },
-              { n: 6, t: 'Number Splitter', diff: 'Medium', col: '#f59e0b', desc: 'Write a function safe_divide(a, b) that performs a / b. Catch ZeroDivisionError and TypeError, printing clean error logs.' },
-              { n: 7, t: 'List Reader', diff: 'Medium', col: '#f59e0b', desc: 'Write a function read_lines_list(filename) that returns all lines from a file as a Python list. Handle FileNotFoundError.' },
-              { n: 8, t: 'Float Input Parser', diff: 'Medium', col: '#f59e0b', desc: 'Write a function read_float_input() that prompts the user for float input. Keep prompting using while loop and try-except until a valid float is inputted.' },
-              { n: 9, t: 'File Copier', diff: 'Hard', col: '#ef4444', desc: 'Write a function copy_file(src, dest) that reads contents from a source file and writes them to a destination file. Catch exceptions.' },
-              { n: 10, t: 'Custom Exception Handler', diff: 'Hard', col: '#ef4444', desc: 'Write a function check_positive_number(num) that raises a ValueError("Number must be positive") if num is negative, and prints it if positive.' }
+              { n: 1, t: 'Safe File Creator', diff: 'Easy', col: '#10b981', desc: 'Write a function create_file(filename, text) that creates a file using exclusive mode "x" and catches FileExistsError cleanly.' },
+              { n: 2, t: 'Safe File Reader', diff: 'Easy', col: '#10b981', desc: 'Write a function read_file_safe(filename) that reads a file and returns its content. Catch FileNotFoundError and return a clear error message.' },
+              { n: 3, t: 'File Copier Function', diff: 'Easy', col: '#10b981', desc: 'Write a function copy_file(source_filename, destination_filename) that reads content from source_filename and writes it into destination_filename.' },
+              { n: 4, t: 'Logger Function', diff: 'Easy', col: '#10b981', desc: 'Write a function log_activity(msg) that appends timestamped text into app_activity.log using mode "a".' },
+              { n: 5, t: 'Line Counter', diff: 'Medium', col: '#f59e0b', desc: 'Write a function count_lines(filename) that streams a file line-by-line using `for line in f:` and returns the line count.' },
+              { n: 6, t: 'Word Finder in File', diff: 'Medium', col: '#f59e0b', desc: 'Write a function find_keyword(filename, keyword) that searches for a specific keyword in a file and returns matching line numbers.' },
+              { n: 7, t: 'Filtered File Copy', diff: 'Medium', col: '#f59e0b', desc: 'Write a function copy_matching_lines(src, dst, keyword) that reads src and copies only lines containing keyword into dst.' },
+              { n: 8, t: 'JSON Config Manager', diff: 'Medium', col: '#f59e0b', desc: 'Write a function save_config(config_dict, filename) that serializes a dictionary into a JSON file using json.dump().' },
+              { n: 9, t: 'Float Input Validator', diff: 'Medium', col: '#f59e0b', desc: 'Write a function prompt_float() that uses a while loop and try-except block to continuously prompt the user until a valid float is entered.' },
+              { n: 10, t: 'Custom Exception Handler', diff: 'Hard', col: '#ef4444', desc: 'Write a function validate_age(age) that raises a ValueError("Age cannot be negative") if age < 0, and handles it in try-except.' }
             ].map(task => (
               <div key={task.n} style={{ border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.3rem', marginBottom: '1rem', background: '#fff' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -1179,19 +1715,19 @@ else:
             ))}
 
             <div className="card-actions" style={{ marginTop: '1.5rem' }}>
-              <button className="btn btn-primary" onClick={() => nav('quiz')}>Take Quiz 🧠 <ArrowRight size={18} /></button>
+              <button className="btn btn-primary" onClick={() => nav('quiz')}>Take Assessment Quiz 🧠 <ArrowRight size={18} /></button>
             </div>
           </div>
         </Section>
       )}
 
-      {/* ─── TAB 6: QUIZ ─── */}
+      {/* ─── TAB 12: QUIZ ─── */}
       {activeTab === 'quiz' && (
-        <Section key="quiz" eyebrow="Day 8 • Assessment" title="🧠 Quiz — File & Exception Handling">
+        <Section key="quiz" eyebrow="Day 8 • Assessment" title="🧠 Comprehensive File Handling Quiz">
           <div className="panel">
             <div style={{ background: 'linear-gradient(135deg,#1e1b4b,#312e81)', padding: '1.8rem', borderRadius: '14px', color: 'white', marginBottom: '2rem' }}>
-              <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.4rem', fontWeight: 800 }}>Score Card Quiz!</h3>
-              <p style={{ color: '#c7d2fe', margin: 0 }}>{quizData.length} questions · Select answers · Click Submit to score.</p>
+              <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.4rem', fontWeight: 800 }}>Mastery Assessment Quiz</h3>
+              <p style={{ color: '#c7d2fe', margin: 0 }}>{quizData.length} questions · Select your answers below to verify your skills.</p>
             </div>
 
             {quizData.map((q, qi) => {
@@ -1203,7 +1739,7 @@ else:
                     <span style={{ background: '#0f172a', color: 'white', minWidth: '28px', height: '28px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.82rem', flexShrink: 0 }}>{qi + 1}</span>
                     <p style={{ margin: 0, color: '#0f172a', fontWeight: 600, lineHeight: 1.5 }}>{q.q}</p>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px,1fr))', gap: '0.55rem', paddingLeft: '40px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px,1fr))', gap: '0.55rem', paddingLeft: '40px' }}>
                     {q.opts.map((opt, oi) => {
                       let bg = '#f8fafc', border = '#e2e8f0', textCol = '#475569';
                       if (selected === oi && !quizSubmitted) { bg = '#eff6ff'; border = '#3b82f6'; textCol = '#1d4ed8'; }
@@ -1241,16 +1777,16 @@ else:
                 <p style={{ color: '#94a3b8', marginTop: '0.7rem', fontSize: '0.88rem' }}>Answered {Object.keys(quizAnswers).length}/{quizData.length}</p>
               </div>
             ) : (
-              <div style={{ background: quizScore >= 11 ? 'linear-gradient(135deg,#065f46,#10b981)' : quizScore >= 8 ? 'linear-gradient(135deg,#1d4ed8,#3b82f6)' : 'linear-gradient(135deg,#92400e,#f59e0b)', padding: '2rem', borderRadius: '16px', textAlign: 'center', marginTop: '1rem' }}>
+              <div style={{ background: quizScore >= 13 ? 'linear-gradient(135deg,#065f46,#10b981)' : quizScore >= 10 ? 'linear-gradient(135deg,#1d4ed8,#3b82f6)' : 'linear-gradient(135deg,#92400e,#f59e0b)', padding: '2rem', borderRadius: '16px', textAlign: 'center', marginTop: '1rem' }}>
                 <Trophy size={48} color="white" style={{ marginBottom: '0.8rem' }} />
                 <h3 style={{ color: 'white', fontSize: '2rem', margin: '0 0 0.5rem', fontWeight: 900 }}>{quizScore}/{quizData.length}</h3>
                 <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1.1rem', margin: '0 0 1.2rem' }}>
-                  {quizScore === quizData.length ? '🏆 Perfect! Persistence & Safety Mastered!' : quizScore >= 10 ? '🥇 Excellent Work!' : quizScore >= 7 ? '🥈 Good Job! Review answers below.' : '📚 Keep reviewing try-except blocks and context manager syntax!'}
+                  {quizScore === quizData.length ? '🏆 Perfect Score! File Handling & Exception Safety Mastered!' : quizScore >= 12 ? '🥇 Outstanding Work!' : quizScore >= 9 ? '🥈 Good Job! Review explanations above.' : '📚 Keep practicing file modes, file copying, and exception safety!'}
                 </p>
                 <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                   <button onClick={() => { setQuizAnswers({}); setQuizSubmitted(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                     style={{ background: 'white', color: '#1d4ed8', border: 'none', padding: '0.7rem 1.8rem', borderRadius: '10px', fontWeight: 700, cursor: 'pointer' }}>
-                    Retake 🔄
+                    Retake Quiz 🔄
                   </button>
                   <button onClick={() => nav('intro')}
                     style={{ background: 'rgba(255,255,255,0.2)', color: 'white', border: '2px solid rgba(255,255,255,0.5)', padding: '0.7rem 1.8rem', borderRadius: '10px', fontWeight: 700, cursor: 'pointer' }}>
