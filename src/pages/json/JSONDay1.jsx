@@ -296,7 +296,7 @@ export default function JSONDay1({ activeTab, onNavigate }) {
         <Section key="json_methods" eyebrow="JSON • Module 03" title="Access, Parse & Stringify">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
             
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>1. Accessing JSON properties</h3>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>1. Accessing JSON Properties</h3>
             <p>Access values inside parsed objects using dot notation or bracket notation:</p>
             <CodeBlock title="Access values examples" code={`const data = { "name": "Krishna", "address": { "city": "Chennai" } };
 
@@ -322,11 +322,11 @@ console.log(data["address"]["city"]); // output: Chennai`} />
             <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>🧪 Live JSON Converter Playground</h3>
             <p style={{ fontSize: '0.85rem', margin: '0 0 1rem' }}>Enter a JSON string or JS object parameters, and run serialization checks dynamically:</p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '1.5rem', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.5rem', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: '1.5rem', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.5rem', marginBottom: '1.5rem' }}>
               <div>
                 <label style={{ fontSize: '0.82rem', fontWeight: 700, color: '#475569', display: 'block', marginBottom: 4 }}>Object or JSON Input:</label>
                 <textarea className="form-control" value={rawInput} onChange={e => setRawInput(e.target.value)}
-                  style={{ background: 'white', fontFamily: 'monospace', fontSize: '0.82rem', height: 110, marginBottom: '1rem', resize: 'none' }} />
+                  style={{ background: 'white', fontFamily: 'monospace', fontSize: '0.82rem', height: 145, marginBottom: '1rem', resize: 'none', border: '1px solid #cbd5e1', borderRadius: 8, padding: '8px 12px' }} />
                 
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button onClick={handleParse} style={{ background: '#06b6d4', color: 'white', border: 'none', borderRadius: 8, padding: '8px 16px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>
@@ -338,25 +338,25 @@ console.log(data["address"]["city"]); // output: Chennai`} />
                 </div>
               </div>
 
-              <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, padding: 12, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 160 }}>
+              <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, padding: 14, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', minHeight: 190 }}>
                 <div>
-                  <span style={{ fontSize: '0.74rem', background: '#e0f2fe', color: '#0369a1', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>Conversion Output</span>
+                  <span style={{ fontSize: '0.74rem', background: '#e0f2fe', color: '#0369a1', padding: '3px 10px', borderRadius: 4, fontWeight: 700, display: 'inline-block' }}>Conversion Output</span>
                   
                   {parseError && (
-                    <div style={{ color: '#ef4444', fontSize: '0.78rem', marginTop: 10, display: 'flex', gap: 4 }}>
-                      <ShieldAlert size={14} style={{ flexShrink: 0 }} />
+                    <div style={{ color: '#ef4444', fontSize: '0.78rem', marginTop: 10, display: 'flex', gap: 4, background: '#fef2f2', padding: 8, borderRadius: 6, border: '1px solid #fecaca' }}>
+                      <ShieldAlert size={14} style={{ flexShrink: 0, marginTop: 2 }} />
                       <span>{parseError}</span>
                     </div>
                   )}
 
                   {parseResult && (
-                    <pre style={{ margin: '10px 0 0 0', fontSize: '0.78rem', fontFamily: 'monospace', color: '#0f172a', background: '#f8fafc', padding: 8, borderRadius: 6, maxHeight: 110, overflowY: 'auto' }}>
+                    <pre style={{ margin: '10px 0 0 0', fontSize: '0.82rem', fontFamily: 'monospace', color: '#0f172a', background: '#f8fafc', padding: '10px 12px', borderRadius: 8, border: '1px solid #e2e8f0', maxHeight: 180, overflowY: 'auto', lineHeight: 1.5 }}>
                       {parseResult}
                     </pre>
                   )}
 
                   {!parseResult && !parseError && (
-                    <div style={{ color: '#94a3b8', fontSize: '0.78rem', marginTop: 14 }}>Click parse or stringify above to translate inputs.</div>
+                    <div style={{ color: '#94a3b8', fontSize: '0.78rem', marginTop: 18 }}>Click parse or stringify above to translate inputs.</div>
                   )}
                 </div>
               </div>
