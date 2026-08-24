@@ -24,6 +24,7 @@ export const htmlCourseData = [
       { id: 'playground', label: 'Live Coding', icon: <Code size={18} /> },
       { id: 'project', label: 'Mini Project', icon: <Box size={18} /> },
       { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> },
     ]
   },
   {
@@ -38,6 +39,7 @@ export const htmlCourseData = [
       { id: 'playground', label: 'Live Coding', icon: <Code size={18} /> },
       { id: 'project', label: 'Mini Project', icon: <MousePointerClick size={18} /> },
       { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> },
     ]
   },
   {
@@ -49,6 +51,7 @@ export const htmlCourseData = [
       { id: 'topic3', label: 'Event Registration', icon: <Edit3 size={18} /> },
       { id: 'topic4', label: 'Product Landing Page', icon: <MonitorPlay size={18} /> },
       { id: 'topic5', label: 'News Article Layout', icon: <BookOpen size={18} /> },
+      { id: 'assignment', label: '📝 Capstone & Staff Review', icon: <PenTool size={18} /> },
     ]
   },
   {
@@ -64,6 +67,7 @@ export const htmlCourseData = [
       { id: 'playground', label: 'Live Coding', icon: <Code size={18} /> },
       { id: 'project', label: 'Mini Project', icon: <MousePointerClick size={18} /> },
       { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> },
     ]
   },
   {
@@ -78,6 +82,7 @@ export const htmlCourseData = [
       { id: 'playground', label: 'Live Coding', icon: <Code size={18} /> },
       { id: 'project', label: 'Mini Project', icon: <MousePointerClick size={18} /> },
       { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> },
     ]
   },
   {
@@ -92,6 +97,7 @@ export const htmlCourseData = [
       { id: 'playground', label: 'Live Coding', icon: <Code size={18} /> },
       { id: 'project', label: 'Mini Project', icon: <MousePointerClick size={18} /> },
       { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> },
     ]
   },
   {
@@ -106,7 +112,8 @@ export const htmlCourseData = [
       { id: 'grid_responsive', label: 'Responsive Grid Areas', icon: <Columns size={18} /> },
       { id: 'playground', label: 'Live Coding', icon: <Code size={18} /> },
       { id: 'project', label: 'Mini Project', icon: <MousePointerClick size={18} /> },
-      { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> }
+      { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -119,6 +126,7 @@ export const htmlCourseData = [
       { id: 'pseudo_elements', label: 'Pseudo-elements', icon: <Wand2 size={18} /> },
       { id: 'playground', label: 'Live Coding', icon: <Code size={18} /> },
       { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> },
     ]
   },
   {
@@ -133,6 +141,7 @@ export const htmlCourseData = [
       { id: 'playground', label: 'Live Coding', icon: <Code size={18} /> },
       { id: 'project', label: 'Mini Project', icon: <MousePointerClick size={18} /> },
       { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> },
     ]
   },
   {
@@ -147,6 +156,7 @@ export const htmlCourseData = [
       { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
       { id: 'project', label: 'Mini Project', icon: <MousePointerClick size={18} /> },
       { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> },
     ]
   },
   {
@@ -160,6 +170,7 @@ export const htmlCourseData = [
       { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
       { id: 'project', label: 'Mini Project', icon: <MousePointerClick size={18} /> },
       { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> },
     ]
   },
   {
@@ -168,6 +179,7 @@ export const htmlCourseData = [
     items: [
       { id: 'project_brief', label: 'Project Brief', icon: <Target size={18} /> },
       { id: 'project_demo', label: 'Live Demo', icon: <MonitorPlay size={18} /> },
+      { id: 'assignment', label: '📝 Capstone & Staff Review', icon: <PenTool size={18} /> },
     ]
   },
   {

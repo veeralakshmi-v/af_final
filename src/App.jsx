@@ -227,6 +227,8 @@ import CoreJSDay9 from './pages/javascript/CoreJSDay9';
 import CoreJSDay10 from './pages/javascript/CoreJSDay10';
 import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData } from './courseData';
 import TallyCourseDay from './pages/tally/TallyCourseDay';
+import AssignmentSubmissionPage from './components/AssignmentSubmissionPage';
+import { isModuleLocked, getLockReason } from './utils/htmlCssLocking';
 import './index.css';
 
 
@@ -358,6 +360,17 @@ function App() {
       setActiveCourse('dashboard');
       return;
     }
+
+    if (activeCourse === 'html_css' && isModuleLocked(moduleId)) {
+      const lockInfo = getLockReason(moduleId);
+      alert(`🔒 Day Content Locked!\n\n${lockInfo ? lockInfo.detail : 'You must submit the previous assignment with at least 100 characters of student feedback and receive Staff Validation to unlock this content.'}`);
+      if (lockInfo && lockInfo.prevModuleId) {
+        setActiveNode({ moduleId: lockInfo.prevModuleId, tabId: 'assignment' });
+      }
+      setIsMobileMenuOpen(false);
+      return;
+    }
+
     setActiveNode({ moduleId, tabId });
     setIsMobileMenuOpen(false); // Close menu on navigation
   };
@@ -761,21 +774,27 @@ function App() {
             ) : (
               <>
                 {/* HTML & CSS Course Rendering */}
-                {activeNode.moduleId === 'module1' && <Day1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'module2' && <Day2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'html_project' && <HTMLProject activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'module3' && <CSSDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'module4' && <CSSDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'module5' && <CSSDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'module6' && <CSSDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'module7' && <CSSDay5 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'module8' && <CSSDay6 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'bootstrap_day1' && <BootstrapDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'bootstrap_day2' && <BootstrapDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'module9' && <CSSFinalProject activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'html_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="html" />}
-                {activeNode.moduleId === 'css_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="css" />}
-                {activeNode.moduleId === 'bootstrap_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="bootstrap" />}
+                {activeCourse === 'html_css' && activeNode.tabId === 'assignment' ? (
+                  <AssignmentSubmissionPage moduleId={activeNode.moduleId} onNavigate={handleNavClick} />
+                ) : (
+                  <>
+                    {activeNode.moduleId === 'module1' && <Day1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'module2' && <Day2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'html_project' && <HTMLProject activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'module3' && <CSSDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'module4' && <CSSDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'module5' && <CSSDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'module6' && <CSSDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'module7' && <CSSDay5 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'module8' && <CSSDay6 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'bootstrap_day1' && <BootstrapDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'bootstrap_day2' && <BootstrapDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'module9' && <CSSFinalProject activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'html_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="html" />}
+                    {activeNode.moduleId === 'css_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="css" />}
+                    {activeNode.moduleId === 'bootstrap_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="bootstrap" />}
+                  </>
+                )}
                 
                 {/* SQL Course Rendering */}
                 {activeNode.moduleId === 'sql_module1' && <SQLDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}

@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, ExternalLink, ChevronRight, ChevronDown, CheckCircle, ArrowLeft } from 'lucide-react';
+import { MessageSquare, ExternalLink, ChevronRight, ChevronDown, CheckCircle, ArrowLeft, Lock } from 'lucide-react';
+import { isModuleLocked, getAssignmentValidations } from '../utils/htmlCssLocking';
 
 export default function Sidebar({ courseStructure, activeNode, onNavClick, onBackToDashboard, isMobileMenuOpen, completedLessons = [], activeCourse }) {
+  const [validations, setValidations] = useState(getAssignmentValidations());
+
+  useEffect(() => {
+    const handleSync = () => setValidations(getAssignmentValidations());
+    window.addEventListener('html_css_validation_changed', handleSync);
+    return () => window.removeEventListener('html_css_validation_changed', handleSync);
+  }, []);
+
   const [expandedModules, setExpandedModules] = useState({
     [activeNode?.moduleId]: true
   });
@@ -116,6 +125,7 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
       <div className="sidebar-links-container" style={{ flex: 1, overflowY: 'auto', padding: '1rem 0' }}>
         {courseStructure?.map((module) => {
           const isExpanded = expandedModules[module.id];
+          const isLocked = activeCourse === 'html_css' && isModuleLocked(module.id, validations);
 
           return (
             <div key={module.id} style={{ marginBottom: '0.5rem' }}>
@@ -129,13 +139,14 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
                   padding: '0.75rem 1.5rem',
                   cursor: 'pointer',
                   fontWeight: '700',
-                  color: '#1e293b',
+                  color: isLocked ? '#94a3b8' : '#1e293b',
                   fontSize: '1.05rem',
                   userSelect: 'none'
                 }}
               >
                 {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-                <span>{module.title}</span>
+                <span style={{ flex: 1 }}>{module.title}</span>
+                {isLocked && <Lock size={15} color="#ea580c" title="Staff Validation Required" />}
               </div>
 
               {/* Accordion Content */}
@@ -168,16 +179,17 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
                               backgroundColor: isActive ? 'rgba(37, 99, 235, 0.08)' : 'transparent',
                               borderLeft: isActive ? '3px solid #2563eb' : '3px solid transparent',
                               transition: 'all 0.2s ease',
-                              color: isActive ? '#1d4ed8' : '#475569'
+                              color: isLocked ? '#94a3b8' : isActive ? '#1d4ed8' : '#475569',
+                              opacity: isLocked ? 0.7 : 1
                             }}
                           >
                             <div style={{ 
-                              color: isActive ? '#2563eb' : '#64748b',
+                              color: isLocked ? '#94a3b8' : isActive ? '#2563eb' : '#64748b',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center'
                             }}>
-                              {item.icon}
+                              {isLocked ? <Lock size={16} color="#ea580c" /> : item.icon}
                             </div>
                             <span style={{ 
                               fontWeight: isActive ? '600' : '500',
@@ -186,8 +198,11 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
                             }}>
                               {item.label}
                             </span>
-                            {isCompleted && (
+                            {isCompleted && !isLocked && (
                               <CheckCircle size={15} color="#10b981" fill="#d1fae5" style={{ flexShrink: 0 }} />
+                            )}
+                            {isLocked && (
+                              <span style={{ fontSize: '0.72rem', color: '#ea580c', fontWeight: 700, background: '#ffedd5', padding: '2px 6px', borderRadius: 4 }}>Locked</span>
                             )}
                           </div>
                         );
