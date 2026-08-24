@@ -305,7 +305,45 @@ p {
 ul.custom-list {
   list-style-type: square;        /* Options: disc, circle, square, decimal, alpha, none */
   list-style-position: inside;    /* Options: inside, outside */
-  list-style-image: url('star.png'); /* Custom bullet image */
+  list-style-image: url('star.png'); /* Custom bullet image (rendered in intrinsic image size) */
+}
+
+/* 1b. Resizing Custom Bullet Image (Option 1: Using Background Image) */
+ul.custom-list-resized {
+  list-style-type: none;          /* Remove default bullets */
+  padding-left: 0;
+}
+
+ul.custom-list-resized li {
+  background-image: url('star.png');
+  background-size: 18px 18px;     /* Resizes custom bullet image */
+  background-repeat: no-repeat;
+  background-position: 0 center;  /* Alignment */
+  padding-left: 26px;             /* Space between resized image & text */
+}
+
+/* 1c. Resizing Custom Bullet Image (Option 2: Using ::before Pseudo-Element) */
+ul.custom-list-before {
+  list-style: none;               /* Remove default bullets */
+  padding-left: 0;
+}
+
+ul.custom-list-before li {
+  position: relative;
+  padding-left: 26px;
+}
+
+ul.custom-list-before li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;                    /* Resized width */
+  height: 18px;                   /* Resized height */
+  background-image: url('star.png');
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 /* Shorthand List Property */

@@ -1495,69 +1495,6 @@ with open("data.pkl", "rb") as f:
             />
 
             <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('os_pathlib')}>Next: OS & Pathlib Operations <ArrowRight size={18} /></button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ─── TAB 8: OS & PATHLIB FILE SYSTEM OPERATIONS ─── */}
-      {activeTab === 'os_pathlib' && (
-        <Section key="os_pathlib" eyebrow="Day 8 • System Tools" title="OS & Pathlib File System Operations">
-          <div className="panel">
-            <p style={{ color: '#475569', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-              Before performing file operations, programmers verify file existence, sizes, and directory paths using the built-in <code>os</code> module and modern <code>pathlib</code>.
-            </p>
-
-            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '1rem' }}>💻 File System Utility Programs:</h3>
-
-            <CodeBlock title="program_1_os_file_utilities.py">
-              {c('# Program 1: Checking Existence, Sizes, Renaming and Deleting Files')}<br />
-              {kw('import')} os<br /><br />
-              filename = {st('"temp_data.txt"')}<br />
-              {kw('with')} {fn('open')}(filename, {st('"w"')}) {kw('as')} f:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;f.write({st('"Temporary file contents for testing."')})<br /><br />
-              {kw('if')} os.path.exists(filename):<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;size = os.path.getsize(filename)<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}(f{st('"File {filename} exists! Size: {size} bytes"')})<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;os.rename(filename, {st('"renamed_data.txt"')})<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Renamed to renamed_data.txt!"')})<br /><br />
-              {c('# Clean up file')}<br />
-              os.remove({st('"renamed_data.txt"')})<br />
-              {fn('print')}({st('"Deleted renamed_data.txt!"')})
-            </CodeBlock>
-
-            <CodeBlock title="program_2_pathlib_modern.py">
-              {c('# Program 2: Clean 1-Line File I/O using pathlib.Path')}<br />
-              {kw('from')} pathlib {kw('import')} Path<br /><br />
-              p = Path({st('"quick_notes.txt"')})<br /><br />
-              {c('# One line text write')}<br />
-              p.write_text({st('"Pathlib streamlines file reads and writes!"')})<br /><br />
-              {c('# One line text read')}<br />
-              content = p.read_text()<br />
-              {fn('print')}({st('"Pathlib Read:"')}, content)<br />
-              {fn('print')}({st('"Exists?"')}, p.exists())
-            </CodeBlock>
-
-            <Playground
-              id="os_play"
-              title="Test File System Console"
-              initialFiles={{ "document.txt": "Important records" }}
-              defaultCode={`import os
-from pathlib import Path
-
-# 1. os.path check
-if os.path.exists("document.txt"):
-    print("document.txt exists! Size:", os.path.getsize("document.txt"), "bytes")
-    os.rename("document.txt", "archived_doc.txt")
-    print("Renamed file to archived_doc.txt!")
-
-# 2. pathlib Path check
-p = Path("archived_doc.txt")
-print("Pathlib Content:", p.read_text())`}
-            />
-
-            <div className="card-actions">
               <button className="btn btn-primary" onClick={() => nav('exception_handling')}>Next: Exception Safety <ArrowRight size={18} /></button>
             </div>
           </div>
