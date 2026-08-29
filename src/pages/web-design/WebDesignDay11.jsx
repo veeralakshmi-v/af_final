@@ -64,7 +64,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
   };
 
   // --- Inline Syntax-Highlighted Code Editor Component ---
-  const LiveSyntaxCodeEditor = ({ value, onChange, language = 'css', rows = 10, label = '' }) => {
+  const LiveSyntaxCodeEditor = ({ value, onChange, language = 'css', rows = 9, label = '' }) => {
     const preRef = useRef(null);
 
     const handleScroll = (e) => {
@@ -229,7 +229,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
 
   // 5. Component System & Viewport Lab
   const [selectedBtnState, setSelectedBtnState] = useState('normal');
-  const [viewportMode, setViewportMode] = useState('desktop'); // desktop, tablet, mobile
+  const [viewportMode, setViewportMode] = useState('desktop');
 
   // 6. Guided CSS Upgrade (6 Core Stages)
   const [currentStage, setCurrentStage] = useState(0);
@@ -319,79 +319,77 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
   // ==========================================
 
   return (
-    <div style={{ background: '#090d16', minHeight: '100vh', color: '#f8fafc', fontFamily: 'system-ui, -apple-system, sans-serif', paddingBottom: '3rem' }}>
+    <div style={{ background: '#090d16', minHeight: '100vh', color: '#f8fafc', fontFamily: 'system-ui, -apple-system, sans-serif', padding: '0 0 3rem 0' }}>
       
-      {/* HEADER BAR */}
-      <header style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', position: 'sticky', top: 0, zIndex: 100, padding: '16px 24px' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-          <div>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '4px' }}>
-              <span style={{ background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8', fontSize: '0.75rem', fontWeight: 800, padding: '3px 10px', borderRadius: '6px', border: '1px solid rgba(99, 102, 241, 0.4)' }}>
+      {/* MAIN CONTAINER */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 20px' }}>
+        
+        {/* NON-STICKY CLEAN TOP HEADER CARD */}
+        <header style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', padding: '20px 24px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', boxShadow: '0 8px 20px rgba(0,0,0,0.4)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <span style={{ background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8', fontSize: '0.75rem', fontWeight: 800, padding: '4px 10px', borderRadius: '6px', border: '1px solid rgba(99, 102, 241, 0.4)' }}>
                 DAY 11 / 20 • 55% COMPLETE
               </span>
-              <span style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', fontSize: '0.75rem', fontWeight: 700, padding: '3px 10px', borderRadius: '6px', border: '1px solid rgba(168, 85, 247, 0.4)' }}>
-                ADVANCED UI & CSS PHASE
+              <span style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', fontSize: '0.75rem', fontWeight: 700, padding: '4px 10px', borderRadius: '6px', border: '1px solid rgba(168, 85, 247, 0.4)' }}>
+                ADVANCED UI &amp; CSS PHASE
               </span>
             </div>
-            <h1 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#ffffff', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Sparkles size={22} style={{ color: '#818cf8' }} />
-              Advanced CSS: Modern Layouts, Responsive Navbar & UI Components
+            <h1 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#ffffff', margin: 0, display: 'flex', alignItems: 'center', gap: '8px', lineHeight: '1.3' }}>
+              <Sparkles size={22} style={{ color: '#818cf8', shrink: 0 }} />
+              Advanced CSS: Modern Layouts, Responsive Navbar &amp; UI Components
             </h1>
           </div>
 
           <button
             onClick={() => openAITutor && openAITutor("Help me understand Advanced CSS layout techniques and CSS variables!")}
-            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', color: '#ffffff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', shadow: '0 4px 12px rgba(79, 70, 229, 0.3)' }}
+            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', color: '#ffffff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)', whiteSpace: 'nowrap' }}
           >
             <Sparkles size={16} /> Ask AI Tutor
           </button>
-        </div>
-      </header>
+        </header>
 
-      {/* STREAMLINED TABS NAVIGATION BAR (7 TABS) */}
-      <div style={{ maxWidth: '1200px', margin: '20px auto 0 auto', padding: '0 24px' }}>
-        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '12px', borderBottom: '1px solid #1e293b' }}>
-          {[
-            { id: 'intro', label: '1. Objective & Before/After', icon: BookOpen },
-            { id: 'variables', label: '2. CSS Tokens & Variables', icon: Sliders },
-            { id: 'flexbox_nav', label: '3. Flexbox & Mobile Nav', icon: LayoutGrid },
-            { id: 'grid_lab', label: '4. Advanced Grid & Sticky Nav', icon: Layout },
-            { id: 'ui_components', label: '5. Component System & Viewport Lab', icon: PenTool },
-            { id: 'guided_build', label: '6. Guided CSS Upgrade (6 Stages)', icon: Code },
-            { id: 'assignment_quiz', label: '7. Practice, AI Audit & Quiz', icon: CheckCircle }
-          ].map((t) => {
-            const IconC = t.icon;
-            const isActive = activeTab === t.id;
-            return (
-              <button
-                key={t.id}
-                onClick={() => handleTabClick(t.id)}
-                style={{
-                  background: isActive ? '#4f46e5' : '#1e293b',
-                  color: isActive ? '#ffffff' : '#94a3b8',
-                  border: isActive ? '1px solid #6366f1' : '1px solid #334155',
-                  padding: '9px 16px',
-                  borderRadius: '10px',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                <IconC size={16} /> {t.label}
-              </button>
-            );
-          })}
+        {/* STREAMLINED TABS NAVIGATION BAR (7 TABS) */}
+        <div style={{ marginBottom: '24px', borderBottom: '1px solid #1e293b', paddingBottom: '12px' }}>
+          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+            {[
+              { id: 'intro', label: '1. Objective & Before/After', icon: BookOpen },
+              { id: 'variables', label: '2. CSS Tokens & Variables', icon: Sliders },
+              { id: 'flexbox_nav', label: '3. Flexbox & Mobile Nav', icon: LayoutGrid },
+              { id: 'grid_lab', label: '4. Advanced Grid & Sticky Nav', icon: Layout },
+              { id: 'ui_components', label: '5. Component System & Viewport Lab', icon: PenTool },
+              { id: 'guided_build', label: '6. Guided CSS Upgrade (6 Stages)', icon: Code },
+              { id: 'assignment_quiz', label: '7. Practice, AI Audit & Quiz', icon: CheckCircle }
+            ].map((t) => {
+              const IconC = t.icon;
+              const isActive = activeTab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => handleTabClick(t.id)}
+                  style={{
+                    background: isActive ? '#4f46e5' : '#1e293b',
+                    color: isActive ? '#ffffff' : '#94a3b8',
+                    border: isActive ? '1px solid #6366f1' : '1px solid #334155',
+                    padding: '9px 16px',
+                    borderRadius: '10px',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <IconC size={16} /> {t.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      {/* MAIN CONTENT AREA */}
-      <main style={{ maxWidth: '1200px', margin: '24px auto', padding: '0 24px' }}>
-        
         {/* TAB 1: INTRO & BEFORE / AFTER */}
         {activeTab === 'intro' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -402,7 +400,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
                 Day 11 Objective: Advanced CSS for Professional Websites
               </h2>
               <p style={{ color: '#cbd5e1', fontSize: '0.9rem', lineHeight: '1.6', margin: '0 0 16px 0' }}>
-                Today, you take a basic webpage structure and upgrade it using <strong>reusable CSS design tokens</strong>, <strong>fluid Flexbox & Grid layouts</strong>, <strong>sticky positioning</strong>, and an accessible <strong>mobile navigation drawer</strong>.
+                Today, you take a basic webpage structure and upgrade it using <strong>reusable CSS design tokens</strong>, <strong>fluid Flexbox &amp; Grid layouts</strong>, <strong>sticky positioning</strong>, and an accessible <strong>mobile navigation drawer</strong>.
               </p>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
@@ -460,12 +458,12 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
 
               {viewBeforeAfter === 'before' ? (
                 <div style={{ border: '2px dashed #f43f5e', borderRadius: '12px', padding: '20px', background: '#090d16', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <div style={{ display: 'flex', justify: 'space-between', padding: '10px', background: '#1e293b', border: '1px solid #334155' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#1e293b', border: '1px solid #334155', flexWrap: 'wrap', gap: '12px' }}>
                     <span style={{ fontWeight: 800, color: '#f43f5e', fontSize: '0.85rem' }}>Basic Logo</span>
-                    <div style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'flex', gap: '12px' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'flex', gap: '16px', alignItems: 'center' }}>
                       <span>Home</span><span>About</span><span>Services</span>
                     </div>
-                    <button style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '4px 10px', fontSize: '0.7rem' }}>CTA</button>
+                    <button style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '4px 12px', fontSize: '0.75rem', fontWeight: 700, borderRadius: '4px' }}>CTA</button>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
                     <div style={{ background: '#1e293b', padding: '12px', border: '1px solid #334155' }}>
@@ -477,41 +475,45 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
                       <p style={{ fontSize: '0.75rem', color: '#64748b', margin: '4px 0 0 0' }}>No mobile menu drawer.</p>
                     </div>
                   </div>
-                  <div style={{ background: 'rgba(244, 63, 94, 0.1)', border: '1px solid rgba(244, 63, 94, 0.3)', padding: '10px', borderRadius: '6px', color: '#fda4af', fontSize: '0.78rem' }}>
+                  <div style={{ background: 'rgba(244, 63, 94, 0.1)', border: '1px solid rgba(244, 63, 94, 0.3)', padding: '10px 14px', borderRadius: '6px', color: '#fda4af', fontSize: '0.78rem' }}>
                     ⚠️ <strong>Issues:</strong> Fixed pixel widths, hardcoded repeated colors, missing sticky navigation, and inconsistent border radius values.
                   </div>
                 </div>
               ) : (
                 <div style={{ border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '12px', padding: '20px', background: '#090d16', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <div style={{ display: 'flex', justify: 'space-between', alignItems: 'center', padding: '12px 18px', background: '#1e293b', borderRadius: '10px', border: '1px solid #334155' }}>
-                    <span style={{ fontWeight: 900, color: '#38bdf8', fontSize: '0.95rem' }}>🚀 PRO WEBSITE</span>
-                    <div style={{ display: 'flex', gap: '16px', fontSize: '0.8rem', color: '#cbd5e1', fontWeight: 600 }}>
-                      <span style={{ color: '#818cf8' }}>Home</span>
-                      <span>About</span>
-                      <span>Services</span>
-                      <span>Contact</span>
+                  {/* CLEAN PRO NAVBAR MOCK WITH FIXED ALIGNMENT */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', background: '#1e293b', borderRadius: '12px', border: '1px solid #334155', flexWrap: 'wrap', gap: '16px' }}>
+                    <div style={{ fontWeight: 900, color: '#38bdf8', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}>
+                      🚀 PRO WEBSITE
                     </div>
-                    <button style={{ background: '#4f46e5', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}>
+                    <div style={{ display: 'flex', gap: '20px', fontSize: '0.82rem', color: '#cbd5e1', fontWeight: 600, alignItems: 'center', flexWrap: 'wrap' }}>
+                      <span style={{ color: '#818cf8', cursor: 'pointer' }}>Home</span>
+                      <span style={{ cursor: 'pointer' }}>About</span>
+                      <span style={{ cursor: 'pointer' }}>Services</span>
+                      <span style={{ cursor: 'pointer' }}>Contact</span>
+                    </div>
+                    <button style={{ background: '#4f46e5', color: '#ffffff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 700, fontSize: '0.78rem', cursor: 'pointer', whiteSpace: 'nowrap' }}>
                       Get Started
                     </button>
                   </div>
+
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
                     {[1, 2, 3].map((n) => (
                       <div key={n} style={{ background: '#1e293b', padding: '16px', borderRadius: '12px', border: '1px solid #334155', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <div style={{ width: '32px', height: '32px', borderRadius: '6px', background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8', display: 'flex', alignItems: 'center', justifyCenter: 'center', fontWeight: 800, fontSize: '0.8rem' }}>0{n}</div>
+                        <div style={{ width: '32px', height: '32px', borderRadius: '6px', background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.8rem' }}>0{n}</div>
                         <h4 style={{ margin: 0, color: '#ffffff', fontSize: '0.9rem' }}>Refactored Card #{n}</h4>
                         <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: 0, lineHeight: '1.4' }}>Styled via CSS variables, flex layout, and smooth hover feedback.</p>
                       </div>
                     ))}
                   </div>
-                  <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '10px', borderRadius: '8px', color: '#6ee7b7', fontSize: '0.78rem' }}>
+                  <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '10px 14px', borderRadius: '8px', color: '#6ee7b7', fontSize: '0.78rem' }}>
                     ✨ <strong>Upgrades:</strong> Centralized `:root` design tokens, sticky navigation bar, auto-fit grid layout, and reusable button classes.
                   </div>
                 </div>
               )}
 
               {/* Reflection question */}
-              <div style={{ marginTop: '20px', background: '#090d16', border: '1px solid #1e293b', padding: '16px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+              <div style={{ marginTop: '20px', background: '#090d16', border: '1px solid #1e293b', padding: '16px 20px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
                 <div>
                   <h4 style={{ margin: '0 0 4px 0', fontSize: '0.85rem', color: '#a5b4fc', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <HelpCircle size={16} /> "Did we change the HTML structure completely?"
@@ -522,9 +524,9 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
                 </div>
                 <button
                   onClick={() => handleTabClick('variables')}
-                  style={{ background: '#4f46e5', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 700, fontSize: '0.78rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                  style={{ background: '#4f46e5', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 700, fontSize: '0.78rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}
                 >
-                  Next: CSS Tokens & Variables <ChevronRight size={16} />
+                  Next: CSS Tokens &amp; Variables <ChevronRight size={16} />
                 </button>
               </div>
             </div>
@@ -536,7 +538,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', padding: '24px' }}>
               <h2 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#ffffff', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Sliders style={{ color: '#818cf8' }} size={22} /> CSS Design Tokens & Variables (:root)
+                <Sliders style={{ color: '#818cf8' }} size={22} /> CSS Design Tokens &amp; Variables (:root)
               </h2>
               <p style={{ color: '#cbd5e1', fontSize: '0.85rem', lineHeight: '1.6', margin: 0 }}>
                 A professional website should never randomly use 17 different colors or 12 different border radius values. Instead, define reusable design values inside the <code style={{ color: '#38bdf8', background: '#090d16', padding: '2px 6px', borderRadius: '4px' }}>:root</code> pseudo-class.
@@ -585,7 +587,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
                 </div>
 
                 {/* Live Preview */}
-                <div style={{ background: '#090d16', padding: '20px', borderRadius: '12px', border: '1px solid #1e293b', display: 'flex', flexDirection: 'column', justifyBetween: 'space-between' }}>
+                <div style={{ background: '#090d16', padding: '20px', borderRadius: '12px', border: '1px solid #1e293b', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                   <div>
                     <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#94a3b8', display: 'block', marginBottom: '12px', textTransform: 'uppercase' }}>
                       Component Live Preview
@@ -679,7 +681,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', padding: '24px' }}>
               <h2 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#ffffff', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <LayoutGrid style={{ color: '#818cf8' }} size={22} /> Advanced Flexbox & Responsive Mobile Navigation
+                <LayoutGrid style={{ color: '#818cf8' }} size={22} /> Advanced Flexbox &amp; Responsive Mobile Navigation
               </h2>
               <p style={{ color: '#cbd5e1', fontSize: '0.85rem', lineHeight: '1.6', margin: 0 }}>
                 Flexbox is designed for 1-dimensional layouts. Desktop navbars arrange items horizontally with <code style={{ color: '#38bdf8' }}>justify-content: space-between</code>. Mobile menus use JavaScript <code style={{ color: '#38bdf8' }}>classList.toggle('active')</code> to reveal vertical drawers.
@@ -718,7 +720,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
               </div>
 
               {/* Flexbox Box Output */}
-              <div style={{ background: '#090d16', padding: '20px', borderRadius: '12px', border: '1px dashed #6366f1', minHeight: '140px', display: 'flex', justifyContent: flexJustify, alignItems: flexAlign, gap: `${flexGap}px` }}>
+              <div style={{ background: '#090d16', padding: '20px', borderRadius: '12px', border: '1px dashed #6366f1', minHeight: '140px', display: 'flex', justifyContent: flexJustify, alignItems: flexAlign, gap: `${flexGap}px`, flexWrap: 'wrap' }}>
                 <div style={{ background: '#4f46e5', color: '#fff', padding: '10px 16px', borderRadius: '8px', fontWeight: 800, fontSize: '0.8rem' }}>LOGO</div>
                 <div style={{ background: '#7c3aed', color: '#fff', padding: '10px 16px', borderRadius: '8px', fontWeight: 800, fontSize: '0.8rem' }}>NAV LINKS</div>
                 <div style={{ background: '#0891b2', color: '#fff', padding: '10px 16px', borderRadius: '8px', fontWeight: 800, fontSize: '0.8rem' }}>CTA BUTTON</div>
@@ -726,7 +728,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
 
               {/* Mobile Drawer Visualizer */}
               <div style={{ background: '#090d16', padding: '20px', borderRadius: '12px', border: '1px solid #1e293b', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                   <h4 style={{ margin: 0, fontSize: '0.88rem', color: '#a5b4fc' }}>Mobile Drawer Navigation Interaction (JS Toggle)</h4>
                   <button
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -759,7 +761,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', padding: '24px' }}>
               <h2 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#ffffff', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Layout style={{ color: '#818cf8' }} size={22} /> Advanced Grid, auto-fit & Sticky Navbar
+                <Layout style={{ color: '#818cf8' }} size={22} /> Advanced Grid, auto-fit &amp; Sticky Navbar
               </h2>
               <p style={{ color: '#cbd5e1', fontSize: '0.85rem', lineHeight: '1.6', margin: 0 }}>
                 CSS Grid algorithms like <code style={{ color: '#38bdf8' }}>repeat(auto-fit, minmax(240px, 1fr))</code> adapt automatically to screen sizes without cluttering your code with media queries. <code style={{ color: '#38bdf8' }}>position: sticky</code> pins the header on scroll.
@@ -791,7 +793,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
 
               {/* Sticky Demo */}
               <div style={{ background: '#090d16', padding: '20px', borderRadius: '12px', border: '1px solid #1e293b', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                   <h4 style={{ margin: 0, fontSize: '0.88rem', color: '#ffffff' }}>Sticky Navigation Bar Scroll Demo</h4>
                   <button
                     onClick={() => setIsStickyOn(!isStickyOn)}
@@ -821,7 +823,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', padding: '24px' }}>
               <h2 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#ffffff', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <PenTool style={{ color: '#818cf8' }} size={22} /> Reusable Component System & Viewport Testing Lab
+                <PenTool style={{ color: '#818cf8' }} size={22} /> Reusable Component System &amp; Viewport Testing Lab
               </h2>
               <p style={{ color: '#cbd5e1', fontSize: '0.85rem', lineHeight: '1.6', margin: 0 }}>
                 Define base classes like <code style={{ color: '#38bdf8' }}>.btn</code> and <code style={{ color: '#38bdf8' }}>.card</code>, test state modifiers (Hover, Focus, Active, Disabled), and test viewports.
@@ -897,7 +899,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
                       gap: '12px'
                     }}
                   >
-                    <div style={{ display: 'flex', justifyBetween: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155', paddingBottom: '10px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155', paddingBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
                       <span style={{ fontWeight: 900, color: '#38bdf8', fontSize: '0.85rem' }}>TechCorp</span>
                       {viewportMode === 'mobile' ? <Menu size={18} style={{ color: '#fff' }} /> : <div style={{ fontSize: '0.75rem', color: '#cbd5e1', display: 'flex', gap: '12px' }}><span>Home</span><span>Services</span><span>Contact</span></div>}
                     </div>
@@ -971,7 +973,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', padding: '24px' }}>
               <h2 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#ffffff', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <CheckCircle style={{ color: '#818cf8' }} size={22} /> Day 11 Practice, AI Audit & Knowledge Check
+                <CheckCircle style={{ color: '#818cf8' }} size={22} /> Day 11 Practice, AI Audit &amp; Knowledge Check
               </h2>
               <p style={{ color: '#cbd5e1', fontSize: '0.85rem', margin: 0 }}>Test your understanding of CSS Variables, Flexbox, Grid, Sticky Positioning, and Responsive Mobile UI.</p>
             </div>
@@ -979,7 +981,7 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
             {/* AI Audit Box */}
             <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#ffffff', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Sparkles size={18} style={{ color: '#818cf8' }} /> Automated AI Design System & Mobile Audit
+                <Sparkles size={18} style={{ color: '#818cf8' }} /> Automated AI Design System &amp; Mobile Audit
               </h3>
               <button
                 onClick={handleRunAIAudit}
@@ -1073,12 +1075,12 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
                 You have mastered CSS Variables, Flexbox, Grid auto-fit, Sticky navigation, and Responsive Mobile UI!
               </p>
               <div style={{ background: '#090d16', border: '1px solid #334155', padding: '12px 24px', borderRadius: '12px', fontSize: '0.8rem', color: '#a5b4fc', fontWeight: 700 }}>
-                👉 Up Next in Day 12: JavaScript for Real Website Interactions (DOM, Events, Accordions & Modals!)
+                👉 Up Next in Day 12: JavaScript for Real Website Interactions (DOM, Events, Accordions &amp; Modals!)
               </div>
             </div>
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 };
