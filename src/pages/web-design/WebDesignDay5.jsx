@@ -12,6 +12,187 @@ export default function WebDesignDay5({ activeTab = 'intro', onNavigate, openAIT
     }
   };
 
+  // Interactive Syntax-Highlighted Code Editor component with scroll syncing
+  const LiveSyntaxCodeEditor = ({ value, onChange, language = 'html', rows = 10, label = '' }) => {
+    const preRef = React.useRef(null);
+
+    const handleScroll = (e) => {
+      if (preRef.current) {
+        preRef.current.scrollTop = e.target.scrollTop;
+        preRef.current.scrollLeft = e.target.scrollLeft;
+      }
+    };
+
+    const escapeHTML = (str) =>
+      str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+
+    const highlightCode = (codeStr, lang) => {
+      if (!codeStr) return '';
+      const escaped = escapeHTML(codeStr);
+
+      if (lang === 'html') {
+        const tokenRegex = /(&lt;<!--[\s\S]*?--&gt;)|(&lt;!DOCTYPE html&gt;)|(&lt;\/?[a-zA-Z0-9\-]+)|([a-zA-Z\-]+)(?=\s*=)|("[\s\S]*?"|'[\s\S]*?')/gi;
+        return escaped.replace(tokenRegex, (match, comment, doctype, tag, attr, stringVal) => {
+          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+          if (doctype) return `<span style="color:#c084fc;font-weight:bold;">${doctype}</span>`;
+          if (tag) {
+            const m = tag.match(/^(&lt;\/?)([a-zA-Z0-9\-]+)$/);
+            return m ? `${m[1]}<span style="color:#f43f5e;font-weight:bold;">${m[2]}</span>` : tag;
+          }
+          if (attr) return `<span style="color:#fbbf24;font-weight:600;">${attr}</span>`;
+          if (stringVal) return `<span style="color:#34d399;">${stringVal}</span>`;
+          return match;
+        });
+      }
+
+      if (lang === 'css') {
+        const cssTokenRegex = /(\/\*[\s\S]*?\*\/)|([.#][a-zA-Z0-9_\-]+|[a-zA-Z0-9_\-]+(?=\s*\{))|([a-zA-Z\-]+)(?=\s*:)|(:\s*[^;\}]+;)/gi;
+        return escaped.replace(cssTokenRegex, (match, comment, selector, prop, val) => {
+          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+          if (selector) return `<span style="color:#38bdf8;font-weight:bold;">${selector}</span>`;
+          if (prop) return `<span style="color:#fb923c;font-weight:600;">${prop}</span>`;
+          if (val) return `:<span style="color:#34d399;">${val.slice(1)}</span>`;
+          return match;
+        });
+      }
+
+      return escaped;
+    };
+
+    const highlightedHTML = highlightCode(value, language);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        {label && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <label style={{ fontSize: '0.8rem', fontWeight: 800, color: language === 'html' ? '#ea580c' : '#2563eb', letterSpacing: '0.5px' }}>
+              {label}
+            </label>
+            <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Interactive Editor</span>
+          </div>
+        )}
+
+        <div style={{ position: 'relative', width: '100%', borderRadius: '12px', overflow: 'hidden', background: '#090d16', border: '1px solid #1e293b' }}>
+          <pre
+            ref={preRef}
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              margin: 0,
+              padding: '1rem',
+              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+              fontSize: '0.82rem',
+              lineHeight: '1.6',
+              color: '#f8fafc',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              pointerEvents: 'none',
+              overflow: 'hidden',
+              boxSizing: 'border-box'
+            }}
+            dangerouslySetInnerHTML={{ __html: highlightedHTML + '\n' }}
+          />
+
+          <textarea
+            rows={rows}
+            value={value}
+            onChange={onChange}
+            onScroll={handleScroll}
+            spellCheck={false}
+            style={{
+              position: 'relative',
+              width: '100%',
+              minHeight: `${rows * 1.6}rem`,
+              margin: 0,
+              padding: '1rem',
+              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+              fontSize: '0.82rem',
+              lineHeight: '1.6',
+              color: 'transparent',
+              caretColor: '#38bdf8',
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              resize: 'vertical',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              overflow: 'auto',
+              boxSizing: 'border-box'
+            }}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const renderSyntaxHighlightedHTML = (codeStr, lang = 'html') => {
+    if (!codeStr) return null;
+    const escapeHTML = (str) =>
+      str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+
+    const escaped = escapeHTML(codeStr);
+
+    if (lang === 'html') {
+      const tokenRegex = /(&lt;<!--[\s\S]*?--&gt;)|(&lt;!DOCTYPE html&gt;)|(&lt;\/?[a-zA-Z0-9\-]+)|([a-zA-Z\-]+)(?=\s*=)|("[\s\S]*?"|'[\s\S]*?')/gi;
+      const highlighted = escaped.replace(tokenRegex, (match, comment, doctype, tag, attr, stringVal) => {
+        if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+        if (doctype) return `<span style="color:#c084fc;font-weight:bold;">${doctype}</span>`;
+        if (tag) {
+          const m = tag.match(/^(&lt;\/?)([a-zA-Z0-9\-]+)$/);
+          return m ? `${m[1]}<span style="color:#f43f5e;font-weight:bold;">${m[2]}</span>` : tag;
+        }
+        if (attr) return `<span style="color:#fbbf24;font-weight:600;">${attr}</span>`;
+        if (stringVal) return `<span style="color:#34d399;">${stringVal}</span>`;
+        return match;
+      });
+      return (
+        <pre
+          style={{
+            margin: 0,
+            fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+            fontSize: '0.83rem',
+            lineHeight: '1.6',
+            color: '#f8fafc',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word'
+          }}
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
+      );
+    }
+
+    if (lang === 'css') {
+      const cssTokenRegex = /(\/\*[\s\S]*?\*\/)|([.#][a-zA-Z0-9_\-]+|[a-zA-Z0-9_\-]+(?=\s*\{))|([a-zA-Z\-]+)(?=\s*:)|(:\s*[^;\}]+;)/gi;
+      const highlighted = escaped.replace(cssTokenRegex, (match, comment, selector, prop, val) => {
+        if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+        if (selector) return `<span style="color:#38bdf8;font-weight:bold;">${selector}</span>`;
+        if (prop) return `<span style="color:#fb923c;font-weight:600;">${prop}</span>`;
+        if (val) return `:<span style="color:#34d399;">${val.slice(1)}</span>`;
+        return match;
+      });
+      return (
+        <pre
+          style={{
+            margin: 0,
+            fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+            fontSize: '0.83rem',
+            lineHeight: '1.6',
+            color: '#f8fafc',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word'
+          }}
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
+      );
+    }
+
+    return <pre style={{ margin: 0, color: '#f8fafc' }}>{codeStr}</pre>;
+  };
+
   // --- Meaningful Completion & Progress Tracking State ---
   const [completedSteps, setCompletedSteps] = useState({
     intro: true,
@@ -49,38 +230,61 @@ export default function WebDesignDay5({ activeTab = 'intro', onNavigate, openAIT
   const [responsiveDevice, setResponsiveDevice] = useState('desktop'); // 'desktop' | 'tablet' | 'mobile'
 
   // --- Section 23: Live Code Playground State ---
-  const [playgroundHtml, setPlaygroundHtml] = useState(`<section id="services" class="services-section">
-  <div class="services-container">
-    <span class="section-label">WHAT WE OFFER</span>
-    <h2 class="section-title">Practical Training Tracks Built for Job Growth</h2>
-    <p class="section-description">
-      Choose a career-oriented learning track designed with hands-on client projects and 1-on-1 guidance.
-    </p>
+  const [playgroundHtml, setPlaygroundHtml] = useState(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Fly Theni - Services</title>
+</head>
+<body>
 
-    <div class="services-grid">
-      <div class="service-card">
-        <div class="service-icon">💻</div>
-        <h3 class="service-name">Web Development</h3>
-        <p class="service-desc">Master HTML5, CSS3, JavaScript, and Flexbox layout building real websites.</p>
-        <a href="#courses" class="btn-service">Explore Track →</a>
-      </div>
+  <!-- Day 2 Navbar -->
+  <header style="display:flex; justify-content:space-between; align-items:center; background:#1e1b4b; padding:1rem 2rem; border-radius:12px; margin-bottom:1.5rem;">
+    <div style="font-size:1.2rem; font-weight:900; color:#60a5fa;">🚀 Alpha Fly Theni</div>
+    <nav style="display:flex; gap:1rem; font-size:0.9rem;">
+      <a href="#" style="color:#cbd5e1; text-decoration:none;">Home</a>
+      <a href="#about" style="color:#cbd5e1; text-decoration:none;">About</a>
+      <a href="#services" style="color:#60a5fa; font-weight:800; text-decoration:none;">Services</a>
+    </nav>
+  </header>
 
-      <div class="service-card">
-        <div class="service-icon">📊</div>
-        <h3 class="service-name">Data & Analytics</h3>
-        <p class="service-desc">Learn SQL, Python, data visualization, and reporting for business insights.</p>
-        <a href="#courses" class="btn-service">Explore Track →</a>
-      </div>
+  <!-- Day 5 Services Section -->
+  <section id="services" class="services-section">
+    <div class="services-container">
+      <span class="section-label">WHAT WE OFFER</span>
+      <h2 class="section-title">Practical Training Tracks Built for Job Growth</h2>
+      <p class="section-description">
+        Choose a career-oriented learning track designed with hands-on client projects and 1-on-1 guidance.
+      </p>
 
-      <div class="service-card">
-        <div class="service-icon">🤖</div>
-        <h3 class="service-name">AI Solutions</h3>
-        <p class="service-desc">Harness AI prompts, workflows, and tools for modern web applications.</p>
-        <a href="#courses" class="btn-service">Explore Track →</a>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">💻</div>
+          <h3 class="service-name">Web Development</h3>
+          <p class="service-desc">Master HTML5, CSS3, JavaScript, and Flexbox layout building real websites.</p>
+          <a href="#courses" class="btn-service">Explore Track →</a>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">📊</div>
+          <h3 class="service-name">Data & Analytics</h3>
+          <p class="service-desc">Learn SQL, Python, data visualization, and reporting for business insights.</p>
+          <a href="#courses" class="btn-service">Explore Track →</a>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🤖</div>
+          <h3 class="service-name">AI Solutions</h3>
+          <p class="service-desc">Harness AI prompts, workflows, and tools for modern web applications.</p>
+          <a href="#courses" class="btn-service">Explore Track →</a>
+        </div>
       </div>
     </div>
-  </div>
-</section>`);
+  </section>
+
+</body>
+</html>`);
 
   const [playgroundCss, setPlaygroundCss] = useState(`.services-section { padding: 4rem 2rem; background: #f8fafc; color: #0f172a; text-align: center; }
 .services-container { max-width: 1200px; margin: 0 auto; }
@@ -617,20 +821,42 @@ export default function WebDesignDay5({ activeTab = 'intro', onNavigate, openAIT
                   </div>
 
                   {targetCodeTab === 'html' ? (
-                    <pre style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px', color: '#38bdf8', fontSize: '0.82rem', margin: 0, overflowX: 'auto' }}>
-{`<section id="services" class="services-section">
-  <span class="section-label">WHAT WE OFFER</span>
-  <h2 class="section-title">Practical Learning Tracks Built for Job Growth</h2>
-  <div class="services-grid">
-    <div class="service-card">
-      <div class="service-icon">💻</div>
-      <h3 class="service-name">Web Development</h3>
-      <p class="service-desc">Build practical web applications...</p>
-      <a href="#courses" class="btn-service">Explore Track →</a>
+                    <div style={{ background: '#090d16', padding: '1.25rem', borderRadius: '10px', border: '1px solid #1e293b', overflowX: 'auto' }}>
+                      {renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Fly Theni - Services</title>
+</head>
+<body>
+
+  <!-- Day 2 Navbar -->
+  <header style="display:flex; justify-content:space-between; align-items:center; background:#1e1b4b; padding:1rem 2rem; border-radius:12px; margin-bottom:1.5rem;">
+    <div style="font-size:1.2rem; font-weight:900; color:#60a5fa;">🚀 Alpha Fly Theni</div>
+    <nav style="display:flex; gap:1rem; font-size:0.9rem;">
+      <a href="#" style="color:#cbd5e1; text-decoration:none;">Home</a>
+      <a href="#services" style="color:#60a5fa; font-weight:800; text-decoration:none;">Services</a>
+    </nav>
+  </header>
+
+  <!-- Day 5 Services Section -->
+  <section id="services" class="services-section">
+    <span class="section-label">WHAT WE OFFER</span>
+    <h2 class="section-title">Practical Learning Tracks Built for Job Growth</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">💻</div>
+        <h3 class="service-name">Web Development</h3>
+        <p class="service-desc">Build practical web applications...</p>
+        <a href="#courses" class="btn-service">Explore Track →</a>
+      </div>
     </div>
-  </div>
-</section>`}
-                    </pre>
+  </section>
+
+</body>
+</html>`)}
+                    </div>
                   ) : (
                     <pre style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px', color: '#34d399', fontSize: '0.82rem', margin: 0, overflowX: 'auto' }}>
 {`.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
@@ -753,14 +979,91 @@ export default function WebDesignDay5({ activeTab = 'intro', onNavigate, openAIT
                 <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ea580c', display: 'block', marginBottom: 4 }}>
                   HTML Code (Step {htmlBuildStep} of 6):
                 </label>
-                <pre style={{ background: '#0f172a', padding: '1rem', borderRadius: '12px', color: '#38bdf8', fontSize: '0.84rem', margin: 0, minHeight: '200px' }}>
-{htmlBuildStep === 1 && `<section id="services" class="services-section">\n</section>`}
-{htmlBuildStep === 2 && `<section id="services" class="services-section">\n  <span class="section-label">WHAT WE OFFER</span>\n</section>`}
-{htmlBuildStep === 3 && `<section id="services" class="services-section">\n  <span class="section-label">WHAT WE OFFER</span>\n  <h2 class="section-title">Practical Learning Tracks</h2>\n</section>`}
-{htmlBuildStep === 4 && `<section id="services" class="services-section">\n  <span class="section-label">WHAT WE OFFER</span>\n  <h2>Practical Learning Tracks</h2>\n  <p>Choose a career-oriented learning track...</p>\n</section>`}
-{htmlBuildStep === 5 && `<section id="services" class="services-section">\n  <div class="service-card">\n    <div class="service-icon">💻</div>\n    <h3>Web Development</h3>\n    <p>Build practical web apps...</p>\n    <a href="#courses">Explore →</a>\n  </div>\n</section>`}
-{htmlBuildStep === 6 && `<section id="services" class="services-section">\n  <div class="services-grid">\n    <div class="service-card">💻 Web Dev</div>\n    <div class="service-card">📊 Data</div>\n    <div class="service-card">🤖 AI</div>\n  </div>\n</section>`}
-                </pre>
+                <div style={{ background: '#090d16', padding: '1rem', borderRadius: '12px', border: '1px solid #1e293b', minHeight: '200px', overflowX: 'auto' }}>
+                  {htmlBuildStep === 1 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Services Section</title>
+</head>
+<body>
+  <section id="services" class="services-section">
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 2 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Services Section</title>
+</head>
+<body>
+  <section id="services" class="services-section">
+    <span class="section-label">WHAT WE OFFER</span>
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 3 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Services Section</title>
+</head>
+<body>
+  <section id="services" class="services-section">
+    <span class="section-label">WHAT WE OFFER</span>
+    <h2 class="section-title">Practical Learning Tracks</h2>
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 4 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Services Section</title>
+</head>
+<body>
+  <section id="services" class="services-section">
+    <span class="section-label">WHAT WE OFFER</span>
+    <h2>Practical Learning Tracks</h2>
+    <p>Choose a career-oriented learning track...</p>
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 5 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Services Section</title>
+</head>
+<body>
+  <section id="services" class="services-section">
+    <div class="service-card">
+      <div class="service-icon">💻</div>
+      <h3>Web Development</h3>
+      <p>Build practical web apps...</p>
+      <a href="#courses">Explore →</a>
+    </div>
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 6 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Services Section</title>
+</head>
+<body>
+  <section id="services" class="services-section">
+    <div class="services-grid">
+      <div class="service-card">💻 Web Dev</div>
+      <div class="service-card">📊 Data</div>
+      <div class="service-card">🤖 AI</div>
+    </div>
+  </section>
+</body>
+</html>`)}
+                </div>
               </div>
 
               <div>
@@ -917,32 +1220,37 @@ export default function WebDesignDay5({ activeTab = 'intro', onNavigate, openAIT
                 onMouseLeave={() => setDemoCardIsHovered(false)}
                 style={{
                   background: '#ffffff',
-                  border: (hoverMode === 'simple' || demoCardIsHovered) ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                  border: (hoverMode === 'simple' && demoCardIsHovered) || (hoverMode === 'advanced' && demoCardIsHovered) ? '2px solid #2563eb' : '1px solid #cbd5e1',
                   borderRadius: '16px',
                   padding: '1.75rem',
                   maxWidth: '300px',
-                  boxShadow: (hoverMode === 'advanced' || demoCardIsHovered) ? '0 14px 28px rgba(37, 99, 235, 0.18)' : '0 4px 12px rgba(0,0,0,0.03)',
-                  transform: (hoverMode === 'advanced' || demoCardIsHovered) ? 'translateY(-8px)' : 'none',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: (hoverMode === 'advanced' && demoCardIsHovered) ? '0 16px 32px rgba(37, 99, 235, 0.2)' : '0 4px 12px rgba(0,0,0,0.03)',
+                  transform: (hoverMode === 'advanced' && demoCardIsHovered) ? 'translateY(-8px)' : 'none',
+                  transition: hoverMode === 'none' ? 'none' : hoverMode === 'simple' ? 'border-color 0.2s ease' : 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   cursor: 'pointer'
                 }}
               >
                 <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>💻</div>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800, margin: '0 0 0.5rem 0', color: '#0f172a' }}>Web Development</h3>
-                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0 0 1rem 0' }}>Hover your cursor over this card to observe the lift &amp; shadow animation!</p>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0 0 1rem 0' }}>
+                  {hoverMode === 'none' && '1. [No Hover Mode]: Hovering your cursor over this card produces no visual effect.'}
+                  {hoverMode === 'simple' && '2. [Simple Border Mode]: Hovering your cursor changes the border color to blue.'}
+                  {hoverMode === 'advanced' && '3. [Advanced Lift + Shadow]: Hovering your cursor smoothly lifts the card -8px with glowing blue shadow!'}
+                </p>
                 <span style={{ color: '#2563eb', fontWeight: 800, fontSize: '0.84rem' }}>Explore Track →</span>
               </div>
             </div>
 
-            <pre style={{ background: '#0f172a', color: '#34d399', padding: '1rem', borderRadius: '10px', fontSize: '0.85rem', marginTop: '1.25rem' }}>
-{`.service-card {
-  transition: all 0.3s ease;
-}
-.service-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.12);
-}`}
-            </pre>
+            <div style={{ background: '#090d16', padding: '1rem', borderRadius: '10px', marginTop: '1.25rem', border: '1px solid #1e293b' }}>
+              {renderSyntaxHighlightedHTML(
+                hoverMode === 'none'
+                  ? `/* 1. No Hover Effect */\n.service-card {\n  border: 1px solid #cbd5e1;\n  /* No :hover rule defined */\n}`
+                  : hoverMode === 'simple'
+                  ? `/* 2. Simple Border Change */\n.service-card {\n  border: 1px solid #cbd5e1;\n  transition: border-color 0.2s ease;\n}\n.service-card:hover {\n  border: 2px solid #2563eb;\n}`
+                  : `/* 3. Advanced Lift + Shadow */\n.service-card {\n  border: 1px solid #cbd5e1;\n  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n}\n.service-card:hover {\n  border: 2px solid #2563eb;\n  transform: translateY(-8px);\n  box-shadow: 0 16px 32px rgba(37, 99, 235, 0.2);\n}`,
+                'css'
+              )}
+            </div>
           </div>
 
         </div>
@@ -1165,25 +1473,21 @@ export default function WebDesignDay5({ activeTab = 'intro', onNavigate, openAIT
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
-              <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ea580c', display: 'block', marginBottom: 4 }}>HTML:</label>
-                <textarea
-                  rows={10}
-                  value={playgroundHtml}
-                  onChange={e => setPlaygroundHtml(e.target.value)}
-                  style={{ width: '100%', background: '#0f172a', color: '#38bdf8', fontFamily: 'monospace', fontSize: '0.82rem', padding: '1rem', borderRadius: '10px', outline: 'none', boxSizing: 'border-box' }}
-                />
-              </div>
+              <LiveSyntaxCodeEditor
+                label="HTML:"
+                language="html"
+                rows={11}
+                value={playgroundHtml}
+                onChange={e => setPlaygroundHtml(e.target.value)}
+              />
 
-              <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', display: 'block', marginBottom: 4 }}>CSS:</label>
-                <textarea
-                  rows={10}
-                  value={playgroundCss}
-                  onChange={e => setPlaygroundCss(e.target.value)}
-                  style={{ width: '100%', background: '#0f172a', color: '#34d399', fontFamily: 'monospace', fontSize: '0.82rem', padding: '1rem', borderRadius: '10px', outline: 'none', boxSizing: 'border-box' }}
-                />
-              </div>
+              <LiveSyntaxCodeEditor
+                label="CSS:"
+                language="css"
+                rows={11}
+                value={playgroundCss}
+                onChange={e => setPlaygroundCss(e.target.value)}
+              />
             </div>
 
             {/* Playground Live Render */}
@@ -1492,13 +1796,13 @@ export default function WebDesignDay5({ activeTab = 'intro', onNavigate, openAIT
           }}>
             <Trophy size={64} style={{ marginBottom: '1rem', opacity: 0.9 }} />
             <h2 style={{ fontSize: '2.2rem', fontWeight: 900, margin: '0 0 0.75rem 0' }}>
-              🎉 Services Section Completed!
+              🎉 Day 5 Completed
             </h2>
 
             {/* Learned skills checklist */}
             <div style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '16px', padding: '1.75rem', maxWidth: '560px', margin: '1.5rem auto 2rem auto', textAlign: 'left' }}>
               <div style={{ fontWeight: 800, fontSize: '1rem', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Today you learned:
+                YOU LEARNED:
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.88rem', fontWeight: 600 }}>
                 <div>✓ Service section purpose</div>

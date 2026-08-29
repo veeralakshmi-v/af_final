@@ -4,7 +4,7 @@ import {
   Code, CheckCircle, LayoutGrid, Layers, MonitorPlay, MousePointerClick,
   Video, Edit3, Palette, Layout, Brush, FileCode2, Target, Type as TypeIcon,
   Wand2, FastForward, Move3d, Clapperboard, Smartphone, Database, Table, Columns, List, Terminal, ShieldAlert, PenTool, Settings, PieChart, Link, Activity, Store,
-  Briefcase, Map, Zap, Brain, Bot, Cpu, GitBranch, Rocket, Eye, Sliders, Filter, Trophy, Shield, FileSpreadsheet, Music, RefreshCw, Sparkles, Hash, Globe, Wifi, AlertTriangle, Home, Compass, User, Lock, ShoppingCart, Folder, Server, Trash2, Plus, LogIn, LogOut, UserPlus, Users, UserCheck, BarChart2, GitMerge, Radio, Key, Copy
+  Briefcase, Map, Zap, Brain, Bot, Cpu, GitBranch, Rocket, Eye, Sliders, Filter, Trophy, Shield, FileSpreadsheet, Music, RefreshCw, Sparkles, Hash, Globe, Wifi, AlertTriangle, AlertCircle, Award, Send, Home, Compass, User, Lock, ShoppingCart, Folder, Server, Trash2, Plus, LogIn, LogOut, UserPlus, Users, UserCheck, BarChart2, GitMerge, Radio, Key, Copy
 } from 'lucide-react';
 
 
@@ -2217,7 +2217,7 @@ export const seabornCourseData = [
 export const webDesignCourseData = [
   {
     id: 'web_design_day1',
-    title: 'Day 1 - Introduction to Websites & Web Layout',
+    title: 'Day 1 — Introduction to Websites & Layout',
     items: [
       { id: 'intro', label: 'What is a Website?', icon: <BookOpen size={18} /> },
       { id: 'layout', label: 'Website Layout', icon: <LayoutGrid size={18} /> },
@@ -2232,14 +2232,14 @@ export const webDesignCourseData = [
   },
   {
     id: 'web_design_day2',
-    title: 'Day 2 — Build Your First Professional Navbar',
+    title: 'Day 2 — Professional Navbar Section',
     items: [
-      { id: 'intro', label: 'Today You Will Build', icon: <BookOpen size={18} /> },
+      { id: 'intro', label: 'Today You Will Learn', icon: <BookOpen size={18} /> },
       { id: 'visual', label: 'Target Result & Explorer', icon: <MonitorPlay size={18} /> },
       { id: 'html_build', label: 'Step-by-Step HTML', icon: <Code size={18} /> },
       { id: 'css_flexbox', label: 'CSS Flexbox & Spacing', icon: <LayoutGrid size={18} /> },
       { id: 'hover_responsive', label: 'Hover & Mobile Layout', icon: <Layers size={18} /> },
-      { id: 'guided_build', label: 'Build With Me (10 Stages)', icon: <PenTool size={18} /> },
+      { id: 'guided_build', label: 'Guided Implementation (10 Stages)', icon: <PenTool size={18} /> },
       { id: 'playground', label: 'Live Code Playground', icon: <Terminal size={18} /> },
       { id: 'challenges', label: 'Code Challenges & Debugging', icon: <Sparkles size={18} /> },
       { id: 'assignment', label: 'Assignment & AI Challenge', icon: <Briefcase size={18} /> },
@@ -2248,15 +2248,15 @@ export const webDesignCourseData = [
   },
   {
     id: 'web_design_day3',
-    title: 'Day 3 — Build a Powerful Hero Section',
+    title: 'Day 3 — Hero Section & Call to Action',
     items: [
       { id: 'intro', label: 'Day 3 Objective & Real-World Hero', icon: <BookOpen size={18} /> },
       { id: 'visual', label: 'Target Result & Hero Explorer', icon: <MonitorPlay size={18} /> },
-      { id: 'html_build', label: 'Step-by-Step HTML Hero Builder', icon: <Code size={18} /> },
+      { id: 'html_build', label: 'Step-by-Step HTML Hero', icon: <Code size={18} /> },
       { id: 'css_layout', label: 'CSS Flexbox 2-Column & Container', icon: <LayoutGrid size={18} /> },
       { id: 'typography_cta', label: 'Typography, Headings & CTAs', icon: <PenTool size={18} /> },
       { id: 'responsive', label: 'Responsive Hero & Device Tester', icon: <Layers size={18} /> },
-      { id: 'guided_build', label: 'Build With Me (10 Stages)', icon: <Sliders size={18} /> },
+      { id: 'guided_build', label: 'Guided Implementation (10 Stages)', icon: <Sliders size={18} /> },
       { id: 'playground', label: 'Live Code Playground', icon: <Terminal size={18} /> },
       { id: 'challenges', label: 'Code Challenges & Debugging', icon: <Sparkles size={18} /> },
       { id: 'assignment', label: 'Assignment & AI Challenge', icon: <Briefcase size={18} /> },
@@ -2265,15 +2265,15 @@ export const webDesignCourseData = [
   },
   {
     id: 'web_design_day4',
-    title: 'Day 4 — Build a Professional About Section',
+    title: 'Day 4 — Professional About Section',
     items: [
       { id: 'intro', label: 'Day 4 Objective & Business Context', icon: <BookOpen size={18} /> },
       { id: 'visual', label: 'Target Output & About Explorer', icon: <MonitorPlay size={18} /> },
-      { id: 'html_build', label: 'Step-by-Step HTML About Builder', icon: <Code size={18} /> },
+      { id: 'html_build', label: 'Step-by-Step HTML About', icon: <Code size={18} /> },
       { id: 'css_layout', label: 'Flexbox 2-Column & Image Styling', icon: <LayoutGrid size={18} /> },
       { id: 'stats_reusable', label: 'Statistics & Reusable Classes', icon: <PenTool size={18} /> },
       { id: 'responsive', label: 'Responsive About & Device Tester', icon: <Layers size={18} /> },
-      { id: 'guided_build', label: 'Build With Me (10 Stages)', icon: <Sliders size={18} /> },
+      { id: 'guided_build', label: 'Guided Implementation (10 Stages)', icon: <Sliders size={18} /> },
       { id: 'playground', label: 'Live Code Playground', icon: <Terminal size={18} /> },
       { id: 'challenges', label: 'Code Challenges & Debugging', icon: <Sparkles size={18} /> },
       { id: 'assignment', label: 'Assignment & AI Challenge', icon: <Briefcase size={18} /> },
@@ -2282,15 +2282,15 @@ export const webDesignCourseData = [
   },
   {
     id: 'web_design_day5',
-    title: 'Day 5 — Build a Professional Services Section',
+    title: 'Day 5 — Services Section & Cards',
     items: [
       { id: 'intro', label: 'Day 5 Objective & Business Context', icon: <BookOpen size={18} /> },
       { id: 'visual', label: 'Target Output & Services Explorer', icon: <MonitorPlay size={18} /> },
-      { id: 'html_build', label: 'Step-by-Step HTML Card Builder', icon: <Code size={18} /> },
+      { id: 'html_build', label: 'Step-by-Step HTML Cards', icon: <Code size={18} /> },
       { id: 'css_grid', label: 'CSS Grid Layout & Visualizer', icon: <LayoutGrid size={18} /> },
       { id: 'cards_hover', label: 'Service Cards & Hover Effects', icon: <PenTool size={18} /> },
       { id: 'responsive', label: 'Responsive Grid & Device Tester', icon: <Layers size={18} /> },
-      { id: 'guided_build', label: 'Build With Me (12 Stages)', icon: <Sliders size={18} /> },
+      { id: 'guided_build', label: 'Guided Implementation (12 Stages)', icon: <Sliders size={18} /> },
       { id: 'playground', label: 'Live Code Playground', icon: <Terminal size={18} /> },
       { id: 'challenges', label: 'Code Challenges & Debugging', icon: <Sparkles size={18} /> },
       { id: 'assignment', label: 'Assignment & AI Challenge', icon: <Briefcase size={18} /> },
@@ -2299,137 +2299,84 @@ export const webDesignCourseData = [
   },
   {
     id: 'web_design_day6',
-    title: 'Day 6 - HTML Lists & Service Cards',
+    title: 'Day 6 — Portfolio & Showcase Section',
     items: [
-      { id: 'intro', label: 'Lists & Card Structures', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 6 Assessment', icon: <CheckCircle size={18} /> }
+      { id: 'intro', label: 'Day 6 Objective & Business Context', icon: <BookOpen size={18} /> },
+      { id: 'visual', label: 'Target Output & Portfolio Explorer', icon: <MonitorPlay size={18} /> },
+      { id: 'html_build', label: 'Step-by-Step HTML Cards', icon: <Code size={18} /> },
+      { id: 'css_grid', label: 'CSS Grid & Image Handling', icon: <LayoutGrid size={18} /> },
+      { id: 'js_filter', label: 'DOM Interaction & JS Category Filtering', icon: <PenTool size={18} /> },
+      { id: 'responsive', label: 'Responsive Portfolio & Device Tester', icon: <Layers size={18} /> },
+      { id: 'guided_build', label: 'Guided Implementation (18 Stages)', icon: <Sliders size={18} /> },
+      { id: 'playground', label: 'Live Code Playground', icon: <Terminal size={18} /> },
+      { id: 'challenges', label: 'Code Challenges & Debugging', icon: <Sparkles size={18} /> },
+      { id: 'assignment', label: 'Assignment & AI Challenge', icon: <Briefcase size={18} /> },
+      { id: 'quiz', label: 'Knowledge Check & Completion', icon: <CheckCircle size={18} /> },
     ]
   },
   {
     id: 'web_design_day7',
-    title: 'Day 7 - HTML Tables & Pricing Plans',
+    title: 'Day 7 — Testimonials & Social Proof',
     items: [
-      { id: 'intro', label: 'Data Tables & Pricing Comparison', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 7 Assessment', icon: <CheckCircle size={18} /> }
+      { id: 'intro', label: 'Day 7 Objective & Social Proof', icon: <BookOpen size={18} /> },
+      { id: 'visual', label: 'Target Output & Testimonial Explorer', icon: <MonitorPlay size={18} /> },
+      { id: 'html_build', label: 'Step-by-Step HTML Cards', icon: <Code size={18} /> },
+      { id: 'css_card', label: 'Card Styling, Avatars & Ratings', icon: <LayoutGrid size={18} /> },
+      { id: 'responsive', label: 'Responsive Grid & Device Tester', icon: <Layers size={18} /> },
+      { id: 'guided_build', label: 'Guided Implementation (16 Stages)', icon: <Sliders size={18} /> },
+      { id: 'playground', label: 'Live Code Playground', icon: <Terminal size={18} /> },
+      { id: 'challenges', label: 'Code Challenges & Debugging', icon: <Sparkles size={18} /> },
+      { id: 'assignment', label: 'Assignment & AI Challenge', icon: <Briefcase size={18} /> },
+      { id: 'quiz', label: 'Knowledge Check & Completion', icon: <CheckCircle size={18} /> },
     ]
   },
   {
     id: 'web_design_day8',
-    title: 'Day 8 - HTML Forms & Lead Contact Form',
+    title: 'Day 8 — Pricing & Fee Packages',
     items: [
-      { id: 'intro', label: 'Forms & Inputs', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 8 Assessment', icon: <CheckCircle size={18} /> }
+      { id: 'intro', label: 'Day 8 Objective & Business Context', icon: <BookOpen size={18} /> },
+      { id: 'visual', label: 'Target Output & Pricing Explorer', icon: <MonitorPlay size={18} /> },
+      { id: 'html_build', label: 'Step-by-Step HTML Pricing', icon: <Code size={18} /> },
+      { id: 'css_positioning', label: 'CSS Positioning & Badge Design', icon: <LayoutGrid size={18} /> },
+      { id: 'billing_toggle', label: 'Billing Toggle & JavaScript', icon: <PenTool size={18} /> },
+      { id: 'comparison', label: 'Feature Comparison Table', icon: <Table size={18} /> },
+      { id: 'responsive', label: 'Responsive Grid & Device Tester', icon: <Layers size={18} /> },
+      { id: 'guided_build', label: 'Guided Implementation (18 Stages)', icon: <Sliders size={18} /> },
+      { id: 'playground', label: 'Live Code Playground', icon: <Terminal size={18} /> },
+      { id: 'challenges', label: 'Code Challenges & Debugging', icon: <Sparkles size={18} /> },
+      { id: 'assignment', label: 'Assignment & AI Challenge', icon: <Briefcase size={18} /> },
+      { id: 'quiz', label: 'Knowledge Check & Completion', icon: <CheckCircle size={18} /> },
     ]
   },
   {
     id: 'web_design_day9',
-    title: 'Day 9 - CSS Basics, Colors & Typography',
+    title: 'Day 9 — Contact & Lead Generation Form',
     items: [
-      { id: 'intro', label: 'CSS Intro & Styling Rules', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 9 Assessment', icon: <CheckCircle size={18} /> }
+      { id: 'intro', label: 'Day 9 Objective & Business Context', icon: <BookOpen size={18} /> },
+      { id: 'visual', label: 'Target Output & Contact Explorer', icon: <MonitorPlay size={18} /> },
+      { id: 'html_build', label: 'Step-by-Step HTML Form', icon: <Code size={18} /> },
+      { id: 'inputs_explorer', label: 'Form Controls & Input Types', icon: <LayoutGrid size={18} /> },
+      { id: 'validation', label: 'Form Validation & JavaScript', icon: <PenTool size={18} /> },
+      { id: 'responsive', label: 'Responsive Form Grid Tester', icon: <Layers size={18} /> },
+      { id: 'guided_build', label: 'Guided Implementation (18 Stages)', icon: <Sliders size={18} /> },
+      { id: 'playground', label: 'Live Code Playground', icon: <Terminal size={18} /> },
+      { id: 'challenges', label: 'Code Challenges & Debugging', icon: <Sparkles size={18} /> },
+      { id: 'assignment', label: 'Assignment & AI Challenge', icon: <Briefcase size={18} /> },
+      { id: 'quiz', label: 'Knowledge Check & Completion', icon: <CheckCircle size={18} /> },
     ]
   },
   {
     id: 'web_design_day10',
-    title: 'Day 10 - CSS Box Model & Spacing',
+    title: 'Day 10 — 🚀 MINI PROJECT 1: Complete Business Website',
     items: [
-      { id: 'intro', label: 'Box Model: Margin, Border, Padding', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 10 Assessment', icon: <CheckCircle size={18} /> }
-    ]
-  },
-  {
-    id: 'web_design_day11',
-    title: 'Day 11 - CSS Flexbox & Responsive Navbar Layout',
-    items: [
-      { id: 'intro', label: 'Flexbox Basics & Header Navigation', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 11 Assessment', icon: <CheckCircle size={18} /> }
-    ]
-  },
-  {
-    id: 'web_design_day12',
-    title: 'Day 12 - Flexbox Grid & Service Cards Layout',
-    items: [
-      { id: 'intro', label: 'Multi-column Cards Layout', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 12 Assessment', icon: <CheckCircle size={18} /> }
-    ]
-  },
-  {
-    id: 'web_design_day13',
-    title: 'Day 13 - CSS Position, Sticky Header & Badges',
-    items: [
-      { id: 'intro', label: 'Positioning: Relative, Absolute, Sticky', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 13 Assessment', icon: <CheckCircle size={18} /> }
-    ]
-  },
-  {
-    id: 'web_design_day14',
-    title: 'Day 14 - CSS Grid Layouts & Photo Gallery',
-    items: [
-      { id: 'intro', label: '2D Layouts with CSS Grid', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 14 Assessment', icon: <CheckCircle size={18} /> }
-    ]
-  },
-  {
-    id: 'web_design_day15',
-    title: 'Day 15 - Media Queries & Mobile Responsive Design',
-    items: [
-      { id: 'intro', label: 'Responsive Viewports & Breakpoints', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 15 Assessment', icon: <CheckCircle size={18} /> }
-    ]
-  },
-  {
-    id: 'web_design_day16',
-    title: 'Day 16 - Intro to JavaScript & Dynamic Text Updates',
-    items: [
-      { id: 'intro', label: 'JS Variables, Functions & DOM Intro', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 16 Assessment', icon: <CheckCircle size={18} /> }
-    ]
-  },
-  {
-    id: 'web_design_day17',
-    title: 'Day 17 - JS DOM Events, Click Interactions & Mobile Menu',
-    items: [
-      { id: 'intro', label: 'Event Listeners & Mobile Toggle', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 17 Assessment', icon: <CheckCircle size={18} /> }
-    ]
-  },
-  {
-    id: 'web_design_day18',
-    title: 'Day 18 - JS Form Validation & Dynamic Alerts',
-    items: [
-      { id: 'intro', label: 'Interactive Form Handling & Validation', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 18 Assessment', icon: <CheckCircle size={18} /> }
-    ]
-  },
-  {
-    id: 'web_design_day19',
-    title: 'Day 19 - JS FAQ Accordion & Testimonial Carousel',
-    items: [
-      { id: 'intro', label: 'Interactive Accordions & UI Sliders', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Day 19 Assessment', icon: <CheckCircle size={18} /> }
-    ]
-  },
-  {
-    id: 'web_design_day20',
-    title: 'Day 20 - Capstone: Alpha Fly Business Website',
-    items: [
-      { id: 'intro', label: 'Final Project Assembly & Review', icon: <BookOpen size={18} /> },
-      { id: 'playground', label: 'Live Coding Lab', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Final Assessment', icon: <CheckCircle size={18} /> }
+      { id: 'intro', label: 'Project Brief & Business Goals', icon: <BookOpen size={18} /> },
+      { id: 'builder', label: 'Independent Project Workspace', icon: <Code size={18} /> },
+      { id: 'sections_guide', label: '9-Section Explorer & Checklist', icon: <Layout size={18} /> },
+      { id: 'js_lab', label: 'JS Validation & Form Logic', icon: <Terminal size={18} /> },
+      { id: 'responsive_tester', label: 'Responsive Viewport Tester', icon: <Smartphone size={18} /> },
+      { id: 'challenges', label: 'Debugging & AI Code Audit', icon: <Sparkles size={18} /> },
+      { id: 'submission', label: 'Presentation & Project Submission', icon: <Send size={18} /> },
+      { id: 'quiz', label: 'Knowledge Check', icon: <CheckCircle size={18} /> }
     ]
   }
 ];

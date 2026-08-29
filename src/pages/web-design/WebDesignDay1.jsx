@@ -34,37 +34,69 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
   const [liveOutputView, setLiveOutputView] = useState('preview'); // 'preview' | 'code'
 
   // --- Topic 6: Practice Playground State ---
-  const [practiceHtml, setPlaygroundHtml] = useState(`<h1>Alpha Fly IT Training Institute</h1>
-<p>Build Skills. Build Confidence. Start Your Tech Career Today.</p>
-<button style="background:#2563eb; color:white; padding:10px 20px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
-  Explore Courses
-</button>`);
+  const [practiceHtml, setPlaygroundHtml] = useState(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Fly IT Training Institute</title>
+</head>
+<body>
+
+  <h1>Alpha Fly IT Training Institute</h1>
+  <p>Build Skills. Build Confidence. Start Your Tech Career Today.</p>
+  <button style="background:#2563eb; color:white; padding:10px 20px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+    Explore Courses
+  </button>
+
+</body>
+</html>`);
 
   const [showPracticeHint, setShowPracticeHint] = useState(false);
   const [showPracticeSolution, setShowPracticeSolution] = useState(false);
 
   // --- Topic 7: Task-Based Assignment State ---
   const [selectedBusiness, setSelectedBusiness] = useState('alphafly');
-  const [assignmentCode, setAssignmentCode] = useState(`<header style="background:#1e1b4b; padding:1rem 1.5rem; border-radius:12px; color:#ffffff; display:flex; justify-content:space-between; align-items:center;">
-  <div style="font-size:1.2rem; font-weight:900; color:#60a5fa;">🚀 Alpha Fly Theni</div>
-  <button style="background:#2563eb; color:white; border:none; padding:6px 14px; border-radius:6px; font-weight:800;">Contact Us</button>
-</header>
+  const [assignmentCode, setAssignmentCode] = useState(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Fly Theni - Home</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; padding: 1.5rem; }
+    .header { background: #1e1b4b; padding: 1rem 1.5rem; border-radius: 12px; color: #ffffff; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 1.2rem; font-weight: 900; color: #60a5fa; }
+    .btn-contact { background: #2563eb; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 800; cursor: pointer; }
+    .main-card { background: #ffffff; padding: 1.75rem; border-radius: 12px; margin-top: 1rem; border: 1px solid #cbd5e1; }
+    .btn-enroll { background: #16a34a; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
 
-<main style="background:#f8fafc; padding:1.75rem; border-radius:12px; margin-top:1rem; border:1px solid #cbd5e1; color:#0f172a;">
-  <h1 style="color:#0f172a; font-size:1.8rem; margin:0 0 0.5rem 0;">Build Job-Ready Digital Skills in Theni</h1>
-  <p style="color:#64748b; font-size:0.95rem; margin:0 0 1.25rem 0; line-height:1.6;">Join 100% practical web design and full-stack software development tracks with hands-on client projects.</p>
+  <header class="header">
+    <div class="logo">🚀 Alpha Fly Theni</div>
+    <button class="btn-contact">Contact Us</button>
+  </header>
 
-  <h3 style="color:#1e1b4b; font-size:1.1rem; margin:0 0 0.5rem 0;">Featured Learning Tracks:</h3>
-  <ul style="color:#334155; line-height:1.8; margin:0 0 1.25rem 1.25rem;">
-    <li>💻 <strong>Web Design &amp; Frontend Development</strong></li>
-    <li>📊 <strong>Data Analytics &amp; Python</strong></li>
-    <li>🤖 <strong>AI Engineering &amp; Automation</strong></li>
-  </ul>
+  <main class="main-card">
+    <h1 style="color:#0f172a; font-size:1.8rem; margin:0 0 0.5rem 0;">Build Job-Ready Digital Skills in Theni</h1>
+    <p style="color:#64748b; font-size:0.95rem; margin:0 0 1.25rem 0; line-height:1.6;">Join 100% practical web design and full-stack software development tracks with hands-on client projects.</p>
 
-  <button style="background:#16a34a; color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">
-    Enroll In Day 2 Track →
-  </button>
-</main>`);
+    <h3 style="color:#1e1b4b; font-size:1.1rem; margin:0 0 0.5rem 0;">Featured Learning Tracks:</h3>
+    <ul style="color:#334155; line-height:1.8; margin:0 0 1.25rem 1.25rem;">
+      <li>💻 <strong>Web Design &amp; Frontend Development</strong></li>
+      <li>📊 <strong>Data Analytics &amp; Python</strong></li>
+      <li>🤖 <strong>AI Engineering &amp; Automation</strong></li>
+    </ul>
+
+    <button class="btn-enroll">
+      Enroll In Day 2 Track →
+    </button>
+  </main>
+
+</body>
+</html>`);
   const [assignmentSubmitted, setAssignmentSubmitted] = useState(false);
 
   // --- Topic 8: AI Challenge State ---
@@ -151,11 +183,186 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
     { id: 'footer', name: 'Footer', purpose: 'Bottom bar for legal links and social channels.', expect: 'Copyright info, sitemap links, social icons.' }
   ];
 
+  // Interactive Syntax-Highlighted Code Editor component for live HTML and CSS editing
+  const LiveSyntaxCodeEditor = ({ value, onChange, language = 'html', rows = 10, label = '' }) => {
+    const escapeHTML = (str) =>
+      str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+
+    const highlightCode = (codeStr, lang) => {
+      if (!codeStr) return '';
+      const escaped = escapeHTML(codeStr);
+
+      if (lang === 'html') {
+        const tokenRegex = /(&lt;!--[\s\S]*?--&gt;)|(&lt;!DOCTYPE html&gt;)|(&lt;\/?[a-zA-Z0-9\-]+)|([a-zA-Z\-]+)(?=\s*=)|("[\s\S]*?"|'[\s\S]*?')/gi;
+        return escaped.replace(tokenRegex, (match, comment, doctype, tag, attr, stringVal) => {
+          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+          if (doctype) return `<span style="color:#c084fc;font-weight:bold;">${doctype}</span>`;
+          if (tag) {
+            const m = tag.match(/^(&lt;\/?)([a-zA-Z0-9\-]+)$/);
+            return m ? `${m[1]}<span style="color:#f43f5e;font-weight:bold;">${m[2]}</span>` : tag;
+          }
+          if (attr) return `<span style="color:#fbbf24;font-weight:600;">${attr}</span>`;
+          if (stringVal) return `<span style="color:#34d399;">${stringVal}</span>`;
+          return match;
+        });
+      }
+
+      if (lang === 'css') {
+        const cssTokenRegex = /(\/\*[\s\S]*?\*\/)|([.#][a-zA-Z0-9_\-]+|[a-zA-Z0-9_\-]+(?=\s*\{))|([a-zA-Z\-]+)(?=\s*:)|(:\s*[^;\}]+;)/gi;
+        return escaped.replace(cssTokenRegex, (match, comment, selector, prop, val) => {
+          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+          if (selector) return `<span style="color:#38bdf8;font-weight:bold;">${selector}</span>`;
+          if (prop) return `<span style="color:#fb923c;font-weight:600;">${prop}</span>`;
+          if (val) return `:<span style="color:#34d399;">${val.slice(1)}</span>`;
+          return match;
+        });
+      }
+
+      return escaped;
+    };
+
+    const highlightedHTML = highlightCode(value, language);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        {label && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <label style={{ fontSize: '0.8rem', fontWeight: 800, color: language === 'html' ? '#ea580c' : '#2563eb', letterSpacing: '0.5px' }}>
+              {label}
+            </label>
+            <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Interactive Editor</span>
+          </div>
+        )}
+
+        <div style={{ position: 'relative', width: '100%', minHeight: `${rows * 1.6}rem`, borderRadius: '12px', overflow: 'hidden', background: '#090d16', border: '1px solid #1e293b' }}>
+          <pre
+            aria-hidden="true"
+            style={{
+              margin: 0,
+              padding: '1rem',
+              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+              fontSize: '0.82rem',
+              lineHeight: '1.6',
+              color: '#f8fafc',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              minHeight: `${rows * 1.6}rem`,
+              pointerEvents: 'none',
+              boxSizing: 'border-box'
+            }}
+            dangerouslySetInnerHTML={{ __html: highlightedHTML + '\n' }}
+          />
+
+          <textarea
+            rows={rows}
+            value={value}
+            onChange={onChange}
+            spellCheck={false}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              margin: 0,
+              padding: '1rem',
+              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+              fontSize: '0.82rem',
+              lineHeight: '1.6',
+              color: 'transparent',
+              caretColor: '#38bdf8',
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              resize: 'vertical',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              boxSizing: 'border-box'
+            }}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const renderSyntaxHighlightedHTML = (codeStr, lang = 'html') => {
+    if (!codeStr) return null;
+    const escapeHTML = (str) =>
+      str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+
+    const escaped = escapeHTML(codeStr);
+
+    if (lang === 'html') {
+      const tokenRegex = /(&lt;<!--[\s\S]*?--&gt;)|(&lt;!DOCTYPE html&gt;)|(&lt;\/?[a-zA-Z0-9\-]+)|([a-zA-Z\-]+)(?=\s*=)|("[\s\S]*?"|'[\s\S]*?')/gi;
+      const highlighted = escaped.replace(tokenRegex, (match, comment, doctype, tag, attr, stringVal) => {
+        if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+        if (doctype) return `<span style="color:#c084fc;font-weight:bold;">${doctype}</span>`;
+        if (tag) {
+          const m = tag.match(/^(&lt;\/?)([a-zA-Z0-9\-]+)$/);
+          return m ? `${m[1]}<span style="color:#f43f5e;font-weight:bold;">${m[2]}</span>` : tag;
+        }
+        if (attr) return `<span style="color:#fbbf24;font-weight:600;">${attr}</span>`;
+        if (stringVal) return `<span style="color:#34d399;">${stringVal}</span>`;
+        return match;
+      });
+      return (
+        <pre
+          style={{
+            margin: 0,
+            fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+            fontSize: '0.83rem',
+            lineHeight: '1.6',
+            color: '#f8fafc',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word'
+          }}
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
+      );
+    }
+
+    if (lang === 'css') {
+      const cssTokenRegex = /(\/\*[\s\S]*?\*\/)|([.#][a-zA-Z0-9_\-]+|[a-zA-Z0-9_\-]+(?=\s*\{))|([a-zA-Z\-]+)(?=\s*:)|(:\s*[^;\}]+;)/gi;
+      const highlighted = escaped.replace(cssTokenRegex, (match, comment, selector, prop, val) => {
+        if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+        if (selector) return `<span style="color:#38bdf8;font-weight:bold;">${selector}</span>`;
+        if (prop) return `<span style="color:#fb923c;font-weight:600;">${prop}</span>`;
+        if (val) return `:<span style="color:#34d399;">${val.slice(1)}</span>`;
+        return match;
+      });
+      return (
+        <pre
+          style={{
+            margin: 0,
+            fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+            fontSize: '0.83rem',
+            lineHeight: '1.6',
+            color: '#f8fafc',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word'
+          }}
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
+      );
+    }
+
+    return <pre style={{ margin: 0, color: '#f8fafc' }}>{codeStr}</pre>;
+  };
+
   const businessOptions = {
     alphafly: {
       name: 'Alpha Fly IT Training Institute',
       tag: 'IT Institute',
-      code: `<div style="background:#0f172a; color:#f8fafc; border-radius:18px; padding:2rem; font-family:system-ui, sans-serif; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+      code: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Fly IT Training Institute - Home</title>
+</head>
+<body>
+
+<div style="background:#0f172a; color:#f8fafc; border-radius:18px; padding:2rem; font-family:system-ui, sans-serif; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
   <header style="display:flex; justify-content:space-between; align-items:center; background:#1e293b; padding:1rem 1.5rem; border-radius:12px; margin-bottom:1.5rem; border:1px solid #334155;">
     <div style="font-size:1.2rem; font-weight:900; color:#60a5fa;">🚀 Alpha Fly IT</div>
     <nav style="display:flex; gap:1.2rem; font-size:0.85rem;">
@@ -201,7 +408,10 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
     <span>✅ 1-on-1 Code Reviews</span>
     <span>✅ Career Placement Assistance</span>
   </div>
-</div>`
+</div>
+
+</body>
+</html>`
     },
     fitness: {
       name: 'PulseFit Gym & Fitness',
@@ -1095,8 +1305,8 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
                 <div dangerouslySetInnerHTML={{ __html: businessOptions.alphafly.code }} />
               </div>
             ) : (
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#38bdf8', fontFamily: 'monospace', fontSize: '0.82rem', lineHeight: 1.6, whiteSpace: 'pre-wrap', maxHeight: '450px', overflowY: 'auto' }}>
-                {businessOptions.alphafly.code}
+              <div style={{ background: '#090d16', borderRadius: '16px', padding: '1.5rem', border: '1px solid #1e293b', maxHeight: '450px', overflowY: 'auto' }}>
+                {renderSyntaxHighlightedHTML(businessOptions.alphafly.code)}
               </div>
             )}
 
@@ -1118,27 +1328,14 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
               {/* Code Input */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <label style={{ fontSize: '0.82rem', fontWeight: 800, color: '#ea580c' }}>
-                  HTML Code Editor:
-                </label>
-                <textarea
-                  rows={8}
+                <LiveSyntaxCodeEditor
+                  label="HTML Code Editor:"
+                  language="html"
+                  rows={10}
                   value={practiceHtml}
                   onChange={e => {
-                    setPlaygroundHtml(e.target.value);
+                    setPracticeHtml(e.target.value);
                     setCompletedSteps(prev => ({ ...prev, practice: true }));
-                  }}
-                  style={{
-                    width: '100%',
-                    background: '#0f172a',
-                    color: '#f8fafc',
-                    fontFamily: 'monospace',
-                    fontSize: '0.85rem',
-                    padding: '1rem',
-                    borderRadius: '12px',
-                    border: '1px solid #334155',
-                    outline: 'none',
-                    boxSizing: 'border-box'
                   }}
                 />
 
@@ -1480,7 +1677,7 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
             {/* Exact Requested Checklist */}
             <div style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '16px', padding: '1.75rem', maxWidth: '540px', margin: '1.5rem auto 2rem auto', textAlign: 'left' }}>
               <div style={{ fontWeight: 800, fontSize: '1rem', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                You learned:
+                YOU LEARNED:
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.95rem', fontWeight: 600 }}>
                 <div>✓ What a website is</div>

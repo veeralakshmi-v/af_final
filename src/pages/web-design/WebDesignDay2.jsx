@@ -12,6 +12,172 @@ export default function WebDesignDay2({ activeTab = 'intro', onNavigate, openAIT
     }
   };
 
+  // Interactive Syntax-Highlighted Code Editor component for live HTML and CSS editing
+  const LiveSyntaxCodeEditor = ({ value, onChange, language = 'html', rows = 10, label = '' }) => {
+    const escapeHTML = (str) =>
+      str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+
+    const highlightCode = (codeStr, lang) => {
+      if (!codeStr) return '';
+      const escaped = escapeHTML(codeStr);
+
+      if (lang === 'html') {
+        const tokenRegex = /(&lt;!--[\s\S]*?--&gt;)|(&lt;!DOCTYPE html&gt;)|(&lt;\/?[a-zA-Z0-9\-]+)|([a-zA-Z\-]+)(?=\s*=)|("[\s\S]*?"|'[\s\S]*?')/gi;
+        return escaped.replace(tokenRegex, (match, comment, doctype, tag, attr, stringVal) => {
+          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+          if (doctype) return `<span style="color:#c084fc;font-weight:bold;">${doctype}</span>`;
+          if (tag) {
+            const m = tag.match(/^(&lt;\/?)([a-zA-Z0-9\-]+)$/);
+            return m ? `${m[1]}<span style="color:#f43f5e;font-weight:bold;">${m[2]}</span>` : tag;
+          }
+          if (attr) return `<span style="color:#fbbf24;font-weight:600;">${attr}</span>`;
+          if (stringVal) return `<span style="color:#34d399;">${stringVal}</span>`;
+          return match;
+        });
+      }
+
+      if (lang === 'css') {
+        const cssTokenRegex = /(\/\*[\s\S]*?\*\/)|([.#][a-zA-Z0-9_\-]+|[a-zA-Z0-9_\-]+(?=\s*\{))|([a-zA-Z\-]+)(?=\s*:)|(:\s*[^;\}]+;)/gi;
+        return escaped.replace(cssTokenRegex, (match, comment, selector, prop, val) => {
+          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+          if (selector) return `<span style="color:#38bdf8;font-weight:bold;">${selector}</span>`;
+          if (prop) return `<span style="color:#fb923c;font-weight:600;">${prop}</span>`;
+          if (val) return `:<span style="color:#34d399;">${val.slice(1)}</span>`;
+          return match;
+        });
+      }
+
+      return escaped;
+    };
+
+    const highlightedHTML = highlightCode(value, language);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        {label && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <label style={{ fontSize: '0.8rem', fontWeight: 800, color: language === 'html' ? '#ea580c' : '#2563eb', letterSpacing: '0.5px' }}>
+              {label}
+            </label>
+            <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Interactive Editor</span>
+          </div>
+        )}
+
+        <div style={{ position: 'relative', width: '100%', minHeight: `${rows * 1.6}rem`, borderRadius: '12px', overflow: 'hidden', background: '#090d16', border: '1px solid #1e293b' }}>
+          <pre
+            aria-hidden="true"
+            style={{
+              margin: 0,
+              padding: '1rem',
+              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+              fontSize: '0.82rem',
+              lineHeight: '1.6',
+              color: '#f8fafc',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              minHeight: `${rows * 1.6}rem`,
+              pointerEvents: 'none',
+              boxSizing: 'border-box'
+            }}
+            dangerouslySetInnerHTML={{ __html: highlightedHTML + '\n' }}
+          />
+
+          <textarea
+            rows={rows}
+            value={value}
+            onChange={onChange}
+            spellCheck={false}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              margin: 0,
+              padding: '1rem',
+              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+              fontSize: '0.82rem',
+              lineHeight: '1.6',
+              color: 'transparent',
+              caretColor: '#38bdf8',
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              resize: 'vertical',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              boxSizing: 'border-box'
+            }}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const renderSyntaxHighlightedHTML = (codeStr, lang = 'html') => {
+    if (!codeStr) return null;
+    const escapeHTML = (str) =>
+      str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+
+    const escaped = escapeHTML(codeStr);
+
+    if (lang === 'html') {
+      const tokenRegex = /(&lt;<!--[\s\S]*?--&gt;)|(&lt;!DOCTYPE html&gt;)|(&lt;\/?[a-zA-Z0-9\-]+)|([a-zA-Z\-]+)(?=\s*=)|("[\s\S]*?"|'[\s\S]*?')/gi;
+      const highlighted = escaped.replace(tokenRegex, (match, comment, doctype, tag, attr, stringVal) => {
+        if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+        if (doctype) return `<span style="color:#c084fc;font-weight:bold;">${doctype}</span>`;
+        if (tag) {
+          const m = tag.match(/^(&lt;\/?)([a-zA-Z0-9\-]+)$/);
+          return m ? `${m[1]}<span style="color:#f43f5e;font-weight:bold;">${m[2]}</span>` : tag;
+        }
+        if (attr) return `<span style="color:#fbbf24;font-weight:600;">${attr}</span>`;
+        if (stringVal) return `<span style="color:#34d399;">${stringVal}</span>`;
+        return match;
+      });
+      return (
+        <pre
+          style={{
+            margin: 0,
+            fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+            fontSize: '0.83rem',
+            lineHeight: '1.6',
+            color: '#f8fafc',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word'
+          }}
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
+      );
+    }
+
+    if (lang === 'css') {
+      const cssTokenRegex = /(\/\*[\s\S]*?\*\/)|([.#][a-zA-Z0-9_\-]+|[a-zA-Z0-9_\-]+(?=\s*\{))|([a-zA-Z\-]+)(?=\s*:)|(:\s*[^;\}]+;)/gi;
+      const highlighted = escaped.replace(cssTokenRegex, (match, comment, selector, prop, val) => {
+        if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+        if (selector) return `<span style="color:#38bdf8;font-weight:bold;">${selector}</span>`;
+        if (prop) return `<span style="color:#fb923c;font-weight:600;">${prop}</span>`;
+        if (val) return `:<span style="color:#34d399;">${val.slice(1)}</span>`;
+        return match;
+      });
+      return (
+        <pre
+          style={{
+            margin: 0,
+            fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+            fontSize: '0.83rem',
+            lineHeight: '1.6',
+            color: '#f8fafc',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word'
+          }}
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
+      );
+    }
+
+    return <pre style={{ margin: 0, color: '#f8fafc' }}>{codeStr}</pre>;
+  };
+
   // --- Meaningful Completion & Progress Tracking State ---
   const [completedSteps, setCompletedSteps] = useState({
     intro: true,
@@ -52,17 +218,29 @@ export default function WebDesignDay2({ activeTab = 'intro', onNavigate, openAIT
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // --- Section 19: Live Playground State ---
-  const [playgroundHtml, setPlaygroundHtml] = useState(`<header class="navbar">
-  <div class="logo">Alpha Fly Theni</div>
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#courses">Courses</a>
-    <a href="#services">Services</a>
-    <a href="#contact">Contact</a>
-  </nav>
-  <button class="btn-login">Login</button>
-</header>`);
+  const [playgroundHtml, setPlaygroundHtml] = useState(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Fly Theni - Navbar</title>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo">Alpha Fly Theni</div>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#courses">Courses</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="btn-login">Login</button>
+  </header>
+
+</body>
+</html>`);
 
   const [playgroundCss, setPlaygroundCss] = useState(`.navbar {
   display: flex;
@@ -537,19 +715,31 @@ nav a:hover { color: #ffffff; }
                   </div>
 
                   {targetCodeTab === 'html' ? (
-                    <pre style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px', color: '#38bdf8', fontSize: '0.82rem', margin: 0, overflowX: 'auto' }}>
-{`<header class="navbar">
-  <div class="logo">Alpha Fly Theni</div>
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#courses">Courses</a>
-    <a href="#services">Services</a>
-    <a href="#contact">Contact</a>
-  </nav>
-  <button class="btn-login">Login</button>
-</header>`}
-                    </pre>
+                    <div style={{ background: '#090d16', padding: '1.25rem', borderRadius: '10px', border: '1px solid #1e293b', overflowX: 'auto' }}>
+                      {renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Fly Theni - Navbar</title>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo">Alpha Fly Theni</div>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#courses">Courses</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="btn-login">Login</button>
+  </header>
+
+</body>
+</html>`)}
+                    </div>
                   ) : (
                     <pre style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px', color: '#34d399', fontSize: '0.82rem', margin: 0, overflowX: 'auto' }}>
 {`.navbar {
@@ -668,13 +858,81 @@ nav a:hover { color: #ffffff; }
                 <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ea580c', display: 'block', marginBottom: 4 }}>
                   HTML Code (Step {htmlBuildStep} of 5):
                 </label>
-                <pre style={{ background: '#0f172a', padding: '1rem', borderRadius: '12px', color: '#38bdf8', fontSize: '0.84rem', margin: 0, minHeight: '180px' }}>
-{htmlBuildStep === 1 && `<header class="navbar">\n</header>`}
-{htmlBuildStep === 2 && `<header class="navbar">\n  <nav>\n  </nav>\n</header>`}
-{htmlBuildStep === 3 && `<header class="navbar">\n  <div class="logo">Alpha Fly Theni</div>\n  <nav>\n  </nav>\n</header>`}
-{htmlBuildStep === 4 && `<header class="navbar">\n  <div class="logo">Alpha Fly Theni</div>\n  <nav>\n    <a href="#home">Home</a>\n    <a href="#about">About</a>\n    <a href="#courses">Courses</a>\n  </nav>\n</header>`}
-{htmlBuildStep === 5 && `<header class="navbar">\n  <div class="logo">Alpha Fly Theni</div>\n  <nav>\n    <a href="#home">Home</a>\n    <a href="#about">About</a>\n    <a href="#courses">Courses</a>\n  </nav>\n  <button class="btn-login">Login</button>\n</header>`}
-                </pre>
+                <div style={{ background: '#090d16', padding: '1rem', borderRadius: '12px', border: '1px solid #1e293b', minHeight: '180px', overflowX: 'auto' }}>
+                  {htmlBuildStep === 1 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Navbar</title>
+</head>
+<body>
+  <header class="navbar">
+  </header>
+</body>
+</html>`)}
+                  {htmlBuildStep === 2 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Navbar</title>
+</head>
+<body>
+  <header class="navbar">
+    <nav>
+    </nav>
+  </header>
+</body>
+</html>`)}
+                  {htmlBuildStep === 3 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Navbar</title>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">Alpha Fly Theni</div>
+    <nav>
+    </nav>
+  </header>
+</body>
+</html>`)}
+                  {htmlBuildStep === 4 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Navbar</title>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">Alpha Fly Theni</div>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#courses">Courses</a>
+    </nav>
+  </header>
+</body>
+</html>`)}
+                  {htmlBuildStep === 5 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Navbar</title>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">Alpha Fly Theni</div>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#courses">Courses</a>
+    </nav>
+    <button class="btn-login">Login</button>
+  </header>
+</body>
+</html>`)}
+                </div>
               </div>
 
               <div>
@@ -1021,25 +1279,21 @@ nav a:hover { color: #ffffff; }
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
-              <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ea580c', display: 'block', marginBottom: 4 }}>HTML:</label>
-                <textarea
-                  rows={9}
-                  value={playgroundHtml}
-                  onChange={e => setPlaygroundHtml(e.target.value)}
-                  style={{ width: '100%', background: '#0f172a', color: '#38bdf8', fontFamily: 'monospace', fontSize: '0.82rem', padding: '1rem', borderRadius: '10px', outline: 'none', boxSizing: 'border-box' }}
-                />
-              </div>
+              <LiveSyntaxCodeEditor
+                label="HTML:"
+                language="html"
+                rows={11}
+                value={playgroundHtml}
+                onChange={e => setPlaygroundHtml(e.target.value)}
+              />
 
-              <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', display: 'block', marginBottom: 4 }}>CSS:</label>
-                <textarea
-                  rows={9}
-                  value={playgroundCss}
-                  onChange={e => setPlaygroundCss(e.target.value)}
-                  style={{ width: '100%', background: '#0f172a', color: '#34d399', fontFamily: 'monospace', fontSize: '0.82rem', padding: '1rem', borderRadius: '10px', outline: 'none', boxSizing: 'border-box' }}
-                />
-              </div>
+              <LiveSyntaxCodeEditor
+                label="CSS:"
+                language="css"
+                rows={11}
+                value={playgroundCss}
+                onChange={e => setPlaygroundCss(e.target.value)}
+              />
             </div>
 
             {/* Playground Live Render */}
@@ -1251,13 +1505,13 @@ nav a:hover { color: #ffffff; }
           }}>
             <Trophy size={64} style={{ marginBottom: '1rem', opacity: 0.9 }} />
             <h2 style={{ fontSize: '2.2rem', fontWeight: 900, margin: '0 0 0.75rem 0' }}>
-              🎉 Day 2 Completed!
+              🎉 Day 2 Completed
             </h2>
 
             {/* Checklist of learned skills */}
             <div style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '16px', padding: '1.75rem', maxWidth: '540px', margin: '1.5rem auto 2rem auto', textAlign: 'left' }}>
               <div style={{ fontWeight: 800, fontSize: '1rem', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Today you learned:
+                YOU LEARNED:
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.9rem', fontWeight: 600 }}>
                 <div>✓ Website navigation</div>

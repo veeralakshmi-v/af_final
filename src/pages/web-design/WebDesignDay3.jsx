@@ -12,6 +12,172 @@ export default function WebDesignDay3({ activeTab = 'intro', onNavigate, openAIT
     }
   };
 
+  // Interactive Syntax-Highlighted Code Editor component for live HTML and CSS editing
+  const LiveSyntaxCodeEditor = ({ value, onChange, language = 'html', rows = 10, label = '' }) => {
+    const escapeHTML = (str) =>
+      str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+
+    const highlightCode = (codeStr, lang) => {
+      if (!codeStr) return '';
+      const escaped = escapeHTML(codeStr);
+
+      if (lang === 'html') {
+        const tokenRegex = /(&lt;<!--[\s\S]*?--&gt;)|(&lt;!DOCTYPE html&gt;)|(&lt;\/?[a-zA-Z0-9\-]+)|([a-zA-Z\-]+)(?=\s*=)|("[\s\S]*?"|'[\s\S]*?')/gi;
+        return escaped.replace(tokenRegex, (match, comment, doctype, tag, attr, stringVal) => {
+          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+          if (doctype) return `<span style="color:#c084fc;font-weight:bold;">${doctype}</span>`;
+          if (tag) {
+            const m = tag.match(/^(&lt;\/?)([a-zA-Z0-9\-]+)$/);
+            return m ? `${m[1]}<span style="color:#f43f5e;font-weight:bold;">${m[2]}</span>` : tag;
+          }
+          if (attr) return `<span style="color:#fbbf24;font-weight:600;">${attr}</span>`;
+          if (stringVal) return `<span style="color:#34d399;">${stringVal}</span>`;
+          return match;
+        });
+      }
+
+      if (lang === 'css') {
+        const cssTokenRegex = /(\/\*[\s\S]*?\*\/)|([.#][a-zA-Z0-9_\-]+|[a-zA-Z0-9_\-]+(?=\s*\{))|([a-zA-Z\-]+)(?=\s*:)|(:\s*[^;\}]+;)/gi;
+        return escaped.replace(cssTokenRegex, (match, comment, selector, prop, val) => {
+          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+          if (selector) return `<span style="color:#38bdf8;font-weight:bold;">${selector}</span>`;
+          if (prop) return `<span style="color:#fb923c;font-weight:600;">${prop}</span>`;
+          if (val) return `:<span style="color:#34d399;">${val.slice(1)}</span>`;
+          return match;
+        });
+      }
+
+      return escaped;
+    };
+
+    const highlightedHTML = highlightCode(value, language);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        {label && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <label style={{ fontSize: '0.8rem', fontWeight: 800, color: language === 'html' ? '#ea580c' : '#2563eb', letterSpacing: '0.5px' }}>
+              {label}
+            </label>
+            <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Interactive Editor</span>
+          </div>
+        )}
+
+        <div style={{ position: 'relative', width: '100%', minHeight: `${rows * 1.6}rem`, borderRadius: '12px', overflow: 'hidden', background: '#090d16', border: '1px solid #1e293b' }}>
+          <pre
+            aria-hidden="true"
+            style={{
+              margin: 0,
+              padding: '1rem',
+              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+              fontSize: '0.82rem',
+              lineHeight: '1.6',
+              color: '#f8fafc',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              minHeight: `${rows * 1.6}rem`,
+              pointerEvents: 'none',
+              boxSizing: 'border-box'
+            }}
+            dangerouslySetInnerHTML={{ __html: highlightedHTML + '\n' }}
+          />
+
+          <textarea
+            rows={rows}
+            value={value}
+            onChange={onChange}
+            spellCheck={false}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              margin: 0,
+              padding: '1rem',
+              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+              fontSize: '0.82rem',
+              lineHeight: '1.6',
+              color: 'transparent',
+              caretColor: '#38bdf8',
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              resize: 'vertical',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              boxSizing: 'border-box'
+            }}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const renderSyntaxHighlightedHTML = (codeStr, lang = 'html') => {
+    if (!codeStr) return null;
+    const escapeHTML = (str) =>
+      str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+
+    const escaped = escapeHTML(codeStr);
+
+    if (lang === 'html') {
+      const tokenRegex = /(&lt;<!--[\s\S]*?--&gt;)|(&lt;!DOCTYPE html&gt;)|(&lt;\/?[a-zA-Z0-9\-]+)|([a-zA-Z\-]+)(?=\s*=)|("[\s\S]*?"|'[\s\S]*?')/gi;
+      const highlighted = escaped.replace(tokenRegex, (match, comment, doctype, tag, attr, stringVal) => {
+        if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+        if (doctype) return `<span style="color:#c084fc;font-weight:bold;">${doctype}</span>`;
+        if (tag) {
+          const m = tag.match(/^(&lt;\/?)([a-zA-Z0-9\-]+)$/);
+          return m ? `${m[1]}<span style="color:#f43f5e;font-weight:bold;">${m[2]}</span>` : tag;
+        }
+        if (attr) return `<span style="color:#fbbf24;font-weight:600;">${attr}</span>`;
+        if (stringVal) return `<span style="color:#34d399;">${stringVal}</span>`;
+        return match;
+      });
+      return (
+        <pre
+          style={{
+            margin: 0,
+            fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+            fontSize: '0.83rem',
+            lineHeight: '1.6',
+            color: '#f8fafc',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word'
+          }}
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
+      );
+    }
+
+    if (lang === 'css') {
+      const cssTokenRegex = /(\/\*[\s\S]*?\*\/)|([.#][a-zA-Z0-9_\-]+|[a-zA-Z0-9_\-]+(?=\s*\{))|([a-zA-Z\-]+)(?=\s*:)|(:\s*[^;\}]+;)/gi;
+      const highlighted = escaped.replace(cssTokenRegex, (match, comment, selector, prop, val) => {
+        if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+        if (selector) return `<span style="color:#38bdf8;font-weight:bold;">${selector}</span>`;
+        if (prop) return `<span style="color:#fb923c;font-weight:600;">${prop}</span>`;
+        if (val) return `:<span style="color:#34d399;">${val.slice(1)}</span>`;
+        return match;
+      });
+      return (
+        <pre
+          style={{
+            margin: 0,
+            fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+            fontSize: '0.83rem',
+            lineHeight: '1.6',
+            color: '#f8fafc',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word'
+          }}
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
+      );
+    }
+
+    return <pre style={{ margin: 0, color: '#f8fafc' }}>{codeStr}</pre>;
+  };
+
   // --- Meaningful Completion & Progress Tracking State ---
   const [completedSteps, setCompletedSteps] = useState({
     intro: true,
@@ -55,20 +221,42 @@ export default function WebDesignDay3({ activeTab = 'intro', onNavigate, openAIT
   const [responsiveDevice, setResponsiveDevice] = useState('desktop'); // 'desktop' | 'tablet' | 'mobile'
 
   // --- Section 20: Live Code Playground State ---
-  const [playgroundHtml, setPlaygroundHtml] = useState(`<section class="hero">
-  <div class="hero-content">
-    <span class="eyebrow">AI-POWERED LEARNING</span>
-    <h1>Build Job-Ready Digital Skills</h1>
-    <p>Practical hands-on web development training designed for students in Theni to build real responsive business projects.</p>
-    <div class="hero-ctas">
-      <a href="#courses" class="btn-primary">Explore Courses</a>
-      <a href="#contact" class="btn-secondary">Contact Us</a>
+  const [playgroundHtml, setPlaygroundHtml] = useState(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Fly Theni - Hero Section</title>
+</head>
+<body>
+
+  <!-- Day 2 Navbar -->
+  <header style="display:flex; justify-content:space-between; align-items:center; background:#1e1b4b; padding:1rem 2rem; border-radius:12px; margin-bottom:1.5rem;">
+    <div style="font-size:1.2rem; font-weight:900; color:#60a5fa;">🚀 Alpha Fly Theni</div>
+    <nav style="display:flex; gap:1rem; font-size:0.9rem;">
+      <a href="#" style="color:#cbd5e1; text-decoration:none;">Home</a>
+      <a href="#" style="color:#cbd5e1; text-decoration:none;">About</a>
+    </nav>
+  </header>
+
+  <!-- Day 3 Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="eyebrow">AI-POWERED LEARNING</span>
+      <h1>Build Job-Ready Digital Skills</h1>
+      <p>Practical hands-on web development training designed for students in Theni to build real responsive business projects.</p>
+      <div class="hero-ctas">
+        <a href="#courses" class="btn-primary">Explore Courses</a>
+        <a href="#contact" class="btn-secondary">Contact Us</a>
+      </div>
     </div>
-  </div>
-  <div class="hero-visual">
-    <div class="visual-card">🚀 100% Practical IT Training</div>
-  </div>
-</section>`);
+    <div class="hero-visual">
+      <div class="visual-card">🚀 100% Practical IT Training</div>
+    </div>
+  </section>
+
+</body>
+</html>`);
 
   const [playgroundCss, setPlaygroundCss] = useState(`.hero {
   display: flex;
@@ -515,22 +703,44 @@ p { font-size: 1.05rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.8rem;
                   </div>
 
                   {targetCodeTab === 'html' ? (
-                    <pre style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px', color: '#38bdf8', fontSize: '0.82rem', margin: 0, overflowX: 'auto' }}>
-{`<section class="hero">
-  <div class="hero-content">
-    <span class="eyebrow">AI-POWERED LEARNING</span>
-    <h1>Build Job-Ready Digital Skills</h1>
-    <p>Practical hands-on training for students in Theni to build real responsive business projects.</p>
-    <div class="hero-ctas">
-      <a href="#courses" class="btn-primary">Explore Courses</a>
-      <a href="#contact" class="btn-secondary">Contact Us</a>
+                    <div style={{ background: '#090d16', padding: '1.25rem', borderRadius: '10px', border: '1px solid #1e293b', overflowX: 'auto' }}>
+                      {renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Fly Theni - Hero Section</title>
+</head>
+<body>
+
+  <!-- Day 2 Navbar -->
+  <header style="display:flex; justify-content:space-between; align-items:center; background:#1e1b4b; padding:1rem 2rem; border-radius:12px; margin-bottom:1.5rem;">
+    <div style="font-size:1.2rem; font-weight:900; color:#60a5fa;">🚀 Alpha Fly Theni</div>
+    <nav style="display:flex; gap:1rem; font-size:0.9rem;">
+      <a href="#" style="color:#cbd5e1; text-decoration:none;">Home</a>
+      <a href="#" style="color:#cbd5e1; text-decoration:none;">About</a>
+    </nav>
+  </header>
+
+  <!-- Day 3 Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="eyebrow">AI-POWERED LEARNING</span>
+      <h1>Build Job-Ready Digital Skills</h1>
+      <p>Practical hands-on training for students in Theni to build real responsive business projects.</p>
+      <div class="hero-ctas">
+        <a href="#courses" class="btn-primary">Explore Courses</a>
+        <a href="#contact" class="btn-secondary">Contact Us</a>
+      </div>
     </div>
-  </div>
-  <div class="hero-visual">
-    <div class="visual-card">🚀 100% Practical IT Training</div>
-  </div>
-</section>`}
-                    </pre>
+    <div class="hero-visual">
+      <div class="visual-card">🚀 100% Practical IT Training</div>
+    </div>
+  </section>
+
+</body>
+</html>`)}
+                    </div>
                   ) : (
                     <pre style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px', color: '#34d399', fontSize: '0.82rem', margin: 0, overflowX: 'auto' }}>
 {`.hero {
@@ -702,14 +912,92 @@ p { font-size: 1.05rem; color: #94a3b8; line-height: 1.6; }
                 <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ea580c', display: 'block', marginBottom: 4 }}>
                   HTML Code (Step {htmlBuildStep} of 6):
                 </label>
-                <pre style={{ background: '#0f172a', padding: '1rem', borderRadius: '12px', color: '#38bdf8', fontSize: '0.84rem', margin: 0, minHeight: '180px' }}>
-{htmlBuildStep === 1 && `<section class="hero">\n</section>`}
-{htmlBuildStep === 2 && `<section class="hero">\n  <span class="eyebrow">AI-POWERED LEARNING</span>\n</section>`}
-{htmlBuildStep === 3 && `<section class="hero">\n  <span class="eyebrow">AI-POWERED LEARNING</span>\n  <h1>Build Job-Ready Digital Skills</h1>\n</section>`}
-{htmlBuildStep === 4 && `<section class="hero">\n  <span class="eyebrow">AI-POWERED LEARNING</span>\n  <h1>Build Job-Ready Digital Skills</h1>\n  <p>Practical hands-on training for students in Theni...</p>\n</section>`}
-{htmlBuildStep === 5 && `<section class="hero">\n  <span class="eyebrow">AI-POWERED LEARNING</span>\n  <h1>Build Job-Ready Digital Skills</h1>\n  <p>Practical hands-on training for students in Theni...</p>\n  <a href="#courses">Explore Courses</a>\n  <a href="#contact">Contact Us</a>\n</section>`}
-{htmlBuildStep === 6 && `<section class="hero">\n  <div class="hero-content">\n    <span class="eyebrow">AI-POWERED LEARNING</span>\n    <h1>Build Job-Ready Digital Skills</h1>\n    <p>Practical hands-on training...</p>\n    <a href="#courses">Explore Courses</a>\n  </div>\n  <img src="hero.png" alt="Hero Illustration">\n</section>`}
-                </pre>
+                <div style={{ background: '#090d16', padding: '1rem', borderRadius: '12px', border: '1px solid #1e293b', minHeight: '180px', overflowX: 'auto' }}>
+                  {htmlBuildStep === 1 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Hero</title>
+</head>
+<body>
+  <section class="hero">
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 2 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Hero</title>
+</head>
+<body>
+  <section class="hero">
+    <span class="eyebrow">AI-POWERED LEARNING</span>
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 3 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Hero</title>
+</head>
+<body>
+  <section class="hero">
+    <span class="eyebrow">AI-POWERED LEARNING</span>
+    <h1>Build Job-Ready Digital Skills</h1>
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 4 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Hero</title>
+</head>
+<body>
+  <section class="hero">
+    <span class="eyebrow">AI-POWERED LEARNING</span>
+    <h1>Build Job-Ready Digital Skills</h1>
+    <p>Practical hands-on training for students in Theni...</p>
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 5 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Hero</title>
+</head>
+<body>
+  <section class="hero">
+    <span class="eyebrow">AI-POWERED LEARNING</span>
+    <h1>Build Job-Ready Digital Skills</h1>
+    <p>Practical hands-on training for students in Theni...</p>
+    <a href="#courses">Explore Courses</a>
+    <a href="#contact">Contact Us</a>
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 6 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Hero</title>
+</head>
+<body>
+  <section class="hero">
+    <div class="hero-content">
+      <span class="eyebrow">AI-POWERED LEARNING</span>
+      <h1>Build Job-Ready Digital Skills</h1>
+      <p>Practical hands-on training...</p>
+      <a href="#courses">Explore Courses</a>
+    </div>
+    <img src="hero.png" alt="Hero Illustration">
+  </section>
+</body>
+</html>`)}
+                </div>
               </div>
 
               <div>
@@ -1121,25 +1409,21 @@ p { font-size: 1.05rem; color: #94a3b8; line-height: 1.6; }
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
-              <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ea580c', display: 'block', marginBottom: 4 }}>HTML:</label>
-                <textarea
-                  rows={10}
-                  value={playgroundHtml}
-                  onChange={e => setPlaygroundHtml(e.target.value)}
-                  style={{ width: '100%', background: '#0f172a', color: '#38bdf8', fontFamily: 'monospace', fontSize: '0.82rem', padding: '1rem', borderRadius: '10px', outline: 'none', boxSizing: 'border-box' }}
-                />
-              </div>
+              <LiveSyntaxCodeEditor
+                label="HTML:"
+                language="html"
+                rows={11}
+                value={playgroundHtml}
+                onChange={e => setPlaygroundHtml(e.target.value)}
+              />
 
-              <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', display: 'block', marginBottom: 4 }}>CSS:</label>
-                <textarea
-                  rows={10}
-                  value={playgroundCss}
-                  onChange={e => setPlaygroundCss(e.target.value)}
-                  style={{ width: '100%', background: '#0f172a', color: '#34d399', fontFamily: 'monospace', fontSize: '0.82rem', padding: '1rem', borderRadius: '10px', outline: 'none', boxSizing: 'border-box' }}
-                />
-              </div>
+              <LiveSyntaxCodeEditor
+                label="CSS:"
+                language="css"
+                rows={11}
+                value={playgroundCss}
+                onChange={e => setPlaygroundCss(e.target.value)}
+              />
             </div>
 
             {/* Playground Live Render */}
@@ -1452,13 +1736,13 @@ p { font-size: 1.05rem; color: #94a3b8; line-height: 1.6; }
           }}>
             <Trophy size={64} style={{ marginBottom: '1rem', opacity: 0.9 }} />
             <h2 style={{ fontSize: '2.2rem', fontWeight: 900, margin: '0 0 0.75rem 0' }}>
-              🎉 Hero Section Completed!
+              🎉 Day 3 Completed
             </h2>
 
             {/* Checklist of learned skills */}
             <div style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '16px', padding: '1.75rem', maxWidth: '560px', margin: '1.5rem auto 2rem auto', textAlign: 'left' }}>
               <div style={{ fontWeight: 800, fontSize: '1rem', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Today you learned:
+                YOU LEARNED:
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.88rem', fontWeight: 600 }}>
                 <div>✓ What a Hero section is</div>

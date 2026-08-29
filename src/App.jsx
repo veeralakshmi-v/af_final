@@ -230,6 +230,11 @@ import WebDesignDay2 from './pages/web-design/WebDesignDay2';
 import WebDesignDay3 from './pages/web-design/WebDesignDay3';
 import WebDesignDay4 from './pages/web-design/WebDesignDay4';
 import WebDesignDay5 from './pages/web-design/WebDesignDay5';
+import WebDesignDay6 from './pages/web-design/WebDesignDay6';
+import WebDesignDay7 from './pages/web-design/WebDesignDay7';
+import WebDesignDay8 from './pages/web-design/WebDesignDay8';
+import WebDesignDay9 from './pages/web-design/WebDesignDay9';
+import WebDesignDay10 from './pages/web-design/WebDesignDay10';
 import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData } from './courseData';
 import TallyCourseDay from './pages/tally/TallyCourseDay';
 import AssignmentSubmissionPage from './components/AssignmentSubmissionPage';
@@ -808,6 +813,11 @@ function App() {
                     {activeNode.moduleId === 'web_design_day3' && <WebDesignDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                     {activeNode.moduleId === 'web_design_day4' && <WebDesignDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                     {activeNode.moduleId === 'web_design_day5' && <WebDesignDay5 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'web_design_day6' && <WebDesignDay6 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'web_design_day7' && <WebDesignDay7 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'web_design_day8' && <WebDesignDay8 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'web_design_day9' && <WebDesignDay9 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'web_design_day10' && <WebDesignDay10 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                   </>
                 )}
                 

@@ -12,6 +12,187 @@ export default function WebDesignDay4({ activeTab = 'intro', onNavigate, openAIT
     }
   };
 
+  // Interactive Syntax-Highlighted Code Editor component with scroll syncing
+  const LiveSyntaxCodeEditor = ({ value, onChange, language = 'html', rows = 10, label = '' }) => {
+    const preRef = React.useRef(null);
+
+    const handleScroll = (e) => {
+      if (preRef.current) {
+        preRef.current.scrollTop = e.target.scrollTop;
+        preRef.current.scrollLeft = e.target.scrollLeft;
+      }
+    };
+
+    const escapeHTML = (str) =>
+      str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+
+    const highlightCode = (codeStr, lang) => {
+      if (!codeStr) return '';
+      const escaped = escapeHTML(codeStr);
+
+      if (lang === 'html') {
+        const tokenRegex = /(&lt;<!--[\s\S]*?--&gt;)|(&lt;!DOCTYPE html&gt;)|(&lt;\/?[a-zA-Z0-9\-]+)|([a-zA-Z\-]+)(?=\s*=)|("[\s\S]*?"|'[\s\S]*?')/gi;
+        return escaped.replace(tokenRegex, (match, comment, doctype, tag, attr, stringVal) => {
+          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+          if (doctype) return `<span style="color:#c084fc;font-weight:bold;">${doctype}</span>`;
+          if (tag) {
+            const m = tag.match(/^(&lt;\/?)([a-zA-Z0-9\-]+)$/);
+            return m ? `${m[1]}<span style="color:#f43f5e;font-weight:bold;">${m[2]}</span>` : tag;
+          }
+          if (attr) return `<span style="color:#fbbf24;font-weight:600;">${attr}</span>`;
+          if (stringVal) return `<span style="color:#34d399;">${stringVal}</span>`;
+          return match;
+        });
+      }
+
+      if (lang === 'css') {
+        const cssTokenRegex = /(\/\*[\s\S]*?\*\/)|([.#][a-zA-Z0-9_\-]+|[a-zA-Z0-9_\-]+(?=\s*\{))|([a-zA-Z\-]+)(?=\s*:)|(:\s*[^;\}]+;)/gi;
+        return escaped.replace(cssTokenRegex, (match, comment, selector, prop, val) => {
+          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+          if (selector) return `<span style="color:#38bdf8;font-weight:bold;">${selector}</span>`;
+          if (prop) return `<span style="color:#fb923c;font-weight:600;">${prop}</span>`;
+          if (val) return `:<span style="color:#34d399;">${val.slice(1)}</span>`;
+          return match;
+        });
+      }
+
+      return escaped;
+    };
+
+    const highlightedHTML = highlightCode(value, language);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        {label && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <label style={{ fontSize: '0.8rem', fontWeight: 800, color: language === 'html' ? '#ea580c' : '#2563eb', letterSpacing: '0.5px' }}>
+              {label}
+            </label>
+            <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Interactive Editor</span>
+          </div>
+        )}
+
+        <div style={{ position: 'relative', width: '100%', borderRadius: '12px', overflow: 'hidden', background: '#090d16', border: '1px solid #1e293b' }}>
+          <pre
+            ref={preRef}
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              margin: 0,
+              padding: '1rem',
+              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+              fontSize: '0.82rem',
+              lineHeight: '1.6',
+              color: '#f8fafc',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              pointerEvents: 'none',
+              overflow: 'hidden',
+              boxSizing: 'border-box'
+            }}
+            dangerouslySetInnerHTML={{ __html: highlightedHTML + '\n' }}
+          />
+
+          <textarea
+            rows={rows}
+            value={value}
+            onChange={onChange}
+            onScroll={handleScroll}
+            spellCheck={false}
+            style={{
+              position: 'relative',
+              width: '100%',
+              minHeight: `${rows * 1.6}rem`,
+              margin: 0,
+              padding: '1rem',
+              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+              fontSize: '0.82rem',
+              lineHeight: '1.6',
+              color: 'transparent',
+              caretColor: '#38bdf8',
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              resize: 'vertical',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              overflow: 'auto',
+              boxSizing: 'border-box'
+            }}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const renderSyntaxHighlightedHTML = (codeStr, lang = 'html') => {
+    if (!codeStr) return null;
+    const escapeHTML = (str) =>
+      str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+
+    const escaped = escapeHTML(codeStr);
+
+    if (lang === 'html') {
+      const tokenRegex = /(&lt;<!--[\s\S]*?--&gt;)|(&lt;!DOCTYPE html&gt;)|(&lt;\/?[a-zA-Z0-9\-]+)|([a-zA-Z\-]+)(?=\s*=)|("[\s\S]*?"|'[\s\S]*?')/gi;
+      const highlighted = escaped.replace(tokenRegex, (match, comment, doctype, tag, attr, stringVal) => {
+        if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+        if (doctype) return `<span style="color:#c084fc;font-weight:bold;">${doctype}</span>`;
+        if (tag) {
+          const m = tag.match(/^(&lt;\/?)([a-zA-Z0-9\-]+)$/);
+          return m ? `${m[1]}<span style="color:#f43f5e;font-weight:bold;">${m[2]}</span>` : tag;
+        }
+        if (attr) return `<span style="color:#fbbf24;font-weight:600;">${attr}</span>`;
+        if (stringVal) return `<span style="color:#34d399;">${stringVal}</span>`;
+        return match;
+      });
+      return (
+        <pre
+          style={{
+            margin: 0,
+            fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+            fontSize: '0.83rem',
+            lineHeight: '1.6',
+            color: '#f8fafc',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word'
+          }}
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
+      );
+    }
+
+    if (lang === 'css') {
+      const cssTokenRegex = /(\/\*[\s\S]*?\*\/)|([.#][a-zA-Z0-9_\-]+|[a-zA-Z0-9_\-]+(?=\s*\{))|([a-zA-Z\-]+)(?=\s*:)|(:\s*[^;\}]+;)/gi;
+      const highlighted = escaped.replace(cssTokenRegex, (match, comment, selector, prop, val) => {
+        if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
+        if (selector) return `<span style="color:#38bdf8;font-weight:bold;">${selector}</span>`;
+        if (prop) return `<span style="color:#fb923c;font-weight:600;">${prop}</span>`;
+        if (val) return `:<span style="color:#34d399;">${val.slice(1)}</span>`;
+        return match;
+      });
+      return (
+        <pre
+          style={{
+            margin: 0,
+            fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
+            fontSize: '0.83rem',
+            lineHeight: '1.6',
+            color: '#f8fafc',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word'
+          }}
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
+      );
+    }
+
+    return <pre style={{ margin: 0, color: '#f8fafc' }}>{codeStr}</pre>;
+  };
+
   // --- Meaningful Completion & Progress Tracking State ---
   const [completedSteps, setCompletedSteps] = useState({
     intro: true,
@@ -44,31 +225,53 @@ export default function WebDesignDay4({ activeTab = 'intro', onNavigate, openAIT
   const [responsiveDevice, setResponsiveDevice] = useState('desktop'); // 'desktop' | 'tablet' | 'mobile'
 
   // --- Section 20: Live Code Playground State ---
-  const [playgroundHtml, setPlaygroundHtml] = useState(`<section id="about" class="about-section">
-  <div class="about-container">
-    <div class="about-image">
-      <div class="image-box">📷 Team Visual (Alpha Fly Theni)</div>
-    </div>
-    <div class="about-content">
-      <span class="section-label">ABOUT OUR ACADEMY</span>
-      <h2 class="section-title">Learning That Leads to Real Projects</h2>
-      <p class="section-description">
-        Alpha Fly Theni provides 100% practical, project-focused web development training. We empower students and job seekers with modern digital skills to build real-world client websites.
-      </p>
-      <ul class="key-points">
-        <li>✓ Practical hands-on exercises</li>
-        <li>✓ Real-world project guidance</li>
-        <li>✓ Beginner-friendly step-by-step mentorship</li>
-      </ul>
-      <div class="stats-row">
-        <div class="stat-item"><span class="stat-num">1200+</span><span class="stat-lbl">Learners</span></div>
-        <div class="stat-item"><span class="stat-num">35+</span><span class="stat-lbl">Projects</span></div>
-        <div class="stat-item"><span class="stat-num">8</span><span class="stat-lbl">Tracks</span></div>
+  const [playgroundHtml, setPlaygroundHtml] = useState(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Fly Theni - About Section</title>
+</head>
+<body>
+
+  <!-- Day 2 Navbar -->
+  <header style="display:flex; justify-content:space-between; align-items:center; background:#1e1b4b; padding:1rem 2rem; border-radius:12px; margin-bottom:1.5rem;">
+    <div style="font-size:1.2rem; font-weight:900; color:#60a5fa;">🚀 Alpha Fly Theni</div>
+    <nav style="display:flex; gap:1rem; font-size:0.9rem;">
+      <a href="#" style="color:#cbd5e1; text-decoration:none;">Home</a>
+      <a href="#about" style="color:#60a5fa; font-weight:800; text-decoration:none;">About</a>
+    </nav>
+  </header>
+
+  <!-- Day 4 About Section -->
+  <section id="about" class="about-section">
+    <div class="about-container">
+      <div class="about-image">
+        <div class="image-box">📷 Team Visual (Alpha Fly Theni)</div>
       </div>
-      <a href="#courses" class="btn-primary">Learn More</a>
+      <div class="about-content">
+        <span class="section-label">ABOUT OUR ACADEMY</span>
+        <h2 class="section-title">Learning That Leads to Real Projects</h2>
+        <p class="section-description">
+          Alpha Fly Theni provides 100% practical, project-focused web development training. We empower students and job seekers with modern digital skills to build real-world client websites.
+        </p>
+        <ul class="key-points">
+          <li>✓ Practical hands-on exercises</li>
+          <li>✓ Real-world project guidance</li>
+          <li>✓ Beginner-friendly step-by-step mentorship</li>
+        </ul>
+        <div class="stats-row">
+          <div class="stat-item"><span class="stat-num">1200+</span><span class="stat-lbl">Learners</span></div>
+          <div class="stat-item"><span class="stat-num">35+</span><span class="stat-lbl">Projects</span></div>
+          <div class="stat-item"><span class="stat-num">8</span><span class="stat-lbl">Tracks</span></div>
+        </div>
+        <a href="#courses" class="btn-primary">Learn More</a>
+      </div>
     </div>
-  </div>
-</section>`);
+  </section>
+
+</body>
+</html>`);
 
   const [playgroundCss, setPlaygroundCss] = useState(`.about-section { padding: 4rem 2rem; background: #ffffff; color: #0f172a; }
 .about-container { display: flex; align-items: center; gap: 3rem; max-width: 1200px; margin: 0 auto; }
@@ -528,29 +731,50 @@ export default function WebDesignDay4({ activeTab = 'intro', onNavigate, openAIT
                   </div>
 
                   {targetCodeTab === 'html' ? (
-                    <pre style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px', color: '#38bdf8', fontSize: '0.82rem', margin: 0, overflowX: 'auto' }}>
-{`<section id="about" class="about-section">
-  <div class="about-container">
-    <div class="about-image">
-      <img src="about-team.png" alt="Students building web projects at Alpha Fly Theni">
-    </div>
-    <div class="about-content">
-      <span class="section-label">ABOUT OUR ACADEMY</span>
-      <h2 class="section-title">Learning That Leads to Real Projects</h2>
-      <p class="section-description">Alpha Fly Theni provides 100% practical training...</p>
-      <ul class="key-points">
-        <li>✓ Practical exercises</li>
-        <li>✓ Guided projects</li>
-      </ul>
-      <div class="stats-row">
-        <div class="stat-item"><span class="stat-num">1200+</span><span class="stat-lbl">Learners</span></div>
-        <div class="stat-item"><span class="stat-num">35+</span><span class="stat-lbl">Projects</span></div>
+                    <div style={{ background: '#090d16', padding: '1.25rem', borderRadius: '10px', border: '1px solid #1e293b', overflowX: 'auto' }}>
+                      {renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Fly Theni - About Section</title>
+</head>
+<body>
+
+  <!-- Day 2 Navbar -->
+  <header style="display:flex; justify-content:space-between; align-items:center; background:#1e1b4b; padding:1rem 2rem; border-radius:12px; margin-bottom:1.5rem;">
+    <div style="font-size:1.2rem; font-weight:900; color:#60a5fa;">🚀 Alpha Fly Theni</div>
+    <nav style="display:flex; gap:1rem; font-size:0.9rem;">
+      <a href="#" style="color:#cbd5e1; text-decoration:none;">Home</a>
+      <a href="#about" style="color:#60a5fa; font-weight:800; text-decoration:none;">About</a>
+    </nav>
+  </header>
+
+  <!-- Day 4 About Section -->
+  <section id="about" class="about-section">
+    <div class="about-container">
+      <div class="about-image">
+        <img src="about-team.png" alt="Students building web projects at Alpha Fly Theni">
       </div>
-      <a href="#courses" class="btn-primary">Learn More</a>
+      <div class="about-content">
+        <span class="section-label">ABOUT OUR ACADEMY</span>
+        <h2 class="section-title">Learning That Leads to Real Projects</h2>
+        <p class="section-description">Alpha Fly Theni provides 100% practical training...</p>
+        <ul class="key-points">
+          <li>✓ Practical exercises</li>
+          <li>✓ Guided projects</li>
+        </ul>
+        <div class="stats-row">
+          <div class="stat-item"><span class="stat-num">1200+</span><span class="stat-lbl">Learners</span></div>
+          <div class="stat-item"><span class="stat-num">35+</span><span class="stat-lbl">Projects</span></div>
+        </div>
+      </div>
     </div>
-  </div>
-</section>`}
-                    </pre>
+  </section>
+
+</body>
+</html>`)}
+                    </div>
                   ) : (
                     <pre style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px', color: '#34d399', fontSize: '0.82rem', margin: 0, overflowX: 'auto' }}>
 {`.about-container { display: flex; align-items: center; gap: 3rem; max-width: 1200px; margin: 0 auto; }
@@ -664,15 +888,107 @@ export default function WebDesignDay4({ activeTab = 'intro', onNavigate, openAIT
                 <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ea580c', display: 'block', marginBottom: 4 }}>
                   HTML Code (Step {htmlBuildStep} of 7):
                 </label>
-                <pre style={{ background: '#0f172a', padding: '1rem', borderRadius: '12px', color: '#38bdf8', fontSize: '0.84rem', margin: 0, minHeight: '200px' }}>
-{htmlBuildStep === 1 && `<section id="about" class="about-section">\n</section>`}
-{htmlBuildStep === 2 && `<section id="about" class="about-section">\n  <span class="section-label">ABOUT OUR ACADEMY</span>\n</section>`}
-{htmlBuildStep === 3 && `<section id="about" class="about-section">\n  <span class="section-label">ABOUT OUR ACADEMY</span>\n  <h2 class="section-title">Learning That Leads to Real Projects</h2>\n</section>`}
-{htmlBuildStep === 4 && `<section id="about" class="about-section">\n  <span class="section-label">ABOUT OUR ACADEMY</span>\n  <h2 class="section-title">Learning That Leads to Real Projects</h2>\n  <p class="section-description">Alpha Fly Theni provides 100% practical training...</p>\n</section>`}
-{htmlBuildStep === 5 && `<section id="about" class="about-section">\n  <img src="about-team.png" alt="Students building web projects at Alpha Fly Theni">\n  <span class="section-label">ABOUT OUR ACADEMY</span>\n  <h2 class="section-title">Learning That Leads to Real Projects</h2>\n</section>`}
-{htmlBuildStep === 6 && `<section id="about" class="about-section">\n  <img src="about-team.png" alt="Students building web projects">\n  <h2>Learning That Leads to Real Projects</h2>\n  <ul class="key-points">\n    <li>✓ Practical exercises</li>\n    <li>✓ Guided projects</li>\n  </ul>\n</section>`}
-{htmlBuildStep === 7 && `<section id="about" class="about-section">\n  <img src="about-team.png" alt="Team">\n  <h2>Learning That Leads to Real Projects</h2>\n  <div class="stats-row">\n    <div>1200+ Learners</div>\n    <div>35+ Projects</div>\n  </div>\n  <a href="#courses" class="btn-primary">Learn More</a>\n</section>`}
-                </pre>
+                <div style={{ background: '#090d16', padding: '1rem', borderRadius: '12px', border: '1px solid #1e293b', minHeight: '200px', overflowX: 'auto' }}>
+                  {htmlBuildStep === 1 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - About Section</title>
+</head>
+<body>
+  <section id="about" class="about-section">
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 2 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - About Section</title>
+</head>
+<body>
+  <section id="about" class="about-section">
+    <span class="section-label">ABOUT OUR ACADEMY</span>
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 3 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - About Section</title>
+</head>
+<body>
+  <section id="about" class="about-section">
+    <span class="section-label">ABOUT OUR ACADEMY</span>
+    <h2 class="section-title">Learning That Leads to Real Projects</h2>
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 4 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - About Section</title>
+</head>
+<body>
+  <section id="about" class="about-section">
+    <span class="section-label">ABOUT OUR ACADEMY</span>
+    <h2 class="section-title">Learning That Leads to Real Projects</h2>
+    <p class="section-description">Alpha Fly Theni provides 100% practical training...</p>
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 5 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - About Section</title>
+</head>
+<body>
+  <section id="about" class="about-section">
+    <img src="about-team.png" alt="Students building web projects at Alpha Fly Theni">
+    <span class="section-label">ABOUT OUR ACADEMY</span>
+    <h2 class="section-title">Learning That Leads to Real Projects</h2>
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 6 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - About Section</title>
+</head>
+<body>
+  <section id="about" class="about-section">
+    <img src="about-team.png" alt="Students building web projects">
+    <h2>Learning That Leads to Real Projects</h2>
+    <ul class="key-points">
+      <li>✓ Practical exercises</li>
+      <li>✓ Guided projects</li>
+    </ul>
+  </section>
+</body>
+</html>`)}
+                  {htmlBuildStep === 7 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - About Section</title>
+</head>
+<body>
+  <section id="about" class="about-section">
+    <img src="about-team.png" alt="Team">
+    <h2>Learning That Leads to Real Projects</h2>
+    <div class="stats-row">
+      <div>1200+ Learners</div>
+      <div>35+ Projects</div>
+    </div>
+    <a href="#courses" class="btn-primary">Learn More</a>
+  </section>
+</body>
+</html>`)}
+                </div>
               </div>
 
               <div>
@@ -1016,25 +1332,21 @@ export default function WebDesignDay4({ activeTab = 'intro', onNavigate, openAIT
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
-              <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ea580c', display: 'block', marginBottom: 4 }}>HTML:</label>
-                <textarea
-                  rows={10}
-                  value={playgroundHtml}
-                  onChange={e => setPlaygroundHtml(e.target.value)}
-                  style={{ width: '100%', background: '#0f172a', color: '#38bdf8', fontFamily: 'monospace', fontSize: '0.82rem', padding: '1rem', borderRadius: '10px', outline: 'none', boxSizing: 'border-box' }}
-                />
-              </div>
+              <LiveSyntaxCodeEditor
+                label="HTML:"
+                language="html"
+                rows={11}
+                value={playgroundHtml}
+                onChange={e => setPlaygroundHtml(e.target.value)}
+              />
 
-              <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', display: 'block', marginBottom: 4 }}>CSS:</label>
-                <textarea
-                  rows={10}
-                  value={playgroundCss}
-                  onChange={e => setPlaygroundCss(e.target.value)}
-                  style={{ width: '100%', background: '#0f172a', color: '#34d399', fontFamily: 'monospace', fontSize: '0.82rem', padding: '1rem', borderRadius: '10px', outline: 'none', boxSizing: 'border-box' }}
-                />
-              </div>
+              <LiveSyntaxCodeEditor
+                label="CSS:"
+                language="css"
+                rows={11}
+                value={playgroundCss}
+                onChange={e => setPlaygroundCss(e.target.value)}
+              />
             </div>
 
             {/* Playground Live Render */}
@@ -1352,13 +1664,13 @@ export default function WebDesignDay4({ activeTab = 'intro', onNavigate, openAIT
           }}>
             <Trophy size={64} style={{ marginBottom: '1rem', opacity: 0.9 }} />
             <h2 style={{ fontSize: '2.2rem', fontWeight: 900, margin: '0 0 0.75rem 0' }}>
-              🎉 About Section Completed!
+              🎉 Day 4 Completed
             </h2>
 
             {/* Checklist of learned skills */}
             <div style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '16px', padding: '1.75rem', maxWidth: '560px', margin: '1.5rem auto 2rem auto', textAlign: 'left' }}>
               <div style={{ fontWeight: 800, fontSize: '1rem', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Today you learned:
+                YOU LEARNED:
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.88rem', fontWeight: 600 }}>
                 <div>✓ Purpose of an About section</div>
