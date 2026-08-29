@@ -349,47 +349,6 @@ const WebDesignDay11 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
           </button>
         </header>
 
-        {/* STREAMLINED TABS NAVIGATION BAR (7 TABS) */}
-        <div style={{ marginBottom: '24px', borderBottom: '1px solid #1e293b', paddingBottom: '12px' }}>
-          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
-            {[
-              { id: 'intro', label: '1. Objective & Before/After', icon: BookOpen },
-              { id: 'variables', label: '2. CSS Tokens & Variables', icon: Sliders },
-              { id: 'flexbox_nav', label: '3. Flexbox & Mobile Nav', icon: LayoutGrid },
-              { id: 'grid_lab', label: '4. Advanced Grid & Sticky Nav', icon: Layout },
-              { id: 'ui_components', label: '5. Component System & Viewport Lab', icon: PenTool },
-              { id: 'guided_build', label: '6. Guided CSS Upgrade (6 Stages)', icon: Code },
-              { id: 'assignment_quiz', label: '7. Practice, AI Audit & Quiz', icon: CheckCircle }
-            ].map((t) => {
-              const IconC = t.icon;
-              const isActive = activeTab === t.id;
-              return (
-                <button
-                  key={t.id}
-                  onClick={() => handleTabClick(t.id)}
-                  style={{
-                    background: isActive ? '#4f46e5' : '#1e293b',
-                    color: isActive ? '#ffffff' : '#94a3b8',
-                    border: isActive ? '1px solid #6366f1' : '1px solid #334155',
-                    padding: '9px 16px',
-                    borderRadius: '10px',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  <IconC size={16} /> {t.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         {/* TAB 1: INTRO & BEFORE / AFTER */}
         {activeTab === 'intro' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
