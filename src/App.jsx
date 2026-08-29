@@ -225,7 +225,12 @@ import CoreJSDay7 from './pages/javascript/CoreJSDay7';
 import CoreJSDay8 from './pages/javascript/CoreJSDay8';
 import CoreJSDay9 from './pages/javascript/CoreJSDay9';
 import CoreJSDay10 from './pages/javascript/CoreJSDay10';
-import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData } from './courseData';
+import WebDesignDay1 from './pages/web-design/WebDesignDay1';
+import WebDesignDay2 from './pages/web-design/WebDesignDay2';
+import WebDesignDay3 from './pages/web-design/WebDesignDay3';
+import WebDesignDay4 from './pages/web-design/WebDesignDay4';
+import WebDesignDay5 from './pages/web-design/WebDesignDay5';
+import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData } from './courseData';
 import TallyCourseDay from './pages/tally/TallyCourseDay';
 import AssignmentSubmissionPage from './components/AssignmentSubmissionPage';
 import { isModuleLocked, getLockReason } from './utils/htmlCssLocking';
@@ -415,7 +420,8 @@ function App() {
       seaborn_course: seabornCourseData,
       core_js: coreJsCourseData,
       induction: inductionCourseData,
-      tally_prime: tallyCourseData
+      tally_prime: tallyCourseData,
+      web_design_20days: webDesignCourseData
     };
     const modules = map[courseKey] || [];
     for (const m of modules) {
@@ -457,6 +463,8 @@ function App() {
 
       if (course === 'tally_prime') {
         setActiveNode({ moduleId: 'tally_prime_module1', tabId: 'day1' });
+      } else if (course === 'web_design_20days') {
+        setActiveNode({ moduleId: 'web_design_day1', tabId: 'intro' });
       } else if (course === 'html_css') {
         setActiveNode({ moduleId: 'module1', tabId: 'intro' });
       } else if (course === 'sql' || course === 'summer_sql' || course === 'sql_da') {
@@ -521,7 +529,8 @@ function App() {
           seaborn_course: seabornCourseData,
           core_js: coreJsCourseData,
           induction: inductionCourseData,
-          tally_prime: tallyCourseData
+          tally_prime: tallyCourseData,
+          web_design_20days: webDesignCourseData
         };
         const data = courseMap[course];
         if (data && data.length > 0 && data[0].items && data[0].items.length > 0) {
@@ -634,6 +643,7 @@ function App() {
   else if (activeCourse === 'core_js') currentCourseData = coreJsCourseData;
   else if (activeCourse === 'induction') currentCourseData = inductionCourseData;
   else if (activeCourse === 'tally_prime') currentCourseData = tallyCourseData;
+  else if (activeCourse === 'web_design_20days') currentCourseData = webDesignCourseData;
 
   if (!session) {
     return <LandingPage onLoginSuccess={handleLoginSuccess} />;
@@ -775,7 +785,7 @@ function App() {
               <>
                 {/* HTML & CSS Course Rendering */}
                 {activeCourse === 'html_css' && activeNode.tabId === 'assignment' ? (
-                  <AssignmentSubmissionPage moduleId={activeNode.moduleId} onNavigate={handleNavClick} />
+                  <AssignmentSubmissionPage moduleId={activeNode.moduleId} onNavigate={handleNavClick} session={session} />
                 ) : (
                   <>
                     {activeNode.moduleId === 'module1' && <Day1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
@@ -793,6 +803,11 @@ function App() {
                     {activeNode.moduleId === 'html_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="html" />}
                     {activeNode.moduleId === 'css_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="css" />}
                     {activeNode.moduleId === 'bootstrap_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="bootstrap" />}
+                    {activeNode.moduleId === 'web_design_day1' && <WebDesignDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'web_design_day2' && <WebDesignDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'web_design_day3' && <WebDesignDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'web_design_day4' && <WebDesignDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'web_design_day5' && <WebDesignDay5 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                   </>
                 )}
                 

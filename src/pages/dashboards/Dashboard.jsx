@@ -3,8 +3,13 @@ import {
   LayoutTemplate, Database, Code, ArrowRight, Sparkles, Bot, Terminal, Brain, 
   UserPlus, Users, LogIn, LogOut, CheckCircle, BarChart3, Layers, GitBranch, 
   Server, RefreshCw, Trash2, Key, Star, ShieldAlert, Award, Grid, HelpCircle,
-  BookOpen, ExternalLink, Upload, Download, FileText, Lock
+  BookOpen, ExternalLink, Upload, Download, FileText, Lock, AlertTriangle, Menu, X
 } from 'lucide-react';
+import { 
+  getAssignmentValidations, 
+  saveAssignmentValidation, 
+  HTML_CSS_ASSIGNMENTS_CONFIG 
+} from '../../utils/htmlCssLocking';
 import * as CourseData from '../../courseData';
 
 const mainCourses = [
@@ -56,6 +61,18 @@ const mainCourses = [
 ];
 
 const subCourses = [
+  {
+    id: 'web_design_20days',
+    mainCourseId: 'fullstack',
+    title: 'AI-Powered Web Design & Frontend Development',
+    desc: '20-Day progressive practical course building real responsive business websites with HTML, CSS, JavaScript & AI workflows.',
+    icon: <Sparkles size={24} />,
+    bgColor: 'rgba(99, 102, 241, 0.08)',
+    borderColor: '#6366f1',
+    shadowColor: 'rgba(99,102,241,0.15)',
+    modulesCount: '20 Days (20 Hours)',
+    enrolledKey: 'web_design_20days'
+  },
   {
     id: 'html_css',
     mainCourseId: 'fullstack',
@@ -310,14 +327,173 @@ const subCourses = [
   }
 ];
 
+const formatSubmittedDate = (dateStr) => {
+  if (!dateStr) return 'Recently';
+  try {
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+  } catch (e) {}
+  return dateStr;
+};
+
+const formatTaskTitle = (task) => {
+  if (task.moduleTitle && task.moduleTitle !== task.moduleId) return task.moduleTitle;
+  const id = task.moduleId || task.tabId || '';
+  if (id.startsWith('python_day')) return `Python Day ${id.replace('python_day', '')}`;
+  if (id === 'python_games') return 'Python Game Projects Capstone';
+  if (id === 'python_apps') return 'Python Desktop & Utility Apps';
+  if (id.startsWith('sql_module')) return `SQL Day ${id.replace('sql_module', '')}`;
+  if (id.startsWith('module')) return `Day ${id.replace('module', '')}`;
+  return id.replace(/_/g, ' ').toUpperCase();
+};
+
 export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledCourse, session, onLogout, completedLessons = [], taskSubmissions = [] }) {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'courses' | 'register' | 'database' | 'demos' | 'grading'
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 868);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 868;
+      setIsMobile(mobile);
+      if (!mobile) setIsMobileMenuOpen(false);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   const [students, setStudents] = useState([]);
   const [staff, setStaff] = useState([]);
   const [enrollRole, setEnrollRole] = useState('student'); // 'student' | 'staff'
   const [dbTab, setDbTab] = useState('students'); // 'students' | 'staff'
-  
+
+  // HTML & CSS Course Validation State
+  const [htmlCssValidations, setHtmlCssValidations] = useState(() => getAssignmentValidations());
+  const [reviewFilter, setReviewFilter] = useState('all'); // 'all' | 'pending' | 'approved' | 'rejected' | 'html_css'
+  const [reviewSearch, setReviewSearch] = useState('');
+
+  useEffect(() => {
+    const handleSync = () => setHtmlCssValidations(getAssignmentValidations());
+    window.addEventListener('html_css_validation_changed', handleSync);
+    window.addEventListener('storage', handleSync);
+    return () => {
+      window.removeEventListener('html_css_validation_changed', handleSync);
+      window.removeEventListener('storage', handleSync);
+    };
+  }, []);
+
+  // 1) HTML & CSS Course Day Submissions
+  const htmlCssSubmissions = Object.keys(htmlCssValidations).map(modId => {
+    const rec = htmlCssValidations[modId] || {};
+    const cfg = HTML_CSS_ASSIGNMENTS_CONFIG[modId] || {};
+    const hasData = rec.studentFeedback || rec.submissionUrl || rec.submissionNotes || rec.submittedAt;
+    if (!hasData) return null;
+
+    return {
+      _id: `html_css_${modId}`,
+      id: `html_css_${modId}`,
+      isHtmlCss: true,
+      moduleId: modId,
+      moduleTitle: cfg.dayTitle || modId,
+      tabId: 'assignment',
+      studentName: rec.studentName || 'Student Learner',
+      accessCode: rec.studentAccessCode || 'STUDENT',
+      submissionUrl: rec.submissionUrl || '',
+      submissionNotes: rec.submissionNotes || '',
+      studentFeedback: rec.studentFeedback || '',
+      taskUrl: rec.submissionUrl || '',
+      taskText: rec.studentFeedback ? `[Student Reflection]: ${rec.studentFeedback}${rec.submissionNotes ? `\n\n[Code / Notes]: ${rec.submissionNotes}` : ''}` : rec.submissionNotes || '',
+      submittedAt: rec.submittedAt || rec.updatedAt || 'Recently',
+      status: rec.status === 'approved' ? 'Approved' : rec.status === 'rejected' ? 'Rejected' : 'Pending',
+      staffFeedback: rec.staffFeedback || '',
+      validatedAt: rec.validatedAt || '',
+      validatedBy: rec.validatedBy || ''
+    };
+  }).filter(Boolean);
+
+  // 2) Topic Homework Submissions from Students Backend
+  const topicSubmissions = students.flatMap(s => 
+    (s.tasks || []).map(t => ({
+      ...t,
+      isHtmlCss: false,
+      studentName: s.name,
+      studentId: s._id || s.id,
+      accessCode: s.accessCode,
+      moduleTitle: t.moduleId,
+      status: t.status === 'Approved' ? 'Approved' : t.status === 'Rejected' ? 'Rejected' : 'Pending'
+    }))
+  );
+
+  // Combined Chronological Submissions
+  const allSubmissions = [...htmlCssSubmissions, ...topicSubmissions].sort((a, b) => {
+    const da = new Date(a.submittedAt).getTime() || 0;
+    const db = new Date(b.submittedAt).getTime() || 0;
+    return db - da;
+  });
+
+  const pendingSubmissions = allSubmissions.filter(s => s.status === 'Pending');
+  const pendingCount = pendingSubmissions.length;
+
+  const handleQuickApprove = (task) => {
+    if (task.isHtmlCss) {
+      const rec = htmlCssValidations[task.moduleId] || {};
+      const updatedRecord = {
+        ...rec,
+        staffFeedback: 'Great work! Code meets semantic standards and feedback is thoughtful. Approved.',
+        status: 'approved',
+        validatedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        validatedBy: session?.name || 'Staff Instructor'
+      };
+      saveAssignmentValidation(task.moduleId, updatedRecord);
+      setHtmlCssValidations(getAssignmentValidations());
+    } else {
+      fetch(`/api/students/tasks/${task._id || task.id}/grade`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentId: task.studentId,
+          status: 'Approved',
+          feedback: 'Approved by staff',
+          grade: 'A+'
+        })
+      }).then(() => fetchStudents());
+    }
+  };
+
+  const handleQuickReject = (task) => {
+    if (task.isHtmlCss) {
+      const rec = htmlCssValidations[task.moduleId] || {};
+      const updatedRecord = {
+        ...rec,
+        staffFeedback: 'Please revise your submission details according to criteria and resubmit.',
+        status: 'rejected',
+        validatedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        validatedBy: session?.name || 'Staff Instructor'
+      };
+      saveAssignmentValidation(task.moduleId, updatedRecord);
+      setHtmlCssValidations(getAssignmentValidations());
+    } else {
+      fetch(`/api/students/tasks/${task._id || task.id}/grade`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentId: task.studentId,
+          status: 'Rejected',
+          feedback: 'Revision requested by staff',
+          grade: 'Needs Revision'
+        })
+      }).then(() => fetchStudents());
+    }
+  };
+
   // Grading Modal States
   const [gradingTask, setGradingTask] = useState(null);
   const [gradingStudentId, setGradingStudentId] = useState('');
@@ -413,7 +589,9 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       matplotlib_course: CourseData.matplotlibCourseData,
       seaborn_course: CourseData.seabornCourseData,
       core_js: CourseData.coreJsCourseData,
-      induction: CourseData.inductionCourseData
+      induction: CourseData.inductionCourseData,
+      tally: CourseData.tallyCourseData,
+      web_design: CourseData.webDesignCourseData
     };
     return map[courseKey] || [];
   };
@@ -586,13 +764,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     const feedbackTrimmed = gradingFeedback ? gradingFeedback.trim() : '';
     const gradeTrimmed = gradingGrade ? gradingGrade.trim() : '';
 
-    if (statusTrimmed === 'Rejected' && feedbackTrimmed.length < 10) {
-      alert('Evaluation feedback is required and must be at least 10 characters when rejecting an assignment.');
-      return;
-    }
-
-    if (statusTrimmed === 'Approved' && !gradeTrimmed) {
-      alert('Please assign a grade/score (e.g. A+, Pass, 90%) for the approved assignment.');
+    if (statusTrimmed === 'Rejected' && feedbackTrimmed.length < 5) {
+      alert('Evaluation feedback is required when requesting a revision.');
       return;
     }
 
@@ -723,33 +896,132 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   const totalStudents = students.length;
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', width: '100%', background: 'var(--bg-color)' }}>
+    <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', minHeight: '100vh', width: '100%', background: 'var(--bg-color)', position: 'relative' }}>
       
-      {/* 🧭 LEFT SIDE NAVIGATION PANEL */}
+      {/* 📱 MOBILE STICKY HEADER BAR */}
+      {isMobile && (
+        <header style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0.85rem 1.25rem',
+          background: '#ffffff',
+          borderBottom: '1px solid var(--surface-border)',
+          position: 'sticky',
+          top: 0,
+          zIndex: 900,
+          width: '100%',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--text-primary)',
+                cursor: 'pointer',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+              aria-label="Toggle Navigation Menu"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+            <div>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.5px' }}>
+                ALPHA FLY
+              </h2>
+              <span style={{ fontSize: '0.62rem', color: 'var(--accent-primary)', letterSpacing: '1.5px', fontWeight: 800 }}>STUDY PORTAL</span>
+            </div>
+          </div>
+
+          {session?.role !== 'student' && pendingCount > 0 && (
+            <button
+              type="button"
+              onClick={() => { setActiveTab('grading'); setIsMobileMenuOpen(false); }}
+              style={{
+                background: '#fef2f2',
+                border: '1px solid #fca5a5',
+                color: '#dc2626',
+                padding: '0.35rem 0.75rem',
+                borderRadius: '20px',
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              🔔 {pendingCount}
+            </button>
+          )}
+        </header>
+      )}
+
+      {/* 🌫️ BACKDROP FOR MOBILE SIDEBAR DRAWER */}
+      {isMobile && isMobileMenuOpen && (
+        <div
+          onClick={() => setIsMobileMenuOpen(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(15, 23, 42, 0.5)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 999
+          }}
+        />
+      )}
+
+      {/* 🧭 LEFT SIDE NAVIGATION PANEL (DESKTOP + MOBILE DRAWER) */}
       <aside style={{ 
-        width: '260px', 
+        width: isMobile ? '280px' : '260px', 
         background: '#ffffff', 
         borderRight: '1px solid var(--surface-border)', 
-        padding: '2.5rem 1.25rem',
+        padding: '2.25rem 1.25rem',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         flexShrink: 0,
-        boxShadow: 'var(--shadow-sm)'
+        boxShadow: isMobile ? '0 20px 25px -5px rgba(0,0,0,0.15)' : 'var(--shadow-sm)',
+        position: isMobile ? 'fixed' : 'relative',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        zIndex: isMobile ? 1000 : 'auto',
+        transform: isMobile && !isMobileMenuOpen ? 'translateX(-100%)' : 'translateX(0)',
+        transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        overflowY: 'auto'
       }}>
         <div>
           {/* Logo Brand */}
-          <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '2.5rem', paddingLeft: '0.5rem' }}>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.5px' }}>
-              ALPHA FLY
-            </h2>
-            <span style={{ fontSize: '0.68rem', color: 'var(--accent-primary)', letterSpacing: '2px', fontWeight: 800 }}>STUDY PORTAL</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', paddingLeft: '0.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.5px' }}>
+                ALPHA FLY
+              </h2>
+              <span style={{ fontSize: '0.68rem', color: 'var(--accent-primary)', letterSpacing: '2px', fontWeight: 800 }}>STUDY PORTAL</span>
+            </div>
+            {isMobile && (
+              <button
+                type="button"
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', padding: 4 }}
+              >
+                <X size={20} />
+              </button>
+            )}
           </div>
 
           {/* Navigation Links */}
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <button 
-              onClick={() => setActiveTab('overview')}
+              onClick={() => { setActiveTab('overview'); if (isMobile) setIsMobileMenuOpen(false); }}
               style={{
                 display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
                 fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
@@ -763,7 +1035,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             </button>
 
             <button 
-              onClick={() => setActiveTab('courses')}
+              onClick={() => { setActiveTab('courses'); if (isMobile) setIsMobileMenuOpen(false); }}
               style={{
                 display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
                 fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
@@ -783,7 +1055,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 <span style={{ fontSize: '0.68rem', color: 'var(--text-tertiary)', fontWeight: 800, textTransform: 'uppercase', paddingLeft: '1rem', marginBottom: '0.4rem', display: 'block', letterSpacing: '0.5px' }}>Administration</span>
                 
                 <button 
-                  onClick={() => setActiveTab('register')}
+                  onClick={() => { setActiveTab('register'); if (isMobile) setIsMobileMenuOpen(false); }}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
                     fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
@@ -797,7 +1069,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 </button>
 
                 <button 
-                  onClick={() => setActiveTab('database')}
+                  onClick={() => { setActiveTab('database'); if (isMobile) setIsMobileMenuOpen(false); }}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
                     fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
@@ -811,21 +1083,36 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 </button>
 
                 <button 
-                  onClick={() => { setActiveTab('grading'); fetchStudents(); }}
+                  onClick={() => { setActiveTab('grading'); fetchStudents(); if (isMobile) setIsMobileMenuOpen(false); }}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
                     fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
                     background: activeTab === 'grading' ? 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)' : 'transparent',
                     color: activeTab === 'grading' ? '#ffffff' : 'var(--text-secondary)',
                     boxShadow: activeTab === 'grading' ? 'var(--glow-primary)' : 'none',
-                    transition: 'var(--transition)'
+                    transition: 'var(--transition)',
+                    position: 'relative'
                   }}
                 >
                   <CheckCircle size={18} /> Review Tasks
+                  {pendingCount > 0 && (
+                    <span style={{
+                      background: '#ef4444',
+                      color: '#ffffff',
+                      fontSize: '0.72rem',
+                      fontWeight: 800,
+                      padding: '2px 8px',
+                      borderRadius: '12px',
+                      marginLeft: 'auto',
+                      boxShadow: '0 2px 6px rgba(239, 68, 68, 0.4)'
+                    }}>
+                      {pendingCount} New
+                    </span>
+                  )}
                 </button>
 
                 <button 
-                  onClick={() => { setActiveTab('certificates'); fetchStudents(); }}
+                  onClick={() => { setActiveTab('certificates'); fetchStudents(); if (isMobile) setIsMobileMenuOpen(false); }}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
                     fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
@@ -844,7 +1131,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               <>
                 <div style={{ height: '1px', background: 'var(--surface-border)', margin: '1rem 0' }} />
                 <button 
-                  onClick={() => setActiveTab('demos')}
+                  onClick={() => { setActiveTab('demos'); if (isMobile) setIsMobileMenuOpen(false); }}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
                     fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
@@ -891,12 +1178,12 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       </aside>
 
       {/* 🖥️ MAIN WORKSPACE CONTENT CONTAINER */}
-      <main style={{ flex: 1, padding: '3rem 4rem', height: '100vh', overflowY: 'auto' }}>
+      <main style={{ flex: 1, padding: isMobile ? '1.25rem 1rem' : '3rem 4rem', minHeight: '100vh', overflowY: 'auto', minWidth: 0 }}>
         
         {/* Dynamic header title based on active tab */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.5rem', marginBottom: '2.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center', gap: '1rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.5rem', marginBottom: '2.5rem' }}>
           <div>
-            <h1 style={{ fontSize: '2.2rem', fontWeight: 900, color: 'var(--text-primary)' }}>
+            <h1 style={{ fontSize: isMobile ? '1.5rem' : '2.2rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
               {activeTab === 'overview' && 'LMS Workspace Overview'}
               {activeTab === 'courses' && 'Interactive Course Catalog'}
               {activeTab === 'register' && 'Enroll a New Student'}
@@ -905,7 +1192,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               {activeTab === 'grading' && 'Review and Grade Assignments'}
               {activeTab === 'certificates' && 'Certificate Management'}
             </h1>
-            <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', margin: '0.2rem 0 0 0' }}>
+            <p style={{ fontSize: isMobile ? '0.85rem' : '0.95rem', color: 'var(--text-secondary)', margin: '0.2rem 0 0 0' }}>
               {activeTab === 'overview' && 'Overview stats, role privileges, and quick configuration access.'}
               {activeTab === 'courses' && 'Browse, select, and launch learning timelines and bootcamp environments.'}
               {activeTab === 'register' && 'Assign course tracks and generate direct student login credential links.'}
@@ -916,8 +1203,33 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             </p>
           </div>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)', background: '#ffffff', padding: '0.4rem 0.8rem', borderRadius: '20px', border: '1px solid var(--surface-border)', boxShadow: 'var(--shadow-sm)' }}>
-            <Award size={14} color="#eab308" /> LMS Engine Active
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {session?.role !== 'student' && (
+              <button
+                type="button"
+                onClick={() => setActiveTab('grading')}
+                style={{
+                  background: pendingCount > 0 ? '#fef2f2' : '#ffffff',
+                  border: `1px solid ${pendingCount > 0 ? '#fca5a5' : 'var(--surface-border)'}`,
+                  color: pendingCount > 0 ? '#dc2626' : 'var(--text-secondary)',
+                  padding: '0.45rem 0.9rem',
+                  borderRadius: '20px',
+                  fontSize: '0.82rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: 'var(--shadow-sm)'
+                }}
+              >
+                🔔 {pendingCount} Pending Approvals
+              </button>
+            )}
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)', background: '#ffffff', padding: '0.4rem 0.8rem', borderRadius: '20px', border: '1px solid var(--surface-border)', boxShadow: 'var(--shadow-sm)' }}>
+              <Award size={14} color="#eab308" /> LMS Engine Active
+            </div>
           </div>
         </div>
 
@@ -2052,131 +2364,503 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
           </div>
         )}
 
-        {/* 📝 TAB 6: REVIEW AND GRADE ASSIGNMENTS (ADMIN/STAFF ONLY) */}
+        {/* 📝 TAB 6: UNIFIED REVIEW AND EVALUATION CENTER (STAFF/ADMIN ONLY) */}
         {activeTab === 'grading' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <div style={{ background: '#ffffff', border: '1px solid var(--surface-border)', borderRadius: '24px', padding: '2rem', boxShadow: 'var(--shadow-sm)' }}>
-              
-              {(() => {
-                // Flatten and gather submissions from all student objects
-                const submissions = students.flatMap(s => 
-                  (s.tasks || []).map(t => ({
-                    ...t,
-                    studentName: s.name,
-                    studentId: s._id || s.id,
-                    accessCode: s.accessCode
-                  }))
-                ).sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+            
+            {/* 📊 1) KPI Metrics Summary Bar */}
+            {(() => {
+              const approvedCount = allSubmissions.filter(s => s.status === 'Approved').length;
+              const rejectedCount = allSubmissions.filter(s => s.status === 'Rejected').length;
 
-                return (
-                  <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.25rem', marginBottom: '1.5rem' }}>
-                      <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, fontFamily: 'system-ui' }}>
-                        Chronological Assignment Registry
-                      </h3>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-primary)', textTransform: 'uppercase', background: 'rgba(59, 130, 246, 0.08)', padding: '0.3rem 0.7rem', borderRadius: '20px', fontFamily: 'system-ui' }}>
-                        {submissions.length} Total Submissions
-                      </span>
+              const filteredSubmissions = allSubmissions.filter(s => {
+                if (reviewFilter === 'pending') if (s.status !== 'Pending') return false;
+                if (reviewFilter === 'approved') if (s.status !== 'Approved') return false;
+                if (reviewFilter === 'rejected') if (s.status !== 'Rejected') return false;
+                if (reviewFilter === 'html_css') if (!s.isHtmlCss) return false;
+
+                if (reviewSearch.trim()) {
+                  const q = reviewSearch.trim().toLowerCase();
+                  const nameMatch = (s.studentName || '').toLowerCase().includes(q);
+                  const codeMatch = (s.accessCode || '').toLowerCase().includes(q);
+                  const modMatch = (s.moduleId || '').toLowerCase().includes(q) || (s.moduleTitle || '').toLowerCase().includes(q);
+                  return nameMatch || codeMatch || modMatch;
+                }
+                return true;
+              });
+
+              return (
+                <>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: '1.25rem'
+                  }}>
+                    {/* Card 1: Total */}
+                    <div style={{
+                      background: '#ffffff',
+                      border: '1px solid var(--surface-border)',
+                      borderRadius: '20px',
+                      padding: '1.25rem 1.5rem',
+                      boxShadow: 'var(--shadow-sm)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <div>
+                        <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Submissions</span>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px' }}>{allSubmissions.length}</div>
+                      </div>
+                      <div style={{ width: 44, height: 44, borderRadius: '14px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <FileText size={22} />
+                      </div>
                     </div>
 
-                    {submissions.length > 0 ? (
-                      <div style={{ overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem', textAlign: 'left' }}>
-                          <thead>
-                            <tr style={{ borderBottom: '2px solid var(--surface-border)', color: 'var(--text-secondary)', fontWeight: 700 }}>
-                              <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Student</th>
-                              <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Assignment Module</th>
-                              <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Submission Details</th>
-                              <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Submitted At</th>
-                              <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Review Status</th>
-                              <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Score</th>
-                              <th style={{ padding: '0.75rem 1rem', textAlign: 'center', fontFamily: 'system-ui' }}>Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {submissions.map(task => {
-                              const statusColors = {
-                                Pending: { text: '#ca8a04', bg: 'rgba(234, 179, 8, 0.08)' },
-                                Approved: { text: '#10b981', bg: 'rgba(16, 185, 129, 0.08)' },
-                                Rejected: { text: '#ef4444', bg: 'rgba(239, 68, 68, 0.08)' }
-                              };
-                              const col = statusColors[task.status] || { text: '#64748b', bg: '#f1f5f9' };
-
-                              return (
-                                <tr key={task._id || task.id} style={{ borderBottom: '1px solid var(--surface-border)', color: 'var(--text-primary)' }}>
-                                  <td style={{ padding: '1rem' }}>
-                                    <div style={{ fontWeight: 800 }}>{task.studentName}</div>
-                                    <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', fontFamily: 'monospace' }}>{task.accessCode}</span>
-                                  </td>
-                                  <td style={{ padding: '1rem', fontWeight: 700 }}>
-                                    <span style={{ fontSize: '0.75rem', display: 'block', color: 'var(--text-tertiary)' }}>{task.moduleId}</span>
-                                    {task.tabId}
-                                  </td>
-                                  <td style={{ padding: '1rem', fontSize: '0.85rem' }}>
-                                    {task.taskUrl && (
-                                      <div style={{ marginBottom: '4px' }}>
-                                        <a href={task.taskUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
-                                          Link <ExternalLink size={10} />
-                                        </a>
-                                      </div>
-                                    )}
-                                    {task.taskText && (
-                                      <div style={{ color: 'var(--text-secondary)', maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={task.taskText}>
-                                        {task.taskText}
-                                      </div>
-                                    )}
-                                    {!task.taskUrl && !task.taskText && (
-                                      <span style={{ color: 'var(--text-tertiary)', fontStyle: 'italic' }}>Empty submission</span>
-                                    )}
-                                  </td>
-                                  <td style={{ padding: '1rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-                                    {new Date(task.submittedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                                  </td>
-                                  <td style={{ padding: '1rem' }}>
-                                    <span style={{
-                                      color: col.text, background: col.bg, fontSize: '0.75rem', fontWeight: 800, padding: '0.35rem 0.75rem', borderRadius: '20px', textTransform: 'uppercase'
-                                    }}>
-                                      {task.status}
-                                    </span>
-                                  </td>
-                                  <td style={{ padding: '1rem', fontWeight: 800, color: task.grade ? '#8b5cf6' : 'var(--text-tertiary)' }}>
-                                    {task.grade || '--'}
-                                  </td>
-                                  <td style={{ padding: '1rem', textAlign: 'center' }}>
-                                    <button
-                                      onClick={() => {
-                                        setGradingTask(task);
-                                        setGradingStudentId(task.studentId);
-                                        setGradingStatus(task.status);
-                                        setGradingFeedback(task.feedback || '');
-                                        setGradingGrade(task.grade || 'A+');
-                                      }}
-                                      style={{
-                                        background: '#3b82f6', border: 'none', color: '#ffffff',
-                                        padding: '0.4rem 0.8rem', borderRadius: '8px', cursor: 'pointer',
-                                        fontSize: '0.8rem', fontWeight: 700, transition: 'var(--transition)'
-                                      }}
-                                    >
-                                      Evaluate
-                                    </button>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
+                    {/* Card 2: Pending */}
+                    <div style={{
+                      background: '#ffffff',
+                      border: pendingCount > 0 ? '1px solid #fca5a5' : '1px solid var(--surface-border)',
+                      borderRadius: '20px',
+                      padding: '1.25rem 1.5rem',
+                      boxShadow: pendingCount > 0 ? '0 4px 14px rgba(239,68,68,0.1)' : 'var(--shadow-sm)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <div>
+                        <span style={{ fontSize: '0.78rem', fontWeight: 800, color: pendingCount > 0 ? '#dc2626' : 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pending Review</span>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: pendingCount > 0 ? '#dc2626' : 'var(--text-primary)', marginTop: '4px' }}>{pendingCount}</div>
                       </div>
+                      <div style={{ width: 44, height: 44, borderRadius: '14px', background: pendingCount > 0 ? '#fef2f2' : 'rgba(245, 158, 11, 0.1)', color: pendingCount > 0 ? '#dc2626' : '#d97706', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <CheckCircle size={22} />
+                      </div>
+                    </div>
+
+                    {/* Card 3: Approved */}
+                    <div style={{
+                      background: '#ffffff',
+                      border: '1px solid var(--surface-border)',
+                      borderRadius: '20px',
+                      padding: '1.25rem 1.5rem',
+                      boxShadow: 'var(--shadow-sm)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <div>
+                        <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Approved</span>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#16a34a', marginTop: '4px' }}>{approvedCount}</div>
+                      </div>
+                      <div style={{ width: 44, height: 44, borderRadius: '14px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Award size={22} />
+                      </div>
+                    </div>
+
+                    {/* Card 4: HTML & CSS */}
+                    <div style={{
+                      background: '#ffffff',
+                      border: '1px solid var(--surface-border)',
+                      borderRadius: '20px',
+                      padding: '1.25rem 1.5rem',
+                      boxShadow: 'var(--shadow-sm)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <div>
+                        <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>HTML &amp; CSS Track</span>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#7e22ce', marginTop: '4px' }}>{htmlCssSubmissions.length}</div>
+                      </div>
+                      <div style={{ width: 44, height: 44, borderRadius: '14px', background: 'rgba(147, 51, 234, 0.1)', color: '#9333ea', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Code size={22} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 🔍 2) Search & Filter Control Bar */}
+                  <div style={{
+                    background: '#ffffff',
+                    border: '1px solid var(--surface-border)',
+                    borderRadius: '20px',
+                    padding: '1.25rem 1.5rem',
+                    boxShadow: 'var(--shadow-sm)',
+                    display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
+                    justifyContent: 'space-between',
+                    alignItems: isMobile ? 'stretch' : 'center',
+                    gap: '1rem'
+                  }}>
+                    {/* Filter Chips */}
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                      <button
+                        type="button"
+                        onClick={() => setReviewFilter('all')}
+                        style={{
+                          background: reviewFilter === 'all' ? '#3b82f6' : '#f1f5f9',
+                          color: reviewFilter === 'all' ? '#ffffff' : '#475569',
+                          border: 'none', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
+                        }}
+                      >
+                        All ({allSubmissions.length})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setReviewFilter('pending')}
+                        style={{
+                          background: reviewFilter === 'pending' ? '#dc2626' : '#fef2f2',
+                          color: reviewFilter === 'pending' ? '#ffffff' : '#dc2626',
+                          border: '1px solid #fca5a5', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
+                        }}
+                      >
+                        ⏳ Pending ({pendingCount})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setReviewFilter('approved')}
+                        style={{
+                          background: reviewFilter === 'approved' ? '#16a34a' : '#f0fdf4',
+                          color: reviewFilter === 'approved' ? '#ffffff' : '#16a34a',
+                          border: '1px solid #bbf7d0', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
+                        }}
+                      >
+                        ✅ Approved ({approvedCount})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setReviewFilter('rejected')}
+                        style={{
+                          background: reviewFilter === 'rejected' ? '#ea580c' : '#fff7ed',
+                          color: reviewFilter === 'rejected' ? '#ffffff' : '#ea580c',
+                          border: '1px solid #fed7aa', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
+                        }}
+                      >
+                        ⚠️ Revisions ({rejectedCount})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setReviewFilter('html_css')}
+                        style={{
+                          background: reviewFilter === 'html_css' ? '#6b21a8' : '#faf5ff',
+                          color: reviewFilter === 'html_css' ? '#ffffff' : '#6b21a8',
+                          border: '1px solid #e9d5ff', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
+                        }}
+                      >
+                        🎨 HTML &amp; CSS ({htmlCssSubmissions.length})
+                      </button>
+                    </div>
+
+                    {/* Search Box */}
+                    <div style={{ position: 'relative', minWidth: isMobile ? '100%' : '280px' }}>
+                      <input
+                        type="text"
+                        placeholder="Search student, code, or topic..."
+                        value={reviewSearch}
+                        onChange={e => setReviewSearch(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '0.55rem 1rem 0.55rem 2.2rem',
+                          borderRadius: '14px',
+                          border: '1px solid #cbd5e1',
+                          fontSize: '0.85rem',
+                          background: '#f8fafc',
+                          outline: 'none'
+                        }}
+                      />
+                      <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.45, fontSize: '0.85rem' }}>🔍</span>
+                    </div>
+                  </div>
+
+                  {/* 📋 3) Submission Cards List */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    {filteredSubmissions.length > 0 ? (
+                      filteredSubmissions.map(task => {
+                        const statusColors = {
+                          Pending: { text: '#b45309', bg: '#fffbe8', border: '#fde68a', leftBar: '#f59e0b', label: '⏳ Pending Approval' },
+                          Approved: { text: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', leftBar: '#10b981', label: '✅ Approved' },
+                          Rejected: { text: '#b91c1c', bg: '#fef2f2', border: '#fecaca', leftBar: '#ef4444', label: '⚠️ Revision Requested' }
+                        };
+                        const col = statusColors[task.status] || { text: '#475569', bg: '#f8fafc', border: '#cbd5e1', leftBar: '#94a3b8', label: task.status };
+
+                        return (
+                          <div
+                            key={task._id || task.id}
+                            style={{
+                              background: '#ffffff',
+                              border: '1px solid #e2e8f0',
+                              borderLeft: `5px solid ${col.leftBar}`,
+                              borderRadius: '18px',
+                              padding: isMobile ? '1.25rem' : '1.5rem',
+                              boxShadow: '0 4px 14px rgba(0,0,0,0.03)',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '1rem',
+                              transition: 'all 0.2s ease'
+                            }}
+                          >
+                            {/* Top Header Row */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
+                              {/* Student Info */}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{
+                                  width: 44,
+                                  height: 44,
+                                  borderRadius: '50%',
+                                  background: task.isHtmlCss ? 'linear-gradient(135deg, #a855f7 0%, #7e22ce 100%)' : 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                                  color: '#ffffff',
+                                  fontWeight: 900,
+                                  fontSize: '0.95rem',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  flexShrink: 0,
+                                  boxShadow: '0 3px 8px rgba(0,0,0,0.12)'
+                                }}>
+                                  {task.studentName ? task.studentName.substring(0, 2).toUpperCase() : 'ST'}
+                                </div>
+                                <div>
+                                  <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#0f172a' }}>
+                                    {task.studentName}
+                                  </div>
+                                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontFamily: 'monospace', fontWeight: 700, background: '#f1f5f9', padding: '2px 6px', borderRadius: 4 }}>
+                                    {task.accessCode}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Course / Module & Status Badges */}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                                <span style={{
+                                  fontSize: '0.75rem',
+                                  fontWeight: 800,
+                                  color: task.isHtmlCss ? '#7e22ce' : '#1d4ed8',
+                                  background: task.isHtmlCss ? '#faf5ff' : '#eff6ff',
+                                  border: `1px solid ${task.isHtmlCss ? '#e9d5ff' : '#bfdbfe'}`,
+                                  padding: '4px 10px',
+                                  borderRadius: '20px'
+                                }}>
+                                  {task.isHtmlCss ? '🎨 HTML & CSS Course' : `📚 ${task.moduleId || 'Course Module'}`}
+                                </span>
+
+                                <span style={{
+                                  color: col.text,
+                                  background: col.bg,
+                                  border: `1px solid ${col.border}`,
+                                  fontSize: '0.78rem',
+                                  fontWeight: 800,
+                                  padding: '4px 12px',
+                                  borderRadius: '20px'
+                                }}>
+                                  {col.label}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Module Title Banner */}
+                            <div style={{ background: '#f8fafc', borderRadius: '12px', padding: '0.75rem 1rem', border: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
+                              <div style={{ fontWeight: 800, fontSize: '0.98rem', color: '#1e293b' }}>
+                                {formatTaskTitle(task)}
+                              </div>
+                              <div style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 600 }}>
+                                Submitted: <strong>{formatSubmittedDate(task.submittedAt)}</strong>
+                              </div>
+                            </div>
+
+                            {/* Middle Body: Submission Content & Student Reflection */}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                              {/* URL Button */}
+                              {task.submissionUrl && (
+                                <div>
+                                  <a
+                                    href={task.submissionUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{
+                                      color: '#2563eb',
+                                      textDecoration: 'none',
+                                      fontWeight: 800,
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '6px',
+                                      background: '#eff6ff',
+                                      border: '1px solid #bfdbfe',
+                                      padding: '6px 14px',
+                                      borderRadius: '10px',
+                                      fontSize: '0.85rem',
+                                      boxShadow: '0 2px 4px rgba(37, 99, 235, 0.06)'
+                                    }}
+                                  >
+                                    🔗 Open Student Project Link <ExternalLink size={13} />
+                                  </a>
+                                </div>
+                              )}
+
+                              {/* Student Feedback Reflection Quote */}
+                              {task.studentFeedback && (
+                                <div style={{
+                                  background: '#f8fafc',
+                                  borderLeft: '4px solid #3b82f6',
+                                  padding: '10px 14px',
+                                  borderRadius: '0 10px 10px 0',
+                                  fontSize: '0.88rem',
+                                  color: '#334155',
+                                  lineHeight: 1.6,
+                                  fontStyle: 'italic'
+                                }}>
+                                  <span style={{ fontWeight: 800, color: '#2563eb', fontStyle: 'normal', display: 'block', fontSize: '0.75rem', marginBottom: 2 }}>
+                                    💬 Student Reflection &amp; Learner Feedback:
+                                  </span>
+                                  "{task.studentFeedback}"
+                                </div>
+                              )}
+
+                              {/* Submission Notes */}
+                              {task.submissionNotes && !task.studentFeedback && (
+                                <div style={{
+                                  background: '#f8fafc',
+                                  border: '1px solid #e2e8f0',
+                                  padding: '10px 14px',
+                                  borderRadius: '10px',
+                                  fontSize: '0.86rem',
+                                  color: '#475569',
+                                  lineHeight: 1.5,
+                                  whiteSpace: 'pre-wrap'
+                                }}>
+                                  <span style={{ fontWeight: 800, color: '#64748b', display: 'block', fontSize: '0.75rem', marginBottom: 2 }}>
+                                    📝 Submission Notes:
+                                  </span>
+                                  {task.submissionNotes}
+                                </div>
+                              )}
+
+                              {/* Default fallback notice when no feedback/link attached */}
+                              {!task.submissionUrl && !task.studentFeedback && !task.submissionNotes && (
+                                <div style={{ fontSize: '0.82rem', color: '#94a3b8', fontStyle: 'italic', background: '#fafafa', padding: '8px 12px', borderRadius: 8 }}>
+                                  📝 Practical topic homework exercise submission record.
+                                </div>
+                              )}
+
+                              {/* Staff Remarks Display */}
+                              {task.staffFeedback && (
+                                <div style={{
+                                  background: '#f0fdf4',
+                                  border: '1px solid #bbf7d0',
+                                  padding: '8px 12px',
+                                  borderRadius: '10px',
+                                  fontSize: '0.82rem',
+                                  color: '#15803d',
+                                  fontWeight: 700
+                                }}>
+                                  💬 Staff Evaluation Remarks: "{task.staffFeedback}" {task.validatedBy ? `— by ${task.validatedBy}` : ''}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Footer Actions Bar */}
+                            <div style={{
+                              display: 'flex',
+                              justify: 'flex-end',
+                              alignItems: 'center',
+                              gap: '8px',
+                              borderTop: '1px solid #f1f5f9',
+                              paddingTop: '0.88rem',
+                              flexWrap: 'wrap'
+                            }}>
+                              <button
+                                type="button"
+                                onClick={() => handleQuickApprove(task)}
+                                style={{
+                                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                  border: 'none',
+                                  color: '#ffffff',
+                                  padding: '0.55rem 1.25rem',
+                                  borderRadius: '10px',
+                                  cursor: 'pointer',
+                                  fontSize: '0.82rem',
+                                  fontWeight: 800,
+                                  boxShadow: '0 3px 8px rgba(16, 185, 129, 0.25)',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 6,
+                                  transition: 'all 0.2s'
+                                }}
+                                title="Approve submission and unlock next content"
+                              >
+                                <CheckCircle size={15} /> Approve &amp; Unlock Next Day
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleQuickReject(task)}
+                                style={{
+                                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                                  border: 'none',
+                                  color: '#ffffff',
+                                  padding: '0.55rem 1.1rem',
+                                  borderRadius: '10px',
+                                  cursor: 'pointer',
+                                  fontSize: '0.82rem',
+                                  fontWeight: 800,
+                                  boxShadow: '0 3px 8px rgba(239, 68, 68, 0.25)',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 6,
+                                  transition: 'all 0.2s'
+                                }}
+                                title="Request revision from student"
+                              >
+                                <AlertTriangle size={15} /> Request Revision
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setGradingTask(task);
+                                  setGradingStudentId(task.studentId || '');
+                                  setGradingStatus(task.status);
+                                  setGradingFeedback(task.staffFeedback || task.feedback || '');
+                                  setGradingGrade(task.grade || 'Pass');
+                                }}
+                                style={{
+                                  background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                  border: 'none',
+                                  color: '#ffffff',
+                                  padding: '0.55rem 1.1rem',
+                                  borderRadius: '10px',
+                                  cursor: 'pointer',
+                                  fontSize: '0.82rem',
+                                  fontWeight: 800,
+                                  boxShadow: '0 3px 8px rgba(59, 130, 246, 0.25)',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 6,
+                                  transition: 'all 0.2s'
+                                }}
+                              >
+                                <FileText size={15} /> Custom Remarks &amp; Grade
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })
                     ) : (
-                      <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--text-secondary)' }}>
-                        <CheckCircle size={48} style={{ opacity: 0.3, marginBottom: '1rem' }} />
-                        <p style={{ margin: 0 }}>No student assignments have been submitted yet.</p>
+                      <div style={{
+                        background: '#ffffff',
+                        border: '1px solid var(--surface-border)',
+                        borderRadius: '20px',
+                        textAlign: 'center',
+                        padding: '4rem 1.5rem',
+                        color: 'var(--text-secondary)'
+                      }}>
+                        <CheckCircle size={52} style={{ opacity: 0.25, marginBottom: '1rem', color: '#3b82f6' }} />
+                        <h4 style={{ margin: '0 0 6px 0', fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>No Submissions Found</h4>
+                        <p style={{ margin: 0, fontSize: '0.88rem', color: '#64748b' }}>No student submission requests matched your current search or status filter.</p>
                       </div>
                     )}
-                  </>
-                );
-              })()}
+                  </div>
+                </>
+              );
+            })()}
 
-            </div>
           </div>
         )}
 
@@ -2260,27 +2944,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 </select>
               </div>
 
-              {/* Grade Input */}
-              <div style={{ marginBottom: '1.25rem' }}>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginBottom: '0.5rem', fontFamily: 'system-ui' }}>
-                  Grade / Score
-                </label>
-                <input 
-                  type="text"
-                  placeholder="e.g. A+, A, B, 95%, Pass"
-                  value={gradingGrade}
-                  onChange={(e) => setGradingGrade(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '0.8rem 1rem',
-                    borderRadius: '12px',
-                    border: '1px solid #cbd5e1',
-                    fontSize: '0.92rem',
-                    outline: 'none',
-                    boxSizing: 'border-box'
-                  }}
-                />
-              </div>
+
 
               {/* Feedback Text */}
               <div style={{ marginBottom: '1.5rem' }}>

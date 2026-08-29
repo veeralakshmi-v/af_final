@@ -9,7 +9,7 @@ import {
   saveAssignmentValidation 
 } from '../utils/htmlCssLocking';
 
-export default function AssignmentSubmissionPage({ moduleId, onNavigate }) {
+export default function AssignmentSubmissionPage({ moduleId, onNavigate, session }) {
   const config = HTML_CSS_ASSIGNMENTS_CONFIG[moduleId] || {
     dayTitle: 'Day Assignment',
     assignmentTitle: 'Practical Assignment & Staff Validation',
@@ -28,8 +28,21 @@ export default function AssignmentSubmissionPage({ moduleId, onNavigate }) {
   const [showError, setShowError] = useState(false);
   const [isSubmittedNotice, setIsSubmittedNotice] = useState(false);
 
-  // Staff Review Mode State
-  const [isStaffMode, setIsStaffMode] = useState(false);
+  // Check if logged-in account has staff or admin role
+  const isStaffUser = (() => {
+    if (session && (session.role === 'staff' || session.role === 'admin' || session.role === 'instructor')) {
+      return true;
+    }
+    try {
+      const raw = localStorage.getItem('lms_user_session');
+      if (raw) {
+        const u = JSON.parse(raw);
+        return u && (u.role === 'staff' || u.role === 'admin' || u.role === 'instructor');
+      }
+    } catch (e) {}
+    return false;
+  })();
+
   const [staffFeedbackInput, setStaffFeedbackInput] = useState(currentRecord.staffFeedback || 'Great work! Code meets semantic standards and feedback is thoughtful. Approved.');
 
   useEffect(() => {
@@ -51,11 +64,11 @@ export default function AssignmentSubmissionPage({ moduleId, onNavigate }) {
   }, [moduleId]);
 
   const MIN_CHARS = 100;
-  const feedbackLength = studentFeedback.trim().length;
+  const feedbackLength = Math.max(studentFeedback.trim().length, studentFeedback.length);
   const isFeedbackValid = feedbackLength >= MIN_CHARS;
 
   const handleStudentSubmit = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!isFeedbackValid) {
       setShowError(true);
       return;
@@ -63,17 +76,22 @@ export default function AssignmentSubmissionPage({ moduleId, onNavigate }) {
 
     const newRecord = {
       ...currentRecord,
+      studentName: session?.name || currentRecord.studentName || 'Student Learner',
+      studentAccessCode: session?.accessCode || session?.username || currentRecord.studentAccessCode || 'STUDENT',
       submissionUrl: submissionUrl.trim(),
       submissionNotes: submissionNotes.trim(),
       studentFeedback: studentFeedback.trim(),
       submittedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-      status: currentRecord.status === 'approved' ? 'approved' : 'pending'
+      status: isStaffUser || currentRecord.status === 'approved' ? 'approved' : 'pending'
     };
 
-    saveAssignmentValidation(moduleId, newRecord);
+    const updated = saveAssignmentValidation(moduleId, newRecord);
+    if (updated && Object.keys(updated).length > 0) {
+      setValidations(updated);
+    }
     setIsSubmittedNotice(true);
     setShowError(false);
-    setTimeout(() => setIsSubmittedNotice(false), 4000);
+    setTimeout(() => setIsSubmittedNotice(false), 5000);
   };
 
   const handleStaffApproval = (newStatus) => {
@@ -88,7 +106,10 @@ export default function AssignmentSubmissionPage({ moduleId, onNavigate }) {
       validatedBy: 'Staff Instructor'
     };
 
-    saveAssignmentValidation(moduleId, updatedRecord);
+    const updated = saveAssignmentValidation(moduleId, updatedRecord);
+    if (updated && Object.keys(updated).length > 0) {
+      setValidations(updated);
+    }
   };
 
   const currentStatus = currentRecord.status || 'not_submitted';
@@ -98,16 +119,42 @@ export default function AssignmentSubmissionPage({ moduleId, onNavigate }) {
       
       {/* Top Breadcrumb Header */}
       <div style={{ marginBottom: '1.5rem', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', borderRadius: 16, padding: '2rem', color: 'white', boxShadow: '0 10px 25px -5px rgba(15, 23, 42, 0.3)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-          <span style={{ background: '#38bdf8', color: '#0f172a', fontWeight: 800, fontSize: '0.75rem', padding: '3px 10px', borderRadius: 20, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            {config.dayTitle}
-          </span>
-          <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>HTML &amp; CSS Learning Track</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12, marginBottom: 8 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+              <span style={{ background: '#38bdf8', color: '#0f172a', fontWeight: 800, fontSize: '0.75rem', padding: '3px 10px', borderRadius: 20, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                {config.dayTitle}
+              </span>
+              <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>HTML &amp; CSS Learning Track</span>
+            </div>
+            <h2 style={{ fontSize: '1.8rem', fontWeight: 800, margin: 0, color: '#f8fafc' }}>
+              {config.assignmentTitle}
+            </h2>
+          </div>
+
+          {/* Staff Badge (ONLY shown for verified Staff / Admin accounts) */}
+          {isStaffUser && (
+            <div
+              style={{
+                background: 'linear-gradient(135deg, #9333ea 0%, #6b21a8 100%)',
+                border: '1px solid #c084fc',
+                color: 'white',
+                padding: '6px 14px',
+                borderRadius: 30,
+                fontSize: '0.82rem',
+                fontWeight: 800,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                boxShadow: '0 4px 12px rgba(147, 51, 234, 0.4)'
+              }}
+            >
+              <Award size={16} /> 🛡️ Instructor Review Mode
+            </div>
+          )}
         </div>
-        <h2 style={{ fontSize: '1.8rem', fontWeight: 800, margin: '0 0 10px', color: '#f8fafc' }}>
-          {config.assignmentTitle}
-        </h2>
-        <p style={{ color: '#cbd5e1', margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
+
+        <p style={{ color: '#cbd5e1', margin: '8px 0 0 0', fontSize: '0.92rem', lineHeight: 1.6 }}>
           Complete your assignment, submit your <strong>student feedback (minimum 100 characters)</strong>, and receive <strong>Staff Validation</strong> to unlock the next day's course content.
         </p>
       </div>
@@ -298,6 +345,7 @@ export default function AssignmentSubmissionPage({ moduleId, onNavigate }) {
           <button 
             type="submit"
             disabled={!isFeedbackValid}
+            onClick={handleStudentSubmit}
             style={{ 
               background: isFeedbackValid ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : '#94a3b8', 
               color: 'white', 
@@ -345,28 +393,18 @@ export default function AssignmentSubmissionPage({ moduleId, onNavigate }) {
         )}
       </div>
 
-      {/* Interactive Staff Evaluation Panel (For Staff / Instructor Review Mode) */}
-      <div style={{ background: '#faf5ff', border: '1px solid #e9d5ff', borderRadius: 14, padding: '1.5rem', marginBottom: '2rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: '1rem' }}>
-          <div>
-            <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#6b21a8', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Award size={18} /> Staff Evaluation &amp; Validation Panel (Instructor Mode)
+      {/* Interactive Staff Evaluation Panel (ONLY rendered for logged in Staff / Admin users) */}
+      {isStaffUser && (
+        <div style={{ background: '#faf5ff', border: '2px solid #c084fc', borderRadius: 14, padding: '1.5rem', marginBottom: '2rem', boxShadow: '0 4px 14px rgba(147, 51, 234, 0.12)' }}>
+          <div style={{ marginBottom: '1rem' }}>
+            <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#6b21a8', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Award size={20} /> Staff Evaluation &amp; Validation Panel (Instructor Mode)
             </h4>
-            <span style={{ fontSize: '0.8rem', color: '#7e22ce' }}>Staff members validate student assignments and feedback to unlock next day content.</span>
+            <span style={{ fontSize: '0.82rem', color: '#7e22ce' }}>Staff members validate student assignments and feedback to unlock next day content.</span>
           </div>
 
-          <button 
-            className="btn btn-sm"
-            onClick={() => setIsStaffMode(!isStaffMode)}
-            style={{ background: isStaffMode ? '#6b21a8' : '#f3e8ff', color: isStaffMode ? 'white' : '#6b21a8', border: '1px solid #c084fc', padding: '4px 12px', fontSize: '0.78rem', fontWeight: 700, borderRadius: 6, cursor: 'pointer' }}
-          >
-            {isStaffMode ? 'Close Staff Panel' : '🛠️ Open Staff Validation Controls'}
-          </button>
-        </div>
-
-        {isStaffMode && (
           <div style={{ background: 'white', border: '1px solid #d8b4fe', borderRadius: 10, padding: 16 }}>
-            <label style={{ display: 'block', fontWeight: 700, fontSize: '0.85rem', color: '#581c87', marginBottom: 6 }}>
+            <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#581c87', marginBottom: 6 }}>
               Staff Feedback Remarks to Student:
             </label>
             <textarea 
@@ -381,7 +419,7 @@ export default function AssignmentSubmissionPage({ moduleId, onNavigate }) {
               <button 
                 type="button"
                 onClick={() => handleStaffApproval('approved')}
-                style={{ background: '#16a34a', color: 'white', border: 'none', padding: '0.6rem 1.25rem', borderRadius: 8, fontWeight: 800, fontSize: '0.88rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
+                style={{ background: '#16a34a', color: 'white', border: 'none', padding: '0.65rem 1.35rem', borderRadius: 8, fontWeight: 800, fontSize: '0.88rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
               >
                 <Check size={16} /> ✅ Approve &amp; Unlock {config.nextModuleTitle || 'Next Day'}
               </button>
@@ -389,14 +427,14 @@ export default function AssignmentSubmissionPage({ moduleId, onNavigate }) {
               <button 
                 type="button"
                 onClick={() => handleStaffApproval('rejected')}
-                style={{ background: '#dc2626', color: 'white', border: 'none', padding: '0.6rem 1.25rem', borderRadius: 8, fontWeight: 800, fontSize: '0.88rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
+                style={{ background: '#dc2626', color: 'white', border: 'none', padding: '0.65rem 1.35rem', borderRadius: 8, fontWeight: 800, fontSize: '0.88rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
               >
                 <AlertTriangle size={16} /> ❌ Request Revision
               </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
     </div>
   );
