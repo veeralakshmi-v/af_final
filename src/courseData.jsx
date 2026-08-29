@@ -2384,18 +2384,12 @@ export const webDesignCourseData = [
     title: 'Day 11 — Advanced CSS: Modern Layouts & UI Components',
     items: [
       { id: 'intro', label: '1. Objective & Before/After', icon: <BookOpen size={18} /> },
-      { id: 'variables', label: '2. Design System & Variables', icon: <Sliders size={18} /> },
-      { id: 'flexbox', label: '3. Advanced Flexbox & Navbar', icon: <LayoutGrid size={18} /> },
-      { id: 'mobile_nav', label: '4. Responsive Nav & JS Toggle', icon: <Smartphone size={18} /> },
-      { id: 'grid_lab', label: '5. Grid, Auto-Fit & MinMax', icon: <Layout size={18} /> },
-      { id: 'positioning', label: '6. Sticky & Z-Index Stack', icon: <Layers size={18} /> },
-      { id: 'ui_system', label: '7. Cards, Buttons & Typography', icon: <PenTool size={18} /> },
-      { id: 'testing_lab', label: '8. Responsive Testing Lab', icon: <MonitorPlay size={18} /> },
-      { id: 'guided_build', label: '9. Build-With-Me (16 Stages)', icon: <Code size={18} /> },
-      { id: 'challenges', label: '10. Predict & Debugging Lab', icon: <Terminal size={18} /> },
-      { id: 'ai_audit', label: '11. AI Design & Mobile Audit', icon: <Sparkles size={18} /> },
-      { id: 'assignment', label: '12. Day 11 Assignment', icon: <Briefcase size={18} /> },
-      { id: 'quiz', label: '13. Knowledge Check (18 Qs)', icon: <CheckCircle size={18} /> }
+      { id: 'variables', label: '2. CSS Tokens & Variables', icon: <Sliders size={18} /> },
+      { id: 'flexbox_nav', label: '3. Flexbox & Mobile Navigation', icon: <LayoutGrid size={18} /> },
+      { id: 'grid_lab', label: '4. Advanced Grid & Sticky Navbar', icon: <Layout size={18} /> },
+      { id: 'ui_components', label: '5. Component System & Viewport Lab', icon: <PenTool size={18} /> },
+      { id: 'guided_build', label: '6. Guided CSS Upgrade (6 Stages)', icon: <Code size={18} /> },
+      { id: 'assignment_quiz', label: '7. Practice, AI Audit & Quiz', icon: <CheckCircle size={18} /> }
     ]
   }
 ];
