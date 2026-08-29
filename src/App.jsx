@@ -235,6 +235,7 @@ import WebDesignDay7 from './pages/web-design/WebDesignDay7';
 import WebDesignDay8 from './pages/web-design/WebDesignDay8';
 import WebDesignDay9 from './pages/web-design/WebDesignDay9';
 import WebDesignDay10 from './pages/web-design/WebDesignDay10';
+import WebDesignDay11 from './pages/web-design/WebDesignDay11';
 import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData } from './courseData';
 import TallyCourseDay from './pages/tally/TallyCourseDay';
 import AssignmentSubmissionPage from './components/AssignmentSubmissionPage';
@@ -818,6 +819,7 @@ function App() {
                     {activeNode.moduleId === 'web_design_day8' && <WebDesignDay8 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                     {activeNode.moduleId === 'web_design_day9' && <WebDesignDay9 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                     {activeNode.moduleId === 'web_design_day10' && <WebDesignDay10 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                    {activeNode.moduleId === 'web_design_day11' && <WebDesignDay11 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                   </>
                 )}
                 
