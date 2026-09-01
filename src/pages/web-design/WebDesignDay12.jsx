@@ -294,14 +294,26 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
   // Run console simulation
   const handleRunConsole = () => {
     const logs = [];
-    const lines = consoleCode.split('\n');
-    lines.forEach(line => {
-      const match = line.match(/console\.log\((['"`])(.*)\1\)/);
-      if (match) {
-        logs.push(match[2]);
+    const customConsole = {
+      log: (...args) => {
+        logs.push(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '));
+      },
+      warn: (...args) => {
+        logs.push(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '));
+      },
+      error: (...args) => {
+        logs.push(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '));
       }
-    });
-    setConsoleLogOutput(logs.length > 0 ? logs : ["Code executed cleanly in browser console."]);
+    };
+
+    try {
+      const runFn = new Function('console', consoleCode);
+      runFn(customConsole);
+    } catch (err) {
+      logs.push(`Error: ${err.message}`);
+    }
+
+    setConsoleLogOutput(logs.length > 0 ? logs : ["Code executed cleanly with no output."]);
   };
 
   return (
