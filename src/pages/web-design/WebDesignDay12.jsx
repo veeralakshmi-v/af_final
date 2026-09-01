@@ -7,6 +7,7 @@ import {
   ArrowRight, RotateCcw, X, Info, Terminal, MousePointerClick, ToggleLeft, ToggleRight,
   SlidersHorizontal, CheckSquare2, FileCode2, Menu, Clock
 } from 'lucide-react';
+import { CodeBlock } from '../../utils/codeHighlight';
 
 export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onNavigate, openAITutor }) {
   const [activeTab, setActiveTab] = useState(propActiveTab);
@@ -406,14 +407,14 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                1 - 4. Introduction — Why JavaScript?
+                Topic 1: Introduction to JavaScript &amp; Role in Web Development
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
                 Making Your Website Respond to Visitors
               </h2>
 
               <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
-                Inspect a typical business website with Navbar, Hero, Services, Pricing, and Contact form:
+                HTML provides structure, CSS provides design, and JavaScript provides dynamic behavior and user interaction!
               </p>
 
               {/* Real Website Interactive Questions Grid */}
@@ -434,7 +435,7 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
               {/* Real Website Feature vs JS Role Table */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', marginBottom: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
-                  2. Real Website Features &amp; JavaScript Roles
+                  Real Website Features &amp; JavaScript Roles
                 </h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
                   {[
@@ -455,9 +456,34 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
                 </div>
               </div>
 
+              {/* Topic 1 Source Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Topic 1 Source Code: Linking JavaScript in HTML
+                </h3>
+                <CodeBlock
+                  title="index.html"
+                  language="html"
+                  code={`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Fly Theni - Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Welcome to Alpha Fly Theni</h1>
+
+  <!-- Place script tag at the bottom of <body> so HTML loads first -->
+  <script src="script.js"></script>
+</body>
+</html>`}
+                />
+              </div>
+
               {/* Visual Flow diagram */}
               <div style={{ background: '#eff6ff', padding: '1.25rem', borderRadius: '14px', border: '1px solid #bfdbfe' }}>
-                <h4 style={{ margin: '0 0 8px 0', color: '#1e40af', fontSize: '1rem', fontWeight: 900 }}>4. How JavaScript Works in a Website:</h4>
+                <h4 style={{ margin: '0 0 8px 0', color: '#1e40af', fontSize: '1rem', fontWeight: 900 }}>How JavaScript Operates in a Webpage:</h4>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontWeight: 800, fontSize: '0.85rem' }}>
                   <span style={{ background: '#fff', color: '#1e3a8a', padding: '6px 12px', borderRadius: '6px', border: '1px solid #93c5fd' }}>USER INTERACTION</span>
                   <ChevronRight size={14} color="#2563eb" />
@@ -474,7 +500,7 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
                   onClick={() => handleTabChange('connecting_js')}
                   style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Next: File Structure &amp; Console <ArrowRight size={18} />
+                  Next: Topic 2 - Console &amp; File Structure <ArrowRight size={18} />
                 </button>
               </div>
             </div>
@@ -486,14 +512,14 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                5 - 6. Project Structure &amp; External JavaScript
+                Topic 2: Project Structure &amp; Browser Console (console.log)
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Adding JavaScript to Your Website
+                Adding JavaScript &amp; Outputting Console Logs
               </h2>
 
               <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
-                Keep HTML, CSS, and JavaScript cleanly organized in separate files throughout the course:
+                Keep HTML, CSS, and JavaScript cleanly organized in separate files throughout your project:
               </p>
 
               {/* Recommended File Structure */}
@@ -516,11 +542,27 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
                 </div>
               </div>
 
+              {/* Topic 2 Source Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Topic 2 Source Code: console.log() Output
+                </h3>
+                <CodeBlock
+                  title="script.js"
+                  language="javascript"
+                  code={`// Log messages to the browser Developer Tools console
+console.log("Hello from script.js!");
+console.log("JavaScript is working smoothly!");
+const businessName = "Alpha Fly Theni";
+console.log("Welcome to " + businessName);`}
+                />
+              </div>
+
               {/* Console.log Simulator */}
               <div style={{ background: '#090d16', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #1e293b' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                   <h3 style={{ fontSize: '1.1rem', color: '#38bdf8', margin: 0, fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Terminal size={18} /> 6. First JS Code &amp; Browser Console
+                    <Terminal size={18} /> Interactive Browser Console Sandbox
                   </h3>
                   <button
                     onClick={handleRunConsole}
@@ -571,31 +613,74 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                7 - 12. Variables, const / let, Operators &amp; Template Literals
+                Topic 3: Variables (const vs let) &amp; Topic 4: Data Types, Operators &amp; Template Literals
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Storing Values &amp; Performing Calculations
+                Storing Values &amp; Dynamic Template Literals
               </h2>
 
               {/* const vs let Box */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
                 <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                  <h4 style={{ margin: '0 0 4px 0', color: '#2563eb', fontWeight: 800 }}>8. let (Value May Change)</h4>
+                  <h4 style={{ margin: '0 0 4px 0', color: '#2563eb', fontWeight: 800 }}>let (Value May Change)</h4>
                   <code style={{ fontSize: '0.85rem', color: '#0f172a' }}>let menuOpen = false;</code>
                   <p style={{ margin: '6px 0 0 0', fontSize: '0.82rem', color: '#64748b' }}>Used when UI state or counts change on user interaction.</p>
                 </div>
 
                 <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                  <h4 style={{ margin: '0 0 4px 0', color: '#2563eb', fontWeight: 800 }}>8. const (Value Remains Constant)</h4>
+                  <h4 style={{ margin: '0 0 4px 0', color: '#2563eb', fontWeight: 800 }}>const (Value Remains Constant)</h4>
                   <code style={{ fontSize: '0.85rem', color: '#0f172a' }}>const businessName = "Alpha Fly Theni";</code>
                   <p style={{ margin: '6px 0 0 0', fontSize: '0.82rem', color: '#64748b' }}>Used when reference or value should not be reassigned.</p>
+                </div>
+              </div>
+
+              {/* Topic 3 & Topic 4 Source Code Examples */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
+                <div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                    📄 Topic 3 Source Code: Variables &amp; Types
+                  </h3>
+                  <CodeBlock
+                    title="Topic 3: Variables"
+                    language="javascript"
+                    code={`// const: fixed value
+const businessName = "Alpha Fly Theni";
+const serviceName = "Web Design";
+
+// let: reassignable value
+let quantity = 2;
+quantity = 3; // Allowed
+
+// Primitive Data Types
+const price = 5000;         // Number
+const isAvailable = true;   // Boolean`}
+                  />
+                </div>
+
+                <div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                    📄 Topic 4 Source Code: Operators &amp; Templates
+                  </h3>
+                  <CodeBlock
+                    title="Topic 4: Template Literals"
+                    language="javascript"
+                    code={`const price = 5000;
+const qty = 2;
+
+// Arithmetic calculation operator (*)
+const total = price * qty;
+
+// Template string with backticks \`...\`
+const msg = \`Welcome to \${businessName}! Total for \${qty} packages is ₹\${total}.\`;
+console.log(msg);`}
+                  />
                 </div>
               </div>
 
               {/* Variables & Math Playground */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155' }}>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
-                  🎛️ 10. Live Variables &amp; Math Playground
+                  🎛️ Live Interactive Variables &amp; Math Playground
                 </h3>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
@@ -620,14 +705,14 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
                 {/* Template Literal Output */}
                 <div style={{ background: '#ffffff', color: '#0f172a', padding: '1.25rem', borderRadius: '12px' }}>
                   <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>
-                    12. Template Literal Output: `Welcome to ${`businessName`}`
+                    Template String Evaluation Output:
                   </div>
                   <h3 style={{ margin: '0 0 6px 0', color: '#111827', fontSize: '1.3rem' }}>Welcome to {varBusinessName}</h3>
                   <div style={{ fontSize: '0.95rem', color: '#374151', marginBottom: '4px' }}>
                     Service: <strong>{varServiceName}</strong> | Price: <strong>₹{varPrice.toLocaleString()}</strong> x <strong>{varQuantity}</strong>
                   </div>
                   <div style={{ fontSize: '1.1rem', fontWeight: 900, color: '#2563eb', margin: '6px 0' }}>
-                    11. Basic Operator Calculation (price * qty): ₹{(varPrice * varQuantity).toLocaleString()}
+                    Operator Calculation (price * quantity): ₹{(varPrice * varQuantity).toLocaleString()}
                   </div>
                 </div>
               </div>
@@ -649,20 +734,39 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                13 - 16. What is the DOM &amp; Selector Practice
+                Topic 5: The DOM (Document Object Model) &amp; Selecting Elements (querySelector)
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
                 Connecting JavaScript to HTML Elements
               </h2>
 
               <div style={{ background: '#eff6ff', padding: '1.25rem', borderRadius: '14px', border: '1px solid #bfdbfe', marginBottom: '1.5rem' }}>
-                <h4 style={{ margin: '0 0 4px 0', color: '#1e40af', fontSize: '1rem', fontWeight: 900 }}>13. DOM Definition:</h4>
+                <h4 style={{ margin: '0 0 4px 0', color: '#1e40af', fontSize: '1rem', fontWeight: 900 }}>What is the DOM?</h4>
                 <p style={{ margin: 0, fontSize: '0.95rem', color: '#1e3a8a', lineHeight: 1.5, fontWeight: 700 }}>
-                  "The browser converts your HTML into a Document Object Model structure that JavaScript can interact with!"
+                  "The browser converts your HTML code into a tree structure called the Document Object Model (DOM) that JavaScript can query and modify!"
                 </p>
                 <div style={{ marginTop: '8px', fontSize: '0.85rem', color: '#2563eb', fontWeight: 800 }}>
-                  HTML → Browser → DOM → JavaScript
+                  HTML Code → Browser Parser → DOM Tree → JavaScript Manipulation
                 </div>
+              </div>
+
+              {/* Topic 5 Source Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Topic 5 Source Code: Selecting Elements with querySelector()
+                </h3>
+                <CodeBlock
+                  title="script.js"
+                  language="javascript"
+                  code={`// 1. Select by Element ID (#)
+const heading = document.querySelector("#mainTitle");
+
+// 2. Select by CSS Class Name (.)
+const serviceCard = document.querySelector(".service-card");
+
+// 3. Select by HTML Tag Name
+const primaryBtn = document.querySelector("button");`}
+                />
               </div>
 
               {/* Selector Matching Rules */}
@@ -728,11 +832,46 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                17 - 21. Changing Text &amp; Event Flow Visualizer
+                Topic 6: Modifying Text Content (textContent) &amp; Topic 7: Event Listeners (addEventListener)
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                18. First Live "WOW" Moment: Changing Text
+                Changing Page Text Dynamically on User Interaction
               </h2>
+
+              {/* Topic 6 & Topic 7 Source Code Examples */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
+                <div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                    📄 Topic 6 Source Code: textContent
+                  </h3>
+                  <CodeBlock
+                    title="Topic 6: Changing Text"
+                    language="javascript"
+                    code={`// 1. Select the title element
+const title = document.querySelector("#mainTitle");
+
+// 2. Change text dynamically
+title.textContent = "Welcome to Alpha Fly Theni!";`}
+                  />
+                </div>
+
+                <div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                    📄 Topic 7 Source Code: addEventListener
+                  </h3>
+                  <CodeBlock
+                    title="Topic 7: Click Event"
+                    language="javascript"
+                    code={`const btn = document.querySelector("#changeBtn");
+const title = document.querySelector("#mainTitle");
+
+// Listen for click event
+btn.addEventListener("click", function() {
+  title.textContent = "Button Clicked! Text Updated!";
+});`}
+                  />
+                </div>
+              </div>
 
               {/* Live Heading Text Change Widget */}
               <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '1.5rem' }}>
@@ -747,10 +886,10 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
                 </button>
               </div>
 
-              {/* 21. Event Flow Visualizer */}
+              {/* Event Flow Visualizer */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155' }}>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
-                  ⚡ 21. Interactive Event Flow Visualizer
+                  ⚡ Interactive Event Flow Visualizer
                 </h3>
 
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
@@ -814,20 +953,60 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                22 - 25. Functions &amp; Connecting JS with CSS
+                Topic 8: Functions &amp; Reusable Logic &amp; Topic 9: Manipulating CSS Classes (classList)
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                24. classList.add(), remove() &amp; toggle()
+                Functions &amp; Dynamic CSS Class Toggling
               </h2>
 
               <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
-                JavaScript controls the state/class while CSS controls visual appearance:
+                Functions group code into reusable blocks. JavaScript toggles CSS class names (`classList.add`, `remove`, `toggle`) to change styling dynamically!
               </p>
 
-              {/* 25. Highlight Card Toggle Demo */}
+              {/* Topic 8 & Topic 9 Source Code Examples */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
+                <div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                    📄 Topic 8 Source Code: Functions
+                  </h3>
+                  <CodeBlock
+                    title="Topic 8: Reusable Function"
+                    language="javascript"
+                    code={`// Define function
+function showWelcomeMessage(name) {
+  const heading = document.querySelector("#mainTitle");
+  heading.textContent = \`Welcome to Alpha Fly Theni, \${name}!\`;
+}
+
+// Call function
+showWelcomeMessage("Student");`}
+                  />
+                </div>
+
+                <div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                    📄 Topic 9 Source Code: classList
+                  </h3>
+                  <CodeBlock
+                    title="Topic 9: classList Methods"
+                    language="javascript"
+                    code={`const card = document.querySelector(".card");
+const btn = document.querySelector("#highlightBtn");
+
+// classList.add("highlight")
+// classList.remove("highlight")
+// classList.toggle("highlight") -> Add if missing, remove if present!
+btn.addEventListener("click", () => {
+  card.classList.toggle("highlight");
+});`}
+                  />
+                </div>
+              </div>
+
+              {/* Highlight Card Toggle Demo */}
               <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '1.5rem' }}>
                 <h3 style={{ margin: '0 0 10px 0', fontSize: '1.1rem', color: '#0f172a', fontWeight: 800 }}>
-                  25. Real Website Example — Highlight Service Card
+                  Real Website Example — Highlight Service Card
                 </h3>
 
                 <div
@@ -903,16 +1082,66 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                26 - 27. Build the Mobile Menu
+                Topic 10: Interactive Mobile Navigation Drawer Toggle Project
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Connecting JS Directly to Your Website Navigation
+                Putting It All Together: Complete Mobile Drawer Toggle
               </h2>
+
+              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
+                Combine querySelector, click addEventListener, and classList.toggle('active') to build a real mobile drawer menu!
+              </p>
+
+              {/* Topic 10 Full Source Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Topic 10 Complete Source Code (HTML + CSS + JS)
+                </h3>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <CodeBlock
+                    title="index.html"
+                    language="html"
+                    code={`<!-- Mobile Navbar Header -->
+<header class="navbar">
+  <div class="logo">Alpha Fly Theni</div>
+  <button id="menuBtn">☰</button>
+</header>
+
+<!-- Mobile Navigation Drawer -->
+<nav class="mobile-drawer">
+  <a href="#home">Home</a>
+  <a href="#services">Services</a>
+  <a href="#contact">Contact</a>
+</nav>`}
+                  />
+
+                  <CodeBlock
+                    title="script.js"
+                    language="javascript"
+                    code={`// 1. Select menu elements
+const menuBtn = document.querySelector("#menuBtn");
+const drawer = document.querySelector(".mobile-drawer");
+
+// 2. Attach click event listener
+menuBtn.addEventListener("click", () => {
+  // 3. Toggle 'active' class on menu drawer
+  drawer.classList.toggle("active");
+  
+  // 4. Update button text (☰ or ✕)
+  if (drawer.classList.contains("active")) {
+    menuBtn.textContent = "✕";
+  } else {
+    menuBtn.textContent = "☰";
+  }
+});`}
+                  />
+                </div>
+              </div>
 
               {/* Mobile Menu Interactive Simulation Box */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', marginBottom: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
-                  📱 Interactive Mobile Menu Tester
+                  📱 Live Interactive Mobile Menu Tester
                 </h3>
 
                 {/* Simulated Phone Frame */}
@@ -973,19 +1202,28 @@ menuButton.addEventListener("click", () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                28 - 29. Simple if / else &amp; Business Logic
+                Conditional Logic (if / else) &amp; Business Logic
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                29. Consultation Booking Availability Example
+                Making Decisions in JavaScript
               </h2>
 
-              <LiveSyntaxCodeEditor
-                language="js"
-                rows={6}
-                value={`if (isAvailable) {
-  message.textContent = "Bookings are open";
+              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
+                `if / else` statements evaluate boolean conditions (`true` or `false`) to run different blocks of code!
+              </p>
+
+              <CodeBlock
+                title="Topic: Conditional Logic (if / else)"
+                language="javascript"
+                code={`const isAvailable = true;
+const statusMsg = document.querySelector("#status");
+
+if (isAvailable) {
+  statusMsg.textContent = "Bookings are currently open!";
+  statusMsg.style.color = "green";
 } else {
-  message.textContent = "Bookings are closed";
+  statusMsg.textContent = "Bookings are closed for today.";
+  statusMsg.style.color = "red";
 }`}
               />
 
@@ -1036,10 +1274,10 @@ menuButton.addEventListener("click", () => {
         {isTabActive('guided_build') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              {/* 30. 10-Minute Mini Interaction Challenge */}
+              {/* 10-Minute Mini Interaction Challenge */}
               <div style={{ background: '#fff7ed', padding: '1.5rem', borderRadius: '16px', border: '2px solid #f59e0b', marginBottom: '1.5rem' }}>
                 <h3 style={{ margin: '0 0 6px 0', fontSize: '1.2rem', color: '#9a3412', fontWeight: 900 }}>
-                  ⏱️ 30. 10-Minute Mini Interaction Challenge
+                  ⏱️ 10-Minute Mini Interaction Challenge
                 </h3>
                 <p style={{ margin: '0 0 12px 0', fontSize: '0.88rem', color: '#7c2d12' }}>
                   Task: Create a button <code>[ View Offer ]</code> that toggles a message on click:
@@ -1155,10 +1393,10 @@ menuButton.addEventListener("click", () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                31 - 32. Debugging Challenge &amp; Console Inspection
+                Interactive Practice: Debugging &amp; Console Inspection
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                31. Find and Fix the JavaScript Bug
+                Find and Fix the JavaScript Bugs
               </h2>
 
               {/* Debugging Challenge */}
@@ -1199,10 +1437,10 @@ menuButton.addEventListener("click", () => {
                 </div>
               </div>
 
-              {/* 32. Console Debugging Guide */}
+              {/* Console Debugging Guide */}
               <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid #cbd5e1' }}>
                 <h3 style={{ margin: '0 0 8px 0', fontSize: '1.1rem', color: '#0f172a', fontWeight: 800 }}>
-                  32. Browser Console Error Debugging Guide
+                  Browser Console Error Debugging Guide
                 </h3>
                 <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.5 }}>
                   Always inspect browser Developer Tools $\rightarrow$ Console when JS fails to run. Look for: <strong>Error Type</strong> (e.g. <code>Uncaught ReferenceError</code>), <strong>File Name</strong> (e.g. <code>script.js</code>), and <strong>Line Number</strong>!
@@ -1226,16 +1464,16 @@ menuButton.addEventListener("click", () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                33 - 35. AI JavaScript Explainer, Debugger &amp; Idea Generator
+                AI Studio: JavaScript Explainer, Debugger &amp; Idea Generator
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
                 AI-Powered Code Assistance Studio
               </h2>
 
-              {/* 33. AI JS Explainer */}
+              {/* AI JS Explainer */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', marginBottom: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.2rem', color: '#38bdf8', margin: '0 0 1rem 0', fontWeight: 800 }}>
-                  🤖 33. AI JavaScript Explainer (Line-by-Line)
+                  🤖 AI JavaScript Explainer (Line-by-Line)
                 </h3>
                 <textarea
                   rows={3}
@@ -1256,10 +1494,10 @@ menuButton.addEventListener("click", () => {
                 )}
               </div>
 
-              {/* 34. AI Debugging Assistant */}
+              {/* AI Debugging Assistant */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', marginBottom: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.2rem', color: '#f59e0b', margin: '0 0 1rem 0', fontWeight: 800 }}>
-                  🛠️ 34. AI Debugging Assistant
+                  🛠️ AI Debugging Assistant
                 </h3>
                 <textarea
                   rows={2}
@@ -1287,10 +1525,10 @@ menuButton.addEventListener("click", () => {
                 )}
               </div>
 
-              {/* 35. AI Interaction Idea Generator */}
+              {/* AI Interaction Idea Generator */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff' }}>
                 <h3 style={{ fontSize: '1.2rem', color: '#a855f7', margin: '0 0 1rem 0', fontWeight: 800 }}>
-                  💡 35. AI Business Interaction Idea Generator
+                  💡 AI Business Interaction Idea Generator
                 </h3>
                 <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
                   <input
@@ -1337,15 +1575,15 @@ menuButton.addEventListener("click", () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                36 - 38. Practice, Assignment &amp; Student Reflection
+                Practice Task &amp; Student Assignment Reflection
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                37. Assignment — JavaScript Website Interaction
+                Day 12 Assignment — JavaScript Interaction
               </h2>
 
               <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '1.5rem' }}>
                 <h3 style={{ margin: '0 0 10px 0', fontSize: '1.1rem', color: '#0f172a', fontWeight: 800 }}>
-                  36. Practice Task Requirements:
+                  Practice Task Requirements:
                 </h3>
                 <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
                   <li>✓ External JS file linked in HTML</li>
@@ -1355,10 +1593,10 @@ menuButton.addEventListener("click", () => {
                 </ul>
               </div>
 
-              {/* 38. Assignment Reflection Form */}
+              {/* Assignment Reflection Form */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff' }}>
                 <h3 style={{ fontSize: '1.2rem', color: '#38bdf8', margin: '0 0 1rem 0', fontWeight: 800 }}>
-                  38. Student Assignment Reflection Form (7 Questions)
+                  Student Assignment Reflection Form
                 </h3>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.25rem' }}>
@@ -1416,7 +1654,7 @@ menuButton.addEventListener("click", () => {
             {/* 39. Quiz Section (15 Questions) */}
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                39. Knowledge Check
+                Knowledge Check
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1.25rem 0' }}>
                 Day 12 Quiz (15 Questions)
@@ -1475,7 +1713,7 @@ menuButton.addEventListener("click", () => {
             {/* 42. Completion Banner */}
             <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%)', borderRadius: '20px', padding: '2rem', color: '#ffffff', boxShadow: '0 10px 25px rgba(30, 27, 75, 0.4)' }}>
               <h2 style={{ fontSize: '1.8rem', fontWeight: 900, margin: '0 0 0.75rem 0' }}>
-                🎉 42. JavaScript Started!
+                🎉 Day 12 Complete!
               </h2>
               <p style={{ fontSize: '0.95rem', color: '#c7d2fe', marginBottom: '1rem' }}>
                 Today you learned:
@@ -1504,11 +1742,11 @@ menuButton.addEventListener("click", () => {
               </div>
             </div>
 
-            {/* 43 - 45. Course Progress & Project Continuity Screen */}
+            {/* Course Progress & Project Continuity Screen */}
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                 <h3 style={{ fontSize: '1.3rem', fontWeight: 900, color: '#0f172a', margin: 0 }}>
-                  43. Course Progress: DAY 12 / 20
+                  Course Progress: DAY 12 / 20
                 </h3>
                 <span style={{ fontSize: '1.2rem', fontWeight: 900, color: '#2563eb' }}>60% COMPLETE</span>
               </div>
