@@ -16,6 +16,15 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
     [activeNode?.moduleId]: true
   });
 
+  useEffect(() => {
+    if (activeNode?.moduleId) {
+      setExpandedModules(prev => ({
+        ...prev,
+        [activeNode.moduleId]: true
+      }));
+    }
+  }, [activeNode?.moduleId]);
+
   const toggleModule = (moduleId) => {
     setExpandedModules(prev => ({
       ...prev,

@@ -726,6 +726,30 @@ console.log(heroImg.getAttribute("src")); // Output: https://images.unsplash.com
                 Avoid changing dozens of individual inline CSS properties directly in JavaScript (e.g. <code>element.style.background = 'blue'</code>). Instead, write your styles in CSS classes and use JavaScript's <strong><code>classList.toggle()</code></strong> to switch state!
               </p>
 
+              {/* Super Simple Analogy Box */}
+              <div style={{ background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)', padding: '1.5rem', borderRadius: '16px', border: '1px solid #bfdbfe', marginBottom: '1.5rem' }}>
+                <h3 style={{ margin: '0 0 8px 0', color: '#1e40af', fontSize: '1.15rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  💡 What is <code>classList.toggle()</code>? (The Light Switch Analogy)
+                </h3>
+                <p style={{ margin: '0 0 12px 0', color: '#1e3a8a', fontSize: '0.96rem', lineHeight: 1.6 }}>
+                  Imagine a <strong>light switch on a room wall</strong>:
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', marginBottom: '12px' }}>
+                  <div style={{ background: '#ffffff', padding: '12px 16px', borderRadius: '10px', border: '1px solid #93c5fd' }}>
+                    <div style={{ fontWeight: 800, color: '#2563eb', marginBottom: '4px' }}>OFF ➔ ON</div>
+                    <div style={{ fontSize: '0.88rem', color: '#475569' }}>If the light is OFF, pressing the switch turns it <strong>ON</strong>.</div>
+                  </div>
+                  <div style={{ background: '#ffffff', padding: '12px 16px', borderRadius: '10px', border: '1px solid #93c5fd' }}>
+                    <div style={{ fontWeight: 800, color: '#dc2626', marginBottom: '4px' }}>ON ➔ OFF</div>
+                    <div style={{ fontSize: '0.88rem', color: '#475569' }}>If the light is ON, pressing the switch turns it <strong>OFF</strong>.</div>
+                  </div>
+                </div>
+                <p style={{ margin: 0, color: '#1e3a8a', fontSize: '0.92rem', lineHeight: 1.6 }}>
+                  <strong>In JavaScript code:</strong> <code>element.classList.toggle("active")</code> does the exact same thing!
+                  If the class <code>"active"</code> is missing ➔ it <strong>ADDS</strong> it. If it is already there ➔ it <strong>REMOVES</strong> it. You don't need any complex <code>if/else</code> statements!
+                </p>
+              </div>
+
               {/* Code Example */}
               <div style={{ marginBottom: '1.5rem' }}>
                 <CodeBlock

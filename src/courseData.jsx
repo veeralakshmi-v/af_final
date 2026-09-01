@@ -2399,16 +2399,16 @@ export const webDesignCourseData = [
     id: 'web_design_day12',
     title: 'Day 12 — JavaScript & DOM Interaction',
     items: [
-      { id: 'intro', label: '1. From Static to Interactive', icon: <BookOpen size={18} /> },
-      { id: 'dom_tree', label: '2. Understanding the DOM', icon: <Code size={18} /> },
-      { id: 'selecting', label: '3. Selecting HTML Elements', icon: <MousePointerClick size={18} /> },
-      { id: 'modifying', label: '4. Modifying Content & Attributes', icon: <Sliders size={18} /> },
-      { id: 'classlist_styling', label: '5. ClassList & Dynamic Styling', icon: <Layers size={18} /> },
-      { id: 'events', label: '6. Event Listeners & Event Object', icon: <Zap size={18} /> },
-      { id: 'forms_validation', label: '7. Form Interaction & Validation', icon: <FileText size={18} /> },
-      { id: 'projects_interactive', label: '8. Mobile Drawer, Counter & Show/Hide', icon: <Smartphone size={18} /> },
-      { id: 'debugging', label: '9. DOM Debugging & DevTools', icon: <Terminal size={18} /> },
-      { id: 'assessment', label: '10. Practice, Quiz, Projects & Assessment', icon: <CheckCircle size={18} /> }
+      { id: 'intro', label: 'From Static to Interactive', icon: <BookOpen size={18} /> },
+      { id: 'dom_tree', label: 'Understanding the DOM', icon: <Code size={18} /> },
+      { id: 'selecting', label: 'Selecting HTML Elements', icon: <MousePointerClick size={18} /> },
+      { id: 'modifying', label: 'Modifying Content & Attributes', icon: <Sliders size={18} /> },
+      { id: 'classlist_styling', label: 'ClassList & Dynamic Styling', icon: <Layers size={18} /> },
+      { id: 'events', label: 'Event Listeners & Event Object', icon: <Zap size={18} /> },
+      { id: 'forms_validation', label: 'Form Interaction & Validation', icon: <FileText size={18} /> },
+      { id: 'projects_interactive', label: 'Mobile Drawer, Counter & Show/Hide', icon: <Smartphone size={18} /> },
+      { id: 'debugging', label: 'DOM Debugging & DevTools', icon: <Terminal size={18} /> },
+      { id: 'assessment', label: 'Practice, Quiz, Projects & Assessment', icon: <CheckCircle size={18} /> }
     ]
   }
 ];
