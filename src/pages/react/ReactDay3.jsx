@@ -411,7 +411,36 @@ export default Button;`} />
               This makes your code <strong>cleaner, shorter, and easier to read</strong>.
             </p>
 
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', margin: '1.5rem 0 1rem' }}>📊 Before vs After Destructuring</h3>
+            {/* Explanation Box requested by user */}
+            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.5rem', border: '1px solid #cbd5e1', boxShadow: '0 4px 14px rgba(0,0,0,0.03)', margin: '1.5rem 0' }}>
+              <p style={{ fontSize: '1.02rem', color: '#334155', lineHeight: 1.75, marginBottom: '1.25rem' }}>
+                The main difference is that <code>(props)</code> passes the entire <code>props</code> object, while <code>({`{ propertyName }`})</code> uses object destructuring to pull out specific property names right away.
+              </p>
+
+              <div style={{ background: '#f8fafc', padding: '1.1rem 1.25rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5', marginBottom: '1rem' }}>
+                <h4 style={{ fontSize: '1.08rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  Using <code>(props)</code>
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: '1.25rem', color: '#475569', lineHeight: 1.7, fontSize: '0.93rem' }}>
+                  <li>You receive the complete <code>props</code> object.</li>
+                  <li>You must write <code>props.propertyName</code> every time you want to use a value.</li>
+                  <li>Best when a component uses many different props or passes them down.</li>
+                </ul>
+              </div>
+
+              <div style={{ background: '#f0fdf4', padding: '1.1rem 1.25rem', borderRadius: '12px', borderLeft: '4px solid #16a34a' }}>
+                <h4 style={{ fontSize: '1.08rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  Using <code>({`{ propertyName }`})</code>
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: '1.25rem', color: '#166534', lineHeight: 1.7, fontSize: '0.93rem' }}>
+                  <li>You unpack specific properties directly inside the parameter list.</li>
+                  <li>You write just <code>propertyName</code> instead of <code>props.propertyName</code> in your code.</li>
+                  <li>Makes your code shorter and easier to read.</li>
+                </ul>
+              </div>
+            </div>
+
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', margin: '1.5rem 0 1rem' }}>📊 Example Comparison</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
                 <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '10px', padding: '0.6rem 1rem', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 700, color: '#dc2626' }}>❌ Without Destructuring</div>
