@@ -18,38 +18,7 @@ const Section = ({ eyebrow, title, children }) => (
   </motion.div>
 );
 
-const hlJS = (code) => {
-  let h = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  h = h.replace(/(?<!=)(["'`])(?:\\.|[^\n"'`\\])*?\1/g, '<span style="color:#a5d6ff">$&</span>');
-  h = h.replace(/(?<!["':a-zA-Z0-9])(\/\/[^\n]*)/g, '<span style="color:#8892b0">$1</span>');
-  ['const','let','var','return','import','export','default','function','from','if','else','for','of','in','true','false','null','undefined','new','typeof','class','extends','super','this','async','await','throw','try','catch'].forEach(k => {
-    h = h.replace(new RegExp(`\\b(${k})\\b`, 'g'), '<span style="color:#ff7b72;font-weight:bold">$1</span>');
-  });
-  ['map','filter','reduce','forEach','find','findIndex','some','every','includes','push','pop','slice','splice','Object','Array','console','log','JSON','stringify','parse','Math'].forEach(k => {
-    h = h.replace(new RegExp(`\\b(${k})\\b`, 'g'), '<span style="color:#d2a8ff">$1</span>');
-  });
-  return <span dangerouslySetInnerHTML={{ __html: h }} />;
-};
-
-const CodeBlock = ({ title, code }) => {
-  const [cp, setCp] = useState(false);
-  return (
-    <div style={{ background: '#0f172a', borderRadius: 12, border: '1px solid #1e293b', margin: '1.2rem 0', overflowX: 'auto' }}>
-      {title && (
-        <div style={{ background: '#1e293b', padding: '0.5rem 1rem', fontSize: '0.8rem', color: '#94a3b8', borderBottom: '1px solid #334155', display: 'flex', justifyContent: 'space-between' }}>
-          <span>{title}</span>
-          <button onClick={() => { navigator.clipboard.writeText(code); setCp(true); setTimeout(() => setCp(false), 2000); }}
-            style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Copy size={12} /> {cp ? 'Copied!' : 'Copy'}
-          </button>
-        </div>
-      )}
-      <pre style={{ margin: 0, padding: '1rem', color: '#f8fafc', fontSize: '0.88rem', fontFamily: 'monospace', lineHeight: 1.6, whiteSpace: 'pre' }}>
-        <code>{hlJS(code)}</code>
-      </pre>
-    </div>
-  );
-};
+import { CodeBlock } from '../../utils/codeHighlight';
 
 const ConceptCard = ({ icon, title, desc, color = '#6366f1' }) => (
   <div style={{ background: '#f8fafc', border: `1px solid ${color}22`, borderLeft: `4px solid ${color}`, borderRadius: 12, padding: '1rem 1.25rem', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>

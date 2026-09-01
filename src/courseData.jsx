@@ -4,7 +4,7 @@ import {
   Code, CheckCircle, LayoutGrid, Layers, MonitorPlay, MousePointerClick,
   Video, Edit3, Palette, Layout, Brush, FileCode2, Target, Type as TypeIcon,
   Wand2, FastForward, Move3d, Clapperboard, Smartphone, Database, Table, Columns, List, Terminal, ShieldAlert, PenTool, Settings, PieChart, Link, Activity, Store,
-  Briefcase, Map, Zap, Brain, Bot, Cpu, GitBranch, Rocket, Eye, Sliders, Filter, Trophy, Shield, FileSpreadsheet, Music, RefreshCw, Sparkles, Hash, Globe, Wifi, AlertTriangle, AlertCircle, Award, Send, Home, Compass, User, Lock, ShoppingCart, Folder, Server, Trash2, Plus, LogIn, LogOut, UserPlus, Users, UserCheck, BarChart2, GitMerge, Radio, Key, Copy
+  Briefcase, Map, Zap, Brain, Bot, Cpu, GitBranch, Rocket, Eye, Sliders, Filter, Trophy, Shield, FileSpreadsheet, Music, RefreshCw, Sparkles, Hash, Globe, Wifi, AlertTriangle, AlertCircle, Award, Send, Home, Compass, User, Lock, ShoppingCart, Folder, Server, Trash2, Plus, LogIn, LogOut, UserPlus, Users, UserCheck, BarChart2, GitMerge, Radio, Key, Copy, CheckSquare
 } from 'lucide-react';
 
 
@@ -2381,15 +2381,41 @@ export const webDesignCourseData = [
   },
   {
     id: 'web_design_day11',
-    title: 'Day 11 — Advanced CSS: Modern Layouts & UI Components',
+    title: 'Day 11 — Improve Your Existing Website with Simple CSS',
     items: [
-      { id: 'intro', label: '1. Objective & Before/After', icon: <BookOpen size={18} /> },
-      { id: 'variables', label: '2. CSS Tokens & Variables', icon: <Sliders size={18} /> },
-      { id: 'flexbox_nav', label: '3. Flexbox & Mobile Navigation', icon: <LayoutGrid size={18} /> },
-      { id: 'grid_lab', label: '4. Advanced Grid & Sticky Navbar', icon: <Layout size={18} /> },
-      { id: 'ui_components', label: '5. Component System & Viewport Lab', icon: <PenTool size={18} /> },
-      { id: 'guided_build', label: '6. Guided CSS Upgrade (6 Stages)', icon: <Code size={18} /> },
-      { id: 'assignment_quiz', label: '7. Practice, AI Audit & Quiz', icon: <CheckCircle size={18} /> }
+      { id: 'intro', label: '1. Review Existing Website', icon: <BookOpen size={18} /> },
+      { id: 'before_after', label: '2. Before & After Preview', icon: <MonitorPlay size={18} /> },
+      { id: 'colors', label: '3. Improve Colors & Practice', icon: <Sliders size={18} /> },
+      { id: 'typography', label: '4. Typography Visualizer', icon: <Type size={18} /> },
+      { id: 'spacing', label: '5. Spacing Demonstration', icon: <LayoutTemplate size={18} /> },
+      { id: 'buttons', label: '6. Style Buttons & Editor', icon: <PenTool size={18} /> },
+      { id: 'cards_hero', label: '7-9. Cards, Hero & Sections', icon: <LayoutGrid size={18} /> },
+      { id: 'responsive', label: '10-11. Mobile Layout & Testing', icon: <Smartphone size={18} /> },
+      { id: 'guided_build', label: '12. Guided Build (11 Steps)', icon: <Code size={18} /> },
+      { id: 'matching', label: '13. CSS Matching Activity', icon: <CheckSquare size={18} /> },
+      { id: 'comparison', label: '14. Before & After Comparison', icon: <Layers size={18} /> },
+      { id: 'practice_ai', label: '15-16. Practice & AI Review', icon: <Sparkles size={18} /> },
+      { id: 'assignment', label: '17. Day 11 Assignment', icon: <Briefcase size={18} /> },
+      { id: 'quiz', label: '18-20. Quiz & Course Progress', icon: <CheckCircle size={18} /> }
+    ]
+  },
+  {
+    id: 'web_design_day12',
+    title: 'Day 12 — JavaScript Fundamentals & DOM Interaction',
+    items: [
+      { id: 'intro', label: '1-4. Why JS & Formula', icon: <BookOpen size={18} /> },
+      { id: 'connecting_js', label: '5-6. File Structure & Console', icon: <Code size={18} /> },
+      { id: 'data_types', label: '7-12. Variables, const/let & Operators', icon: <Sliders size={18} /> },
+      { id: 'dom_intro', label: '13-16. DOM Concept & Selector Practice', icon: <MousePointerClick size={18} /> },
+      { id: 'dom_text_events', label: '17-21. textContent & Event Flow', icon: <Zap size={18} /> },
+      { id: 'functions_classlist', label: '22-25. Functions & classList Toggle', icon: <LayoutGrid size={18} /> },
+      { id: 'mobile_menu', label: '26-27. Build Mobile Menu (☰ / ✕)', icon: <Smartphone size={18} /> },
+      { id: 'conditions', label: '28-29. if/else & Availability', icon: <Layers size={18} /> },
+      { id: 'guided_build', label: '30. Mini Challenge & Guided Build', icon: <Terminal size={18} /> },
+      { id: 'interactive_activities', label: '31-32. Debugging Challenge & Console', icon: <CheckSquare size={18} /> },
+      { id: 'ai_tools', label: '33-35. AI Explainer & Debugger', icon: <Sparkles size={18} /> },
+      { id: 'practice_assignment', label: '36-38. Practice, Assignment & Reflection', icon: <Briefcase size={18} /> },
+      { id: 'quiz', label: '39-45. 15-Q Quiz & Live Output', icon: <CheckCircle size={18} /> }
     ]
   }
 ];

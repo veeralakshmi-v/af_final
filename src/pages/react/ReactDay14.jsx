@@ -25,34 +25,7 @@ const Section = ({ eyebrow, title, children }) => (
   </motion.div>
 );
 
-const CodeBlock = ({ title, code }) => {
-  const [cp, setCp] = useState(false);
-  const hlJS = (c) => {
-    let h = c.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    h = h.replace(/(?<!=)(["'`])(?:\\.|[^\n"'`\\])*?\1/g, '<span style="color:#a5d6ff">$&</span>');
-    h = h.replace(/(?<!["':a-zA-Z0-9])(\/\/[^\n]*)/g, '<span style="color:#8892b0">$1</span>');
-    ['const','let','var','return','import','export','default','function','from','if','else','async','await','try','catch','throw','new','true','false','null','undefined'].forEach(k => {
-      h = h.replace(new RegExp(`\\b(${k})\\b`, 'g'), '<span style="color:#ff7b72;font-weight:bold">$1</span>');
-    });
-    return <span dangerouslySetInnerHTML={{ __html: h }} />;
-  };
-  return (
-    <div style={{ background: '#0f172a', borderRadius: 12, border: '1px solid #1e293b', margin: '1rem 0', overflowX: 'auto' }}>
-      {title && (
-        <div style={{ background: '#1e293b', padding: '0.5rem 1rem', fontSize: '0.8rem', color: '#94a3b8', borderBottom: '1px solid #334155', display: 'flex', justifyContent: 'space-between' }}>
-          <span>{title}</span>
-          <button onClick={() => { navigator.clipboard.writeText(code); setCp(true); setTimeout(() => setCp(false), 2000); }}
-            style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Copy size={12} /> {cp ? 'Copied!' : 'Copy'}
-          </button>
-        </div>
-      )}
-      <pre style={{ margin: 0, padding: '1rem', color: '#f8fafc', fontSize: '0.88rem', fontFamily: 'monospace', lineHeight: 1.6, whiteSpace: 'pre' }}>
-        <code>{hlJS(code)}</code>
-      </pre>
-    </div>
-  );
-};
+import { CodeBlock } from '../../utils/codeHighlight';
 
 /* ─────────────────────────────── main component ──────────────────────── */
 export default function ReactDay14({ activeTab, onNavigate }) {

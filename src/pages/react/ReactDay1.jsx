@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Layers, Database, Sparkles, RefreshCw, Settings, CheckCircle, Code, ArrowRight, Info, Play, Trash2, Cpu, Laptop, Terminal, Copy, FileText } from 'lucide-react';
+import { CodeBlock, highlightJS } from '../../utils/codeHighlight';
 import componentTreeImg from '../../assets/react_component_tree.png';
 import virtualDomImg from '../../assets/react_virtual_dom.png';
 
@@ -18,68 +19,6 @@ const Section = ({ id, eyebrow, title, children }) => (
     {children}
   </motion.div>
 );
-
-const highlightJS = (code) => {
-  let html = code
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-
-  // String literals first
-  html = html.replace(/(?<!=)(["'])(?:\\.|[^\n"'\\])*?\1/g, '<span style="color: #a5d6ff;">$&</span>');
-
-  // Comments: // (lookbehind check to avoid URL protocol or quoted paths matching) or /* */
-  html = html.replace(/(?<!["':a-zA-Z0-9])(\/\/[^\n]*)/g, '<span style="color: #8892b0;">$1</span>');
-  html = html.replace(/(\/\*[\s\S]*?\*\/)/g, '<span style="color: #8892b0;">$1</span>');
-  // Shell comments
-  html = html.replace(/(#[^\n]*)/g, '<span style="color: #8892b0;">$1</span>');
-
-  // Keywords
-  const keywords = ['const', 'let', 'var', 'return', 'import', 'export', 'default', 'function', 'from', 'class', 'extends', 'if', 'else', 'new', 'cd', 'npm'];
-  keywords.forEach(kw => {
-    const reg = new RegExp(`\\b(${kw})\\b`, 'g');
-    html = html.replace(reg, '<span style="color: #ff7b72; font-weight: bold;">$1</span>');
-  });
-
-  // HTML/JSX elements
-  html = html.replace(/(&lt;[A-Z][a-zA-Z0-9]*)/g, '<span style="color: #7ee787;">$1</span>');
-  html = html.replace(/(&lt;\/[A-Z][a-zA-Z0-9]*&gt;)/g, '<span style="color: #7ee787;">$1</span>');
-  html = html.replace(/(&lt;[a-z]+)/g, '<span style="color: #79c0ff;">$1</span>');
-  html = html.replace(/(&lt;\/[a-z]+&gt;)/g, '<span style="color: #79c0ff;">$1</span>');
-
-  // React hooks
-  const hooks = ['useState', 'useEffect', 'useContext'];
-  hooks.forEach(hook => {
-    const reg = new RegExp(`\\b(${hook})\\b`, 'g');
-    html = html.replace(reg, '<span style="color: #d18616; font-weight: bold;">$1</span>');
-  });
-
-  return <span dangerouslySetInnerHTML={{ __html: html }} />;
-};
-
-const CodeBlock = ({ title, code }) => {
-  const [copied, setCopied] = useState(false);
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-  return (
-    <div style={{ background: '#0f172a', borderRadius: '12px', border: '1px solid #1e293b', overflowX: 'auto', margin: '1.5rem 0', position: 'relative', width: '100%', maxWidth: '100%' }}>
-      {title && (
-        <div style={{ background: '#1e293b', padding: '0.5rem 1rem', fontSize: '0.8rem', color: '#94a3b8', borderBottom: '1px solid #334155', fontFamily: 'monospace', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', left: 0 }}>
-          <span>{title}</span>
-          <button onClick={handleCopy} style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem' }}>
-            <Copy size={12} /> {copied ? 'Copied!' : 'Copy'}
-          </button>
-        </div>
-      )}
-      <pre style={{ margin: 0, padding: '1rem', color: '#f8fafc', fontSize: '0.9rem', fontFamily: 'monospace', lineHeight: 1.5, whiteSpace: 'pre' }}>
-        <code>{highlightJS(code)}</code>
-      </pre>
-    </div>
-  );
-};
 
 export default function ReactDay1({ activeTab, onNavigate }) {
   const [newItem, setNewItem] = useState('');
@@ -850,7 +789,7 @@ npm install`} />
 
 // 1. Write a child Greeting component
 function Greeting(props) {
-  return <h1>Hello, \${props.name}!</h1>;
+  return <h1>Hello, {props.name}!</h1>;
 }
 
 // 2. Write the main root App component
