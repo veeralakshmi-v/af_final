@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import os
+
+content = '''import React, { useState, useRef, useEffect } from 'react';
 import {
   BookOpen, MonitorPlay, Code, LayoutGrid, Layers, PenTool, Briefcase, Sparkles,
   CheckCircle, Sliders, Smartphone, Tablet, Monitor, RefreshCw, Star,
@@ -1706,3 +1708,9 @@ h1 {
     </div>
   );
 }
+'''
+
+with open(r'c:\Users\Kowsalya\Desktop\My_projects\af_course_lms\src\pages\web-design\WebDesignDay11.jsx', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print("Successfully written WebDesignDay11.jsx!")
