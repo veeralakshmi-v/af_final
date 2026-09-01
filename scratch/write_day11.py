@@ -62,6 +62,8 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
 
   // Section 4: Spacing & Box Model Toggle
   const [boxSizingBorder, setBoxSizingBorder] = useState(true);
+  const [boxPaddingVal, setBoxPaddingVal] = useState(20);
+  const [boxBorderVal, setBoxBorderVal] = useState(6);
   const [cardPadding, setCardPadding] = useState('16px');
   const [cardMargin, setCardMargin] = useState('16px');
 
