@@ -170,10 +170,10 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
 
   // 1. Script & Console Sandbox State
   const [consoleLogOutput, setConsoleLogOutput] = useState([]);
-  const [consoleCode, setConsoleCode] = useState(`console.log("Hello from my website");\nconst businessName = "Alpha Studio";\nconsole.log(\`Welcome to \${businessName}\`);`);
+  const [consoleCode, setConsoleCode] = useState(`console.log("Hello from my website");\nconst businessName = "Alpha Fly Theni";\nconsole.log(\`Welcome to \${businessName}\`);`);
 
   // 2. Variables & Math Playground State
-  const [varBusinessName, setVarBusinessName] = useState('Alpha Studio');
+  const [varBusinessName, setVarBusinessName] = useState('Alpha Fly Theni');
   const [varServiceName, setVarServiceName] = useState('Website Design');
   const [varPrice, setVarPrice] = useState(5000);
   const [varQuantity, setVarQuantity] = useState(2);
@@ -190,7 +190,7 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
   const [eventStageIndex, setEventStageIndex] = useState(0);
 
   // 5. Function Practice State
-  const [fnPlaygroundCode, setFnPlaygroundCode] = useState(`function showWelcome() {\n  title.textContent = "Welcome to Alpha Studio!";\n}`);
+  const [fnPlaygroundCode, setFnPlaygroundCode] = useState(`function showWelcome() {\n  title.textContent = "Welcome to Alpha Fly Theni!";\n}`);
   const [fnOutputMessage, setFnOutputMessage] = useState('');
 
   // 6. classList Highlight Card State
@@ -587,7 +587,7 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
 
                 <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
                   <h4 style={{ margin: '0 0 4px 0', color: '#2563eb', fontWeight: 800 }}>8. const (Value Remains Constant)</h4>
-                  <code style={{ fontSize: '0.85rem', color: '#0f172a' }}>const businessName = "Alpha Studio";</code>
+                  <code style={{ fontSize: '0.85rem', color: '#0f172a' }}>const businessName = "Alpha Fly Theni";</code>
                   <p style={{ margin: '6px 0 0 0', fontSize: '0.82rem', color: '#64748b' }}>Used when reference or value should not be reassigned.</p>
                 </div>
               </div>
@@ -864,7 +864,7 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
                     ⚡ 23. Function Practice
                   </h3>
                   <button
-                    onClick={() => setFnOutputMessage("Function Executed! Welcome to Alpha Studio! ✨")}
+                    onClick={() => setFnOutputMessage("Function Executed! Welcome to Alpha Fly Theni! ✨")}
                     style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
                   >
                     <Play size={14} /> [ Run Function ]
