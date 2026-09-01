@@ -290,66 +290,66 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
   return (
     <div style={{ background: '#f8fafc', minHeight: '100vh', padding: '2rem 1.5rem', fontFamily: "'Inter', system-ui, sans-serif" }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        
-        {/* ==================== HEADER METADATA BANNER ==================== */}
-        <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: '24px', padding: '2.5rem', color: '#ffffff', marginBottom: '2rem', boxShadow: '0 20px 40px rgba(15, 23, 42, 0.12)', border: '1px solid #334155' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-            <div>
-              <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '6px 14px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', border: '1px solid rgba(56, 189, 248, 0.3)', display: 'inline-block', marginBottom: '12px' }}>
-                DAY 11 — Modern CSS Styling &amp; Refactoring
-              </span>
-              <h1 style={{ fontSize: '2.2rem', fontWeight: 900, color: '#ffffff', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
-                Transform Basic Websites into Professional, Modern &amp; Consistent Designs
-              </h1>
-              <p style={{ fontSize: '1.05rem', color: '#94a3b8', margin: 0, maxWidth: '850px', lineHeight: 1.6 }}>
-                <strong>Learning Goal:</strong> Refactor basic HTML/CSS code into clean, modern, responsive, and professional client-ready websites using reusable design tokens, typography scales, box model spacing, component systems, and CSS refactoring.
-              </p>
-            </div>
-            
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              <div style={{ background: 'rgba(255, 255, 255, 0.08)', padding: '10px 16px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.12)', textAlign: 'center' }}>
-                <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>Estimated Duration</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', marginTop: '2px' }}>⏱️ 60–90 Mins</div>
-              </div>
-              <div style={{ background: 'rgba(255, 255, 255, 0.08)', padding: '10px 16px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.12)', textAlign: 'center' }}>
-                <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>Difficulty Level</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fbbf24', marginTop: '2px' }}>⚡ Intermediate</div>
-              </div>
-            </div>
-          </div>
-
-          {/* 12 Learning Outcomes Grid */}
-          <div style={{ marginTop: '1.75rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-            <h3 style={{ fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#38bdf8', margin: '0 0 1rem 0', fontWeight: 800 }}>
-              🎯 Day 11 Learning Outcomes (12 Core Skills)
-            </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px' }}>
-              {[
-                "1. Understand consistent design systems",
-                "2. Create & use CSS variables (:root, var())",
-                "3. Build color & typography systems",
-                "4. Enforce 8-point spacing consistency",
-                "5. Apply box-sizing: border-box correctly",
-                "6. Create reusable button component classes",
-                "7. Build consistent card & UI components",
-                "8. Use modern CSS Grid & Flexbox layouts",
-                "9. Improve visual hierarchy & contrast",
-                "10. Refactor redundant/duplicate CSS code",
-                "11. Convert basic sites to modern UI",
-                "12. Make real-world client design decisions"
-              ].map((outcome, idx) => (
-                <div key={idx} style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', color: '#cbd5e1', border: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <CheckCircle size={14} color="#34d399" />
-                  {outcome}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
 
         {/* ==================== TAB 1: INTRO TO MODERN CSS ==================== */}
         {isTabActive('intro') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+
+            {/* HEADER METADATA BANNER (Shown on Intro Tab) */}
+            <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: '24px', padding: '2.5rem', color: '#ffffff', boxShadow: '0 20px 40px rgba(15, 23, 42, 0.12)', border: '1px solid #334155' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+                <div>
+                  <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '6px 14px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', border: '1px solid rgba(56, 189, 248, 0.3)', display: 'inline-block', marginBottom: '12px' }}>
+                    DAY 11 — Modern CSS Styling &amp; Refactoring
+                  </span>
+                  <h1 style={{ fontSize: '2.2rem', fontWeight: 900, color: '#ffffff', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
+                    Transform Basic Websites into Professional, Modern &amp; Consistent Designs
+                  </h1>
+                  <p style={{ fontSize: '1.05rem', color: '#94a3b8', margin: 0, maxWidth: '850px', lineHeight: 1.6 }}>
+                    <strong>Learning Goal:</strong> Refactor basic HTML/CSS code into clean, modern, responsive, and professional client-ready websites using reusable design tokens, typography scales, box model spacing, component systems, and CSS refactoring.
+                  </p>
+                </div>
+
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <div style={{ background: 'rgba(255, 255, 255, 0.08)', padding: '10px 16px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.12)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>Estimated Duration</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', marginTop: '2px' }}>⏱️ 60–90 Mins</div>
+                  </div>
+                  <div style={{ background: 'rgba(255, 255, 255, 0.08)', padding: '10px 16px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.12)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>Difficulty Level</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fbbf24', marginTop: '2px' }}>⚡ Intermediate</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 12 Learning Outcomes Grid */}
+              <div style={{ marginTop: '1.75rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                <h3 style={{ fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#38bdf8', margin: '0 0 1rem 0', fontWeight: 800 }}>
+                  🎯 Day 11 Learning Outcomes (12 Core Skills)
+                </h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px' }}>
+                  {[
+                    "1. Understand consistent design systems",
+                    "2. Create & use CSS variables (:root, var())",
+                    "3. Build color & typography systems",
+                    "4. Enforce 8-point spacing consistency",
+                    "5. Apply box-sizing: border-box correctly",
+                    "6. Create reusable button component classes",
+                    "7. Build consistent card & UI components",
+                    "8. Use modern CSS Grid & Flexbox layouts",
+                    "9. Improve visual hierarchy & contrast",
+                    "10. Refactor redundant/duplicate CSS code",
+                    "11. Convert basic sites to modern UI",
+                    "12. Make real-world client design decisions"
+                  ].map((outcome, idx) => (
+                    <div key={idx} style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', color: '#cbd5e1', border: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <CheckCircle size={14} color="#34d399" />
+                      {outcome}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Section 1 — Introduction to Modern CSS &amp; Design Systems
@@ -463,7 +463,7 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
               </h2>
 
               <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
-                CSS custom properties (variables) let you store color palettes, font sizes, spacing values, border radii, and box shadows in a central location (<code>:root</code>) and reuse them throughout your stylesheet.
+                CSS custom properties (variables) let you store color palettes, font sizes, spacing values, border radius, and box shadows in a central location (<code>:root</code>) and reuse them throughout your stylesheet.
               </p>
 
               {/* Code Example */}
@@ -1287,7 +1287,7 @@ p {
         {/* ==================== TAB 10: PRACTICE, QUIZ & ASSESSMENT ==================== */}
         {isTabActive('assessment') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            
+
             {/* PART A: CODING PRACTICE (6 CHALLENGES) */}
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
@@ -1407,7 +1407,7 @@ h1 {
                   <div key={chal.id} style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                     <h4 style={{ margin: '0 0 6px 0', color: '#0f172a', fontSize: '1rem', fontWeight: 800 }}>{chal.title}</h4>
                     <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 10px 0' }}>{chal.problem}</p>
-                    
+
                     <CodeBlock title={chal.title} language="css" code={chal.code} />
 
                     <div style={{ marginTop: '10px' }}>
