@@ -796,38 +796,147 @@ p {
                 />
               </div>
 
-              {/* Interactive Box Model Demonstration */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
+              {/* Easy-To-Understand Interactive Box Model Inspector */}
+              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.75rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: 0 }}>
-                    📐 Live Box Model Inspector
-                  </h3>
-                  <button
-                    onClick={() => setBoxSizingBorder(!boxSizingBorder)}
-                    style={{ background: boxSizingBorder ? '#10b981' : '#ef4444', color: '#ffffff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer' }}
-                  >
-                    Toggle box-sizing: {boxSizingBorder ? 'border-box (SAFE)' : 'content-box (OVERFLOW)'}
-                  </button>
+                  <div>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 4px 0' }}>
+                      📐 Easy Box Model Inspector: content-box vs border-box
+                    </h3>
+                    <p style={{ margin: 0, fontSize: '0.85rem', color: '#94a3b8' }}>
+                      Toggle modes and drag sliders to see how padding &amp; border change the total element width.
+                    </p>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <button
+                      onClick={() => setBoxSizingBorder(false)}
+                      style={{
+                        background: !boxSizingBorder ? '#ef4444' : '#1e293b',
+                        color: '#ffffff',
+                        border: `1px solid ${!boxSizingBorder ? '#ef4444' : '#475569'}`,
+                        padding: '8px 14px',
+                        borderRadius: '8px',
+                        fontWeight: 800,
+                        fontSize: '0.82rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      content-box (Old Overflow Mode ❌)
+                    </button>
+                    <button
+                      onClick={() => setBoxSizingBorder(true)}
+                      style={{
+                        background: boxSizingBorder ? '#10b981' : '#1e293b',
+                        color: '#ffffff',
+                        border: `1px solid ${boxSizingBorder ? '#10b981' : '#475569'}`,
+                        padding: '8px 14px',
+                        borderRadius: '8px',
+                        fontWeight: 800,
+                        fontSize: '0.82rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      border-box (Modern Safe Mode ✅)
+                    </button>
+                  </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px' }}>
-                    <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '6px' }}>Container Boundary (300px max)</div>
-                    <div style={{ width: '100%', maxWidth: '300px', background: '#334155', padding: cardPadding, border: '4px solid #38bdf8', boxSizing: boxSizingBorder ? 'border-box' : 'content-box', transition: 'all 0.2s ease' }}>
-                      <div style={{ background: '#2563eb', padding: '10px', color: '#fff', fontSize: '0.85rem', textAlign: 'center', fontWeight: 700 }}>
-                        Card Content Box
+                {/* Sliders Control Bar */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.25rem', background: '#1e293b', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', border: '1px solid #334155' }}>
+                  <div>
+                    <label style={{ fontSize: '0.82rem', color: '#cbd5e1', display: 'block', marginBottom: '4px', fontWeight: 700 }}>
+                      Padding: <span style={{ color: '#38bdf8' }}>{boxPaddingVal}px</span>
+                    </label>
+                    <input type="range" min="0" max="40" value={boxPaddingVal} onChange={(e) => setBoxPaddingVal(Number(e.target.value))} style={{ width: '100%', accentColor: '#38bdf8' }} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.82rem', color: '#cbd5e1', display: 'block', marginBottom: '4px', fontWeight: 700 }}>
+                      Border: <span style={{ color: '#fbbf24' }}>{boxBorderVal}px</span>
+                    </label>
+                    <input type="range" min="0" max="15" value={boxBorderVal} onChange={(e) => setBoxBorderVal(Number(e.target.value))} style={{ width: '100%', accentColor: '#fbbf24' }} />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <div style={{ fontSize: '0.78rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>Set Element Width</div>
+                    <div style={{ fontSize: '1rem', fontWeight: 800, color: '#ffffff' }}>width: 300px</div>
+                  </div>
+                </div>
+
+                {/* Interactive Visual Graphic Area */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', alignItems: 'center' }}>
+                  
+                  {/* Left: Graphic Diagram Box */}
+                  <div style={{ background: '#090d16', padding: '1.25rem', borderRadius: '14px', border: '1px solid #1e293b', overflowX: 'auto' }}>
+                    <div style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>
+                      Container Boundary Limit (300px)
+                    </div>
+
+                    {/* Fixed 300px Outer Boundary Container */}
+                    <div style={{ width: '300px', border: `2px dashed ${!boxSizingBorder ? '#f87171' : '#34d399'}`, padding: '10px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', position: 'relative' }}>
+                      <div style={{ fontSize: '0.7rem', color: !boxSizingBorder ? '#f87171' : '#34d399', fontWeight: 800, marginBottom: '6px' }}>
+                        300px Parent Container Boundary
+                      </div>
+
+                      {/* Actual Element Box */}
+                      <div
+                        style={{
+                          width: '300px',
+                          boxSizing: boxSizingBorder ? 'border-box' : 'content-box',
+                          padding: `${boxPaddingVal}px`,
+                          border: `${boxBorderVal}px solid #fbbf24`,
+                          background: 'rgba(56, 189, 248, 0.15)',
+                          borderRadius: '6px',
+                          transition: 'all 0.2s ease',
+                          textAlign: 'center'
+                        }}
+                      >
+                        <div style={{ background: '#2563eb', color: '#ffffff', padding: '8px', borderRadius: '4px', fontSize: '0.82rem', fontWeight: 800 }}>
+                          Card Content Box
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px', fontSize: '0.85rem', color: '#cbd5e1', lineHeight: 1.6 }}>
-                    <div><strong>Current Mode:</strong> <code>{boxSizingBorder ? 'border-box' : 'content-box'}</code></div>
-                    <div><strong>Padding:</strong> {cardPadding}</div>
-                    <div><strong>Border:</strong> 4px</div>
-                    <div style={{ color: boxSizingBorder ? '#34d399' : '#f87171', fontWeight: 800, marginTop: '8px' }}>
-                      {boxSizingBorder ? '✅ Fits perfectly inside container width!' : '❌ Overflows container boundary due to added padding & border!'}
+                  {/* Right: Math & Real-Time Explanation Card */}
+                  <div style={{ background: '#1e293b', padding: '1.25rem', borderRadius: '14px', border: '1px solid #334155' }}>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 800, color: boxSizingBorder ? '#34d399' : '#f87171', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
+                      {boxSizingBorder ? '✅ SAFE: border-box Mode' : '❌ WARNING: content-box Overflow Mode'}
                     </div>
+
+                    <div style={{ fontSize: '0.9rem', color: '#ffffff', lineHeight: 1.6, marginBottom: '1rem' }}>
+                      {!boxSizingBorder ? (
+                        <>
+                          <div style={{ background: '#450a0a', border: '1px solid #991b1b', padding: '10px', borderRadius: '8px', color: '#fca5a5', marginBottom: '10px' }}>
+                            <strong>Calculated Total Width:</strong><br />
+                            <code>300px (width) + {boxPaddingVal * 2}px (padding) + {boxBorderVal * 2}px (border) = <span style={{ textDecoration: 'underline', fontWeight: 900 }}>{300 + (boxPaddingVal * 2) + (boxBorderVal * 2)}px</span></code>
+                          </div>
+                          <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>
+                            The element expands <strong>OUTSIDE</strong> its specified 300px width! This causes broken layouts, unwanted horizontal scrollbars, and grid columns breaking.
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <div style={{ background: '#064e3b', border: '1px solid #065f46', padding: '10px', borderRadius: '8px', color: '#6ee7b7', marginBottom: '10px' }}>
+                            <strong>Calculated Total Width:</strong><br />
+                            <code>EXACTLY <span style={{ textDecoration: 'underline', fontWeight: 900 }}>300px</span> (Padding &amp; Border included inside!)</code>
+                          </div>
+                          <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>
+                            The element stays <strong>EXACTLY 300px wide</strong>. The browser automatically shrinks the inner content box to fit inside the 300px boundary perfectly!
+                          </p>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Simple Gift Box Analogy */}
+                    <div style={{ background: '#0f172a', padding: '10px', borderRadius: '8px', border: '1px solid #475569', fontSize: '0.8rem', color: '#94a3b8' }}>
+                      💡 <strong>Simple Gift Box Analogy:</strong><br />
+                      {!boxSizingBorder
+                        ? "Like putting bubble wrap around a gift box. The entire box becomes bigger and won't fit inside your gift bag!"
+                        : "Like putting bubble wrap INSIDE the gift box. The box stays the exact same size and fits in your gift bag!"}
+                    </div>
+
                   </div>
+
                 </div>
               </div>
 
