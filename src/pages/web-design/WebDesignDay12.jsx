@@ -517,20 +517,20 @@ document (Root)
                 <CodeBlock
                   title="Section 3: DOM Element Selection Syntax"
                   language="javascript"
-                  code={`// 1. Select by ID (#)
-const mainTitle = document.querySelector("#title");
+                  code={`// 1. Select Heading by ID (#)
+const mainHeading = document.querySelector("#main-heading");
 
-// 2. Select by Class (.) - Returns the FIRST matching element
-const actionButton = document.querySelector(".btn-primary");
+// 2. Select PRO Badge by Class (.) - Returns FIRST matching element
+const badgeTag = document.querySelector(".badge-tag");
 
-// 3. Select by Element Tag Name
-const heading = document.querySelector("h1");
+// 3. Select Action Button by Class (.)
+const btnCta = document.querySelector(".btn-cta");
 
-// 4. Select ALL matching elements - Returns a NodeList collection
-const allCards = document.querySelectorAll(".card");
+// 4. Select ALL feature boxes by Class (.) - Returns a NodeList collection
+const featureBoxes = document.querySelectorAll(".feature-box");
 
-console.log(mainTitle); // Output: <h1 id="title">...</h1>
-console.log(allCards.length); // Output: Number of cards found`}
+console.log(mainHeading);  // Output: <div id="main-heading">🚀 AlphaFly Digital Agency...</div>
+console.log(featureBoxes.length); // Output: 2`}
                 />
               </div>
 
@@ -635,16 +635,17 @@ console.log(allCards.length); // Output: Number of cards found`}
                   title="Section 4: Updating Content & Image Attributes"
                   language="javascript"
                   code={`const title = document.querySelector("#title");
-const heroImage = document.querySelector("#heroImg");
+const heroImg = document.querySelector("#heroImg");
 
-// 1. Safe text modification
+// 1. Safe text modification using .textContent
 title.textContent = "Welcome to Web Design!";
 
-// 2. Modifying attributes (getAttribute / setAttribute)
-heroImage.setAttribute("src", "laptop-modern.jpg");
-heroImage.setAttribute("alt", "Modern laptop workspace");
+// 2. Modifying image source attribute using .setAttribute()
+heroImg.setAttribute("src", "https://images.unsplash.com/photo-1498050108023-c5249f4df085");
+heroImg.setAttribute("alt", "Code Laptop Workspace");
 
-console.log(heroImage.getAttribute("src")); // Output: laptop-modern.jpg`}
+console.log(title.textContent); // Output: Welcome to Web Design!
+console.log(heroImg.getAttribute("src")); // Output: https://images.unsplash.com/...`}
                 />
               </div>
 
@@ -730,14 +731,15 @@ console.log(heroImage.getAttribute("src")); // Output: laptop-modern.jpg`}
                 <CodeBlock
                   title="Section 6: Managing CSS Class State in JavaScript"
                   language="javascript"
-                  code={`const navMenu = document.querySelector("#navMenu");
-const toggleBtn = document.querySelector("#toggleBtn");
+                  code={`const infoPanel = document.querySelector("#infoPanel");
 
-// classList methods:
-navMenu.classList.add("active");      // Adds 'active' class
-navMenu.classList.remove("active");   // Removes 'active' class
-navMenu.classList.toggle("active");   // Flips presence of 'active'
-console.log(navMenu.classList.contains("active")); // Returns true/false`}
+// Managing CSS classes with classList:
+infoPanel.classList.add("active");        // Show panel
+infoPanel.classList.remove("active");     // Hide panel
+infoPanel.classList.toggle("active");     // Flips visibility on button click
+infoPanel.classList.toggle("highlight");  // Toggle yellow highlight background
+
+console.log(infoPanel.classList.contains("active")); // Returns true or false`}
                 />
               </div>
 
@@ -824,15 +826,18 @@ console.log(navMenu.classList.contains("active")); // Returns true/false`}
                 <CodeBlock
                   title="Section 7: Modern Event Listener Syntax"
                   language="javascript"
-                  code={`const btn = document.querySelector("#actionBtn");
+                  code={`const primaryBtn = document.querySelector("#primaryBtn");
+const inspectBtn = document.querySelector("#inspectBtn");
 
-// Syntax: element.addEventListener("event_name", callbackFunction);
-btn.addEventListener("click", (event) => {
-  console.log("Button clicked!");
-  console.log("Triggered element:", event.target);
-  
-  // Prevent default link / form behavior if needed:
-  // event.preventDefault();
+// 1. Listening to click events
+primaryBtn.addEventListener("click", (event) => {
+  console.log("Clicked Primary CTA!");
+});
+
+// 2. Inspecting event.target in event handler callback
+inspectBtn.addEventListener("click", (event) => {
+  console.log("Triggered Element Tag:", event.target.tagName); // Output: BUTTON
+  console.log("Element Inner Text:", event.target.innerText);   // Output: Inspect event.target
 });`}
                 />
               </div>
@@ -914,20 +919,22 @@ btn.addEventListener("click", (event) => {
                   title="Section 9: Client-Side Form Validation Pattern"
                   language="javascript"
                   code={`const contactForm = document.querySelector("#contactForm");
-const nameInput = document.querySelector("#name");
+const fullNameInput = document.querySelector("#fullName");
+const emailInput = document.querySelector("#emailAddress");
 
 contactForm.addEventListener("submit", (event) => {
-  // 1. Prevent form from refreshing the page
+  // 1. Prevent form from reloading the browser page
   event.preventDefault();
 
-  // 2. Read input value
-  const nameValue = nameInput.value.trim();
+  // 2. Read user input values using .value
+  const name = fullNameInput.value.trim();
+  const email = emailInput.value.trim();
 
-  // 3. Validation check
-  if (nameValue === "") {
-    alert("Please enter your name!");
+  // 3. Client-side validation check
+  if (name === "" || email === "") {
+    console.log("Validation Error: Please fill in all required fields!");
   } else {
-    console.log("Submitted name:", nameValue);
+    console.log("Form Submitted Successfully:", { name, email });
   }
 });`}
                 />
@@ -1018,16 +1025,31 @@ contactForm.addEventListener("submit", (event) => {
               {/* Feature A: Mobile Navigation Drawer */}
               <div style={{ background: '#0f172a', padding: '1.5rem', borderRadius: '16px', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
-                  📱 1. Mobile Drawer Navigation Drawer Component
+                  📱 Section 10: Mobile Drawer Navigation Component
                 </h3>
                 <p style={{ fontSize: '0.88rem', color: '#94a3b8', marginBottom: '1rem' }}>
-                  Click the hamburger menu button below to open/close the mobile navigation drawer!
+                  Click the menu button to toggle the <code>.active</code> class on the mobile nav drawer!
                 </p>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <CodeBlock
+                    title="Section 10: Mobile Drawer Toggle Code"
+                    language="javascript"
+                    code={`const menuBtn = document.querySelector("#menuBtn");
+const drawerNav = document.querySelector("#drawerNav");
+
+menuBtn.addEventListener("click", () => {
+  // Toggle the active class to open/close mobile drawer
+  drawerNav.classList.toggle("active");
+});`}
+                  />
+                </div>
 
                 <div style={{ background: '#1e293b', borderRadius: '12px', padding: '1rem', border: '1px solid #475569' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ fontWeight: 800, color: '#ffffff' }}>AlphaFly Agency</div>
                     <button
+                      id="menuBtn"
                       onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                       style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}
                     >
@@ -1037,7 +1059,7 @@ contactForm.addEventListener("submit", (event) => {
 
                   {/* Mobile Navigation Drawer Dropdown */}
                   {isMobileMenuOpen && (
-                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #334155', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div id="drawerNav" style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #334155', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       {['Home', 'Services', 'About', 'Portfolio', 'Contact Us'].map((item, idx) => (
                         <a key={idx} href={`#${item.toLowerCase()}`} style={{ color: '#38bdf8', textDecoration: 'none', fontWeight: 700, padding: '6px', borderRadius: '4px', background: '#0f172a' }}>
                           {item}
@@ -1051,16 +1073,37 @@ contactForm.addEventListener("submit", (event) => {
               {/* Feature B: Dynamic Counter */}
               <div style={{ background: '#0f172a', padding: '1.5rem', borderRadius: '16px', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
-                  🔢 2. Dynamic Interactive Counter
+                  🔢 Section 11: Dynamic Interactive Counter
                 </h3>
                 <p style={{ fontSize: '0.88rem', color: '#94a3b8', marginBottom: '1rem' }}>
-                  Modify count variables and update <code>textContent</code> live.
+                  Modify count variables and update <code>textContent</code> live on button clicks.
                 </p>
 
+                <div style={{ marginBottom: '1rem' }}>
+                  <CodeBlock
+                    title="Section 11: Dynamic Counter Code"
+                    language="javascript"
+                    code={`let count = 0;
+const counterDisplay = document.querySelector("#counterDisplay");
+const incBtn = document.querySelector("#incBtn");
+const decBtn = document.querySelector("#decBtn");
+
+incBtn.addEventListener("click", () => {
+  count++;
+  counterDisplay.textContent = count;
+});
+
+decBtn.addEventListener("click", () => {
+  count--;
+  counterDisplay.textContent = count;
+});`}
+                  />
+                </div>
+
                 <div style={{ background: '#1e293b', padding: '1.25rem', borderRadius: '12px', border: '1px solid #475569', display: 'flex', alignItems: 'center', gap: '1.5rem', justifyContent: 'center' }}>
-                  <button onClick={() => setCounterVal(c => c - 1)} style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 900, fontSize: '1.2rem', cursor: 'pointer' }}>-</button>
-                  <div style={{ fontSize: '2rem', fontWeight: 900, color: '#ffffff', minWidth: '60px', textAlign: 'center' }}>{counterVal}</div>
-                  <button onClick={() => setCounterVal(c => c + 1)} style={{ background: '#10b981', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 900, fontSize: '1.2rem', cursor: 'pointer' }}>+</button>
+                  <button id="decBtn" onClick={() => setCounterVal(c => c - 1)} style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 900, fontSize: '1.2rem', cursor: 'pointer' }}>-</button>
+                  <div id="counterDisplay" style={{ fontSize: '2rem', fontWeight: 900, color: '#ffffff', minWidth: '60px', textAlign: 'center' }}>{counterVal}</div>
+                  <button id="incBtn" onClick={() => setCounterVal(c => c + 1)} style={{ background: '#10b981', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 900, fontSize: '1.2rem', cursor: 'pointer' }}>+</button>
                   <button onClick={() => setCounterVal(0)} style={{ background: '#475569', color: '#fff', border: 'none', padding: '10px 14px', borderRadius: '8px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}>Reset</button>
                 </div>
               </div>
@@ -1068,8 +1111,29 @@ contactForm.addEventListener("submit", (event) => {
               {/* Feature C: Show/Hide Password & Read More */}
               <div style={{ background: '#0f172a', padding: '1.5rem', borderRadius: '16px', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
-                  👁️ 3. Show / Hide Password &amp; Read More Panel
+                  👁️ Section 12: Show / Hide Password &amp; Read More Panel
                 </h3>
+                <p style={{ fontSize: '0.88rem', color: '#94a3b8', marginBottom: '1rem' }}>
+                  Toggle input field <code>type</code> between <code>"password"</code> and <code>"text"</code>.
+                </p>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <CodeBlock
+                    title="Section 12: Password Toggle Code"
+                    language="javascript"
+                    code={`const passInput = document.querySelector("#passwordField");
+const togglePassBtn = document.querySelector("#togglePassBtn");
+
+togglePassBtn.addEventListener("click", () => {
+  // Toggle input type attribute
+  if (passInput.type === "password") {
+    passInput.setAttribute("type", "text");
+  } else {
+    passInput.setAttribute("type", "password");
+  }
+});`}
+                  />
+                </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
                   {/* Password Toggle */}
@@ -1077,12 +1141,13 @@ contactForm.addEventListener("submit", (event) => {
                     <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '6px' }}>Password Input Field</label>
                     <div style={{ display: 'flex', gap: '6px' }}>
                       <input
+                        id="passwordField"
                         type={showPassword ? 'text' : 'password'}
                         value={passwordInput}
                         onChange={(e) => setPasswordInput(e.target.value)}
                         style={{ width: '100%', padding: '8px', borderRadius: '6px', background: '#0f172a', color: '#fff', border: '1px solid #475569' }}
                       />
-                      <button onClick={() => setShowPassword(!showPassword)} style={{ background: '#3b82f6', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer' }}>
+                      <button id="togglePassBtn" onClick={() => setShowPassword(!showPassword)} style={{ background: '#3b82f6', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer' }}>
                         {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
                     </div>
