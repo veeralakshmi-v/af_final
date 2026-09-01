@@ -2381,18 +2381,18 @@ export const webDesignCourseData = [
   },
   {
     id: 'web_design_day11',
-    title: 'Day 11 — Improve Your Existing Website with Simple CSS',
+    title: 'Day 11 — Modern CSS Styling & Refactoring',
     items: [
-      { id: 'intro', label: 'Topic 1: Review Existing Website & Audit', icon: <BookOpen size={18} /> },
-      { id: 'colors', label: 'Topic 2: Design Tokens & Palette Colors', icon: <Sliders size={18} /> },
-      { id: 'typography', label: 'Topic 3: Typography & Web Fonts', icon: <Type size={18} /> },
-      { id: 'spacing', label: 'Topic 4: Spacing & Box Model Margins', icon: <LayoutTemplate size={18} /> },
-      { id: 'buttons', label: 'Topic 5: Interactive Buttons & Styling', icon: <PenTool size={18} /> },
-      { id: 'cards_hero', label: 'Topic 6: Feature Cards & Grid Layout', icon: <LayoutGrid size={18} /> },
-      { id: 'flexbox_nav', label: 'Topic 7: Hero & Navbar Redesign', icon: <Layers size={18} /> },
-      { id: 'responsive', label: 'Topic 8: Responsive Layout & Mobile Testing', icon: <Smartphone size={18} /> },
-      { id: 'guided_build', label: 'Topic 9: Step-by-Step Guided CSS Project', icon: <Code size={18} /> },
-      { id: 'quiz', label: 'Topic 10: Before/After Showcase & Quiz', icon: <CheckCircle size={18} /> }
+      { id: 'intro', label: '1. Intro to Modern CSS & Design Systems', icon: <BookOpen size={18} /> },
+      { id: 'variables', label: '2. CSS Variables & Design Tokens', icon: <Sliders size={18} /> },
+      { id: 'typography', label: '3. Typography Hierarchy System', icon: <Type size={18} /> },
+      { id: 'spacing', label: '4. Spacing System & Box Model', icon: <LayoutTemplate size={18} /> },
+      { id: 'grids', label: '5. Modern Grids & Component Layouts', icon: <LayoutGrid size={18} /> },
+      { id: 'buttons', label: '6. Professional Button System', icon: <PenTool size={18} /> },
+      { id: 'cards', label: '7. Cards & Micro Visual Feedback', icon: <Layers size={18} /> },
+      { id: 'refactoring', label: '8. CSS Refactoring Principles', icon: <Code size={18} /> },
+      { id: 'before_after', label: '9. Before & After Transformation', icon: <MonitorPlay size={18} /> },
+      { id: 'assessment', label: '10. Practice, Quiz, Task & Assessment', icon: <CheckCircle size={18} /> }
     ]
   },
   {

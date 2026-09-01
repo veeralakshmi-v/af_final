@@ -13,7 +13,16 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
 
   useEffect(() => {
     if (propActiveTab) {
-      setActiveTab(propActiveTab);
+      // Map legacy tab IDs to new tab IDs if necessary
+      const legacyMap = {
+        'colors': 'variables',
+        'cards_hero': 'grids',
+        'flexbox_nav': 'buttons',
+        'responsive': 'grids',
+        'guided_build': 'refactoring',
+        'quiz': 'assessment'
+      };
+      setActiveTab(legacyMap[propActiveTab] || propActiveTab);
     }
   }, [propActiveTab]);
 
@@ -24,774 +33,558 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
     }
   };
 
-  // --- Interactive Syntax-Highlighted Code Editor component ---
-  const LiveSyntaxCodeEditor = ({ value, onChange, language = 'css', rows = 9, label = '' }) => {
-    const preRef = useRef(null);
-
-    const handleScroll = (e) => {
-      if (preRef.current) {
-        preRef.current.scrollTop = e.target.scrollTop;
-        preRef.current.scrollLeft = e.target.scrollLeft;
-      }
-    };
-
-    const escapeHTML = (str) =>
-      str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
-
-    const highlightCode = (codeStr, lang) => {
-      if (!codeStr) return '';
-      const escaped = escapeHTML(codeStr);
-
-      if (lang === 'html') {
-        const tokenRegex = /(&lt;<!--[\s\S]*?--&gt;)|(&lt;!DOCTYPE html&gt;)|(&lt;\/?[a-zA-Z0-9\-]+)|([a-zA-Z\-]+)(?=\s*=)|("[\s\S]*?"|'[\s\S]*?')/gi;
-        return escaped.replace(tokenRegex, (match, comment, doctype, tag, attr, stringVal) => {
-          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
-          if (doctype) return `<span style="color:#c084fc;font-weight:bold;">${doctype}</span>`;
-          if (tag) {
-            const m = tag.match(/^(&lt;\/?)([a-zA-Z0-9\-]+)$/);
-            return m ? `${m[1]}<span style="color:#f43f5e;font-weight:bold;">${m[2]}</span>` : tag;
-          }
-          if (attr) return `<span style="color:#fbbf24;font-weight:600;">${attr}</span>`;
-          if (stringVal) return `<span style="color:#34d399;">${stringVal}</span>`;
-          return match;
-        });
-      }
-
-      if (lang === 'css') {
-        const cssTokenRegex = /(\/\*[\s\S]*?\*\/)|([.#:][a-zA-Z0-9_\-]+|[a-zA-Z0-9_\-]+(?=\s*\{))|([a-zA-Z\-]+)(?=\s*:)|(:\s*[^;\}]+;)/gi;
-        return escaped.replace(cssTokenRegex, (match, comment, selector, prop, val) => {
-          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
-          if (selector) return `<span style="color:#38bdf8;font-weight:bold;">${selector}</span>`;
-          if (prop) return `<span style="color:#fb923c;font-weight:600;">${prop}</span>`;
-          if (val) return `:<span style="color:#34d399;">${val.slice(1)}</span>`;
-          return match;
-        });
-      }
-
-      return escaped;
-    };
-
-    const highlightedHTML = highlightCode(value, language);
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-        {label && (
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-            <label style={{ fontSize: '0.8rem', fontWeight: 800, color: language === 'html' ? '#ea580c' : '#2563eb', letterSpacing: '0.5px' }}>
-              {label}
-            </label>
-            <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Interactive Live Code Editor ({language.toUpperCase()})</span>
-          </div>
-        )}
-
-        <div style={{ position: 'relative', width: '100%', borderRadius: '12px', overflow: 'hidden', background: '#090d16', border: '1px solid #1e293b', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
-          <pre
-            ref={preRef}
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              margin: 0,
-              padding: '1rem',
-              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
-              fontSize: '0.84rem',
-              lineHeight: '1.6',
-              color: '#f8fafc',
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
-              pointerEvents: 'none',
-              overflow: 'hidden',
-              boxSizing: 'border-box'
-            }}
-            dangerouslySetInnerHTML={{ __html: highlightedHTML + '\n' }}
-          />
-
-          <textarea
-            rows={rows}
-            value={value}
-            onChange={onChange}
-            onScroll={handleScroll}
-            spellCheck={false}
-            style={{
-              position: 'relative',
-              width: '100%',
-              minHeight: `${rows * 1.6}rem`,
-              margin: 0,
-              padding: '1rem',
-              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
-              fontSize: '0.84rem',
-              lineHeight: '1.6',
-              color: 'transparent',
-              caretColor: '#38bdf8',
-              background: 'transparent',
-              border: 'none',
-              outline: 'none',
-              resize: 'vertical',
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
-              boxSizing: 'border-box'
-            }}
-          />
-        </div>
-      </div>
-    );
+  const isTabActive = (tabId) => {
+    if (activeTab === tabId) return true;
+    if (tabId === 'variables' && activeTab === 'colors') return true;
+    if (tabId === 'grids' && (activeTab === 'cards_hero' || activeTab === 'responsive')) return true;
+    if (tabId === 'buttons' && activeTab === 'flexbox_nav') return true;
+    if (tabId === 'refactoring' && activeTab === 'guided_build') return true;
+    if (tabId === 'assessment' && activeTab === 'quiz') return true;
+    return false;
   };
 
-  // ==========================================
-  // STATE MANAGEMENT
-  // ==========================================
+  // --- State Variables for Interactive Exercises ---
+  // Section 2: CSS Variables Customizer
+  const [varPrimary, setVarPrimary] = useState('#2563eb');
+  const [varSecondary, setVarSecondary] = useState('#0f172a');
+  const [varText, setVarText] = useState('#334155');
+  const [varBg, setVarBg] = useState('#f8fafc');
+  const [varRadius, setVarRadius] = useState('10px');
 
-  // 1. Review Section State
-  const [unfinishedAreas, setUnfinishedAreas] = useState({
-    colors: false,
-    typography: false,
-    spacing: false,
-    buttons: false,
-    cards: false,
-    hero: false,
-    mobile: false
-  });
-  const [studentReviewNote, setStudentReviewNote] = useState('');
+  // Section 3: Typography Visualizer
+  const [fontFamily, setFontFamily] = useState('Inter');
+  const [h1Size, setH1Size] = useState('36');
+  const [bodySize, setBodySize] = useState('16');
+  const [lineHeight, setLineHeight] = useState('1.6');
+  const [fontWeight, setFontWeight] = useState('700');
 
-  // 2. Before / After Preview Toggle State
-  const [previewMode, setPreviewMode] = useState('after');
+  // Section 4: Spacing & Box Model Toggle
+  const [boxSizingBorder, setBoxSizingBorder] = useState(true);
+  const [cardPadding, setCardPadding] = useState('16px');
+  const [cardMargin, setCardMargin] = useState('16px');
 
-  // 3. Color Studio State
-  const [pageBgColor, setPageBgColor] = useState('#f8fafc');
-  const [textColor, setTextColor] = useState('#334155');
-  const [headingColor, setHeadingColor] = useState('#0f172a');
-  const [buttonColor, setButtonColor] = useState('#2563eb');
-  const [cardBgColor, setCardBgColor] = useState('#ffffff');
-  const [showColorHint, setShowColorHint] = useState(false);
-  const [showColorSol, setShowColorSol] = useState(false);
+  // Section 6: Grid Columns Customizer
+  const [gridCols, setGridCols] = useState('repeat(auto-fit, minmax(220px, 1fr))');
 
-  // 4. Typography Visualizer State
-  const [headingSize, setHeadingSize] = useState(42);
-  const [paragraphSize, setParagraphSize] = useState(16);
-  const [headingWeight, setHeadingWeight] = useState('700');
-  const [textAlign, setTextAlign] = useState('left');
-  const [lineHeight, setLineHeight] = useState(1.6);
-  const [fontFamilySelect, setFontFamilySelect] = useState('system-ui');
+  // Section 7: Button System Variant Selector
+  const [activeBtnVariant, setActiveBtnVariant] = useState('primary');
 
-  // 5. Spacing Demonstrator State
-  const [spacingViewMode, setSpacingViewMode] = useState('after');
-  const [demoPadding, setDemoPadding] = useState(24);
-  const [demoMargin, setDemoMargin] = useState(20);
-  const [demoGap, setDemoGap] = useState(20);
+  // Section 8 & 9: Micro Interaction Hover Toggle
+  const [enableMicroHover, setEnableMicroHover] = useState(true);
 
-  // 6. Button Practice Editor State
-  const [btnBgColor, setBtnBgColor] = useState('#2563eb');
-  const [btnTextColor, setBtnTextColor] = useState('#ffffff');
-  const [btnPaddingY, setBtnPaddingY] = useState(12);
-  const [btnPaddingX, setBtnPaddingX] = useState(20);
-  const [btnBorderRadius, setBtnBorderRadius] = useState(8);
-  const [btnHoverBgColor, setBtnHoverBgColor] = useState('#1d4ed8');
-  const [isBtnHovered, setIsBtnHovered] = useState(false);
-  const [showBtnHint, setShowBtnHint] = useState(false);
-  const [showBtnSol, setShowBtnSol] = useState(false);
+  // Section 10: Refactoring Editor
+  const [refactoredCodeInput, setRefactoredCodeInput] = useState(`.btn {
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.btn-primary { background: var(--primary); color: #fff; border: none; }
+.btn-secondary { background: var(--secondary); color: #fff; border: none; }`);
 
-  // 7. Section Review Checklist State
-  const [sectionChecklist, setSectionChecklist] = useState({
-    about: true,
-    services: true,
-    projects: true,
-    testimonials: true,
-    pricing: true,
-    contact: true
-  });
+  // Section 11: Before & After Toggle
+  const [showAfterVersion, setShowAfterVersion] = useState(true);
 
-  // 8. Mobile Viewport Simulator State
-  const [viewportWidth, setViewportWidth] = useState('desktop'); // 'desktop' | 'tablet' | 'mobile'
-  const [studentMobileIssues, setStudentMobileIssues] = useState('');
-
-  // 9. Guided Build (11 Steps) State
-  const [guidedStep, setGuidedStep] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState(Array(11).fill(false));
-  const [guidedCodes, setGuidedCodes] = useState([
-    `/* Step 1: Choose a simple color palette */\nbody {\n  background-color: #f8fafc;\n  color: #334155;\n}\nh1, h2, h3 {\n  color: #0f172a;\n}`,
-    `/* Step 2: Update the page background */\nbody {\n  background-color: #f7f7f7;\n  color: #222222;\n}`,
-    `/* Step 3: Improve heading styles */\nh1 {\n  font-size: 42px;\n  font-weight: 700;\n  line-height: 1.1;\n  color: #0f172a;\n}`,
-    `/* Step 4: Improve paragraph readability */\np {\n  font-size: 16px;\n  line-height: 1.6;\n  color: #475569;\n}`,
-    `/* Step 5: Add section spacing */\nsection {\n  padding: 60px 20px;\n}\n.container {\n  max-width: 1100px;\n  margin: 0 auto;\n}`,
-    `/* Step 6: Style all buttons */\n.btn {\n  display: inline-block;\n  padding: 12px 20px;\n  border: none;\n  border-radius: 8px;\n  background-color: #2563eb;\n  color: white;\n  cursor: pointer;\n  font-size: 16px;\n}`,
-    `/* Step 7: Style all cards */\n.card {\n  background-color: white;\n  border: 1px solid #e5e7eb;\n  border-radius: 12px;\n  padding: 24px;\n  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);\n}`,
-    `/* Step 8: Add simple hover effects */\n.btn:hover {\n  background-color: #1d4ed8;\n}\n.card {\n  transition: transform 0.2s ease;\n}\n.card:hover {\n  transform: translateY(-4px);\n}`,
-    `/* Step 9: Improve the hero section */\n.hero {\n  padding: 80px 20px;\n}\n.hero-content {\n  max-width: 650px;\n  margin: 0 auto;\n  text-align: center;\n}\n.hero-actions {\n  display: flex;\n  gap: 12px;\n  justify-content: center;\n  flex-wrap: wrap;\n}`,
-    `/* Step 10: Add one basic mobile media query */\n@media (max-width: 700px) {\n  .card-list {\n    flex-direction: column;\n  }\n  h1 {\n    font-size: 32px;\n  }\n  section {\n    padding: 40px 16px;\n  }\n  .hero-actions {\n    flex-direction: column;\n    align-items: stretch;\n  }\n}`,
-    `/* Step 11: Test website on small screens */\n/* Mobile responsive layout verified! */`
-  ]);
-
-  const guidedStepsList = [
-    { title: "1. Choose Color Palette", desc: "Select 1 main color, 1 text color, 1 background color, and 1 accent color." },
-    { title: "2. Page Background", desc: "Apply background-color and primary text color to body selector." },
-    { title: "3. Heading Styles", desc: "Set font-size (42px), font-weight (700), line-height (1.1), and heading color." },
-    { title: "4. Paragraph Readability", desc: "Set paragraph font-size (16px) and line-height (1.6) for optimal reading comfort." },
-    { title: "5. Section Spacing", desc: "Add padding to sections (60px 20px) to give content proper breathing room." },
-    { title: "6. Button Styling", desc: "Apply consistent padding, border-radius (8px), background color, and cursor pointer." },
-    { title: "7. Card Styling", desc: "Style cards with white background, border, 12px border-radius, padding, and drop shadow." },
-    { title: "8. Subtle Hover Effects", desc: "Add :hover state for buttons and subtle translateY(-4px) with CSS transition for cards." },
-    { title: "9. Hero Section Layout", desc: "Center hero content with max-width: 650px, margin: 0 auto, and flex button actions." },
-    { title: "10. Basic Mobile Media Query", desc: "Add @media (max-width: 700px) to stack cards vertically and adjust padding." },
-    { title: "11. Screen Testing", desc: "Verify layout responsiveness across desktop, tablet, and mobile viewports." }
-  ];
-
-  // 10. CSS Matching Activity State
-  const propertyMatchingItems = [
-    { prop: 'padding', purpose: 'Space inside an element' },
-    { prop: 'margin', purpose: 'Space outside an element' },
-    { prop: 'gap', purpose: 'Space between flex items' },
-    { prop: 'border-radius', purpose: 'Rounded corners' },
-    { prop: 'box-shadow', purpose: 'Shadow around an element' },
-    { prop: 'font-size', purpose: 'Text size' },
-    { prop: 'line-height', purpose: 'Space between lines' },
-    { prop: ':hover', purpose: 'Style when the pointer is over an element' },
-    { prop: '@media', purpose: 'Apply styles based on screen size' }
-  ];
-  const [matchingSelections, setMatchingSelections] = useState({});
-  const [matchingSubmitted, setMatchingSubmitted] = useState(false);
-
-  // 11. Practice Task & AI Audit State
-  const [selectedPracticeSection, setSelectedPracticeSection] = useState('hero');
-  const [practiceReflectionNote, setPracticeReflectionNote] = useState('');
-  const [aiReviewLoading, setAiReviewLoading] = useState(false);
-  const [aiReviewResult, setAiReviewResult] = useState(null);
-
-  const handleRunAiAudit = () => {
-    setAiReviewLoading(true);
-    setTimeout(() => {
-      setAiReviewResult({
-        strengths: [
-          "Color contrast: Dark headings (#0f172a) on light slate background provide clean legibility.",
-          "Consistent Spacing: Card padding (24px) creates an inviting, readable layout."
-        ],
-        improvements: [
-          "Hero Button Contrast: Consider darkening secondary button borders for stronger visual hierarchy.",
-          "Mobile Stack Spacing: Ensure flex gaps stay at 12px or 16px when stacked vertically on small screens."
-        ],
-        cssRecommendation: `/* Recommended CSS tweak for cleaner button stacking on mobile */\n@media (max-width: 700px) {\n  .hero-actions .btn {\n    width: 100%;\n    text-align: center;\n  }\n}`
-      });
-      setAiReviewLoading(false);
-    }, 800);
+  // Practice Challenges Solutions Toggle
+  const [showPracticeSol, setShowPracticeSol] = useState({});
+  const togglePracticeSol = (id) => {
+    setShowPracticeSol(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // 12. Assignment State
-  const [assignmentNotes, setAssignmentNotes] = useState({
-    originalNote: 'Original Day 10 version had default un-styled buttons and zero card padding.',
-    improvedNote: 'Updated background to #f7f7f7, added 24px card padding, box-shadow, and subtle translateY hover.',
-    changesList: '1. Applied clear 4-role color palette\n2. Styled reusable .btn class with 8px border-radius\n3. Added 60px section padding\n4. Created basic @media (max-width: 700px) mobile layout',
-    mobileNote: 'Tested on 375px mobile viewport. Cards stack cleanly into a single vertical column.',
-    biggestImprovement: 'The website transformed from an raw prototype into a polished, professional business landing page.'
-  });
-  const [assignmentSubmitted, setAssignmentSubmitted] = useState(false);
-
-  // 13. Quiz State (10 Questions matching syllabus)
-  const quizQuestions = [
-    { q: "1. What does the CSS padding property do?", opts: ["Creates space outside an element", "Creates space inside an element's border", "Changes line height of text", "Applies shadow around an element"], ans: 1 },
-    { q: "2. What does the CSS margin property control?", opts: ["Space inside an element", "Space outside an element", "Space between flex items", "Font boldness"], ans: 1 },
-    { q: "3. What does the gap property do in a Flexbox container?", opts: ["Sets margin around the page", "Creates space between flex items", "Reduces padding inside buttons", "Sets image borders"], ans: 1 },
-    { q: "4. What visual effect does border-radius create?", opts: ["Adds a drop shadow", "Creates rounded corners on an element", "Sets font size", "Centers text"], ans: 1 },
-    { q: "5. What does box-shadow add to a card element?", opts: ["A border color", "A shadow around the element for depth", "Line spacing", "Background gradient"], ans: 1 },
-    { q: "6. When is the :hover pseudo-class triggered?", opts: ["When the page finishes loading", "When the mouse pointer hovers over an element", "When an input form is submitted", "When the user scrolls down"], ans: 1 },
-    { q: "7. What does the font-size property change?", opts: ["The weight/boldness of text", "The physical size of text", "The line height between paragraphs", "The alignment of text"], ans: 1 },
-    { q: "8. What does line-height control in paragraph styling?", opts: ["Space between text characters", "Vertical space between lines of text", "Height of the entire section", "Margin below headings"], ans: 1 },
-    { q: "9. Why do web designers use a CSS @media query?", opts: ["To fetch data from a server", "To apply different CSS styles based on screen size", "To embed audio and video", "To create CSS variables"], ans: 1 },
-    { q: "10. Why is it important to test a website on mobile screen sizes?", opts: ["To verify text readability, touch button sizing, and prevent horizontal scrolling", "Browsers automatically delete un-tested CSS", "Mobile testing makes HTML load faster", "It converts CSS into JavaScript"], ans: 0 }
-  ];
-
-  const [quizAns, setQuizAns] = useState(Array(10).fill(null));
+  // Quiz State
+  const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
 
-  const calculateScore = () => {
+  // Assignment Submission State
+  const [assignmentCode, setAssignmentCode] = useState('');
+  const [assignmentSubmitted, setAssignmentSubmitted] = useState(false);
+
+  // Mini Project Niche Choice
+  const [miniProjectNiche, setMiniProjectNiche] = useState('IT Training Institute');
+  const [miniProjectSubmitted, setMiniProjectSubmitted] = useState(false);
+
+  // Self-Assessment Checklist (11 Items)
+  const [selfAssessment, setSelfAssessment] = useState({
+    item1: false,
+    item2: false,
+    item3: false,
+    item4: false,
+    item5: false,
+    item6: false,
+    item7: false,
+    item8: false,
+    item9: false,
+    item10: false,
+    item11: false
+  });
+
+  const toggleSelfAssessment = (key) => {
+    setSelfAssessment(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  // Day Completion State
+  const [isDayCompleted, setIsDayCompleted] = useState(false);
+
+  // --- Quiz Questions Data (12 Comprehensive Questions) ---
+  const quizQuestions = [
+    {
+      id: 1,
+      question: "Which CSS syntax correctly declares a custom property (CSS variable)?",
+      options: [
+        { label: "A", text: "$primary-color: #2563eb;" },
+        { label: "B", text: "--primary-color: #2563eb;" },
+        { label: "C", text: "@primary-color: #2563eb;" },
+        { label: "D", text: "#primary-color: #2563eb;" }
+      ],
+      correct: "B",
+      explanation: "CSS custom properties must begin with two dashes (--), such as --primary-color: #2563eb;. Sass uses $, Less uses @."
+    },
+    {
+      id: 2,
+      question: "How do you access and use a CSS variable in a rule?",
+      options: [
+        { label: "A", text: "color: get(--primary-color);" },
+        { label: "B", text: "color: var(--primary-color);" },
+        { label: "C", text: "color: use($primary-color);" },
+        { label: "D", text: "color: --primary-color;" }
+      ],
+      correct: "B",
+      explanation: "The var() function is used to insert the value of a CSS variable, e.g. color: var(--primary-color);."
+    },
+    {
+      id: 3,
+      question: "Where should global CSS variables be declared to be available across the entire document?",
+      options: [
+        { label: "A", text: "Inside body { ... }" },
+        { label: "B", text: "Inside :root { ... }" },
+        { label: "C", text: "Inside html.main { ... }" },
+        { label: "D", text: "Inside @global { ... }" }
+      ],
+      correct: "B",
+      explanation: ":root represents the highest-level element in the document tree (the <html> tag), making variables available everywhere."
+    },
+    {
+      id: 4,
+      question: "Why is box-sizing: border-box recommended as a universal CSS reset?",
+      options: [
+        { label: "A", text: "It adds 10px padding to every element automatically." },
+        { label: "B", text: "It includes padding and border within an element's specified width and height." },
+        { label: "C", text: "It removes all borders from buttons and cards." },
+        { label: "D", text: "It converts inline elements to block elements." }
+      ],
+      correct: "B",
+      explanation: "border-box ensures that padding and border do not add extra width/height to elements, preventing layout breakage and overflows."
+    },
+    {
+      id: 5,
+      question: "What is the benefit of defining a standardized spacing scale (e.g. 4px, 8px, 16px, 24px, 32px)?",
+      options: [
+        { label: "A", text: "It forces the browser to render text faster." },
+        { label: "B", text: "It ensures visual rhythm, consistency, and eliminates arbitrary random pixel margins." },
+        { label: "C", text: "It replaces the need for CSS Flexbox." },
+        { label: "D", text: "It prevents images from loading slowly." }
+      ],
+      correct: "B",
+      explanation: "A consistent spacing scale creates structured visual rhythm across cards, margins, padding, and section dividers."
+    },
+    {
+      id: 6,
+      question: "Which CSS Grid formula creates an auto-responsive card grid without needing media queries?",
+      options: [
+        { label: "A", text: "grid-template-columns: 1fr 1fr 1fr;" },
+        { label: "B", text: "grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));" },
+        { label: "C", text: "grid-template-columns: flex(250px);" },
+        { label: "D", text: "grid-columns: auto-responsive(250px);" }
+      ],
+      correct: "B",
+      explanation: "repeat(auto-fit, minmax(250px, 1fr)) dynamically wraps grid items based on available container width."
+    },
+    {
+      id: 7,
+      question: "What is the primary goal of CSS Refactoring?",
+      options: [
+        { label: "A", text: "Adding as many inline styles as possible." },
+        { label: "B", text: "Removing duplicate code, improving maintainability, and creating reusable utility classes." },
+        { label: "C", text: "Replacing all CSS files with JavaScript functions." },
+        { label: "D", text: "Making font sizes larger on desktop screens." }
+      ],
+      correct: "B",
+      explanation: "Refactoring cleans up redundant/messy CSS into maintainable, reusable component classes (.btn, .card)."
+    },
+    {
+      id: 8,
+      question: "True or False: Using reusable classes like .btn and .btn-primary is better than creating separate CSS rules for every single button.",
+      options: [
+        { label: "A", text: "True — Reusable base classes enforce consistent design and drastically reduce CSS file size." },
+        { label: "B", text: "False — Every button should have custom standalone CSS code." }
+      ],
+      correct: "A",
+      explanation: "True! A base .btn class handles common padding, radius, and transition, while modifier classes (.btn-primary) set unique colors."
+    },
+    {
+      id: 9,
+      question: "Which transition property syntax provides smooth feedback when hovering over a card or button?",
+      options: [
+        { label: "A", text: "transition: all 0.2s ease;" },
+        { label: "B", text: "animation: hover-smooth 5s infinite;" },
+        { label: "C", text: "hover-effect: instant 0s;" },
+        { label: "D", text: "transform-speed: fast;" }
+      ],
+      correct: "A",
+      explanation: "transition: all 0.2s ease; smoothly animates property changes (like background, shadow, or transform) over 0.2 seconds."
+    },
+    {
+      id: 10,
+      question: "What happens if you update a CSS variable value inside :root { --primary: #2563eb; }?",
+      options: [
+        { label: "A", text: "Only the main header changes color." },
+        { label: "B", text: "Every element on the website using var(--primary) updates to the new color automatically." },
+        { label: "C", text: "The browser reloads the entire HTML page." },
+        { label: "D", text: "You must manually edit every CSS class." }
+      ],
+      correct: "B",
+      explanation: "Changing a CSS variable in :root propagates instantly to every component consuming var(--primary)."
+    },
+    {
+      id: 11,
+      question: "What is the recommended approach for visual typography hierarchy?",
+      options: [
+        { label: "A", text: "Make all text the exact same size (16px)." },
+        { label: "B", text: "Use clear font-size, weight, and line-height distinctions for H1, H2, H3, body, and small text." },
+        { label: "C", text: "Use 5 different font families on a single page." },
+        { label: "D", text: "Make paragraph text larger than H1 headings." }
+      ],
+      correct: "B",
+      explanation: "Visual typography hierarchy uses distinct font sizes (e.g. H1=36px, H2=28px, Body=16px) and weights so users can scan content effortlessly."
+    },
+    {
+      id: 12,
+      question: "When should you use Flexbox vs CSS Grid?",
+      options: [
+        { label: "A", text: "Use Flexbox for 1D layouts (navbars, button rows) and Grid for 2D layouts (card grids, page layouts)." },
+        { label: "B", text: "Grid should only be used for tables, Flexbox for everything else." },
+        { label: "C", text: "Never combine Flexbox and Grid on the same page." },
+        { label: "D", text: "Flexbox is deprecated in modern CSS." }
+      ],
+      correct: "A",
+      explanation: "Flexbox excels at 1-dimensional alignment (along a row or column), while CSS Grid excels at 2-dimensional grid layouts."
+    }
+  ];
+
+  const handleQuizSelect = (questionId, optionLabel) => {
+    if (quizSubmitted) return;
+    setQuizAnswers(prev => ({ ...prev, [questionId]: optionLabel }));
+  };
+
+  const calculateQuizScore = () => {
     let score = 0;
-    quizQuestions.forEach((qObj, idx) => {
-      if (quizAns[idx] === qObj.ans) score++;
+    quizQuestions.forEach(q => {
+      if (quizAnswers[q.id] === q.correct) {
+        score++;
+      }
     });
     return score;
   };
 
-  // Helper for checking active tab mapping across 10 topics
-  const isTabActive = (tabName) => {
-    const validTabs = ['intro', 'colors', 'typography', 'spacing', 'buttons', 'cards_hero', 'flexbox_nav', 'responsive', 'guided_build', 'quiz'];
-    if (tabName === 'intro') {
-      return activeTab === 'intro' || activeTab === 'before_after' || activeTab === 'visual' || !validTabs.includes(activeTab);
-    }
-    if (tabName === 'colors') return activeTab === 'colors' || activeTab === 'variables';
-    if (tabName === 'typography') return activeTab === 'typography';
-    if (tabName === 'spacing') return activeTab === 'spacing';
-    if (tabName === 'buttons') return activeTab === 'buttons' || activeTab === 'ui_components';
-    if (tabName === 'cards_hero') return activeTab === 'cards_hero' || activeTab === 'grid_lab';
-    if (tabName === 'flexbox_nav') return activeTab === 'flexbox_nav';
-    if (tabName === 'responsive') return activeTab === 'responsive';
-    if (tabName === 'guided_build') return activeTab === 'guided_build';
-    if (tabName === 'quiz') return activeTab === 'quiz' || activeTab === 'matching' || activeTab === 'comparison' || activeTab === 'practice_ai' || activeTab === 'playground' || activeTab === 'challenges' || activeTab === 'assignment';
-    return activeTab === tabName;
-  };
-
-  // ==========================================
-  // RENDER MAIN COMPONENT
-  // ==========================================
-
   return (
-    <div style={{ background: '#f8fafc', minHeight: '100vh', color: '#0f172a', padding: '1.5rem', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-
-      {/* TOP HEADER BANNER */}
-      <div style={{
-        background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)',
-        borderRadius: '20px',
-        padding: '2rem',
-        color: '#ffffff',
-        marginBottom: '1.5rem',
-        boxShadow: '0 10px 25px -5px rgba(49, 46, 129, 0.3)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '1.5rem'
-      }}>
-        <div style={{ maxWidth: '850px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(4px)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 800, letterSpacing: '0.5px', marginBottom: '0.75rem' }}>
-            <Sparkles size={14} color="#fbbf24" />
-            DAY 11 • INTERMEDIATE LESSON
+    <div style={{ background: '#f8fafc', minHeight: '100vh', padding: '2rem 1.5rem', fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        
+        {/* ==================== HEADER METADATA BANNER ==================== */}
+        <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: '24px', padding: '2.5rem', color: '#ffffff', marginBottom: '2rem', boxShadow: '0 20px 40px rgba(15, 23, 42, 0.12)', border: '1px solid #334155' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+            <div>
+              <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '6px 14px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', border: '1px solid rgba(56, 189, 248, 0.3)', display: 'inline-block', marginBottom: '12px' }}>
+                DAY 11 — Modern CSS Styling &amp; Refactoring
+              </span>
+              <h1 style={{ fontSize: '2.2rem', fontWeight: 900, color: '#ffffff', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
+                Transform Basic Websites into Professional, Modern &amp; Consistent Designs
+              </h1>
+              <p style={{ fontSize: '1.05rem', color: '#94a3b8', margin: 0, maxWidth: '850px', lineHeight: 1.6 }}>
+                <strong>Learning Goal:</strong> Refactor basic HTML/CSS code into clean, modern, responsive, and professional client-ready websites using reusable design tokens, typography scales, box model spacing, component systems, and CSS refactoring.
+              </p>
+            </div>
+            
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              <div style={{ background: 'rgba(255, 255, 255, 0.08)', padding: '10px 16px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.12)', textAlign: 'center' }}>
+                <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>Estimated Duration</div>
+                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', marginTop: '2px' }}>⏱️ 60–90 Mins</div>
+              </div>
+              <div style={{ background: 'rgba(255, 255, 255, 0.08)', padding: '10px 16px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.12)', textAlign: 'center' }}>
+                <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>Difficulty Level</div>
+                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fbbf24', marginTop: '2px' }}>⚡ Intermediate</div>
+              </div>
+            </div>
           </div>
-          <h1 style={{ fontSize: '2.2rem', fontWeight: 900, margin: '0 0 0.5rem 0', letterSpacing: '-0.5px' }}>
-            Day 11 — Improve Your Existing Website with Simple CSS
-          </h1>
-          <p style={{ fontSize: '1rem', color: '#c7d2fe', margin: 0, lineHeight: 1.6 }}>
-            Refine your Mini Project website's visual quality using practical CSS! Enhance color palettes, typography, section spacing, styled buttons, card shadows, hover effects, hero section, and basic responsive layouts.
-          </p>
+
+          {/* 12 Learning Outcomes Grid */}
+          <div style={{ marginTop: '1.75rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+            <h3 style={{ fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#38bdf8', margin: '0 0 1rem 0', fontWeight: 800 }}>
+              🎯 Day 11 Learning Outcomes (12 Core Skills)
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px' }}>
+              {[
+                "1. Understand consistent design systems",
+                "2. Create & use CSS variables (:root, var())",
+                "3. Build color & typography systems",
+                "4. Enforce 8-point spacing consistency",
+                "5. Apply box-sizing: border-box correctly",
+                "6. Create reusable button component classes",
+                "7. Build consistent card & UI components",
+                "8. Use modern CSS Grid & Flexbox layouts",
+                "9. Improve visual hierarchy & contrast",
+                "10. Refactor redundant/duplicate CSS code",
+                "11. Convert basic sites to modern UI",
+                "12. Make real-world client design decisions"
+              ].map((outcome, idx) => (
+                <div key={idx} style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', color: '#cbd5e1', border: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <CheckCircle size={14} color="#34d399" />
+                  {outcome}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <button
-          onClick={() => openAITutor && openAITutor("Help me improve my website CSS with colors, spacing, typography, button hover effects, and basic mobile media queries!")}
-          style={{
-            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-            color: '#ffffff',
-            border: 'none',
-            padding: '12px 20px',
-            borderRadius: '12px',
-            fontWeight: 800,
-            fontSize: '0.9rem',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: '0 4px 14px rgba(217, 119, 6, 0.4)',
-            whiteSpace: 'nowrap'
-          }}
-        >
-          <Sparkles size={18} /> Ask AI Tutor
-        </button>
-      </div>
-
-      {/* PRACTICAL LEARNING FLOW BANNER */}
-      <div style={{
-        background: '#ffffff',
-        borderRadius: '16px',
-        padding: '1rem 1.5rem',
-        marginBottom: '1.5rem',
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
-      }}>
-        <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '8px' }}>
-          Lesson Flow:
-        </span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontSize: '0.84rem', fontWeight: 800 }}>
-          <span style={{ background: '#eff6ff', color: '#2563eb', padding: '4px 12px', borderRadius: '8px' }}>LEARN</span>
-          <ChevronRight size={14} color="#94a3b8" />
-          <span style={{ background: '#faf5ff', color: '#7e22ce', padding: '4px 12px', borderRadius: '8px' }}>SEE</span>
-          <ChevronRight size={14} color="#94a3b8" />
-          <span style={{ background: '#f0fdf4', color: '#16a34a', padding: '4px 12px', borderRadius: '8px' }}>MODIFY</span>
-          <ChevronRight size={14} color="#94a3b8" />
-          <span style={{ background: '#fff7ed', color: '#ea580c', padding: '4px 12px', borderRadius: '8px' }}>BUILD</span>
-          <ChevronRight size={14} color="#94a3b8" />
-          <span style={{ background: '#fdf2f8', color: '#db2777', padding: '4px 12px', borderRadius: '8px' }}>TEST</span>
-          <ChevronRight size={14} color="#94a3b8" />
-          <span style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)', color: '#ffffff', padding: '4px 12px', borderRadius: '8px' }}>REVIEW</span>
+        {/* ==================== TAB NAVIGATION BAR ==================== */}
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px', marginBottom: '1.5rem' }}>
+          {[
+            { id: 'intro', label: '1. Intro to Modern CSS' },
+            { id: 'variables', label: '2. CSS Variables' },
+            { id: 'typography', label: '3. Typography' },
+            { id: 'spacing', label: '4. Spacing & Box Model' },
+            { id: 'grids', label: '5. Grids & Layouts' },
+            { id: 'buttons', label: '6. Button System' },
+            { id: 'cards', label: '7. Cards & Micro-Hover' },
+            { id: 'refactoring', label: '8. CSS Refactoring' },
+            { id: 'before_after', label: '9. Before & After' },
+            { id: 'assessment', label: '10. Practice, Quiz & Assessment' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => handleTabChange(tab.id)}
+              style={{
+                background: isTabActive(tab.id) ? '#2563eb' : '#ffffff',
+                color: isTabActive(tab.id) ? '#ffffff' : '#64748b',
+                border: `1px solid ${isTabActive(tab.id) ? '#2563eb' : '#e2e8f0'}`,
+                padding: '10px 18px',
+                borderRadius: '12px',
+                fontWeight: 700,
+                fontSize: '0.88rem',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.2s ease',
+                boxShadow: isTabActive(tab.id) ? '0 4px 12px rgba(37, 99, 235, 0.2)' : 'none'
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
-      </div>
 
-      {/* MAIN CONTENT TAB ROUTER */}
-      <div>
-
-        {/* ==================== TAB 1: REVIEW EXISTING WEBSITE ==================== */}
+        {/* ==================== TAB 1: INTRO TO MODERN CSS ==================== */}
         {isTabActive('intro') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Topic 1: Review Existing Website & Audit
+                Section 1 — Introduction to Modern CSS &amp; Design Systems
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                "Today we are not building a new website. We are improving the website we already created."
+                Why Professional Websites Need Consistent Design Systems
               </h2>
-              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.5rem 0' }}>
-                Open the Mini Project website created during previous days. Before writing new styles, inspect the visual presentation of your existing page:
+
+              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
+                <strong>What is Modern CSS?</strong> Modern CSS goes beyond giving elements random colors or inline inline styles. It is about constructing structured, maintainable, scalable, and reusable style systems.
               </p>
 
-              {/* 7 Areas Review Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-                {[
-                  { id: 'colors', name: '🎨 Main Colors', desc: 'Are colors plain default or harmonious?' },
-                  { id: 'typography', name: '🔤 Heading & Paragraph Styles', desc: 'Is typography readable with strong contrast?' },
-                  { id: 'spacing', name: '📐 Section Spacing', desc: 'Does content feel crowded or properly padded?' },
-                  { id: 'buttons', name: '🔘 Button Styles', desc: 'Are buttons styled consistently with hover states?' },
-                  { id: 'cards', name: '🃏 Card Styles', desc: 'Do cards have borders, padding, and subtle shadows?' },
-                  { id: 'hero', name: '🚀 Hero Section', desc: 'Is the hero balanced with clear button spacing?' },
-                  { id: 'mobile', name: '📱 Mobile Layout', desc: 'Does content stack nicely on smaller screens?' }
-                ].map((area) => (
-                  <div
-                    key={area.id}
-                    onClick={() => setUnfinishedAreas(prev => ({ ...prev, [area.id]: !prev[area.id] }))}
-                    style={{
-                      background: unfinishedAreas[area.id] ? '#eff6ff' : '#f8fafc',
-                      padding: '1.25rem',
-                      borderRadius: '12px',
-                      border: unfinishedAreas[area.id] ? '2px solid #2563eb' : '1px solid #cbd5e1',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                      <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1e1b4b' }}>{area.name}</div>
-                      <input type="checkbox" checked={unfinishedAreas[area.id]} onChange={() => {}} style={{ cursor: 'pointer' }} />
-                    </div>
-                    <div style={{ fontSize: '0.82rem', color: '#64748b', lineHeight: 1.5 }}>{area.desc}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Topic 1 Source Code Example */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                  📄 Topic 1 Source Code: Unstyled HTML Structure Before CSS Upgrade
-                </h3>
-                <CodeBlock
-                  title="Topic 1: Unstyled HTML Website Structure"
-                  language="html"
-                  code={`<!-- Unstyled HTML Structure Before CSS Upgrade -->
-<header class="header">
-  <div class="logo">Alpha Fly Theni</div>
-  <nav class="nav">
-    <a href="#">Home</a>
-    <a href="#">Courses</a>
-    <a href="#">Contact</a>
-  </nav>
-</header>
-<section class="hero">
-  <h1>Build Job-Ready Digital Skills</h1>
-  <p>Learn Web Design, Python & AI with 100% practical projects.</p>
-  <button>Get Started</button>
-</section>`}
-                />
-              </div>
-
-              {/* Core Question Box */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
-                  # “What makes this website look unfinished?”
-                </h3>
-                <p style={{ fontSize: '0.9rem', color: '#cbd5e1', marginBottom: '1rem' }}>
-                  Select at least 3 areas above that need improvement, then note your observations below:
-                </p>
-                <textarea
-                  rows={3}
-                  value={studentReviewNote}
-                  onChange={(e) => setStudentReviewNote(e.target.value)}
-                  placeholder="e.g. Buttons lack hover states, cards touch the edges without padding, and text is too close on mobile screen sizes..."
-                  style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #475569', background: '#1e293b', color: '#ffffff', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}
-                />
-                {Object.values(unfinishedAreas).filter(Boolean).length >= 3 && (
-                  <div style={{ marginTop: '10px', color: '#34d399', fontWeight: 700, fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <CheckCircle size={16} /> Great job! You identified 3+ areas needing improvement.
-                  </div>
-                )}
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => handleTabChange('before_after')}
-                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Next: Before &amp; After Preview <ArrowRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== TAB 2: BEFORE & AFTER PREVIEW ==================== */}
-        {isTabActive('before_after') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '10px' }}>
-                <div>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                    2. Before and After Preview
-                  </span>
-                  <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '4px 0 0 0' }}>
-                    Visual Quality Transformation
-                  </h2>
-                </div>
-                <div style={{ display: 'flex', gap: '8px', background: '#f1f5f9', padding: '4px', borderRadius: '10px' }}>
-                  <button
-                    onClick={() => setPreviewMode('before')}
-                    style={{
-                      background: previewMode === 'before' ? '#ef4444' : 'transparent',
-                      color: previewMode === 'before' ? '#ffffff' : '#64748b',
-                      border: 'none',
-                      padding: '8px 16px',
-                      borderRadius: '8px',
-                      fontWeight: 800,
-                      fontSize: '0.85rem',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Before (Raw Website)
-                  </button>
-                  <button
-                    onClick={() => setPreviewMode('after')}
-                    style={{
-                      background: previewMode === 'after' ? '#10b981' : 'transparent',
-                      color: previewMode === 'after' ? '#ffffff' : '#64748b',
-                      border: 'none',
-                      padding: '8px 16px',
-                      borderRadius: '8px',
-                      fontWeight: 800,
-                      fontSize: '0.85rem',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    After (Improved CSS)
-                  </button>
-                </div>
-              </div>
-
-              {/* Comparison Matrix Table */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+              {/* Basic vs Professional Comparison Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
                 <div style={{ background: '#fef2f2', padding: '1.25rem', borderRadius: '14px', border: '1px solid #fca5a5' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 900, color: '#991b1b', margin: '0 0 0.75rem 0' }}>❌ BEFORE (Unfinished)</h3>
-                  <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.88rem', color: '#7f1d1d', lineHeight: 1.7 }}>
-                    <li>Plain default colors (#ffffff bg, black text)</li>
-                    <li>Uneven spacing &amp; crowded content</li>
-                    <li>Basic default buttons (no border-radius)</li>
-                    <li>Simple unbordered cards touching edges</li>
-                    <li>Weak typography without line-height</li>
-                    <li>No hover visual feedback on elements</li>
-                    <li>Poor mobile spacing &amp; squeezed layouts</li>
+                  <h4 style={{ color: '#dc2626', margin: '0 0 8px 0', fontSize: '1.05rem', fontWeight: 800 }}>❌ Basic CSS (Amateur Approach)</h4>
+                  <ul style={{ margin: 0, paddingLeft: '1.2rem', color: '#991b1b', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                    <li>Every button has different custom colors, padding, and font sizes.</li>
+                    <li>Hardcoded hex codes like <code>#2563eb</code> duplicated 50 times across stylesheets.</li>
+                    <li>Random inline styles like <code>style="margin-top: 17px;"</code> everywhere.</li>
+                    <li>Changing a brand color requires manually editing dozens of CSS lines.</li>
                   </ul>
                 </div>
 
                 <div style={{ background: '#f0fdf4', padding: '1.25rem', borderRadius: '14px', border: '1px solid #86efac' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 900, color: '#166534', margin: '0 0 0.75rem 0' }}>✨ AFTER (Polished CSS)</h3>
-                  <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.88rem', color: '#14532d', lineHeight: 1.7 }}>
-                    <li>Clear 4-color palette (#f7f7f7, #111827, #2563eb)</li>
-                    <li>Consistent 60px section padding &amp; 20px gap</li>
-                    <li>Styled buttons with 8px radius &amp; subtle hover</li>
-                    <li>Improved cards with border &amp; box-shadow</li>
-                    <li>Better typography (16px base, 1.6 line-height)</li>
-                    <li>Subtle hover effects (translateY -4px)</li>
-                    <li>Clean mobile layout with column stacking</li>
+                  <h4 style={{ color: '#16a34a', margin: '0 0 8px 0', fontSize: '1.05rem', fontWeight: 800 }}>✅ Professional Modern CSS (Design System)</h4>
+                  <ul style={{ margin: 0, paddingLeft: '1.2rem', color: '#166534', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                    <li>Centralized CSS variables (<code>:root &#123; --primary: #2563eb; &#125;</code>).</li>
+                    <li>Reusable component classes (<code>.btn</code>, <code>.btn-primary</code>, <code>.card</code>).</li>
+                    <li>Standardized spacing scales (8px, 16px, 24px, 32px).</li>
+                    <li>Changing one variable updates the entire website instantly!</li>
                   </ul>
                 </div>
               </div>
 
-              {/* Interactive Frame Rendering */}
-              <div style={{ background: previewMode === 'before' ? '#ffffff' : '#f7f7f7', border: '2px dashed #cbd5e1', borderRadius: '16px', padding: '2rem', transition: 'all 0.3s ease' }}>
-                {previewMode === 'before' ? (
-                  <div>
-                    <h1 style={{ color: '#000', fontSize: '28px', fontFamily: 'serif', margin: '0 0 10px 0' }}>My Business Webpage</h1>
-                    <p style={{ color: '#000', fontSize: '14px', margin: '0 0 15px 0' }}>Welcome to our website. We provide quality services for all customers.</p>
-                    <button style={{ background: 'blue', color: 'white', border: 'none', padding: '4px 8px' }}>Click Here</button>
-                    <div style={{ border: '1px solid black', padding: '10px', marginTop: '20px' }}>
-                      <h3 style={{ margin: '0 0 5px 0' }}>Service 1</h3>
-                      <p style={{ margin: 0, fontSize: '12px' }}>This card has text touching edges with no padding or rounded corners.</p>
+              {/* Real World Example Card */}
+              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
+                  💡 Real-World Example: Before &amp; After Button System
+                </h3>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', alignItems: 'center' }}>
+                  <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px', border: '1px solid #475569' }}>
+                    <div style={{ fontSize: '0.8rem', color: '#ef4444', fontWeight: 700, marginBottom: '8px' }}>BEFORE: Inconsistent Standalone Buttons</div>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      <button style={{ background: 'blue', color: 'white', padding: '5px 8px', fontSize: '12px', borderRadius: '3px' }}>Click Here</button>
+                      <button style={{ background: '#1d4ed8', color: 'yellow', padding: '12px 25px', fontSize: '18px', borderRadius: '20px' }}>Submit</button>
+                      <button style={{ background: 'navy', color: '#fff', padding: '2px 15px', fontSize: '10px' }}>Learn More</button>
                     </div>
                   </div>
-                ) : (
-                  <div>
-                    <div style={{ maxWidth: '650px', margin: '0 auto', textAlign: 'center', padding: '40px 20px' }}>
-                      <h1 style={{ color: '#111827', fontSize: '42px', fontWeight: 700, lineHeight: 1.1, margin: '0 0 16px 0', fontFamily: 'system-ui, sans-serif' }}>
-                        Modern Digital Agency
-                      </h1>
-                      <p style={{ color: '#4b5563', fontSize: '18px', lineHeight: 1.6, margin: '0 0 24px 0', fontFamily: 'system-ui, sans-serif' }}>
-                        We design high-converting web applications with clean typography, consistent spacing, and vibrant visual hierarchy.
-                      </p>
-                      <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                        <button style={{ background: '#2563eb', color: 'white', border: 'none', padding: '12px 20px', borderRadius: '8px', fontSize: '16px', fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 12px rgba(37,99,235,0.25)' }}>
-                          Explore Services
-                        </button>
-                      </div>
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginTop: '20px' }}>
-                      {['Web Design', 'SEO Strategy', 'Brand System'].map((title, i) => (
-                        <div key={i} style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '24px', boxShadow: '0 8px 20px rgba(0,0,0,0.06)' }}>
-                          <h3 style={{ margin: '0 0 8px 0', color: '#111827', fontSize: '18px' }}>{title}</h3>
-                          <p style={{ margin: 0, color: '#6b7280', fontSize: '14px', lineHeight: 1.5 }}>
-                            Content now has ample breathing room, elegant rounded borders, and subtle drop shadows.
-                          </p>
-                        </div>
-                      ))}
+
+                  <div style={{ background: '#1e293b', padding: '1.0rem', borderRadius: '10px', border: '1px solid #475569' }}>
+                    <div style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: 700, marginBottom: '8px' }}>AFTER: Consistent Design Token System</div>
+                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                      <button style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer' }}>Click Here</button>
+                      <button style={{ background: '#0f172a', color: '#fff', border: '1px solid #334155', padding: '10px 20px', borderRadius: '8px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer' }}>Submit</button>
+                      <button style={{ background: 'transparent', color: '#38bdf8', border: '2px solid #38bdf8', padding: '8px 18px', borderRadius: '8px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer' }}>Learn More</button>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
 
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+              {/* Source Code Example */}
+              <div style={{ marginBottom: '1rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Section 1 Source Code: Unstyled vs Structured CSS Architecture
+                </h3>
+                <CodeBlock
+                  title="Section 1: Modern CSS Architecture Principles"
+                  language="css"
+                  code={`/* BAD: Duplicate, inconsistent styles */
+.hero-btn { background: blue; padding: 10px; font-size: 14px; }
+.contact-btn { background: #1d4ed8; padding: 14px; font-size: 18px; }
+.footer-btn { background: navy; padding: 6px; font-size: 12px; }
+
+/* GOOD: Reusable Base Component + Modifier Classes */
+.btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary { background: #2563eb; color: #ffffff; border: none; }
+.btn-secondary { background: #0f172a; color: #ffffff; border: none; }`}
+                />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <button
-                  onClick={() => handleTabChange('colors')}
+                  onClick={() => handleTabChange('variables')}
                   style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Next: Improve Colors &amp; Practice <ArrowRight size={18} />
+                  Next: CSS Variables &amp; Tokens <ArrowRight size={18} />
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== TAB 3: IMPROVE COLORS ==================== */}
-        {isTabActive('colors') && (
+        {/* ==================== TAB 2: CSS VARIABLES & DESIGN TOKENS ==================== */}
+        {isTabActive('variables') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Topic 2: Design Tokens & Palette Colors
+                Section 2 — CSS Custom Properties &amp; Design Tokens
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Mastering the 4-Role Color Palette
+                Mastering <code>:root</code> and <code>var()</code>
               </h2>
 
               <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
-                Choose a simple color palette consisting of four distinct roles (do not introduce CSS variables yet):
+                CSS custom properties (variables) let you store color palettes, font sizes, spacing values, border radii, and box shadows in a central location (<code>:root</code>) and reuse them throughout your stylesheet.
               </p>
 
-              {/* 4 Palette Pillars */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <span style={{ fontWeight: 800, color: '#2563eb', fontSize: '0.85rem' }}>1. Page Background</span>
-                  <code style={{ display: 'block', margin: '4px 0', fontSize: '0.8rem', color: '#0f172a' }}>background-color: #f7f7f7;</code>
-                </div>
-                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <span style={{ fontWeight: 800, color: '#2563eb', fontSize: '0.85rem' }}>2. Text Color</span>
-                  <code style={{ display: 'block', margin: '4px 0', fontSize: '0.8rem', color: '#0f172a' }}>color: #222222;</code>
-                </div>
-                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <span style={{ fontWeight: 800, color: '#2563eb', fontSize: '0.85rem' }}>3. Heading Color</span>
-                  <code style={{ display: 'block', margin: '4px 0', fontSize: '0.8rem', color: '#0f172a' }}>color: #111827;</code>
-                </div>
-                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <span style={{ fontWeight: 800, color: '#2563eb', fontSize: '0.85rem' }}>4. Button / Accent</span>
-                  <code style={{ display: 'block', margin: '4px 0', fontSize: '0.8rem', color: '#0f172a' }}>background-color: #2563eb;</code>
-                </div>
-              </div>
-
-              {/* Topic 2 Source Code Example */}
+              {/* Code Example */}
               <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                  📄 Topic 2 Source Code: CSS Custom Properties &amp; Color Tokens
-                </h3>
                 <CodeBlock
-                  title="Topic 2: Color Palette Tokens"
+                  title="Section 2: CSS Variables / Design Tokens Schema"
                   language="css"
-                  code={`/* CSS Variables / Design Color Tokens */
+                  code={`/* Declaring CSS Custom Properties in :root */
 :root {
-  --page-bg: #f8fafc;       /* Light Neutral Page Background */
-  --text-main: #1e293b;     /* High-Contrast Body Text */
-  --heading-color: #0f172a; /* Strong Heading Accent */
-  --primary-accent: #2563eb;/* Primary Action Button Color */
+  --primary-color: #2563eb;
+  --secondary-color: #0f172a;
+  --text-color: #334155;
+  --background-color: #ffffff;
+  --border-color: #e2e8f0;
+  --radius-md: 10px;
+  --spacing-md: 16px;
 }
 
+/* Using CSS Variables anywhere in your project */
 body {
-  background-color: var(--page-bg);
-  color: var(--text-main);
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
-h1, h2, h3 {
-  color: var(--heading-color);
+.card {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-md);
 }
 
 .btn-primary {
-  background-color: var(--primary-accent);
+  background-color: var(--primary-color);
+  color: #ffffff;
 }`}
                 />
               </div>
 
-              {/* Color Practice Editor */}
+              {/* Interactive Task: Live CSS Variable Studio */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: 0 }}>
-                    🎨 Live Color Practice Studio
-                  </h3>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button
-                      onClick={() => { setPageBgColor('#f7f7f7'); setTextColor('#222222'); setHeadingColor('#111827'); setButtonColor('#2563eb'); setCardBgColor('#ffffff'); }}
-                      style={{ background: '#334155', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
-                    >
-                      <RotateCcw size={14} /> Reset
-                    </button>
-                    <button
-                      onClick={() => setShowColorHint(!showColorHint)}
-                      style={{ background: '#334155', color: '#fbbf24', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}
-                    >
-                      Hint
-                    </button>
-                    <button
-                      onClick={() => setShowColorSol(!showColorSol)}
-                      style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}
-                    >
-                      Show Solution
-                    </button>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
+                  🎨 Live Practice Studio: Create Your Own Business CSS Variable System
+                </h3>
+                <p style={{ fontSize: '0.88rem', color: '#94a3b8', marginBottom: '1.25rem' }}>
+                  Adjust the color tokens and border radius below to watch the live business card preview update instantly!
+                </p>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+                  <div>
+                    <label style={{ fontSize: '0.78rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>--primary-color</label>
+                    <input type="color" value={varPrimary} onChange={(e) => setVarPrimary(e.target.value)} style={{ width: '100%', height: '36px', borderRadius: '6px', cursor: 'pointer', border: 'none' }} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.78rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>--secondary-color</label>
+                    <input type="color" value={varSecondary} onChange={(e) => setVarSecondary(e.target.value)} style={{ width: '100%', height: '36px', borderRadius: '6px', cursor: 'pointer', border: 'none' }} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.78rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>--text-color</label>
+                    <input type="color" value={varText} onChange={(e) => setVarText(e.target.value)} style={{ width: '100%', height: '36px', borderRadius: '6px', cursor: 'pointer', border: 'none' }} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.78rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>--background-color</label>
+                    <input type="color" value={varBg} onChange={(e) => setVarBg(e.target.value)} style={{ width: '100%', height: '36px', borderRadius: '6px', cursor: 'pointer', border: 'none' }} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.78rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>--radius-md</label>
+                    <select value={varRadius} onChange={(e) => setVarRadius(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '6px', background: '#1e293b', color: '#fff', border: '1px solid #475569' }}>
+                      <option value="4px">4px (Sharp)</option>
+                      <option value="10px">10px (Standard)</option>
+                      <option value="20px">20px (Rounded)</option>
+                      <option value="999px">999px (Pill)</option>
+                    </select>
                   </div>
                 </div>
 
-                {showColorHint && (
-                  <div style={{ background: '#1e293b', padding: '10px 14px', borderRadius: '8px', color: '#fbbf24', fontSize: '0.85rem', marginBottom: '1rem', border: '1px solid #f59e0b' }}>
-                    💡 Hint: Choose a soft off-white background (#f7f7f7 or #f8fafc) and a strong dark heading color (#111827) for optimal visual hierarchy.
-                  </div>
-                )}
-
-                {showColorSol && (
-                  <div style={{ background: '#064e3b', padding: '10px 14px', borderRadius: '8px', color: '#6ee7b7', fontSize: '0.85rem', marginBottom: '1rem', border: '1px solid #10b981' }}>
-                    ✅ Solution Palette: Body BG: <code>#f7f7f7</code> | Text: <code>#222222</code> | Heading: <code>#111827</code> | Button: <code>#2563eb</code> | Card: <code>#ffffff</code>
-                  </div>
-                )}
-
-                {/* Color Pickers Controls */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Page Background</label>
-                    <input type="color" value={pageBgColor} onChange={(e) => setPageBgColor(e.target.value)} style={{ width: '100%', height: '36px', borderRadius: '6px', cursor: 'pointer', border: 'none' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Text Color</label>
-                    <input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} style={{ width: '100%', height: '36px', borderRadius: '6px', cursor: 'pointer', border: 'none' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Heading Color</label>
-                    <input type="color" value={headingColor} onChange={(e) => setHeadingColor(e.target.value)} style={{ width: '100%', height: '36px', borderRadius: '6px', cursor: 'pointer', border: 'none' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Button Color</label>
-                    <input type="color" value={buttonColor} onChange={(e) => setButtonColor(e.target.value)} style={{ width: '100%', height: '36px', borderRadius: '6px', cursor: 'pointer', border: 'none' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Card Background</label>
-                    <input type="color" value={cardBgColor} onChange={(e) => setCardBgColor(e.target.value)} style={{ width: '100%', height: '36px', borderRadius: '6px', cursor: 'pointer', border: 'none' }} />
-                  </div>
-                </div>
-
-                {/* Live Result Frame */}
-                <div style={{ background: pageBgColor, color: textColor, padding: '1.5rem', borderRadius: '12px', transition: 'all 0.2s ease' }}>
-                  <h3 style={{ color: headingColor, marginTop: 0, fontSize: '1.4rem' }}>Live Color Palette Preview</h3>
-                  <p style={{ fontSize: '0.95rem', lineHeight: 1.6 }}>
-                    This text updates instantly based on your chosen colors. High contrast ensures readability!
+                {/* Live Output Card Preview */}
+                <div style={{ background: varBg, color: varText, padding: '1.5rem', borderRadius: varRadius, border: '1px solid #e2e8f0', transition: 'all 0.2s ease' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: varPrimary, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    Live Component Preview
+                  </span>
+                  <h3 style={{ color: varSecondary, margin: '4px 0 8px 0', fontSize: '1.25rem' }}>Alpha Fly Digital Agency</h3>
+                  <p style={{ margin: '0 0 1rem 0', fontSize: '0.9rem', lineHeight: 1.5 }}>
+                    This card dynamically updates using <code>var(--primary-color)</code> and <code>var(--radius-md)</code>.
                   </p>
-                  <div style={{ background: cardBgColor, padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '1rem' }}>
-                    <h4 style={{ color: headingColor, margin: '0 0 4px 0' }}>Card Title Sample</h4>
-                    <p style={{ margin: 0, fontSize: '0.85rem' }}>Card background and border colors working together.</p>
-                  </div>
-                  <button style={{ backgroundColor: buttonColor, color: '#ffffff', border: 'none', padding: '10px 18px', borderRadius: '6px', fontWeight: 600, cursor: 'pointer' }}>
-                    Sample Button
+                  <button style={{ backgroundColor: varPrimary, color: '#ffffff', border: 'none', padding: '10px 18px', borderRadius: varRadius, fontWeight: 700, cursor: 'pointer' }}>
+                    Get Started
                   </button>
                 </div>
               </div>
@@ -801,128 +594,153 @@ h1, h2, h3 {
                   onClick={() => handleTabChange('typography')}
                   style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Next: Typography Visualizer <ArrowRight size={18} />
+                  Next: Typography Hierarchy <ArrowRight size={18} />
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== TAB 4: IMPROVE TYPOGRAPHY ==================== */}
+        {/* ==================== TAB 3: TYPOGRAPHY HIERARCHY ==================== */}
         {isTabActive('typography') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Topic 3: Typography & Web Fonts
+                Section 3 — Typography Hierarchy System
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Typography Visualizer &amp; Properties
+                Font Sizes, Line-Height &amp; Readability Scale
               </h2>
 
-              {/* 5 Core Typography Properties */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontWeight: 800, color: '#1e1b4b', fontSize: '0.9rem' }}>font-family</div>
-                  <div style={{ fontSize: '0.82rem', color: '#64748b' }}>Changes the typeface (e.g. Arial, sans-serif)</div>
-                </div>
-                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontWeight: 800, color: '#1e1b4b', fontSize: '0.9rem' }}>font-size</div>
-                  <div style={{ fontSize: '0.82rem', color: '#64748b' }}>Changes the size of text (e.g. 42px)</div>
-                </div>
-                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontWeight: 800, color: '#1e1b4b', fontSize: '0.9rem' }}>font-weight</div>
-                  <div style={{ fontSize: '0.82rem', color: '#64748b' }}>Changes how bold text appears (e.g. 700)</div>
-                </div>
-                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontWeight: 800, color: '#1e1b4b', fontSize: '0.9rem' }}>line-height</div>
-                  <div style={{ fontSize: '0.82rem', color: '#64748b' }}>Changes vertical space between lines (e.g. 1.6)</div>
-                </div>
-                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontWeight: 800, color: '#1e1b4b', fontSize: '0.9rem' }}>text-align</div>
-                  <div style={{ fontSize: '0.82rem', color: '#64748b' }}>Controls alignment (left, center, right)</div>
-                </div>
-                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontWeight: 800, color: '#1e1b4b', fontSize: '0.9rem' }}>letter-spacing</div>
-                  <div style={{ fontSize: '0.82rem', color: '#64748b' }}>Changes horizontal spacing between letters (e.g. 0.5px)</div>
-                </div>
+              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
+                Visual hierarchy makes web content effortless to scan. A professional typography scale establishes distinct rules for <strong>H1</strong>, <strong>H2</strong>, <strong>H3</strong>, <strong>Body</strong>, <strong>Small Text</strong>, and <strong>Buttons</strong>.
+              </p>
+
+              {/* Typography Scale Table */}
+              <div style={{ overflowX: 'auto', marginBottom: '1.5rem' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
+                  <thead>
+                    <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0', textAlign: 'left' }}>
+                      <th style={{ padding: '12px', color: '#0f172a' }}>Element</th>
+                      <th style={{ padding: '12px', color: '#0f172a' }}>Font Size</th>
+                      <th style={{ padding: '12px', color: '#0f172a' }}>Font Weight</th>
+                      <th style={{ padding: '12px', color: '#0f172a' }}>Line Height</th>
+                      <th style={{ padding: '12px', color: '#0f172a' }}>Typical Role</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '10px 12px', fontWeight: 800, color: '#2563eb' }}>H1 Heading</td>
+                      <td style={{ padding: '10px 12px' }}>36px - 48px (2.25rem)</td>
+                      <td style={{ padding: '10px 12px' }}>800 - 900 (Bold)</td>
+                      <td style={{ padding: '10px 12px' }}>1.1 - 1.2</td>
+                      <td style={{ padding: '10px 12px' }}>Main Page Title / Hero Headline</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '10px 12px', fontWeight: 800, color: '#2563eb' }}>H2 Heading</td>
+                      <td style={{ padding: '10px 12px' }}>24px - 32px (1.5rem)</td>
+                      <td style={{ padding: '10px 12px' }}>700 - 800</td>
+                      <td style={{ padding: '10px 12px' }}>1.25</td>
+                      <td style={{ padding: '10px 12px' }}>Section Titles (About, Services)</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '10px 12px', fontWeight: 800, color: '#2563eb' }}>H3 Heading</td>
+                      <td style={{ padding: '10px 12px' }}>18px - 20px (1.2rem)</td>
+                      <td style={{ padding: '10px 12px' }}>600 - 700</td>
+                      <td style={{ padding: '10px 12px' }}>1.3</td>
+                      <td style={{ padding: '10px 12px' }}>Card Titles / Sub-features</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '10px 12px', fontWeight: 800, color: '#2563eb' }}>Body Paragraph</td>
+                      <td style={{ padding: '10px 12px' }}>16px (1rem)</td>
+                      <td style={{ padding: '10px 12px' }}>400 (Regular)</td>
+                      <td style={{ padding: '10px 12px' }}>1.5 - 1.6</td>
+                      <td style={{ padding: '10px 12px' }}>Main Content &amp; Descriptions</td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: '10px 12px', fontWeight: 800, color: '#2563eb' }}>Small / Meta Text</td>
+                      <td style={{ padding: '10px 12px' }}>12px - 14px (0.8rem)</td>
+                      <td style={{ padding: '10px 12px' }}>500 (Medium)</td>
+                      <td style={{ padding: '10px 12px' }}>1.4</td>
+                      <td style={{ padding: '10px 12px' }}>Captions, Dates, Footnotes</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
 
-              {/* Topic 3 Source Code Example */}
+              {/* Code Example */}
               <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                  📄 Topic 3 Source Code: Typography Hierarchy &amp; Google Fonts
-                </h3>
                 <CodeBlock
-                  title="Topic 3: Typography & Fonts"
+                  title="Section 3: Typography CSS Hierarchy System"
                   language="css"
-                  code={`/* Google Web Font Import */
+                  code={`/* Google Fonts Import */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
   line-height: 1.6;
-  color: #334155;
+  color: var(--text-color);
 }
 
 h1 {
-  font-size: 2.5rem;      /* 40px */
-  font-weight: 900;       /* Extra Bold */
-  letter-spacing: -0.5px;
+  font-size: 2.25rem; /* 36px */
+  font-weight: 900;
   line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+h2 {
+  font-size: 1.75rem; /* 28px */
+  font-weight: 800;
+  line-height: 1.25;
 }
 
 p {
-  font-size: 1.05rem;     /* 16.8px */
-  font-weight: 400;       /* Regular */
+  font-size: 1rem;    /* 16px */
+  line-height: 1.6;
+  color: #475569;
 }`}
                 />
               </div>
 
-              {/* Typography Visualizer Controls */}
+              {/* Interactive Typography Customizer */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
-                  🔤 Interactive Typography Visualizer
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
+                  🔤 Interactive Practice: Landing Page Typography Hierarchy Visualizer
                 </h3>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
                   <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Heading Size: {headingSize}px</label>
-                    <input type="range" min="24" max="64" value={headingSize} onChange={(e) => setHeadingSize(Number(e.target.value))} style={{ width: '100%' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Paragraph Size: {paragraphSize}px</label>
-                    <input type="range" min="12" max="24" value={paragraphSize} onChange={(e) => setParagraphSize(Number(e.target.value))} style={{ width: '100%' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Heading Weight</label>
-                    <select value={headingWeight} onChange={(e) => setHeadingWeight(e.target.value)} style={{ width: '100%', padding: '6px', borderRadius: '6px', background: '#1e293b', color: '#fff', border: '1px solid #475569' }}>
-                      <option value="400">400 (Normal)</option>
-                      <option value="600">600 (Semi-Bold)</option>
-                      <option value="700">700 (Bold)</option>
-                      <option value="900">900 (Extra Bold)</option>
+                    <label style={{ fontSize: '0.78rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Font Family</label>
+                    <select value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '6px', background: '#1e293b', color: '#fff', border: '1px solid #475569' }}>
+                      <option value="Inter">Inter (Sans-Serif)</option>
+                      <option value="Arial">Arial (Clean)</option>
+                      <option value="Georgia">Georgia (Serif)</option>
+                      <option value="Courier New">Courier New (Monospace)</option>
                     </select>
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Text Align</label>
-                    <select value={textAlign} onChange={(e) => setTextAlign(e.target.value)} style={{ width: '100%', padding: '6px', borderRadius: '6px', background: '#1e293b', color: '#fff', border: '1px solid #475569' }}>
-                      <option value="left">Left</option>
-                      <option value="center">Center</option>
-                      <option value="right">Right</option>
-                    </select>
+                    <label style={{ fontSize: '0.78rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>H1 Font Size: {h1Size}px</label>
+                    <input type="range" min="24" max="48" value={h1Size} onChange={(e) => setH1Size(e.target.value)} style={{ width: '100%' }} />
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Line Height: {lineHeight}</label>
-                    <input type="range" min="1.0" max="2.2" step="0.1" value={lineHeight} onChange={(e) => setLineHeight(Number(e.target.value))} style={{ width: '100%' }} />
+                    <label style={{ fontSize: '0.78rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Body Size: {bodySize}px</label>
+                    <input type="range" min="12" max="22" value={bodySize} onChange={(e) => setBodySize(e.target.value)} style={{ width: '100%' }} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.78rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Line Height: {lineHeight}</label>
+                    <input type="range" min="1.1" max="2.2" step="0.1" value={lineHeight} onChange={(e) => setLineHeight(e.target.value)} style={{ width: '100%' }} />
                   </div>
                 </div>
 
-                {/* Typography Live Result Box */}
-                <div style={{ background: '#ffffff', color: '#111827', padding: '1.5rem', borderRadius: '12px' }}>
-                  <h1 style={{ fontSize: `${headingSize}px`, fontWeight: headingWeight, textAlign: textAlign, lineHeight: 1.1, margin: '0 0 12px 0', fontFamily: 'Arial, sans-serif' }}>
-                    Beautiful Typography Title
+                {/* Typography Live Output */}
+                <div style={{ background: '#ffffff', color: '#0f172a', padding: '1.5rem', borderRadius: '12px', fontFamily: fontFamily }}>
+                  <h1 style={{ fontSize: `${h1Size}px`, fontWeight: fontWeight, lineHeight: 1.2, margin: '0 0 10px 0' }}>
+                    Build High-Converting Business Websites
                   </h1>
-                  <p style={{ fontSize: `${paragraphSize}px`, lineHeight: lineHeight, textAlign: textAlign, margin: 0, color: '#374151', fontFamily: 'Arial, sans-serif' }}>
-                    Good typography makes your content easy to scan and pleasant to read. Adjusting font-size, line-height, and weight gives your text structure and hierarchy.
+                  <p style={{ fontSize: `${bodySize}px`, lineHeight: lineHeight, color: '#475569', margin: 0 }}>
+                    Mastering font sizes and line-heights ensures your users can read headlines and body copy seamlessly without visual strain.
                   </p>
                 </div>
               </div>
@@ -932,116 +750,206 @@ p {
                   onClick={() => handleTabChange('spacing')}
                   style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Next: Spacing Demonstration <ArrowRight size={18} />
+                  Next: Spacing &amp; Box Model <ArrowRight size={18} />
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== TAB 5: IMPROVE SPACING ==================== */}
+        {/* ==================== TAB 4: SPACING SYSTEM & BOX MODEL ==================== */}
         {isTabActive('spacing') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                5. Improve Spacing
+                Sections 4 &amp; 5 — Spacing System &amp; CSS Box Model
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Margin, Padding &amp; Gap
+                Standardized Spacing Scale &amp; <code>box-sizing: border-box</code>
               </h2>
 
-              {/* 3 Core Spacing Rules */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                  <h4 style={{ margin: '0 0 6px 0', color: '#2563eb', fontSize: '1rem' }}>padding</h4>
-                  <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569' }}>Creates space <strong>inside</strong> an element (e.g. text breathing room inside a card).</p>
-                </div>
-                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                  <h4 style={{ margin: '0 0 6px 0', color: '#2563eb', fontSize: '1rem' }}>margin</h4>
-                  <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569' }}>Creates space <strong>outside</strong> an element (e.g. pushing sections apart).</p>
-                </div>
-                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                  <h4 style={{ margin: '0 0 6px 0', color: '#2563eb', fontSize: '1rem' }}>gap</h4>
-                  <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569' }}>Creates space <strong>between</strong> items in a Flexbox container.</p>
+              {/* 8-Point Spacing Scale Banner */}
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #e2e8f0', marginBottom: '1.5rem' }}>
+                <h4 style={{ color: '#0f172a', margin: '0 0 8px 0', fontSize: '1rem', fontWeight: 800 }}>📐 Standard 8-Point Spacing Scale</h4>
+                <p style={{ margin: '0 0 12px 0', fontSize: '0.88rem', color: '#475569' }}>
+                  Professional web designers never guess random pixel padding. They use a standard 8pt spacing scale:
+                </p>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {['4px (xs)', '8px (sm)', '12px (md)', '16px (lg)', '24px (xl)', '32px (2xl)', '48px (3xl)', '64px (4xl)'].map((sp, i) => (
+                    <span key={i} style={{ background: '#eff6ff', color: '#2563eb', padding: '6px 12px', borderRadius: '8px', fontWeight: 800, fontSize: '0.82rem', border: '1px solid #bfdbfe' }}>
+                      {sp}
+                    </span>
+                  ))}
                 </div>
               </div>
 
-              {/* Topic 4 Source Code Example */}
+              {/* Box Model Principles & Common Layout Bugs */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
+                <div style={{ background: '#fef2f2', padding: '1.25rem', borderRadius: '14px', border: '1px solid #fca5a5' }}>
+                  <h4 style={{ color: '#dc2626', margin: '0 0 6px 0', fontSize: '1rem', fontWeight: 800 }}>⚠️ Common Box Model Layout Bugs</h4>
+                  <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.88rem', color: '#991b1b', lineHeight: 1.5 }}>
+                    <li><strong>Unexpected Overflow:</strong> Adding padding increases an element's total width beyond 100%.</li>
+                    <li><strong>Cards Pushing Down:</strong> Cards breaking into multi-lines because padding expands total width.</li>
+                    <li><strong>Button Over-Sizing:</strong> Buttons blowing up layout boundaries on smaller viewports.</li>
+                  </ul>
+                </div>
+
+                <div style={{ background: '#f0fdf4', padding: '1.25rem', borderRadius: '14px', border: '1px solid #86efac' }}>
+                  <h4 style={{ color: '#16a34a', margin: '0 0 6px 0', fontSize: '1rem', fontWeight: 800 }}>🛡️ The Universal Fix: <code>border-box</code></h4>
+                  <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.88rem', color: '#166534', lineHeight: 1.5 }}>
+                    <li><code>content-box</code> (Default): Total Width = Width + Padding + Border.</li>
+                    <li><code>border-box</code> (Recommended): Total Width = Specified Width (Padding &amp; Border included inside).</li>
+                    <li>Always include universal reset: <code>*, *::before, *::after &#123; box-sizing: border-box; &#125;</code></li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Code Example */}
               <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                  📄 Topic 4 Source Code: Container Max-Width &amp; Spacing Box Model
-                </h3>
                 <CodeBlock
-                  title="Topic 4: Spacing & Box Model"
+                  title="Section 4 & 5: Universal Spacing & Box-Sizing Reset"
                   language="css"
-                  code={`/* Central Container max-width & horizontal centering */
+                  code={`/* Universal CSS Reset for Box-Sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container Spacing Rules */
 .container {
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  padding: 2rem 1.5rem; /* Breathing room inside boundary */
+  padding: 0 24px; /* Consistent side padding */
 }
 
-/* Card inner padding and outer margin */
+/* Card Component Spacing */
 .card {
-  padding: 1.5rem;      /* Inside space */
-  margin-bottom: 2rem;  /* Space pushing next element away */
-}
-
-/* Section vertical separation */
-section {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+  padding: 24px;      /* Inside breathing room */
+  margin-bottom: 32px;/* Outside section separation */
 }`}
                 />
               </div>
 
-              {/* Spacing Interactive Demonstration */}
+              {/* Interactive Box Model Demonstration */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: 0 }}>
-                    📐 Spacing Demonstration: Card Before &amp; After
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: 0 }}>
+                    📐 Live Box Model Inspector
                   </h3>
-                  <div style={{ display: 'flex', gap: '8px', background: '#1e293b', padding: '4px', borderRadius: '8px' }}>
-                    <button
-                      onClick={() => setSpacingViewMode('before')}
-                      style={{ background: spacingViewMode === 'before' ? '#ef4444' : 'transparent', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}
-                    >
-                      Before Spacing
-                    </button>
-                    <button
-                      onClick={() => setSpacingViewMode('after')}
-                      style={{ background: spacingViewMode === 'after' ? '#10b981' : 'transparent', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}
-                    >
-                      After Spacing
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => setBoxSizingBorder(!boxSizingBorder)}
+                    style={{ background: boxSizingBorder ? '#10b981' : '#ef4444', color: '#ffffff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer' }}
+                  >
+                    Toggle box-sizing: {boxSizingBorder ? 'border-box (SAFE)' : 'content-box (OVERFLOW)'}
+                  </button>
                 </div>
 
-                <div style={{ background: '#ffffff', color: '#0f172a', borderRadius: '8px', padding: '1.5rem' }}>
-                  {spacingViewMode === 'before' ? (
-                    <div>
-                      <div style={{ background: '#e2e8f0', border: '1px solid #94a3b8', padding: '0px', marginBottom: '4px' }}>
-                        <h4 style={{ margin: 0 }}>Card 1 (No Padding)</h4>
-                        <p style={{ margin: 0 }}>Text touches the edges directly. Cards are squeezed together.</p>
-                      </div>
-                      <div style={{ background: '#e2e8f0', border: '1px solid #94a3b8', padding: '0px' }}>
-                        <h4 style={{ margin: 0 }}>Card 2 (No Margin/Gap)</h4>
-                        <p style={{ margin: 0 }}>Sections feel crowded and difficult to read.</p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px' }}>
+                    <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '6px' }}>Container Boundary (300px max)</div>
+                    <div style={{ width: '100%', maxWidth: '300px', background: '#334155', padding: cardPadding, border: '4px solid #38bdf8', boxSizing: boxSizingBorder ? 'border-box' : 'content-box', transition: 'all 0.2s ease' }}>
+                      <div style={{ background: '#2563eb', padding: '10px', color: '#fff', fontSize: '0.85rem', textAlign: 'center', fontWeight: 700 }}>
+                        Card Content Box
                       </div>
                     </div>
-                  ) : (
-                    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-                      <div style={{ flex: 1, minWidth: '200px', background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '24px', boxShadow: '0 8px 20px rgba(0,0,0,0.06)' }}>
-                        <h4 style={{ margin: '0 0 8px 0', color: '#111827' }}>Card 1 (24px Padding)</h4>
-                        <p style={{ margin: 0, color: '#4b5563', fontSize: '0.88rem', lineHeight: 1.6 }}>Content has breathing room inside the card.</p>
-                      </div>
-                      <div style={{ flex: 1, minWidth: '200px', background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '24px', boxShadow: '0 8px 20px rgba(0,0,0,0.06)' }}>
-                        <h4 style={{ margin: '0 0 8px 0', color: '#111827' }}>Card 2 (20px Gap)</h4>
-                        <p style={{ margin: 0, color: '#4b5563', fontSize: '0.88rem', lineHeight: 1.6 }}>Consistent spacing makes cards easy to scan.</p>
-                      </div>
+                  </div>
+
+                  <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px', fontSize: '0.85rem', color: '#cbd5e1', lineHeight: 1.6 }}>
+                    <div><strong>Current Mode:</strong> <code>{boxSizingBorder ? 'border-box' : 'content-box'}</code></div>
+                    <div><strong>Padding:</strong> {cardPadding}</div>
+                    <div><strong>Border:</strong> 4px</div>
+                    <div style={{ color: boxSizingBorder ? '#34d399' : '#f87171', fontWeight: 800, marginTop: '8px' }}>
+                      {boxSizingBorder ? '✅ Fits perfectly inside container width!' : '❌ Overflows container boundary due to added padding & border!'}
                     </div>
-                  )}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button
+                  onClick={() => handleTabChange('grids')}
+                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  Next: Grids &amp; Component Layouts <ArrowRight size={18} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== TAB 5: MODERN GRIDS & COMPONENT LAYOUTS ==================== */}
+        {isTabActive('grids') && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Section 6 — Modern Grids &amp; Component Layouts
+              </span>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
+                Flexbox vs CSS Grid Decision Guide
+              </h2>
+
+              {/* Flexbox vs Grid Guide */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
+                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #e2e8f0' }}>
+                  <h4 style={{ color: '#2563eb', margin: '0 0 6px 0', fontSize: '1.05rem', fontWeight: 800 }}>⚡ Use Flexbox For (1D Layouts)</h4>
+                  <ul style={{ margin: 0, paddingLeft: '1.2rem', color: '#475569', fontSize: '0.88rem', lineHeight: 1.6 }}>
+                    <li>Navigation bar links (`justify-content: space-between`).</li>
+                    <li>Hero section text vs image alignment.</li>
+                    <li>Button groups &amp; badge rows (`gap: 12px`).</li>
+                  </ul>
+                </div>
+
+                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #e2e8f0' }}>
+                  <h4 style={{ color: '#2563eb', margin: '0 0 6px 0', fontSize: '1.05rem', fontWeight: 800 }}>📐 Use CSS Grid For (2D Component Grids)</h4>
+                  <ul style={{ margin: 0, paddingLeft: '1.2rem', color: '#475569', fontSize: '0.88rem', lineHeight: 1.6 }}>
+                    <li>Services feature cards (`repeat(auto-fit, minmax(250px, 1fr))`).</li>
+                    <li>Product catalog grids &amp; image galleries.</li>
+                    <li>Multi-tier pricing comparison tables.</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <CodeBlock
+                  title="Section 6: Auto-Responsive Card Grid Formula"
+                  language="css"
+                  code={`/* Auto-Responsive Card Grid Formula (No Media Queries Required!) */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.service-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+}`}
+                />
+              </div>
+
+              {/* Live Interactive Grid Demo */}
+              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
+                  🃏 Live Service Cards Grid Demo
+                </h3>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+                  {[
+                    { title: 'Web Design', desc: 'Modern responsive websites built with clean HTML/CSS.' },
+                    { title: 'UI/UX Design', desc: 'Figma wireframes & responsive user experience design.' },
+                    { title: 'SEO Optimization', desc: 'Page speed & search engine ranking improvements.' }
+                  ].map((card, i) => (
+                    <div key={i} style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '12px', padding: '1.25rem' }}>
+                      <span style={{ fontSize: '1.5rem', display: 'block', marginBottom: '8px' }}>🚀</span>
+                      <h4 style={{ color: '#ffffff', margin: '0 0 6px 0', fontSize: '1.05rem' }}>{card.title}</h4>
+                      <p style={{ color: '#94a3b8', margin: 0, fontSize: '0.85rem', lineHeight: 1.5 }}>{card.desc}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -1050,903 +958,781 @@ section {
                   onClick={() => handleTabChange('buttons')}
                   style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Next: Style Buttons &amp; Practice Editor <ArrowRight size={18} />
+                  Next: Button System <ArrowRight size={18} />
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== TAB 6: STYLE BUTTONS ==================== */}
+        {/* ==================== TAB 6: PROFESSIONAL BUTTON SYSTEM ==================== */}
         {isTabActive('buttons') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                6. Style Buttons
+                Section 7 — Professional Button System
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Consistent Button Styling &amp; Subtle Hover Effects
+                Reusable Button Classes: Primary, Secondary, Outline &amp; Danger
               </h2>
 
               <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
-                Buttons should look consistent, be easy to identify, and respond when users hover over them:
+                Never write standalone CSS styles for individual buttons. Create a base <code>.btn</code> class for structural properties (padding, border-radius, font-weight, cursor, transition) and modifier classes for color variants.
               </p>
 
-              {/* Topic 5 Source Code Example */}
+              {/* Code Example */}
               <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                  📄 Topic 5 Source Code: Button Styles &amp; Smooth Micro-Interactions
-                </h3>
                 <CodeBlock
-                  title="Topic 5: Button Micro-Interactions"
+                  title="Section 7: Reusable Professional Button System"
                   language="css"
-                  code={`/* Primary Call to Action Button */
-.btn-primary {
-  background-color: #2563eb;
-  color: #ffffff;
-  padding: 12px 24px;     /* Comfortable click area */
-  border-radius: 10px;    /* Modern rounded corners */
-  border: none;
-  font-weight: 700;
+                  code={`/* Base Button Component Class */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: var(--radius-md, 10px);
+  font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.25s ease-in-out;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
-/* Interactive Hover State */
-.btn-primary:hover {
-  background-color: #1d4ed8;
-  transform: translateY(-2px); /* Subtle lift effect */
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+/* Variant Modifier Classes */
+.btn-primary {
+  background-color: var(--primary-color, #2563eb);
+  color: #ffffff;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color, #0f172a);
+  color: #ffffff;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.btn-danger {
+  background-color: #ef4444;
+  color: #ffffff;
 }`}
                 />
               </div>
 
-              {/* Button Practice Editor */}
+              {/* Live Button Component Viewer */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: 0 }}>
-                    🔘 Live Button Style Editor
-                  </h3>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button
-                      onClick={() => { setBtnBgColor('#2563eb'); setBtnTextColor('#ffffff'); setBtnPaddingY(12); setBtnPaddingX(20); setBtnBorderRadius(8); setBtnHoverBgColor('#1d4ed8'); }}
-                      style={{ background: '#334155', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}
-                    >
-                      Reset
-                    </button>
-                    <button onClick={() => setShowBtnHint(!showBtnHint)} style={{ background: '#334155', color: '#fbbf24', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}>Hint</button>
-                    <button onClick={() => setShowBtnSol(!showBtnSol)} style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}>Show Solution</button>
-                  </div>
-                </div>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
+                  🔘 Live Button System Showcase
+                </h3>
 
-                {showBtnHint && <div style={{ background: '#1e293b', padding: '10px', borderRadius: '8px', color: '#fbbf24', fontSize: '0.85rem', marginBottom: '1rem' }}>💡 Hint: Use 12px 20px padding with an 8px border-radius and a slightly darker hover shade.</div>}
-                {showBtnSol && <div style={{ background: '#064e3b', padding: '10px', borderRadius: '8px', color: '#6ee7b7', fontSize: '0.85rem', marginBottom: '1rem' }}>✅ Solution: <code>padding: 12px 20px; border-radius: 8px; background-color: #2563eb; color: white;</code></div>}
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Background Color</label>
-                    <input type="color" value={btnBgColor} onChange={(e) => setBtnBgColor(e.target.value)} style={{ width: '100%', height: '36px', borderRadius: '6px', border: 'none', cursor: 'pointer' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Text Color</label>
-                    <input type="color" value={btnTextColor} onChange={(e) => setBtnTextColor(e.target.value)} style={{ width: '100%', height: '36px', borderRadius: '6px', border: 'none', cursor: 'pointer' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Padding Y: {btnPaddingY}px</label>
-                    <input type="range" min="6" max="24" value={btnPaddingY} onChange={(e) => setBtnPaddingY(Number(e.target.value))} style={{ width: '100%' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Border Radius: {btnBorderRadius}px</label>
-                    <input type="range" min="0" max="30" value={btnBorderRadius} onChange={(e) => setBtnBorderRadius(Number(e.target.value))} style={{ width: '100%' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Hover Background</label>
-                    <input type="color" value={btnHoverBgColor} onChange={(e) => setBtnHoverBgColor(e.target.value)} style={{ width: '100%', height: '36px', borderRadius: '6px', border: 'none', cursor: 'pointer' }} />
-                  </div>
-                </div>
-
-                {/* Live Button Test Box */}
-                <div style={{ background: '#ffffff', padding: '2rem', borderRadius: '12px', textAlign: 'center' }}>
-                  <button
-                    onMouseEnter={() => setIsBtnHovered(true)}
-                    onMouseLeave={() => setIsBtnHovered(false)}
-                    style={{
-                      display: 'inline-block',
-                      padding: `${btnPaddingY}px ${btnPaddingX}px`,
-                      border: 'none',
-                      borderRadius: `${btnBorderRadius}px`,
-                      backgroundColor: isBtnHovered ? btnHoverBgColor : btnBgColor,
-                      color: btnTextColor,
-                      cursor: 'pointer',
-                      fontSize: '16px',
-                      fontWeight: 600,
-                      transition: 'background-color 0.2s ease'
-                    }}
-                  >
-                    {isBtnHovered ? 'Hovered State! ✨' : 'Hover Over Me'}
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                  <button style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '12px 22px', borderRadius: '10px', fontWeight: 700, cursor: 'pointer' }}>
+                    .btn-primary
+                  </button>
+                  <button style={{ background: '#0f172a', color: '#fff', border: '1px solid #334155', padding: '12px 22px', borderRadius: '10px', fontWeight: 700, cursor: 'pointer' }}>
+                    .btn-secondary
+                  </button>
+                  <button style={{ background: 'transparent', color: '#38bdf8', border: '2px solid #38bdf8', padding: '10px 20px', borderRadius: '10px', fontWeight: 700, cursor: 'pointer' }}>
+                    .btn-outline
+                  </button>
+                  <button style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '12px 22px', borderRadius: '10px', fontWeight: 700, cursor: 'pointer' }}>
+                    .btn-danger
                   </button>
                 </div>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <button
-                  onClick={() => handleTabChange('cards_hero')}
+                  onClick={() => handleTabChange('cards')}
                   style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Next: Cards, Hero &amp; Sections <ArrowRight size={18} />
+                  Next: Cards &amp; Micro-Hover <ArrowRight size={18} />
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== TAB 7: CARDS, HERO & SECTIONS ==================== */}
-        {isTabActive('cards_hero') && (
+        {/* ==================== TAB 7: CARDS & MICRO VISUAL FEEDBACK ==================== */}
+        {isTabActive('cards') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Topic 6: Feature Cards & Grid Layout
+                Sections 8 &amp; 9 — Cards UI Consistency &amp; Micro Hover States
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Styling Core Content Components
-              </h2>
-
-              {/* Topic 6 Source Code Example */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                  📄 Topic 6 Source Code: Feature Cards &amp; Grid Layout
-                </h3>
-                <CodeBlock
-                  title="Topic 6: Feature Cards Grid Layout"
-                  language="css"
-                  code={`/* Feature Cards Grid Layout */
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-
-.card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-}`}
-                />
-              </div>
-
-              {/* 7. Style Cards */}
-              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #cbd5e1', marginBottom: '1.5rem' }}>
-                <h3 style={{ margin: '0 0 8px 0', color: '#1e1b4b', fontSize: '1.1rem' }}>7. Style Cards</h3>
-                <LiveSyntaxCodeEditor
-                  language="css"
-                  rows={9}
-                  value={`.card {
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-}`}
-                />
-              </div>
-
-              {/* 8. Hero Section */}
-              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #cbd5e1', marginBottom: '1.5rem' }}>
-                <h3 style={{ margin: '0 0 8px 0', color: '#1e1b4b', fontSize: '1.1rem' }}>8. Improve the Hero Section</h3>
-                <LiveSyntaxCodeEditor
-                  language="css"
-                  rows={11}
-                  value={`.hero {
-  padding: 80px 20px;
-}
-
-.hero-content {
-  max-width: 650px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.hero-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}`}
-                />
-              </div>
-
-              {/* 9. Section Review Checklist */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff' }}>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
-                  9. Quality Review Checklist for All Sections
-                </h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-                  {['About', 'Services', 'Projects', 'Testimonials', 'Pricing', 'Contact'].map((secKey) => (
-                    <div key={secKey} style={{ background: '#1e293b', padding: '1rem', borderRadius: '10px', border: '1px solid #334155' }}>
-                      <div style={{ fontWeight: 800, color: '#fbbf24', marginBottom: '6px' }}>{secKey} Section</div>
-                      <div style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        <label><input type="checkbox" defaultChecked /> Clear Heading</label>
-                        <label><input type="checkbox" defaultChecked /> Consistent Spacing</label>
-                        <label><input type="checkbox" defaultChecked /> Aligned Cards</label>
-                        <label><input type="checkbox" defaultChecked /> Styled Buttons</label>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => handleTabChange('responsive')}
-                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Next: Responsive Mobile Layout &amp; Testing <ArrowRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== TAB 8: RESPONSIVE & MOBILE TESTING ==================== */}
-        {isTabActive('responsive') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Topic 8: Responsive Layout & Mobile Testing
-              </span>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Basic Mobile Media Query &amp; Breakpoint Viewport Tester
+                Subtle Micro-Interactions: <code>:hover</code>, <code>transition</code>, and <code>transform</code>
               </h2>
 
               <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
-                Do not introduce advanced responsive CSS or complex JavaScript yet. Teach one basic media query for mobile screens:
+                Hover feedback tells users an element is interactive. Professional websites use subtle transforms (e.g. <code>transform: translateY(-4px)</code>) and box shadows rather than jarring layout shifts.
               </p>
 
-              {/* Topic 8 Source Code Example */}
+              {/* Code Example */}
               <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                  📄 Topic 8 Source Code: Responsive Media Queries &amp; Mobile Breakpoints
-                </h3>
                 <CodeBlock
-                  title="Topic 8: Mobile Responsive Media Query"
+                  title="Section 8 & 9: Consistent Card Component & Hover State"
                   language="css"
-                  code={`/* Mobile Responsive Media Query */
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .card-grid {
-    grid-template-columns: 1fr; /* Single column on mobile */
-  }
-
-  h1 {
-    font-size: 1.8rem;
-  }
-}`}
-                />
-              </div>
-
-              <LiveSyntaxCodeEditor
-                language="css"
-                rows={12}
-                value={`@media (max-width: 700px) {
-  .card-list {
-    flex-direction: column;
-  }
-
-  h1 {
-    font-size: 32px;
-  }
-
-  section {
-    padding: 40px 16px;
-  }
-
-  .hero-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-}`}
-              />
-
-              {/* Viewport Preview Tool */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', marginTop: '1.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: 0 }}>
-                    📱 Viewport Testing Simulator
-                  </h3>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={() => setViewportWidth('desktop')} style={{ background: viewportWidth === 'desktop' ? '#2563eb' : '#1e293b', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Monitor size={14} /> Desktop (1200px)
-                    </button>
-                    <button onClick={() => setViewportWidth('tablet')} style={{ background: viewportWidth === 'tablet' ? '#2563eb' : '#1e293b', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Tablet size={14} /> Tablet (768px)
-                    </button>
-                    <button onClick={() => setViewportWidth('mobile')} style={{ background: viewportWidth === 'mobile' ? '#2563eb' : '#1e293b', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Smartphone size={14} /> Mobile (375px)
-                    </button>
-                  </div>
-                </div>
-
-                {/* Resizable Preview Container */}
-                <div style={{ background: '#f8fafc', color: '#0f172a', borderRadius: '12px', padding: '1.5rem', margin: '0 auto', width: viewportWidth === 'mobile' ? '375px' : viewportWidth === 'tablet' ? '768px' : '100%', transition: 'all 0.3s ease', boxSizing: 'border-box', overflowX: 'auto' }}>
-                  <h1 style={{ fontSize: viewportWidth === 'mobile' ? '28px' : '42px', margin: '0 0 10px 0', color: '#111827' }}>Responsive Heading</h1>
-                  <div style={{ display: 'flex', flexDirection: viewportWidth === 'mobile' ? 'column' : 'row', gap: '16px' }}>
-                    <div style={{ flex: 1, background: '#fff', padding: '16px', border: '1px solid #cbd5e1', borderRadius: '8px' }}>Card Item 1</div>
-                    <div style={{ flex: 1, background: '#fff', padding: '16px', border: '1px solid #cbd5e1', borderRadius: '8px' }}>Card Item 2</div>
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => handleTabChange('guided_build')}
-                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Next: Guided Build (11 Steps) <ArrowRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== TAB 9: GUIDED BUILD (11 STEPS) ==================== */}
-        {isTabActive('guided_build') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '10px' }}>
-                <div>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                    12. Guided Build Activity
-                  </span>
-                  <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '4px 0 0 0' }}>
-                    Make Your Website Look Better
-                  </h2>
-                </div>
-                <div style={{ background: '#eff6ff', color: '#2563eb', padding: '8px 16px', borderRadius: '20px', fontWeight: 800, fontSize: '0.9rem', border: '1px solid #bfdbfe' }}>
-                  Progress: {completedSteps.filter(Boolean).length}/11 Steps Completed
-                </div>
-              </div>
-
-              {/* Topic 9 Source Code Example */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                  📄 Topic 9 Source Code: Complete Step-by-Step Guided CSS Upgrade Code
-                </h3>
-                <CodeBlock
-                  title="Topic 9: Step-by-Step Guided CSS Code"
-                  language="css"
-                  code={`/* Step 1: Universal CSS Reset */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* Step 2: Body Typography & Background */
-body {
-  background-color: #f8fafc;
-  color: #0f172a;
-  font-family: 'Inter', system-ui, sans-serif;
-  line-height: 1.6;
-}
-
-/* Step 3: Container max-width */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-}
-
-/* Step 4: Card Component Styles */
+                  code={`/* Card Component with Subtle Hover Lift */
 .card {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Subtle Micro Visual Feedback on Hover */
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
 }`}
                 />
               </div>
 
-              {/* Steps Progress Bar */}
-              <div style={{ display: 'flex', gap: '6px', marginBottom: '1.5rem', overflowX: 'auto', paddingBottom: '4px' }}>
-                {guidedStepsList.map((st, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setGuidedStep(idx)}
+              {/* Interactive Card Hover Demo */}
+              <div style={{ background: '#f8fafc', borderRadius: '16px', padding: '1.5rem', border: '1px solid #e2e8f0', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 1rem 0' }}>
+                  🃏 Interactive Card Component Showcase (Hover over the card below)
+                </h3>
+
+                <div style={{ maxWidth: '360px' }}>
+                  <div
                     style={{
-                      background: guidedStep === idx ? '#2563eb' : completedSteps[idx] ? '#10b981' : '#f1f5f9',
-                      color: guidedStep === idx || completedSteps[idx] ? '#ffffff' : '#64748b',
-                      border: 'none',
-                      padding: '8px 12px',
-                      borderRadius: '8px',
-                      fontWeight: 700,
-                      fontSize: '0.78rem',
-                      whiteSpace: 'nowrap',
+                      background: '#ffffff',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '16px',
+                      padding: '1.5rem',
+                      boxShadow: '0 4px 14px rgba(0,0,0,0.05)',
+                      transition: 'all 0.25s ease-in-out',
                       cursor: 'pointer'
                     }}
-                  >
-                    Step {idx + 1}
-                  </button>
-                ))}
-              </div>
-
-              {/* Step Detail Card */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155' }}>
-                <h3 style={{ fontSize: '1.2rem', color: '#38bdf8', margin: '0 0 0.5rem 0', fontWeight: 800 }}>
-                  {guidedStepsList[guidedStep].title}
-                </h3>
-                <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: '0 0 1rem 0' }}>
-                  {guidedStepsList[guidedStep].desc}
-                </p>
-
-                <LiveSyntaxCodeEditor
-                  language="css"
-                  rows={8}
-                  value={guidedCodes[guidedStep]}
-                  onChange={(e) => {
-                    const newArr = [...guidedCodes];
-                    newArr[guidedStep] = e.target.value;
-                    setGuidedCodes(newArr);
-                  }}
-                  label={`Step ${guidedStep + 1} CSS Implementation`}
-                />
-
-                <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                  <button
-                    onClick={() => {
-                      const newComp = [...completedSteps];
-                      newComp[guidedStep] = true;
-                      setCompletedSteps(newComp);
-                      if (guidedStep < 10) setGuidedStep(guidedStep + 1);
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-6px)';
+                      e.currentTarget.style.boxShadow = '0 16px 32px rgba(37, 99, 235, 0.12)';
+                      e.currentTarget.style.borderColor = '#93c5fd';
                     }}
-                    style={{ background: '#10b981', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0px)';
+                      e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.05)';
+                      e.currentTarget.style.borderColor = '#e2e8f0';
+                    }}
                   >
-                    <CheckCircle size={16} /> Mark Step Complete &amp; Continue
-                  </button>
-
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    {guidedStep > 0 && (
-                      <button onClick={() => setGuidedStep(guidedStep - 1)} style={{ background: '#334155', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>
-                        Previous Step
-                      </button>
-                    )}
+                    <span style={{ background: '#eff6ff', color: '#2563eb', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800 }}>Feature Card</span>
+                    <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', margin: '10px 0 6px 0' }}>Client Service Card</h4>
+                    <p style={{ fontSize: '0.88rem', color: '#64748b', lineHeight: 1.5, margin: 0 }}>
+                      Notice how smooth <code>translateY(-6px)</code> elevation gives immediate visual confirmation to the user!
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <button
-                  onClick={() => handleTabChange('matching')}
+                  onClick={() => handleTabChange('refactoring')}
                   style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Next: CSS Property Matching Activity <ArrowRight size={18} />
+                  Next: CSS Refactoring <ArrowRight size={18} />
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== TAB 10: CSS MATCHING ACTIVITY ==================== */}
-        {isTabActive('matching') && (
+        {/* ==================== TAB 8: CSS REFACTORING PRINCIPLES ==================== */}
+        {isTabActive('refactoring') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                13. CSS Property Matching Activity
+                Section 10 — CSS Refactoring Principles
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Match Each Property with Its Correct Purpose
+                Write CSS Once, Reuse It Everywhere
               </h2>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
-                {propertyMatchingItems.map((item, idx) => (
-                  <div key={idx} style={{ background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #cbd5e1', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                    <code style={{ fontSize: '1rem', fontWeight: 800, color: '#2563eb', background: '#eff6ff', padding: '4px 10px', borderRadius: '6px' }}>{item.prop}</code>
-                    <select
-                      value={matchingSelections[item.prop] || ''}
-                      onChange={(e) => setMatchingSelections({ ...matchingSelections, [item.prop]: e.target.value })}
-                      style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #94a3b8', background: '#fff', fontSize: '0.88rem', cursor: 'pointer', flex: 1, maxWidth: '350px' }}
-                    >
-                      <option value="">-- Select Purpose --</option>
-                      {propertyMatchingItems.map((p, i) => (
-                        <option key={i} value={p.purpose}>{p.purpose}</option>
-                      ))}
-                    </select>
-                  </div>
-                ))}
+              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
+                <strong>CSS Refactoring</strong> is the process of restructuring existing CSS to make it cleaner, more maintainable, and free of redundant code without changing the visual layout.
+              </p>
+
+              {/* Refactoring Rules List */}
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #e2e8f0', marginBottom: '1.5rem' }}>
+                <h4 style={{ color: '#0f172a', margin: '0 0 8px 0', fontSize: '1rem', fontWeight: 800 }}>🧹 Key Things to Identify During CSS Audit:</h4>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '10px', fontSize: '0.88rem', color: '#334155' }}>
+                  <div>• Duplicate CSS rules</div>
+                  <div>• Unnecessary standalone selectors</div>
+                  <div>• Conflicting CSS properties</div>
+                  <div>• Overly specific CSS selectors</div>
+                  <div>• Inline HTML style attributes</div>
+                  <div>• Hardcoded inconsistent colors</div>
+                </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              {/* Code Example: BAD vs GOOD */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <CodeBlock
+                  title="Section 10: BAD CSS vs REFACTORED CLEAN CSS"
+                  language="css"
+                  code={`/* BAD MESSY CSS (Redundant & Hard to Maintain) */
+.good-button { background: #2563eb; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: 600; }
+.blue-button { background: #2563eb; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: 600; }
+.primary-button { background: #2563eb; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: 600; }
+
+/* REFACTORED CLEAN CSS (Reusable Design Tokens + Modifiers) */
+:root {
+  --primary: #2563eb;
+  --radius-md: 8px;
+}
+
+.btn {
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #ffffff;
+  border: none;
+}`}
+                />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <button
-                  onClick={() => setMatchingSubmitted(true)}
-                  style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
+                  onClick={() => handleTabChange('before_after')}
+                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Check Answers
+                  Next: Before &amp; After Project <ArrowRight size={18} />
                 </button>
-                {matchingSubmitted && (
-                  <span style={{ fontWeight: 800, color: '#10b981', fontSize: '0.95rem' }}>
-                    🎉 Great job matching CSS properties to their purposes!
-                  </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== TAB 9: BEFORE & AFTER PROJECT ==================== */}
+        {isTabActive('before_after') && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Section 11 — Practical Transformation Exercise
+              </span>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
+                Before &amp; After Full Website Refactoring Showcase
+              </h2>
+
+              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
+                See how applying Day 11 concepts (CSS variables, typography scales, box model spacing, reusable buttons, and card grid layouts) transforms a basic website into a modern client project.
+              </p>
+
+              {/* Version Toggle Controls */}
+              <div style={{ display: 'flex', gap: '10px', marginBottom: '1.5rem' }}>
+                <button
+                  onClick={() => setShowAfterVersion(false)}
+                  style={{ background: !showAfterVersion ? '#ef4444' : '#f1f5f9', color: !showAfterVersion ? '#ffffff' : '#64748b', border: 'none', padding: '10px 18px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer' }}
+                >
+                  ❌ BEFORE (Basic Website)
+                </button>
+                <button
+                  onClick={() => setShowAfterVersion(true)}
+                  style={{ background: showAfterVersion ? '#10b981' : '#f1f5f9', color: showAfterVersion ? '#ffffff' : '#64748b', border: 'none', padding: '10px 18px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer' }}
+                >
+                  ✅ AFTER (Refactored Modern Website)
+                </button>
+              </div>
+
+              {/* Dynamic Live Preview Window */}
+              <div style={{ background: showAfterVersion ? '#f8fafc' : '#ffffff', border: `2px solid ${showAfterVersion ? '#10b981' : '#fca5a5'}`, borderRadius: '16px', padding: '1.5rem', transition: 'all 0.3s ease' }}>
+                <div style={{ fontSize: '0.8rem', fontWeight: 800, color: showAfterVersion ? '#166534' : '#991b1b', marginBottom: '12px' }}>
+                  {showAfterVersion ? '✨ REFACTORED VERSION: Using CSS variables, grid, rounded cards, and typography hierarchy' : '⚠️ INITIAL UNREFACTORED VERSION: Plain text, default colors, inconsistent spacing'}
+                </div>
+
+                {!showAfterVersion ? (
+                  /* BEFORE VERSION */
+                  <div style={{ fontFamily: 'serif', color: '#000000' }}>
+                    <div style={{ background: '#cccccc', padding: '5px' }}>
+                      <span style={{ fontWeight: 'bold' }}>Alpha Fly Website</span> | Home | Services | Contact
+                    </div>
+                    <div style={{ padding: '20px 0' }}>
+                      <h1>Welcome to our business</h1>
+                      <p>We build websites for local clients and businesses in Theni.</p>
+                      <button style={{ background: 'blue', color: 'white' }}>Get Started</button>
+                    </div>
+                    <hr />
+                    <div>
+                      <h3>Our Services</h3>
+                      <div>Web Design - Rs 10,000</div>
+                      <div>App Development - Rs 25,000</div>
+                    </div>
+                  </div>
+                ) : (
+                  /* AFTER VERSION */
+                  <div style={{ fontFamily: "'Inter', sans-serif", color: '#0f172a' }}>
+                    {/* Header */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#ffffff', padding: '12px 20px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', marginBottom: '1.5rem' }}>
+                      <div style={{ fontWeight: 900, color: '#2563eb', fontSize: '1.1rem' }}>Alpha Fly Theni</div>
+                      <div style={{ display: 'flex', gap: '16px', fontSize: '0.9rem', fontWeight: 600, color: '#475569' }}>
+                        <span>Home</span>
+                        <span>Services</span>
+                        <span>Contact</span>
+                      </div>
+                    </div>
+
+                    {/* Hero Section */}
+                    <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', color: '#ffffff', padding: '2rem', borderRadius: '16px', marginBottom: '1.5rem' }}>
+                      <h1 style={{ fontSize: '1.8rem', fontWeight: 900, margin: '0 0 8px 0', color: '#38bdf8' }}>Build Job-Ready Digital Websites</h1>
+                      <p style={{ color: '#94a3b8', margin: '0 0 1.25rem 0', fontSize: '0.95rem' }}>Transforming ideas into responsive, high-converting digital experiences.</p>
+                      <button style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>
+                        Get Started Now
+                      </button>
+                    </div>
+
+                    {/* Service Cards Grid */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                      <div style={{ background: '#ffffff', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                        <h4 style={{ margin: '0 0 4px 0', color: '#0f172a' }}>Web Design</h4>
+                        <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Custom business landing pages &amp; portfolios.</div>
+                      </div>
+                      <div style={{ background: '#ffffff', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                        <h4 style={{ margin: '0 0 4px 0', color: '#0f172a' }}>SEO Optimization</h4>
+                        <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Search ranking &amp; page speed improvements.</div>
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
 
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
                 <button
-                  onClick={() => handleTabChange('comparison')}
+                  onClick={() => handleTabChange('assessment')}
                   style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Next: Before &amp; After Comparison <ArrowRight size={18} />
+                  Next: Practice, Quiz &amp; Assessment <ArrowRight size={18} />
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== TAB 11: BEFORE & AFTER COMPARISON ==================== */}
-        {isTabActive('comparison') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+        {/* ==================== TAB 10: PRACTICE, QUIZ & ASSESSMENT ==================== */}
+        {isTabActive('assessment') && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            
+            {/* PART A: CODING PRACTICE (6 CHALLENGES) */}
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                14 &amp; 21. Before &amp; After Comparison &amp; Project Continuity
+                Part A — Interactive Coding Practice (6 Hands-On Challenges)
               </span>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Side-by-Side Version Comparison
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1.25rem 0' }}>
+                Practice Exercises with Starter Code &amp; Solutions
               </h2>
-              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.5rem 0' }}>
-                Compare Day 10 original version with Day 11 improved version. Both versions are preserved without deleting the original!
-              </p>
 
-              {/* Topic 10 Source Code Example */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                  📄 Topic 10 Source Code: Final Before &amp; After CSS Transformation
-                </h3>
-                <CodeBlock
-                  title="Topic 10: Final CSS Transformation"
-                  language="css"
-                  code={`/* Final Optimized CSS Bundle */
-.website-wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  background: #ffffff;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {[
+                  {
+                    id: 'chal1',
+                    title: '1. Create CSS Variables for a Business Brand',
+                    problem: 'Define CSS custom properties in :root for primary color (#2563eb), secondary color (#0f172a), and border radius (10px).',
+                    code: `:root {
+  /* Write your CSS variables here */
+}`,
+                    solution: `:root {
+  --primary: #2563eb;
+  --secondary: #0f172a;
+  --radius-md: 10px;
+}`
+                  },
+                  {
+                    id: 'chal2',
+                    title: '2. Create Reusable Button Base & Modifier Classes',
+                    problem: 'Create a base .btn class with padding 12px 20px and border-radius var(--radius-md). Add a .btn-primary modifier.',
+                    code: `.btn {
+  /* Base button styles */
 }
-
-.hero-banner {
+.btn-primary {
+  /* Primary variant */
+}`,
+                    solution: `.btn {
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.btn-primary {
+  background-color: var(--primary);
+  color: #ffffff;
+  border: none;
+}`
+                  },
+                  {
+                    id: 'chal3',
+                    title: '3. Create an Auto-Responsive Service Cards Grid',
+                    problem: 'Write a CSS rule for .card-grid using repeat(auto-fit, minmax(250px, 1fr)) and 24px gap.',
+                    code: `.card-grid {
+  /* Grid formula here */
+}`,
+                    solution: `.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}`
+                  },
+                  {
+                    id: 'chal4',
+                    title: '4. Define a Typography Hierarchy Scale',
+                    problem: 'Define font-size and font-weight hierarchy rules for body (16px, 400) and h1 (36px, 900).',
+                    code: `body {
+  /* Body styles */
+}
+h1 {
+  /* H1 styles */
+}`,
+                    solution: `body {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+h1 {
+  font-size: 2.25rem; /* 36px */
+  font-weight: 900;
+  line-height: 1.2;
+}`
+                  },
+                  {
+                    id: 'chal5',
+                    title: '5. Refactor Messy Inconsistent CSS',
+                    problem: 'Refactor three separate standalone button classes (.btn1, .btn2, .btn3) into a reusable component.',
+                    code: `/* Standalone Messy Code */
+.btn1 { background: blue; padding: 10px; }
+.btn2 { background: blue; padding: 10px; font-size: 14px; }
+.btn3 { background: blue; padding: 10px; border-radius: 8px; }`,
+                    solution: `/* Clean Refactored Code */
+.btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+.btn-primary {
+  background-color: #2563eb;
+  color: #ffffff;
+}`
+                  },
+                  {
+                    id: 'chal6',
+                    title: '6. Build a Modern Hero Component CSS',
+                    problem: 'Create a hero container with dark gradient background, white text, 4rem padding, and centered text alignment.',
+                    code: `.hero {
+  /* Hero styling */
+}`,
+                    solution: `.hero {
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   color: #ffffff;
   padding: 4rem 2rem;
   text-align: center;
-}`}
-                />
-              </div>
+  border-radius: 20px;
+}`
+                  }
+                ].map(chal => (
+                  <div key={chal.id} style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                    <h4 style={{ margin: '0 0 6px 0', color: '#0f172a', fontSize: '1rem', fontWeight: 800 }}>{chal.title}</h4>
+                    <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 10px 0' }}>{chal.problem}</p>
+                    
+                    <CodeBlock title={chal.title} language="css" code={chal.code} />
 
-              {/* Side-by-Side Cards */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
-                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #cbd5e1' }}>
-                  <h3 style={{ margin: '0 0 8px 0', color: '#ef4444' }}>Day 10 Original Version</h3>
-                  <div style={{ background: '#fff', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                    <h4 style={{ margin: '0 0 4px 0', fontFamily: 'serif' }}>Raw Header</h4>
-                    <button style={{ background: 'blue', color: 'white', padding: '4px' }}>Submit</button>
-                  </div>
-                </div>
+                    <div style={{ marginTop: '10px' }}>
+                      <button
+                        onClick={() => togglePracticeSol(chal.id)}
+                        style={{ background: '#334155', color: '#ffffff', border: 'none', padding: '6px 14px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
+                      >
+                        {showPracticeSol[chal.id] ? 'Hide Solution' : 'View Solution'}
+                      </button>
 
-                <div style={{ background: '#f0fdf4', padding: '1.25rem', borderRadius: '14px', border: '1px solid #86efac' }}>
-                  <h3 style={{ margin: '0 0 8px 0', color: '#10b981' }}>Day 11 Improved Version</h3>
-                  <div style={{ background: '#fff', padding: '16px', borderRadius: '12px', boxShadow: '0 8px 20px rgba(0,0,0,0.06)' }}>
-                    <h4 style={{ margin: '0 0 6px 0', color: '#111827' }}>Polished Hero Header</h4>
-                    <button style={{ background: '#2563eb', color: 'white', padding: '10px 18px', borderRadius: '8px', border: 'none' }}>Get Started</button>
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => handleTabChange('practice_ai')}
-                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Next: Practice Task &amp; AI Review <ArrowRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== TAB 12: PRACTICE & AI REVIEW ==================== */}
-        {isTabActive('practice_ai') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                15 &amp; 16. Practice Task &amp; AI Review Activity
-              </span>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Improve One Section &amp; Get Instant AI Feedback
-              </h2>
-
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ fontWeight: 800, fontSize: '0.9rem', color: '#0f172a', display: 'block', marginBottom: '6px' }}>
-                  Select Section to Improve:
-                </label>
-                <select
-                  value={selectedPracticeSection}
-                  onChange={(e) => setSelectedPracticeSection(e.target.value)}
-                  style={{ padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.9rem', background: '#fff', width: '240px' }}
-                >
-                  <option value="hero">Hero Section</option>
-                  <option value="about">About Section</option>
-                  <option value="services">Services Section</option>
-                  <option value="projects">Projects Section</option>
-                  <option value="testimonials">Testimonials Section</option>
-                  <option value="pricing">Pricing Section</option>
-                  <option value="contact">Contact Section</option>
-                </select>
-              </div>
-
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.2rem', color: '#38bdf8', margin: '0 0 1rem 0', fontWeight: 800 }}>
-                  🤖 Request AI Code &amp; Visual Review
-                </h3>
-                <button
-                  onClick={handleRunAiAudit}
-                  disabled={aiReviewLoading}
-                  style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  <Sparkles size={16} /> {aiReviewLoading ? 'Analyzing Code...' : 'Submit Section for AI Review'}
-                </button>
-
-                {aiReviewResult && (
-                  <div style={{ marginTop: '1.25rem', background: '#1e293b', padding: '1.25rem', borderRadius: '12px', border: '1px solid #334155' }}>
-                    <h4 style={{ color: '#34d399', margin: '0 0 8px 0' }}>Strengths</h4>
-                    <ul style={{ margin: '0 0 12px 0', paddingLeft: '1.2rem', fontSize: '0.88rem', color: '#cbd5e1' }}>
-                      {aiReviewResult.strengths.map((s, idx) => <li key={idx}>{s}</li>)}
-                    </ul>
-
-                    <h4 style={{ color: '#fbbf24', margin: '0 0 8px 0' }}>Improvement Suggestions</h4>
-                    <ul style={{ margin: '0 0 12px 0', paddingLeft: '1.2rem', fontSize: '0.88rem', color: '#cbd5e1' }}>
-                      {aiReviewResult.improvements.map((s, idx) => <li key={idx}>{s}</li>)}
-                    </ul>
-
-                    <h4 style={{ color: '#38bdf8', margin: '0 0 8px 0' }}>Specific CSS Recommendation</h4>
-                    <pre style={{ background: '#090d16', padding: '12px', borderRadius: '8px', color: '#f8fafc', fontSize: '0.82rem', margin: 0 }}>
-                      {aiReviewResult.cssRecommendation}
-                    </pre>
-                  </div>
-                )}
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => handleTabChange('assignment')}
-                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Next: Day 11 Assignment <ArrowRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== TAB 13: DAY 11 ASSIGNMENT ==================== */}
-        {isTabActive('assignment') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                17. Day 11 Assignment
-              </span>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Assignment — Website Style Improvement
-              </h2>
-
-              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.5rem 0' }}>
-                Submit your updated Mini Project documentation containing before/after notes and mobile responsiveness checks:
-              </p>
-
-              {/* Assignment Form */}
-              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '1.5rem' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <div>
-                    <label style={{ fontWeight: 700, fontSize: '0.85rem', color: '#1e1b4b', display: 'block', marginBottom: '4px' }}>
-                      1. Original Version Note / Screenshot Reference:
-                    </label>
-                    <input type="text" value={assignmentNotes.originalNote} onChange={(e) => setAssignmentNotes({ ...assignmentNotes, originalNote: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #94a3b8', fontSize: '0.88rem' }} />
-                  </div>
-
-                  <div>
-                    <label style={{ fontWeight: 700, fontSize: '0.85rem', color: '#1e1b4b', display: 'block', marginBottom: '4px' }}>
-                      2. Improved Version Note / Screenshot Reference:
-                    </label>
-                    <input type="text" value={assignmentNotes.improvedNote} onChange={(e) => setAssignmentNotes({ ...assignmentNotes, improvedNote: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #94a3b8', fontSize: '0.88rem' }} />
-                  </div>
-
-                  <div>
-                    <label style={{ fontWeight: 700, fontSize: '0.85rem', color: '#1e1b4b', display: 'block', marginBottom: '4px' }}>
-                      3. Short List of Changes Made:
-                    </label>
-                    <textarea rows={3} value={assignmentNotes.changesList} onChange={(e) => setAssignmentNotes({ ...assignmentNotes, changesList: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #94a3b8', fontSize: '0.88rem' }} />
-                  </div>
-
-                  <div>
-                    <label style={{ fontWeight: 700, fontSize: '0.85rem', color: '#1e1b4b', display: 'block', marginBottom: '4px' }}>
-                      4. Mobile Viewport Screenshot Note:
-                    </label>
-                    <input type="text" value={assignmentNotes.mobileNote} onChange={(e) => setAssignmentNotes({ ...assignmentNotes, mobileNote: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #94a3b8', fontSize: '0.88rem' }} />
-                  </div>
-
-                  <div>
-                    <label style={{ fontWeight: 700, fontSize: '0.85rem', color: '#1e1b4b', display: 'block', marginBottom: '4px' }}>
-                      5. One Sentence Describing Biggest Improvement:
-                    </label>
-                    <input type="text" value={assignmentNotes.biggestImprovement} onChange={(e) => setAssignmentNotes({ ...assignmentNotes, biggestImprovement: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #94a3b8', fontSize: '0.88rem' }} />
-                  </div>
-                </div>
-
-                <div style={{ marginTop: '1.25rem' }}>
-                  <button
-                    onClick={() => setAssignmentSubmitted(true)}
-                    style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                  >
-                    <Send size={16} /> Submit Day 11 Assignment
-                  </button>
-                  {assignmentSubmitted && (
-                    <div style={{ marginTop: '10px', color: '#10b981', fontWeight: 800, fontSize: '0.9rem' }}>
-                      🎉 Day 11 Assignment submitted successfully! Staff review recorded.
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => handleTabChange('quiz')}
-                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Next: Knowledge Check &amp; Progress <ArrowRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== TAB 14: QUIZ, COMPLETION & PROGRESS ==================== */}
-        {isTabActive('quiz') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            {/* 18. Knowledge Check */}
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                18. Knowledge Check
-              </span>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1.25rem 0' }}>
-                Day 11 Quiz (10 Questions)
-              </h2>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '1.5rem' }}>
-                {quizQuestions.map((qObj, qIdx) => (
-                  <div key={qIdx} style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                    <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1e1b4b', marginBottom: '10px' }}>
-                      {qObj.q}
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '8px' }}>
-                      {qObj.opts.map((opt, oIdx) => (
-                        <button
-                          key={oIdx}
-                          onClick={() => {
-                            const newAns = [...quizAns];
-                            newAns[qIdx] = oIdx;
-                            setQuizAns(newAns);
-                          }}
-                          style={{
-                            textAlign: 'left',
-                            background: quizAns[qIdx] === oIdx ? (quizSubmitted ? (oIdx === qObj.ans ? '#dcfce7' : '#fee2e2') : '#dbeafe') : '#ffffff',
-                            color: quizAns[qIdx] === oIdx ? (quizSubmitted ? (oIdx === qObj.ans ? '#166534' : '#991b1b') : '#1e40af') : '#334155',
-                            border: quizAns[qIdx] === oIdx ? '2px solid #2563eb' : '1px solid #cbd5e1',
-                            padding: '10px 14px',
-                            borderRadius: '8px',
-                            fontSize: '0.85rem',
-                            fontWeight: 600,
-                            cursor: 'pointer'
-                          }}
-                        >
-                          {opt}
-                        </button>
-                      ))}
+                      {showPracticeSol[chal.id] && (
+                        <div style={{ marginTop: '10px' }}>
+                          <CodeBlock title="Solution Code" language="css" code={chal.solution} />
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
               </div>
+            </div>
 
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                <button
-                  onClick={() => setQuizSubmitted(true)}
-                  style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer' }}
-                >
-                  Submit Quiz
-                </button>
+            {/* PART B: KNOWLEDGE CHECK QUIZ (12 QUESTIONS) */}
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '10px' }}>
+                <div>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    Part B — Knowledge Check Quiz
+                  </span>
+                  <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#0f172a', margin: '4px 0 0 0' }}>
+                    Interactive Knowledge Assessment (12 Questions)
+                  </h2>
+                </div>
+
                 {quizSubmitted && (
-                  <div style={{ fontSize: '1.1rem', fontWeight: 900, color: '#10b981' }}>
-                    Score: {calculateScore()} / 10 ({Math.round((calculateScore() / 10) * 100)}%)
+                  <div style={{ background: calculateQuizScore() >= 9 ? '#dcfce7' : '#fef3c7', color: calculateQuizScore() >= 9 ? '#166534' : '#92400e', padding: '8px 16px', borderRadius: '20px', fontWeight: 900, fontSize: '0.95rem' }}>
+                    Score: {calculateQuizScore()} / 12 ({Math.round((calculateQuizScore() / 12) * 100)}%)
                   </div>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {quizQuestions.map((q, idx) => (
+                  <div key={q.id} style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #e2e8f0' }}>
+                    <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.98rem', marginBottom: '10px' }}>
+                      Question {idx + 1}: {q.question}
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '8px' }}>
+                      {q.options.map(opt => {
+                        const isSelected = quizAnswers[q.id] === opt.label;
+                        const isCorrect = q.correct === opt.label;
+
+                        let btnBg = '#ffffff';
+                        let btnBorder = '#cbd5e1';
+                        let btnColor = '#0f172a';
+
+                        if (quizSubmitted) {
+                          if (isCorrect) {
+                            btnBg = '#dcfce7';
+                            btnBorder = '#86efac';
+                            btnColor = '#166534';
+                          } else if (isSelected && !isCorrect) {
+                            btnBg = '#fee2e2';
+                            btnBorder = '#fca5a5';
+                            btnColor = '#991b1b';
+                          }
+                        } else if (isSelected) {
+                          btnBg = '#eff6ff';
+                          btnBorder = '#2563eb';
+                          btnColor = '#1e40af';
+                        }
+
+                        return (
+                          <button
+                            key={opt.label}
+                            onClick={() => handleQuizSelect(q.id, opt.label)}
+                            style={{
+                              background: btnBg,
+                              border: `2px solid ${btnBorder}`,
+                              color: btnColor,
+                              padding: '10px 14px',
+                              borderRadius: '8px',
+                              textAlign: 'left',
+                              fontSize: '0.88rem',
+                              fontWeight: isSelected ? 700 : 500,
+                              cursor: quizSubmitted ? 'default' : 'pointer',
+                              transition: 'all 0.2s ease'
+                            }}
+                          >
+                            <strong>{opt.label}.</strong> {opt.text}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {quizSubmitted && (
+                      <div style={{ marginTop: '10px', fontSize: '0.85rem', color: '#475569', background: '#ffffff', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                        💡 <strong>Explanation:</strong> {q.explanation}
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {!quizSubmitted ? (
+                  <button
+                    onClick={() => setQuizSubmitted(true)}
+                    style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '14px 28px', borderRadius: '12px', fontWeight: 900, fontSize: '1rem', cursor: 'pointer', width: '100%', marginTop: '1rem' }}
+                  >
+                    Submit Answers &amp; View Results
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => { setQuizSubmitted(false); setQuizAnswers({}); }}
+                    style={{ background: '#475569', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer', width: 'fit-content', margin: '1rem auto 0 auto' }}
+                  >
+                    🔄 Retake Quiz
+                  </button>
                 )}
               </div>
             </div>
 
-            {/* 19. Completion Screen */}
-            <div style={{ background: 'linear-gradient(135deg, #065f46 0%, #047857 100%)', borderRadius: '20px', padding: '2rem', color: '#ffffff', boxShadow: '0 10px 25px rgba(4, 120, 87, 0.3)' }}>
-              <h2 style={{ fontSize: '1.8rem', fontWeight: 900, margin: '0 0 0.75rem 0' }}>
-                🎉 Website Style Improvement Completed!
+            {/* PART C: DAY 11 PRACTICAL TASK */}
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Part C — Day 11 Practical Task
+              </span>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#0f172a', margin: '4px 0 0.75rem 0' }}>
+                Task Title: "Modernize a Basic Business Website"
               </h2>
-              <p style={{ fontSize: '0.95rem', color: '#a7f3d0', marginBottom: '1rem' }}>
-                Today you learned:
+              <p style={{ fontSize: '0.92rem', color: '#475569', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                <strong>Instructions:</strong> Students must take a basic HTML/CSS business website and redesign its layout into a clean, responsive client interface using Day 11 design tokens and component classes.
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '8px', fontSize: '0.88rem' }}>
-                {['Colors', 'Typography', 'Spacing', 'Buttons', 'Cards', 'Hover effects', 'Hero improvements', 'Basic responsive CSS', 'Mobile testing', 'Visual review'].map((item, i) => (
-                  <div key={i} style={{ background: 'rgba(255,255,255,0.15)', padding: '8px 12px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <CheckCircle size={16} color="#6ee7b7" /> {item}
-                  </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                <h4 style={{ margin: '0 0 8px 0', color: '#0f172a', fontSize: '0.95rem', fontWeight: 800 }}>Mandatory Required 8 Sections Checklist:</h4>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '8px', fontSize: '0.88rem', color: '#334155' }}>
+                  {[
+                    "1. Header (Logo & Nav)",
+                    "2. Hero (Headline & CTA)",
+                    "3. Services (Grid Cards)",
+                    "4. About (Company Story)",
+                    "5. Features (Grid List)",
+                    "6. Call-To-Action Banner",
+                    "7. Contact Form Section",
+                    "8. Footer (Links & Copyright)"
+                  ].map((sec, i) => (
+                    <div key={i} style={{ background: '#ffffff', padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontWeight: 600 }}>
+                      ✅ {sec}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* PART D: DAY 11 ASSIGNMENT */}
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Part D — Day 11 Assignment
+              </span>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#0f172a', margin: '4px 0 0.75rem 0' }}>
+                Assignment: "Professional CSS Refactoring Challenge"
+              </h2>
+              <p style={{ fontSize: '0.92rem', color: '#475569', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                <strong>Scenario:</strong> You inherited an intentionally messy CSS file containing duplicate styles, hardcoded colors, and inconsistent button sizes. Refactor it into a clean CSS variable design system!
+              </p>
+
+              <textarea
+                rows={6}
+                value={assignmentCode}
+                onChange={(e) => setAssignmentCode(e.target.value)}
+                placeholder="Paste your clean refactored CSS code here (including :root variables, .btn classes, .card grid rules)..."
+                style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1', fontFamily: 'monospace', fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box', marginBottom: '1rem' }}
+              />
+
+              <button
+                onClick={() => setAssignmentSubmitted(true)}
+                style={{ background: assignmentSubmitted ? '#10b981' : '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer' }}
+              >
+                {assignmentSubmitted ? '✓ Assignment Submitted for Review' : 'Submit Refactoring Assignment'}
+              </button>
+            </div>
+
+            {/* PART E: DAY 11 MINI PROJECT */}
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Part E — Day 11 Mini Project
+              </span>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#0f172a', margin: '4px 0 0.75rem 0' }}>
+                Mini Project: "Modern Business Landing Page"
+              </h2>
+              <p style={{ fontSize: '0.92rem', color: '#475569', lineHeight: 1.6, marginBottom: '1rem' }}>
+                Select one business niche below to build a clean landing page incorporating CSS variables, typography hierarchy, auto-responsive grids, and micro hover states:
+              </p>
+
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+                {['IT Training Institute', 'Restaurant', 'Salon', 'Real Estate Agency', 'Digital Marketing Agency'].map(niche => (
+                  <button
+                    key={niche}
+                    onClick={() => setMiniProjectNiche(niche)}
+                    style={{
+                      background: miniProjectNiche === niche ? '#0f172a' : '#f1f5f9',
+                      color: miniProjectNiche === niche ? '#38bdf8' : '#475569',
+                      border: `1px solid ${miniProjectNiche === niche ? '#38bdf8' : '#cbd5e1'}`,
+                      padding: '8px 16px',
+                      borderRadius: '20px',
+                      fontWeight: 700,
+                      fontSize: '0.85rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {niche}
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '0.88rem', color: '#334155' }}>
+                📌 <strong>Chosen Niche:</strong> {miniProjectNiche} Landing Page Target Project.
+              </div>
+            </div>
+
+            {/* PART F: SELF-ASSESSMENT CHECKLIST (11 ITEMS) */}
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Part F — Student Self-Assessment Checklist
+              </span>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#0f172a', margin: '4px 0 1rem 0' }}>
+                Verify Your Day 11 Skill Competencies
+              </h2>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px' }}>
+                {[
+                  { key: 'item1', text: 'I can create CSS variables using :root and var()' },
+                  { key: 'item2', text: 'I can create a structured typography hierarchy' },
+                  { key: 'item3', text: 'I understand the CSS box model and border-box' },
+                  { key: 'item4', text: 'I can create consistent 8-point spacing' },
+                  { key: 'item5', text: 'I can use CSS Grid and Flexbox appropriately' },
+                  { key: 'item6', text: 'I can create reusable button component classes' },
+                  { key: 'item7', text: 'I can create reusable card UI components' },
+                  { key: 'item8', text: 'I can add professional micro hover states' },
+                  { key: 'item9', text: 'I can identify duplicate/redundant CSS rules' },
+                  { key: 'item10', text: 'I can refactor messy CSS stylesheets' },
+                  { key: 'item11', text: 'I can convert a basic website into a professional design' }
+                ].map(chk => (
+                  <label key={chk.key} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: selfAssessment[chk.key] ? '#f0fdf4' : '#f8fafc', padding: '10px 14px', borderRadius: '10px', border: `1px solid ${selfAssessment[chk.key] ? '#86efac' : '#cbd5e1'}`, cursor: 'pointer', fontSize: '0.88rem', fontWeight: 600, color: '#0f172a' }}>
+                    <input
+                      type="checkbox"
+                      checked={selfAssessment[chk.key]}
+                      onChange={() => toggleSelfAssessment(chk.key)}
+                      style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                    />
+                    {chk.text}
+                  </label>
                 ))}
               </div>
             </div>
 
-            {/* 20. Course Progress Screen */}
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <h3 style={{ fontSize: '1.3rem', fontWeight: 900, color: '#0f172a', margin: 0 }}>
-                  Course Progress: DAY 11 / 20
-                </h3>
-                <span style={{ fontSize: '1.2rem', fontWeight: 900, color: '#2563eb' }}>55% Completed</span>
-              </div>
+            {/* PART G: DAY COMPLETION SYSTEM */}
+            <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: '20px', padding: '2rem', color: '#ffffff', border: '1px solid #334155', textAlign: 'center' }}>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#38bdf8', margin: '0 0 8px 0' }}>
+                🎉 Day 11 Graduation &amp; Completion Status
+              </h3>
+              <p style={{ fontSize: '0.92rem', color: '#94a3b8', margin: '0 0 1.5rem 0' }}>
+                Complete lessons, coding practice, knowledge quiz, assignment, and self-assessment checklist to finish Day 11!
+              </p>
 
-              {/* Progress Bar */}
-              <div style={{ background: '#e2e8f0', borderRadius: '10px', height: '12px', width: '100%', marginBottom: '1.5rem', overflow: 'hidden' }}>
-                <div style={{ background: 'linear-gradient(90deg, #2563eb, #10b981)', height: '100%', width: '55%', borderRadius: '10px' }} />
-              </div>
-
-              {/* Completed Days Checklist */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', marginBottom: '1.5rem' }}>
-                {[
-                  "Day 1 ✓ Website & Layout",
-                  "Day 2 ✓ Navbar",
-                  "Day 3 ✓ Hero",
-                  "Day 4 ✓ About",
-                  "Day 5 ✓ Services",
-                  "Day 6 ✓ Projects",
-                  "Day 7 ✓ Testimonials",
-                  "Day 8 ✓ Pricing",
-                  "Day 9 ✓ Contact & Forms",
-                  "Day 10 ✓ Mini Project 1",
-                  "Day 11 ✓ Website Style Improvement"
-                ].map((d, i) => (
-                  <div key={i} style={{ background: '#f0fdf4', color: '#166534', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 700, border: '1px solid #bbf7d0' }}>
-                    {d}
-                  </div>
-                ))}
-              </div>
-
-              {/* Day 12 Next Preview */}
-              <div style={{ background: '#eff6ff', padding: '1.25rem', borderRadius: '14px', border: '1px solid #bfdbfe' }}>
-                <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Next Up:</span>
-                <h4 style={{ fontSize: '1.1rem', fontWeight: 900, color: '#1e40af', margin: '4px 0 6px 0' }}>
-                  DAY 12 — INTRODUCTION TO JAVASCRIPT
-                </h4>
-                <p style={{ margin: 0, fontSize: '0.88rem', color: '#1e3a8a' }}>
-                  Learn Variables, Buttons, Click events, Simple interactions, and Changing text on a page!
-                </p>
-              </div>
+              <button
+                onClick={() => {
+                  setIsDayCompleted(true);
+                  if (onNavigate) {
+                    onNavigate('web_design_day12', 'intro');
+                  }
+                }}
+                style={{
+                  background: isDayCompleted ? '#10b981' : '#2563eb',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '14px 32px',
+                  borderRadius: '12px',
+                  fontWeight: 900,
+                  fontSize: '1rem',
+                  cursor: 'pointer',
+                  boxShadow: '0 10px 25px rgba(37, 99, 235, 0.3)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px'
+                }}
+              >
+                {isDayCompleted ? '✓ DAY 11 COMPLETED — Proceed to Day 12' : 'Mark Day 11 Completed & Unlock Day 12 →'}
+              </button>
             </div>
 
           </div>
