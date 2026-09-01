@@ -6,6 +6,7 @@ import {
   Send, MessageCircle, FileText, CheckSquare, ChevronRight, Trophy, Zap, Layout, Copy,
   ArrowRight, RotateCcw, X, Info, ExternalLink, SlidersHorizontal, MousePointerClick
 } from 'lucide-react';
+import { CodeBlock } from '../../utils/codeHighlight';
 
 export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onNavigate, openAITutor }) {
   const [activeTab, setActiveTab] = useState(propActiveTab);
@@ -461,6 +462,31 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
                 ))}
               </div>
 
+              {/* Topic 1 Source Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Topic 1 Source Code: Unstyled HTML Structure Before CSS Upgrade
+                </h3>
+                <CodeBlock
+                  title="Topic 1: Unstyled HTML Website Structure"
+                  language="html"
+                  code={`<!-- Unstyled HTML Structure Before CSS Upgrade -->
+<header class="header">
+  <div class="logo">Alpha Fly Theni</div>
+  <nav class="nav">
+    <a href="#">Home</a>
+    <a href="#">Courses</a>
+    <a href="#">Contact</a>
+  </nav>
+</header>
+<section class="hero">
+  <h1>Build Job-Ready Digital Skills</h1>
+  <p>Learn Web Design, Python & AI with 100% practical projects.</p>
+  <button>Get Started</button>
+</section>`}
+                />
+              </div>
+
               {/* Core Question Box */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
@@ -659,6 +685,37 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
                 </div>
               </div>
 
+              {/* Topic 2 Source Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Topic 2 Source Code: CSS Custom Properties &amp; Color Tokens
+                </h3>
+                <CodeBlock
+                  title="Topic 2: Color Palette Tokens"
+                  language="css"
+                  code={`/* CSS Variables / Design Color Tokens */
+:root {
+  --page-bg: #f8fafc;       /* Light Neutral Page Background */
+  --text-main: #1e293b;     /* High-Contrast Body Text */
+  --heading-color: #0f172a; /* Strong Heading Accent */
+  --primary-accent: #2563eb;/* Primary Action Button Color */
+}
+
+body {
+  background-color: var(--page-bg);
+  color: var(--text-main);
+}
+
+h1, h2, h3 {
+  color: var(--heading-color);
+}
+
+.btn-primary {
+  background-color: var(--primary-accent);
+}`}
+                />
+              </div>
+
               {/* Color Practice Editor */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -784,6 +841,41 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
                   <div style={{ fontWeight: 800, color: '#1e1b4b', fontSize: '0.9rem' }}>text-align</div>
                   <div style={{ fontSize: '0.82rem', color: '#64748b' }}>Controls alignment (left, center, right)</div>
                 </div>
+                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontWeight: 800, color: '#1e1b4b', fontSize: '0.9rem' }}>letter-spacing</div>
+                  <div style={{ fontSize: '0.82rem', color: '#64748b' }}>Changes horizontal spacing between letters (e.g. 0.5px)</div>
+                </div>
+              </div>
+
+              {/* Topic 3 Source Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Topic 3 Source Code: Typography Hierarchy &amp; Google Fonts
+                </h3>
+                <CodeBlock
+                  title="Topic 3: Typography & Fonts"
+                  language="css"
+                  code={`/* Google Web Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.6;
+  color: #334155;
+}
+
+h1 {
+  font-size: 2.5rem;      /* 40px */
+  font-weight: 900;       /* Extra Bold */
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+p {
+  font-size: 1.05rem;     /* 16.8px */
+  font-weight: 400;       /* Regular */
+}`}
+                />
               </div>
 
               {/* Typography Visualizer Controls */}
@@ -874,6 +966,36 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
                 </div>
               </div>
 
+              {/* Topic 4 Source Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Topic 4 Source Code: Container Max-Width &amp; Spacing Box Model
+                </h3>
+                <CodeBlock
+                  title="Topic 4: Spacing & Box Model"
+                  language="css"
+                  code={`/* Central Container max-width & horizontal centering */
+.container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2rem 1.5rem; /* Breathing room inside boundary */
+}
+
+/* Card inner padding and outer margin */
+.card {
+  padding: 1.5rem;      /* Inside space */
+  margin-bottom: 2rem;  /* Space pushing next element away */
+}
+
+/* Section vertical separation */
+section {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}`}
+                />
+              </div>
+
               {/* Spacing Interactive Demonstration */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -949,6 +1071,35 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
               <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
                 Buttons should look consistent, be easy to identify, and respond when users hover over them:
               </p>
+
+              {/* Topic 5 Source Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Topic 5 Source Code: Button Styles &amp; Smooth Micro-Interactions
+                </h3>
+                <CodeBlock
+                  title="Topic 5: Button Micro-Interactions"
+                  language="css"
+                  code={`/* Primary Call to Action Button */
+.btn-primary {
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 12px 24px;     /* Comfortable click area */
+  border-radius: 10px;    /* Modern rounded corners */
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+}
+
+/* Interactive Hover State */
+.btn-primary:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px); /* Subtle lift effect */
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}`}
+                />
+              </div>
 
               {/* Button Practice Editor */}
               <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
@@ -1039,6 +1190,36 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
                 Styling Core Content Components
               </h2>
+
+              {/* Topic 6 Source Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Topic 6 Source Code: Feature Cards &amp; Grid Layout
+                </h3>
+                <CodeBlock
+                  title="Topic 6: Feature Cards Grid Layout"
+                  language="css"
+                  code={`/* Feature Cards Grid Layout */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}`}
+                />
+              </div>
 
               {/* 7. Style Cards */}
               <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #cbd5e1', marginBottom: '1.5rem' }}>
@@ -1133,6 +1314,32 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
                 Do not introduce advanced responsive CSS or complex JavaScript yet. Teach one basic media query for mobile screens:
               </p>
 
+              {/* Topic 8 Source Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Topic 8 Source Code: Responsive Media Queries &amp; Mobile Breakpoints
+                </h3>
+                <CodeBlock
+                  title="Topic 8: Mobile Responsive Media Query"
+                  language="css"
+                  code={`/* Mobile Responsive Media Query */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr; /* Single column on mobile */
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+}`}
+                />
+              </div>
+
               <LiveSyntaxCodeEditor
                 language="css"
                 rows={12}
@@ -1213,6 +1420,46 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
                 <div style={{ background: '#eff6ff', color: '#2563eb', padding: '8px 16px', borderRadius: '20px', fontWeight: 800, fontSize: '0.9rem', border: '1px solid #bfdbfe' }}>
                   Progress: {completedSteps.filter(Boolean).length}/11 Steps Completed
                 </div>
+              </div>
+
+              {/* Topic 9 Source Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Topic 9 Source Code: Complete Step-by-Step Guided CSS Upgrade Code
+                </h3>
+                <CodeBlock
+                  title="Topic 9: Step-by-Step Guided CSS Code"
+                  language="css"
+                  code={`/* Step 1: Universal CSS Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Step 2: Body Typography & Background */
+body {
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+/* Step 3: Container max-width */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* Step 4: Card Component Styles */
+.card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+}`}
+                />
               </div>
 
               {/* Steps Progress Bar */}
@@ -1362,6 +1609,33 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
               <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.5rem 0' }}>
                 Compare Day 10 original version with Day 11 improved version. Both versions are preserved without deleting the original!
               </p>
+
+              {/* Topic 10 Source Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  📄 Topic 10 Source Code: Final Before &amp; After CSS Transformation
+                </h3>
+                <CodeBlock
+                  title="Topic 10: Final CSS Transformation"
+                  language="css"
+                  code={`/* Final Optimized CSS Bundle */
+.website-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.hero-banner {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  padding: 4rem 2rem;
+  text-align: center;
+}`}
+                />
+              </div>
 
               {/* Side-by-Side Cards */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
