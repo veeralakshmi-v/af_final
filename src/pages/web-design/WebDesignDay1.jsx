@@ -1,15 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, MonitorPlay, LayoutGrid, Layers, Code, PenTool,
   Briefcase, Sparkles, CheckCircle, Trophy, ChevronRight, 
   ArrowRight, Lightbulb, RefreshCw, Terminal, Eye
 } from 'lucide-react';
 
-export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAITutor }) {
+export default function WebDesignDay1({ activeTab: propActiveTab = 'intro', onNavigate, openAITutor }) {
+  const [activeTab, setActiveTab] = useState(propActiveTab || 'intro');
+
+  useEffect(() => {
+    if (propActiveTab) {
+      setActiveTab(propActiveTab);
+    }
+  }, [propActiveTab]);
+
   const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
     if (onNavigate) {
       onNavigate('web_design_day1', tabId);
     }
+  };
+
+  const isTabActive = (tabName) => {
+    const validTabs = ['intro', 'layout', 'visual', 'layers', 'first_output', 'practice', 'assignment', 'ai_challenge', 'quiz'];
+    if (tabName === 'intro') {
+      return activeTab === 'intro' || !validTabs.includes(activeTab);
+    }
+    return activeTab === tabName;
   };
 
   // --- Meaningful Completion & Progress Tracking State ---
@@ -759,7 +776,7 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
 
 
       {/* ==================== TOPIC 1: WHAT IS A WEBSITE? ==================== */}
-      {activeTab === 'intro' && (
+      {isTabActive('intro') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
@@ -828,8 +845,8 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
         </div>
       )}
 
-      {/* ==================== TOPIC 2: WEBSITE LAYOUT ==================== */}
-      {activeTab === 'layout' && (
+      {/* ==================== TOPIC 2: WEBSITE LAYOUT & STRUCTURE ==================== */}
+      {isTabActive('layout') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
@@ -903,8 +920,8 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
         </div>
       )}
 
-      {/* ==================== TOPIC 3: WEBSITE SECTIONS (VISUAL) ==================== */}
-      {activeTab === 'visual' && (
+      {/* ==================== TOPIC 3: VISUAL WEBSITE SECTIONS EXPLORER ==================== */}
+      {isTabActive('visual') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
@@ -933,7 +950,7 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
                       padding: '10px 16px',
                       cursor: 'pointer',
                       display: 'flex',
-                      justify: 'space-between',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
                       transition: 'all 0.2s'
                     }}
@@ -1106,8 +1123,8 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
         </div>
       )}
 
-      {/* ==================== TOPIC 4: 3-LAYER VISUAL (HTML + CSS + JS) ==================== */}
-      {activeTab === 'layers' && (
+      {/* ==================== TOPIC 4: THE 3 LAYERS OF WEB DEVELOPMENT ==================== */}
+      {isTabActive('layers') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
@@ -1253,8 +1270,8 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
         </div>
       )}
 
-      {/* ==================== TOPIC 5: LIVE EXAMPLE ==================== */}
-      {activeTab === 'first_output' && (
+      {/* ==================== TOPIC 5: YOUR FIRST HTML WEBSITE CODE ==================== */}
+      {isTabActive('first_output') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
@@ -1314,8 +1331,8 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
         </div>
       )}
 
-      {/* ==================== TOPIC 6: PRACTICE ==================== */}
-      {activeTab === 'practice' && (
+      {/* ==================== TOPIC 6: HANDS-ON PRACTICE PLAYGROUND ==================== */}
+      {isTabActive('practice') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
@@ -1392,8 +1409,8 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
         </div>
       )}
 
-      {/* ==================== TOPIC 7: TASK-BASED PRACTICAL ASSIGNMENT ==================== */}
-      {activeTab === 'assignment' && (
+      {/* ==================== TOPIC 7: ASSIGNMENT & REAL WORLD PROJECT TASK ==================== */}
+      {isTabActive('assignment') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '10px' }}>
@@ -1519,8 +1536,8 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
         </div>
       )}
 
-      {/* ==================== TOPIC 8: AI CHALLENGE ==================== */}
-      {activeTab === 'ai_challenge' && (
+      {/* ==================== TOPIC 8: AI-POWERED DESIGN CHALLENGE ==================== */}
+      {isTabActive('ai_challenge') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#7c3aed', marginBottom: 4 }}>
@@ -1594,8 +1611,8 @@ export default function WebDesignDay1({ activeTab = 'intro', onNavigate, openAIT
         </div>
       )}
 
-      {/* ==================== TOPIC 9: QUIZ KNOWLEDGE CHECK & PROGRESS ==================== */}
-      {activeTab === 'quiz' && (
+      {/* ==================== TOPIC 9: KNOWLEDGE CHECK QUIZ & DAY COMPLETION ==================== */}
+      {isTabActive('quiz') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           
           {/* Quiz Section */}

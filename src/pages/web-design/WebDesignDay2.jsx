@@ -1,15 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, MonitorPlay, LayoutGrid, Layers, Code, PenTool,
   Briefcase, Sparkles, CheckCircle, Trophy, ChevronRight, 
   ArrowRight, Lightbulb, RefreshCw, Terminal, Eye, Sliders, Menu, X, Play
 } from 'lucide-react';
 
-export default function WebDesignDay2({ activeTab = 'intro', onNavigate, openAITutor }) {
+export default function WebDesignDay2({ activeTab: propActiveTab = 'intro', onNavigate, openAITutor }) {
+  const [activeTab, setActiveTab] = useState(propActiveTab || 'intro');
+
+  useEffect(() => {
+    if (propActiveTab) {
+      setActiveTab(propActiveTab);
+    }
+  }, [propActiveTab]);
+
   const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
     if (onNavigate) {
       onNavigate('web_design_day2', tabId);
     }
+  };
+
+  const isTabActive = (tabName) => {
+    const validTabs = ['intro', 'visual', 'html_build', 'css_flexbox', 'hover_responsive', 'guided_build', 'playground', 'challenges', 'assignment', 'quiz'];
+    if (tabName === 'intro') {
+      return activeTab === 'intro' || !validTabs.includes(activeTab);
+    }
+    return activeTab === tabName;
   };
 
   // Interactive Syntax-Highlighted Code Editor component for live HTML and CSS editing
@@ -579,8 +596,8 @@ nav a:hover { color: #ffffff; }
         </div>
       </div>
 
-      {/* ==================== SECTION 1: TODAY YOU WILL BUILD ==================== */}
-      {activeTab === 'intro' && (
+      {/* ==================== TOPIC 1: NAVBAR ANATOMY & BUSINESS ROLE ==================== */}
+      {isTabActive('intro') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
@@ -658,8 +675,8 @@ nav a:hover { color: #ffffff; }
         </div>
       )}
 
-      {/* ==================== SECTION 2: TARGET RESULT & COMPONENT EXPLORER ==================== */}
-      {activeTab === 'visual' && (
+      {/* ==================== TOPIC 2: VISUAL NAVBAR EXPLORER ==================== */}
+      {isTabActive('visual') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           
           {/* Target Result Banner */}
@@ -813,8 +830,8 @@ nav a:hover { color: #ffffff; }
         </div>
       )}
 
-      {/* ==================== SECTION 5 & 6: STEP-BY-STEP HTML STRUCTURE ==================== */}
-      {activeTab === 'html_build' && (
+      {/* ==================== TOPIC 3: HTML STRUCTURE FOR NAVBAR ==================== */}
+      {isTabActive('html_build') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
@@ -961,8 +978,8 @@ nav a:hover { color: #ffffff; }
         </div>
       )}
 
-      {/* ==================== SECTION 9 & 10: CSS FLEXBOX & BOX MODEL ==================== */}
-      {activeTab === 'css_flexbox' && (
+      {/* ==================== TOPIC 4: FLEXBOX LAYOUT FOR NAVBAR ==================== */}
+      {isTabActive('css_flexbox') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
@@ -1056,8 +1073,8 @@ nav a:hover { color: #ffffff; }
         </div>
       )}
 
-      {/* ==================== SECTION 12 & 17: HOVER & RESPONSIVE ==================== */}
-      {activeTab === 'hover_responsive' && (
+      {/* ==================== TOPIC 5: HOVER EFFECTS & RESPONSIVE TOGGLE ==================== */}
+      {isTabActive('hover_responsive') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           
           {/* Hover State Demo */}
@@ -1191,8 +1208,8 @@ nav a:hover { color: #ffffff; }
         </div>
       )}
 
-      {/* ==================== SECTION 20: GUIDED BUILD MODE (BUILD WITH ME) ==================== */}
-      {activeTab === 'guided_build' && (
+      {/* ==================== TOPIC 6: GUIDED BUILD (10 STEPS) ==================== */}
+      {isTabActive('guided_build') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -1267,8 +1284,8 @@ nav a:hover { color: #ffffff; }
         </div>
       )}
 
-      {/* ==================== SECTION 19: LIVE CODE PLAYGROUND ==================== */}
-      {activeTab === 'playground' && (
+      {/* ==================== TOPIC 7: LIVE CODE PLAYGROUND ==================== */}
+      {isTabActive('playground') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
@@ -1308,8 +1325,8 @@ nav a:hover { color: #ffffff; }
         </div>
       )}
 
-      {/* ==================== SECTION 21 & 24: CHALLENGES & DEBUGGING ==================== */}
-      {activeTab === 'challenges' && (
+      {/* ==================== TOPIC 8: CODE CHALLENGES & DEBUGGING ==================== */}
+      {isTabActive('challenges') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           
           {/* Debugging Challenge */}
@@ -1362,74 +1379,8 @@ nav a:hover { color: #ffffff; }
         </div>
       )}
 
-      {/* ==================== SECTION 22 & 23: ASSIGNMENT & AI CHALLENGE ==================== */}
-      {activeTab === 'assignment' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-          
-          {/* Assignment Section */}
-          <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
-              Day 2 Assignment — Build Your Own Business Navbar
-            </h2>
-            <p style={{ fontSize: '0.92rem', color: '#64748b', margin: '0 0 1.5rem 0' }}>
-              Select a business template below to generate a tailored business navigation bar:
-            </p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-              {Object.keys(assignmentBusinesses).map(key => {
-                const b = assignmentBusinesses[key];
-                return (
-                  <div
-                    key={key}
-                    onClick={() => {
-                      setSelectedBusiness(key);
-                      setCompletedSteps(prev => ({ ...prev, assignment: true }));
-                    }}
-                    style={{
-                      background: selectedBusiness === key ? '#eff6ff' : '#f8fafc',
-                      border: selectedBusiness === key ? '2px solid #2563eb' : '1px solid #e2e8f0',
-                      borderRadius: '12px',
-                      padding: '1rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase' }}>{b.type}</div>
-                    <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#0f172a', marginTop: 2 }}>{b.name}</div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Selected Business Navbar Live Output */}
-            {(() => {
-              const b = assignmentBusinesses[selectedBusiness];
-              return (
-                <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: 'white' }}>
-                  <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '1rem' }}>
-                    Generated Assignment Navbar — {b.name}:
-                  </div>
-                  <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: b.bg, padding: '1rem 1.5rem', borderRadius: '12px' }}>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 900, color: b.color }}>{b.name}</div>
-                    <nav style={{ display: 'flex', gap: '1.2rem', fontSize: '0.85rem' }}>
-                      {b.links.map((link, idx) => (
-                        <span key={idx} style={{ color: idx === 0 ? 'white' : '#cbd5e1', fontWeight: idx === 0 ? 700 : 400 }}>{link}</span>
-                      ))}
-                    </nav>
-                    <button style={{ background: b.color, color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 'bold' }}>
-                      {b.cta}
-                    </button>
-                  </header>
-                </div>
-              );
-            })()}
-
-          </div>
-        </div>
-      )}
-
-      {/* ==================== SECTION 25 & 27: KNOWLEDGE CHECK & COMPLETION ==================== */}
-      {activeTab === 'quiz' && (
+      {/* ==================== TOPIC 10: KNOWLEDGE CHECK & PROGRESS ==================== */}
+      {isTabActive('quiz') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           
           {/* Quiz Section */}

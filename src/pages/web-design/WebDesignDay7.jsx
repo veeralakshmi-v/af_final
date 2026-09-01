@@ -1,15 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, MonitorPlay, Code, LayoutGrid, Layers, PenTool, Briefcase, Sparkles, 
   CheckCircle, Sliders, Terminal, Smartphone, Tablet, Monitor, RefreshCw, Star, 
   HelpCircle, Eye, EyeOff, ShieldCheck, Award, MessageSquare, AlertCircle, Play, Check, Trophy
 } from 'lucide-react';
 
-export default function WebDesignDay7({ activeTab = 'intro', onNavigate, openAITutor }) {
-  const handleTabChange = (tabId) => {
-    if (onNavigate) {
-      onNavigate(tabId);
+export default function WebDesignDay7({ activeTab: propActiveTab = 'intro', onNavigate, openAITutor }) {
+  const [activeTab, setActiveTab] = useState(propActiveTab || 'intro');
+
+  useEffect(() => {
+    if (propActiveTab) {
+      setActiveTab(propActiveTab);
     }
+  }, [propActiveTab]);
+
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    if (onNavigate) {
+      onNavigate('web_design_day7', tabId);
+    }
+  };
+
+  const isTabActive = (tabName) => {
+    return !activeTab || activeTab === 'intro' ? (tabName === 'intro' || activeTab === tabName) : activeTab === tabName;
   };
 
   // --- Interactive Code Editor Component with Synced Scroll & Syntax Highlighting ---

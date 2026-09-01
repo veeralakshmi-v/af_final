@@ -50,6 +50,10 @@ const WebDesignDay10 = ({ activeTab: initialActiveTab, onNavigate, openAITutor }
     }
   }, [initialActiveTab]);
 
+  const isTabActive = (tabName) => {
+    return !activeTab || activeTab === 'intro' ? (tabName === 'intro' || activeTab === tabName) : activeTab === tabName;
+  };
+
   // --- Live Syntax Code Editor with Synced Scroll ---
   const LiveSyntaxCodeEditor = ({ value, onChange, language = 'html', rows = 12, label = '' }) => {
     const preRef = React.useRef(null);
@@ -1187,7 +1191,7 @@ document.addEventListener('DOMContentLoaded', () => {
       {/* ==================== TAB CONTENT ==================== */}
 
       {/* TAB 1: PROJECT BRIEF & BUSINESS GOALS (WITH BUILT-IN AI PLANNER) */}
-      {activeTab === 'intro' && (
+      {isTabActive('intro') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
 
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
@@ -1313,7 +1317,7 @@ document.addEventListener('DOMContentLoaded', () => {
       )}
 
       {/* TAB 2: INDEPENDENT PROJECT WORKSPACE */}
-      {activeTab === 'builder' && (
+      {isTabActive('builder') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
 
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '1.5rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
@@ -1408,7 +1412,7 @@ document.addEventListener('DOMContentLoaded', () => {
       )}
 
       {/* TAB 3: 9-SECTION EXPLORER & CHECKLIST */}
-      {activeTab === 'sections_guide' && (
+      {isTabActive('sections_guide') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
 
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
@@ -1453,7 +1457,7 @@ document.addEventListener('DOMContentLoaded', () => {
       )}
 
       {/* TAB 4: JS VALIDATION & FORM LOGIC */}
-      {activeTab === 'js_lab' && (
+      {isTabActive('js_lab') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
 
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
@@ -1500,7 +1504,7 @@ document.addEventListener('DOMContentLoaded', () => {
       )}
 
       {/* TAB 5: RESPONSIVE VIEWPORT TESTER */}
-      {activeTab === 'responsive_tester' && (
+      {isTabActive('responsive_tester') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
 
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '1.5rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>

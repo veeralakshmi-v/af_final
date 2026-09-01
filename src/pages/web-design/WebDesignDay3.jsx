@@ -1,15 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, MonitorPlay, LayoutGrid, Layers, Code, PenTool,
   Briefcase, Sparkles, CheckCircle, Trophy, ChevronRight, 
   ArrowRight, Lightbulb, RefreshCw, Terminal, Eye, Sliders, Menu, X, Play, HelpCircle
 } from 'lucide-react';
 
-export default function WebDesignDay3({ activeTab = 'intro', onNavigate, openAITutor }) {
+export default function WebDesignDay3({ activeTab: propActiveTab = 'intro', onNavigate, openAITutor }) {
+  const [activeTab, setActiveTab] = useState(propActiveTab || 'intro');
+
+  useEffect(() => {
+    if (propActiveTab) {
+      setActiveTab(propActiveTab);
+    }
+  }, [propActiveTab]);
+
   const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
     if (onNavigate) {
       onNavigate('web_design_day3', tabId);
     }
+  };
+
+  const isTabActive = (tabName) => {
+    const validTabs = ['intro', 'visual', 'html_build', 'css_layout', 'typography_cta', 'responsive', 'guided_build', 'playground', 'challenges', 'assignment', 'quiz'];
+    if (tabName === 'intro') {
+      return activeTab === 'intro' || !validTabs.includes(activeTab);
+    }
+    return activeTab === tabName;
   };
 
   // Interactive Syntax-Highlighted Code Editor component for live HTML and CSS editing
@@ -554,8 +571,8 @@ p { font-size: 1.05rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.8rem;
         </div>
       </div>
 
-      {/* ==================== SECTION 1 & 2: OBJECTIVE & REAL-WORLD QUESTION ==================== */}
-      {activeTab === 'intro' && (
+      {/* ==================== TOPIC 1: HERO SECTION ANATOMY ==================== */}
+      {isTabActive('intro') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           
           {/* Objective Banner */}
@@ -643,8 +660,8 @@ p { font-size: 1.05rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.8rem;
         </div>
       )}
 
-      {/* ==================== SECTION 3 & 4: TARGET RESULT & HERO EXPLORER ==================== */}
-      {activeTab === 'visual' && (
+      {/* ==================== TOPIC 2: VISUAL HERO EXPLORER ==================== */}
+      {isTabActive('visual') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           
           {/* Target Result Banner */}
@@ -819,266 +836,8 @@ p { font-size: 1.05rem; color: #94a3b8; line-height: 1.6; }
         </div>
       )}
 
-      {/* ==================== SECTION 5, 6, 7: BUSINESS GOAL & HTML HERO BUILD ==================== */}
-      {activeTab === 'html_build' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-          
-          {/* Business Goal Activity */}
-          <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
-              Business Goal &amp; CTA Selector Activity
-            </h2>
-            <p style={{ fontSize: '0.92rem', color: '#64748b', margin: '0 0 1.25rem 0' }}>
-              What should the visitor do after seeing the Hero? Choose a business type to view tailored CTA wording:
-            </p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px', marginBottom: '1.25rem' }}>
-              {Object.keys(businessGoalsData).map(key => {
-                const bg = businessGoalsData[key];
-                return (
-                  <button
-                    key={key}
-                    onClick={() => setSelectedBusinessGoal(key)}
-                    style={{
-                      padding: '0.75rem',
-                      borderRadius: '12px',
-                      border: selectedBusinessGoal === key ? '2px solid #2563eb' : '1px solid #cbd5e1',
-                      background: selectedBusinessGoal === key ? '#eff6ff' : '#f8fafc',
-                      color: selectedBusinessGoal === key ? '#1e40af' : '#334155',
-                      fontWeight: 800,
-                      fontSize: '0.84rem',
-                      cursor: 'pointer',
-                      textAlign: 'left'
-                    }}
-                  >
-                    <div>{bg.name}</div>
-                    <div style={{ fontSize: '0.74rem', color: '#64748b', marginTop: 2 }}>CTA: "{bg.cta}"</div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Selected Business Preview */}
-            <div style={{ background: '#0f172a', padding: '1.25rem', borderRadius: '12px', color: 'white' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#60a5fa', textTransform: 'uppercase' }}>Tailored Business Hero CTA:</div>
-              <div style={{ fontSize: '1.1rem', fontWeight: 900, margin: '4px 0 8px 0' }}>{businessGoalsData[selectedBusinessGoal].heading}</div>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button style={{ background: '#2563eb', color: 'white', border: 'none', padding: '6px 16px', borderRadius: '6px', fontWeight: 'bold', fontSize: '0.8rem' }}>{businessGoalsData[selectedBusinessGoal].cta}</button>
-                <button style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '6px 16px', borderRadius: '6px', fontWeight: 'bold', fontSize: '0.8rem' }}>{businessGoalsData[selectedBusinessGoal].altCta}</button>
-              </div>
-            </div>
-          </div>
-
-          {/* Progressive 6-step HTML Builder */}
-          <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
-              Step-by-Step HTML Hero Construction (6 Steps)
-            </h2>
-            <p style={{ fontSize: '0.92rem', color: '#64748b', margin: '0 0 1.5rem 0' }}>
-              Build the hero progressively step-by-step to see elements stack visually:
-            </p>
-
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-              {[
-                { step: 1, label: 'Step 1: <section>' },
-                { step: 2, label: 'Step 2: Eyebrow Label' },
-                { step: 3, label: 'Step 3: H1 Headline' },
-                { step: 4, label: 'Step 4: Paragraph' },
-                { step: 5, label: 'Step 5: CTAs' },
-                { step: 6, label: 'Step 6: Image Visual' }
-              ].map(s => (
-                <button
-                  key={s.step}
-                  onClick={() => setHtmlBuildStep(s.step)}
-                  style={{
-                    padding: '0.55rem 1rem',
-                    borderRadius: '10px',
-                    fontSize: '0.82rem',
-                    fontWeight: 800,
-                    border: 'none',
-                    cursor: 'pointer',
-                    background: htmlBuildStep === s.step ? '#ea580c' : '#f1f5f9',
-                    color: htmlBuildStep === s.step ? '#ffffff' : '#475569'
-                  }}
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Code vs Browser Display */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
-              <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ea580c', display: 'block', marginBottom: 4 }}>
-                  HTML Code (Step {htmlBuildStep} of 6):
-                </label>
-                <div style={{ background: '#090d16', padding: '1rem', borderRadius: '12px', border: '1px solid #1e293b', minHeight: '180px', overflowX: 'auto' }}>
-                  {htmlBuildStep === 1 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Alpha Fly Theni - Hero</title>
-</head>
-<body>
-  <section class="hero">
-  </section>
-</body>
-</html>`)}
-                  {htmlBuildStep === 2 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Alpha Fly Theni - Hero</title>
-</head>
-<body>
-  <section class="hero">
-    <span class="eyebrow">AI-POWERED LEARNING</span>
-  </section>
-</body>
-</html>`)}
-                  {htmlBuildStep === 3 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Alpha Fly Theni - Hero</title>
-</head>
-<body>
-  <section class="hero">
-    <span class="eyebrow">AI-POWERED LEARNING</span>
-    <h1>Build Job-Ready Digital Skills</h1>
-  </section>
-</body>
-</html>`)}
-                  {htmlBuildStep === 4 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Alpha Fly Theni - Hero</title>
-</head>
-<body>
-  <section class="hero">
-    <span class="eyebrow">AI-POWERED LEARNING</span>
-    <h1>Build Job-Ready Digital Skills</h1>
-    <p>Practical hands-on training for students in Theni...</p>
-  </section>
-</body>
-</html>`)}
-                  {htmlBuildStep === 5 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Alpha Fly Theni - Hero</title>
-</head>
-<body>
-  <section class="hero">
-    <span class="eyebrow">AI-POWERED LEARNING</span>
-    <h1>Build Job-Ready Digital Skills</h1>
-    <p>Practical hands-on training for students in Theni...</p>
-    <a href="#courses">Explore Courses</a>
-    <a href="#contact">Contact Us</a>
-  </section>
-</body>
-</html>`)}
-                  {htmlBuildStep === 6 && renderSyntaxHighlightedHTML(`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Alpha Fly Theni - Hero</title>
-</head>
-<body>
-  <section class="hero">
-    <div class="hero-content">
-      <span class="eyebrow">AI-POWERED LEARNING</span>
-      <h1>Build Job-Ready Digital Skills</h1>
-      <p>Practical hands-on training...</p>
-      <a href="#courses">Explore Courses</a>
-    </div>
-    <img src="hero.png" alt="Hero Illustration">
-  </section>
-</body>
-</html>`)}
-                </div>
-              </div>
-
-              <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#16a34a', display: 'block', marginBottom: 4 }}>
-                  Unstyled Live Browser Render:
-                </label>
-                <div style={{ background: '#ffffff', border: '2px solid #cbd5e1', borderRadius: '12px', padding: '1rem', minHeight: '180px', fontFamily: 'Times New Roman, serif' }}>
-                  {htmlBuildStep >= 2 && <div style={{ fontSize: '0.8rem' }}>AI-POWERED LEARNING</div>}
-                  {htmlBuildStep >= 3 && <h1 style={{ fontSize: '1.5rem', margin: '4px 0' }}>Build Job-Ready Digital Skills</h1>}
-                  {htmlBuildStep >= 4 && <p style={{ margin: '4px 0' }}>Practical hands-on training for students in Theni...</p>}
-                  {htmlBuildStep >= 5 && (
-                    <div style={{ display: 'flex', gap: 6, margin: '8px 0' }}>
-                      <a href="#" style={{ color: 'blue' }}>Explore Courses</a>
-                      <a href="#" style={{ color: 'blue' }}>Contact Us</a>
-                    </div>
-                  )}
-                  {htmlBuildStep >= 6 && <div style={{ background: '#f1f5f9', border: '1px solid #ccc', padding: '8px', fontSize: '0.8rem' }}>[Image: Hero Illustration]</div>}
-                </div>
-              </div>
-            </div>
-
-            <div style={{ background: '#f8fafc', borderLeft: '4px solid #3b82f6', padding: '1rem 1.25rem', borderRadius: '0 10px 10px 0', marginTop: '1.5rem', fontSize: '0.88rem', color: '#334155' }}>
-              💡 <strong>Why Unstyled First?</strong> Notice how raw HTML stacks vertically in default browser fonts. Now CSS will transform this into a 2-column hero!
-            </div>
-          </div>
-
-        </div>
-      )}
-
-      {/* ==================== SECTION 8 & 9: CSS FLEXBOX 2-COLUMN LAYOUT & CONTAINER ==================== */}
-      {activeTab === 'css_layout' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-          <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
-              CSS Flexbox 2-Column Layout &amp; Content Container
-            </h2>
-            <p style={{ fontSize: '0.92rem', color: '#64748b', margin: '0 0 1.5rem 0' }}>
-              Why was the image appearing below the text? Because block elements stack vertically by default. <code>display: flex</code> places them side-by-side!
-            </p>
-
-            <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: 'white', marginBottom: '1.5rem' }}>
-              <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#60a5fa', textTransform: 'uppercase', marginBottom: '1rem' }}>
-                CSS Flexbox 2-Column Structure:
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem', background: '#1e1b4b', padding: '2rem', borderRadius: '12px', border: '1px solid #312e81', flexWrap: 'wrap' }}>
-                <div style={{ flex: '1 1 300px', border: '2px dashed #60a5fa', padding: '1rem', borderRadius: '10px' }}>
-                  <div style={{ fontSize: '0.72rem', color: '#93c5fd', fontWeight: 800 }}>LEFT COLUMN (HERO TEXT CONTENT):</div>
-                  <h2 style={{ fontSize: '1.4rem', margin: '6px 0', color: 'white' }}>Build Job-Ready Digital Skills</h2>
-                  <p style={{ fontSize: '0.85rem', color: '#cbd5e1', margin: 0 }}>Headline, description, and CTA buttons container.</p>
-                </div>
-
-                <div style={{ flex: '1 1 200px', border: '2px dashed #34d399', padding: '1.5rem 1rem', borderRadius: '10px', textAlign: 'center', color: '#a7f3d0', fontWeight: 800 }}>
-                  RIGHT COLUMN (HERO VISUAL / IMAGE)
-                </div>
-              </div>
-            </div>
-
-            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '16px', padding: '1.5rem', color: '#1e40af', fontSize: '0.88rem' }}>
-              <div style={{ fontWeight: 900, fontSize: '1rem', color: '#1e3a8a', marginBottom: '0.75rem' }}>
-                💡 Deep-Dive: Understanding `max-width: 1200px; margin: 0 auto;`
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
-                <div style={{ background: '#ffffff', padding: '1rem', borderRadius: '10px', border: '1px solid #dbeafe' }}>
-                  <strong style={{ color: '#1d4ed8', display: 'block', marginBottom: '4px' }}>1. `max-width: 1200px` (Responsive Upper Limit)</strong>
-                  Caps container width on desktop screens so text lines don't stretch too wide to read, while naturally shrinking to 100% on mobile screens.
-                </div>
-
-                <div style={{ background: '#ffffff', padding: '1rem', borderRadius: '10px', border: '1px solid #dbeafe' }}>
-                  <strong style={{ color: '#1d4ed8', display: 'block', marginBottom: '4px' }}>2. `margin: 0 auto` (Horizontal Centering)</strong>
-                  `0` sets 0px top &amp; bottom space. `auto` automatically calculates and splits remaining screen space equally between left and right margins to center the box!
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ==================== SECTION 10, 11, 12, 13: TYPOGRAPHY, HEADING & CTA DESIGN ==================== */}
-      {activeTab === 'typography_cta' && (
+      {/* ==================== TOPIC 5: TYPOGRAPHY & CTA BUTTONS ==================== */}
+      {isTabActive('typography_cta') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           
           {/* Interactive Heading Typography Visualizer */}
@@ -1162,55 +921,11 @@ p { font-size: 1.05rem; color: #94a3b8; line-height: 1.6; }
               </div>
             </div>
           </div>
-
-          {/* Visual Hierarchy Activity */}
-          <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
-              Visual Hierarchy Activity — Which Communicates Best?
-            </h2>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', margin: '1rem 0' }}>
-              {[
-                { version: 'A', desc: 'Version A: Image is oversized and overpowers headline.' },
-                { version: 'B', desc: 'Version B: Headline & CTA are dominant with balanced image (CORRECT!).' },
-                { version: 'C', desc: 'Version C: Headline, text, and button have identical size & importance.' }
-              ].map(item => (
-                <button
-                  key={item.version}
-                  onClick={() => setSelectedHierarchyVersion(item.version)}
-                  style={{
-                    padding: '1rem',
-                    borderRadius: '12px',
-                    border: selectedHierarchyVersion === item.version ? '2px solid #2563eb' : '1px solid #cbd5e1',
-                    background: selectedHierarchyVersion === item.version ? '#eff6ff' : '#f8fafc',
-                    color: selectedHierarchyVersion === item.version ? '#1e40af' : '#334155',
-                    textAlign: 'left',
-                    fontWeight: 700,
-                    fontSize: '0.85rem',
-                    cursor: 'pointer'
-                  }}
-                >
-                  {item.desc}
-                </button>
-              ))}
-            </div>
-
-            {selectedHierarchyVersion === 'B' ? (
-              <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', padding: '1rem', borderRadius: '10px', color: '#065f46', fontSize: '0.88rem', fontWeight: 700 }}>
-                ✅ <strong>Correct!</strong> Version B guides the visitor eye logically from main headline to supporting description and primary CTA.
-              </div>
-            ) : (
-              <div style={{ background: '#fef2f2', border: '1px solid #fecaca', padding: '1rem', borderRadius: '10px', color: '#991b1b', fontSize: '0.88rem', fontWeight: 700 }}>
-                ❌ Notice how unbalanced visual weight confuses the visitor focus. Try Version B!
-              </div>
-            )}
-          </div>
-
         </div>
       )}
 
-      {/* ==================== SECTION 16, 17, 18, 19: RESPONSIVE HERO & DEVICE TESTER ==================== */}
-      {activeTab === 'responsive' && (
+      {/* ==================== TOPIC 6: RESPONSIVE HERO DESIGN ==================== */}
+      {isTabActive('responsive') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           
           {/* Background Design Options */}
@@ -1280,49 +995,12 @@ p { font-size: 1.05rem; color: #94a3b8; line-height: 1.6; }
                 📱 Mobile (375px)
               </button>
             </div>
-
-            {/* Device Container */}
-            <div style={{
-              background: '#0f172a',
-              borderRadius: '16px',
-              padding: '1.5rem',
-              maxWidth: responsiveDevice === 'desktop' ? '100%' : responsiveDevice === 'tablet' ? '768px' : '375px',
-              margin: '0 auto',
-              transition: 'all 0.4s ease',
-              color: 'white'
-            }}>
-              <div style={{
-                display: 'flex',
-                flexDirection: responsiveDevice === 'mobile' ? 'column' : 'row',
-                justify: 'space-between',
-                alignItems: 'center',
-                gap: '1.5rem',
-                background: '#1e1b4b',
-                padding: '1.5rem',
-                borderRadius: '12px'
-              }}>
-                <div style={{ flex: '1' }}>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#60a5fa' }}>AI-POWERED LEARNING</span>
-                  <h2 style={{ fontSize: responsiveDevice === 'mobile' ? '1.3rem' : '1.8rem', fontWeight: 900, margin: '4px 0 8px 0' }}>Build Job-Ready Digital Skills</h2>
-                  <p style={{ fontSize: '0.82rem', color: '#cbd5e1', margin: '0 0 1rem 0' }}>Practical hands-on training for students in Theni.</p>
-                  <div style={{ display: 'flex', flexDirection: responsiveDevice === 'mobile' ? 'column' : 'row', gap: '8px' }}>
-                    <button style={{ background: '#2563eb', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 'bold', fontSize: '0.8rem' }}>Explore Courses</button>
-                    <button style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 16px', borderRadius: '8px', fontWeight: 'bold', fontSize: '0.8rem' }}>Contact Us</button>
-                  </div>
-                </div>
-
-                <div style={{ width: responsiveDevice === 'mobile' ? '100%' : '180px', background: 'rgba(255,255,255,0.08)', padding: '1.5rem 1rem', borderRadius: '10px', textAlign: 'center', color: '#93c5fd', fontWeight: 800, fontSize: '0.85rem' }}>
-                  🚀 100% Practical
-                </div>
-              </div>
-            </div>
-
           </div>
         </div>
       )}
 
-      {/* ==================== SECTION 20 & 21: GUIDED BUILD MODE (BUILD WITH ME) ==================== */}
-      {activeTab === 'guided_build' && (
+      {/* ==================== TOPIC 7: GUIDED BUILD (10 STEPS) ==================== */}
+      {isTabActive('guided_build') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -1334,71 +1012,12 @@ p { font-size: 1.05rem; color: #94a3b8; line-height: 1.6; }
                 Stage Progress: {guidedBuildStage}/10
               </div>
             </div>
-
-            {/* Stages Tracker Bar */}
-            <div style={{ display: 'flex', gap: '4px', marginBottom: '1.5rem' }}>
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(stage => (
-                <div
-                  key={stage}
-                  onClick={() => setGuidedBuildStage(stage)}
-                  style={{
-                    flex: 1,
-                    height: '8px',
-                    borderRadius: '4px',
-                    background: stage <= guidedBuildStage ? '#2563eb' : '#e2e8f0',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Stage Description & Task */}
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '1.5rem', marginBottom: '1.5rem' }}>
-              <div style={{ fontWeight: 800, fontSize: '0.82rem', color: '#64748b', textTransform: 'uppercase', marginBottom: 4 }}>
-                Active Stage {guidedBuildStage}:
-              </div>
-              
-              {guidedBuildStage === 1 && <h3>Stage 1: Create Main Hero Container (`&lt;section class="hero"&gt;`)</h3>}
-              {guidedBuildStage === 2 && <h3>Stage 2: Add Eyebrow Label (`&lt;span class="eyebrow"&gt;AI-POWERED LEARNING&lt;/span&gt;`)</h3>}
-              {guidedBuildStage === 3 && <h3>Stage 3: Add Main Heading (`&lt;h1&gt;Build Job-Ready Digital Skills&lt;/h1&gt;`)</h3>}
-              {guidedBuildStage === 4 && <h3>Stage 4: Add Description (`&lt;p&gt;Practical hands-on training for students in Theni...&lt;/p&gt;`)</h3>}
-              {guidedBuildStage === 5 && <h3>Stage 5: Add Primary &amp; Secondary CTA Buttons (`&lt;a class="btn-primary"&gt;`)</h3>}
-              {guidedBuildStage === 6 && <h3>Stage 6: Add Hero Image Visual (`&lt;div class="hero-visual"&gt;`)</h3>}
-              {guidedBuildStage === 7 && <h3>Stage 7: Create 2-Column Flexbox Layout (`display: flex; justify-content: space-between;`)</h3>}
-              {guidedBuildStage === 8 && <h3>Stage 8: Style Hero Typography (`font-size: 2.5rem; line-height: 1.2;`)</h3>}
-              {guidedBuildStage === 9 && <h3>Stage 9: Style Primary &amp; Secondary Buttons (`background: #2563eb; borderRadius: 10px;`)</h3>}
-              {guidedBuildStage === 10 && <h3>Stage 10: Make Hero Responsive with Media Queries (`@media (max-width: 768px)`)</h3>}
-
-              <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }}>
-                {guidedBuildStage > 1 && (
-                  <button
-                    onClick={() => setGuidedBuildStage(guidedBuildStage - 1)}
-                    style={{ background: '#f1f5f9', color: '#475569', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
-                  >
-                    ← Previous Stage
-                  </button>
-                )}
-                {guidedBuildStage < 10 && (
-                  <button
-                    onClick={() => {
-                      setGuidedBuildStage(guidedBuildStage + 1);
-                      setCompletedSteps(prev => ({ ...prev, guidedBuild: Math.max(prev.guidedBuild, guidedBuildStage + 1) }));
-                    }}
-                    style={{ background: '#2563eb', color: 'white', border: 'none', padding: '8px 18px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
-                  >
-                    Complete Stage &amp; Unlock Next →
-                  </button>
-                )}
-              </div>
-            </div>
-
           </div>
         </div>
       )}
 
-      {/* ==================== SECTION 20: LIVE CODE PLAYGROUND ==================== */}
-      {activeTab === 'playground' && (
+      {/* ==================== TOPIC 3: HTML HERO STRUCTURE ==================== */}
+      {isTabActive('html_build') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
@@ -1407,39 +1026,12 @@ p { font-size: 1.05rem; color: #94a3b8; line-height: 1.6; }
             <p style={{ fontSize: '0.92rem', color: '#64748b', margin: '0 0 1.5rem 0' }}>
               Edit the HTML and CSS code below to customize your hero section live in real-time:
             </p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
-              <LiveSyntaxCodeEditor
-                label="HTML:"
-                language="html"
-                rows={11}
-                value={playgroundHtml}
-                onChange={e => setPlaygroundHtml(e.target.value)}
-              />
-
-              <LiveSyntaxCodeEditor
-                label="CSS:"
-                language="css"
-                rows={11}
-                value={playgroundCss}
-                onChange={e => setPlaygroundCss(e.target.value)}
-              />
-            </div>
-
-            {/* Playground Live Render */}
-            <div>
-              <label style={{ fontSize: '0.82rem', fontWeight: 800, color: '#16a34a', display: 'block', marginBottom: 4 }}>Live Output Result:</label>
-              <div style={{ background: '#ffffff', border: '2px solid #22c55e', borderRadius: '12px', padding: '1.25rem' }}>
-                <style>{playgroundCss}</style>
-                <div dangerouslySetInnerHTML={{ __html: playgroundHtml }} />
-              </div>
-            </div>
           </div>
         </div>
       )}
 
-      {/* ==================== SECTION 22 & 23: PREDICT OUTPUT & DEBUGGING CHALLENGE ==================== */}
-      {activeTab === 'challenges' && (
+      {/* ==================== TOPIC 9: CODE CHALLENGES & DEBUGGING ==================== */}
+      {isTabActive('challenges') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           
           {/* Predict Output Challenge */}
@@ -1447,183 +1039,12 @@ p { font-size: 1.05rem; color: #94a3b8; line-height: 1.6; }
             <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
               🧠 Predict The Output Challenge
             </h2>
-            <p style={{ fontSize: '0.92rem', color: '#64748b', margin: '0 0 1rem 0' }}>
-              Read the CSS rule below:
-            </p>
-            <pre style={{ background: '#0f172a', color: '#38bdf8', padding: '1rem', borderRadius: '10px', fontSize: '0.88rem', margin: '0 0 1rem 0' }}>
-{`.hero {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}`}
-            </pre>
-
-            <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#0f172a', marginBottom: '8px' }}>What will happen to the Hero Text and Hero Image?</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '1rem' }}>
-              {[
-                'A. Elements disappear completely.',
-                'B. Text and Image are arranged side-by-side with max space between them.',
-                'C. Text becomes bold and centered vertically.',
-                'D. Image automatically downloads to computer.'
-              ].map((opt, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => {
-                    setPredictionAnswer(idx);
-                    setShowPredictionResult(true);
-                  }}
-                  style={{
-                    textAlign: 'left',
-                    padding: '0.75rem',
-                    borderRadius: '8px',
-                    border: predictionAnswer === idx ? '2px solid #2563eb' : '1px solid #cbd5e1',
-                    background: predictionAnswer === idx ? '#eff6ff' : '#ffffff',
-                    fontWeight: 600,
-                    fontSize: '0.85rem',
-                    cursor: 'pointer'
-                  }}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-
-            {showPredictionResult && (
-              <div style={{ background: predictionAnswer === 1 ? '#ecfdf5' : '#fef2f2', border: predictionAnswer === 1 ? '1px solid #a7f3d0' : '1px solid #fecaca', padding: '1rem', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 700, color: predictionAnswer === 1 ? '#065f46' : '#991b1b' }}>
-                {predictionAnswer === 1 ? '✅ Correct prediction! `display: flex; justify-content: space-between;` aligns Text on the left and Image on the right.' : '❌ Incorrect prediction. Option B is correct because flexbox row layout places child items side-by-side.'}
-              </div>
-            )}
-          </div>
-
-          {/* Debugging Challenge */}
-          <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
-              🐛 Debugging Challenge — Find and Fix The Problem
-            </h2>
-            <p style={{ fontSize: '0.92rem', color: '#64748b', margin: '0 0 1.5rem 0' }}>
-              The hero code below has a layout bug causing text and image to stretch unexpectedly. Identify the bug:
-            </p>
-
-            <pre style={{ background: '#0f172a', padding: '1rem', borderRadius: '12px', color: '#f87171', fontSize: '0.84rem', margin: '0 0 1rem 0' }}>
-{`<section style="display: flex; justify-content: space-between;">
-  <div class="hero-content">
-    <h1>Build Job-Ready Digital Skills</h1>
-    <p>Practical training in Theni...</p>
-  </div>
-  <img src="hero.png" style="width: 2500px;"> <!-- BUG: Image width overflow! -->
-</section>`}
-            </pre>
-
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button
-                onClick={() => setShowDebugHint(!showDebugHint)}
-                style={{ background: '#fef3c7', color: '#92400e', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 800, fontSize: '0.8rem', cursor: 'pointer' }}
-              >
-                {showDebugHint ? 'Hide Hint' : 'Show Hint'}
-              </button>
-
-              <button
-                onClick={() => setShowDebugAnswer(!showDebugAnswer)}
-                style={{ background: '#dcfce7', color: '#14532d', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 800, fontSize: '0.8rem', cursor: 'pointer' }}
-              >
-                {showDebugAnswer ? 'Hide Answer' : 'Show Answer'}
-              </button>
-            </div>
-
-            {showDebugHint && (
-              <div style={{ background: '#fffbe8', borderLeft: '4px solid #f59e0b', padding: '0.85rem', borderRadius: '0 8px 8px 0', marginTop: '1rem', fontSize: '0.85rem', color: '#78350f' }}>
-                💡 <strong>Hint:</strong> Look at <code>style="width: 2500px;"</code> on the image tag. 2500px is much wider than any screen!
-              </div>
-            )}
-
-            {showDebugAnswer && (
-              <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', padding: '1rem', borderRadius: '10px', marginTop: '1rem', fontSize: '0.85rem', color: '#065f46' }}>
-                ✅ <strong>Solution:</strong> Change <code>width: 2500px;</code> to <code>width: 100%; max-width: 450px;</code> so the image scales responsively inside its flex column.
-              </div>
-            )}
           </div>
         </div>
       )}
 
-      {/* ==================== SECTION 24, 25, 26, 27: ASSIGNMENT & AI CHALLENGE ==================== */}
-      {activeTab === 'assignment' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-          
-          {/* Practice Task & AI Challenge */}
-          <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1e1b4b', margin: '0 0 0.5rem 0' }}>
-              AI Challenge — Create Better Hero Content
-            </h2>
-            <p style={{ fontSize: '0.92rem', color: '#64748b', margin: '0 0 1.25rem 0' }}>
-              Fill in your business details below and let AI suggest 3 headline ideas, 2 descriptions, and 3 CTA buttons:
-            </p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
-              <div>
-                <label style={{ fontSize: '0.78rem', fontWeight: 800, color: '#334155', display: 'block', marginBottom: 4 }}>Business Type:</label>
-                <input type="text" value={aiBusinessInput} onChange={e => setAiBusinessInput(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }} />
-              </div>
-              <div>
-                <label style={{ fontSize: '0.78rem', fontWeight: 800, color: '#334155', display: 'block', marginBottom: 4 }}>Target Audience:</label>
-                <input type="text" value={aiAudienceInput} onChange={e => setAiAudienceInput(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }} />
-              </div>
-              <div>
-                <label style={{ fontSize: '0.78rem', fontWeight: 800, color: '#334155', display: 'block', marginBottom: 4 }}>Desired Action:</label>
-                <input type="text" value={aiActionInput} onChange={e => setAiActionInput(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }} />
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                setAiGeneratedHero({
-                  headlines: [
-                    `Master Professional Web Design at ${aiBusinessInput}`,
-                    `Build High-Paying Tech Career Skills in Theni`,
-                    `Transform Your Future with 100% Practical IT Training`
-                  ],
-                  descriptions: [
-                    `Join hands-on project training tailored for ${aiAudienceInput} to build modern responsive websites.`,
-                    `Learn HTML, CSS, JavaScript, and React with expert mentorship and job placement assistance.`
-                  ],
-                  ctas: [`${aiActionInput} →`, 'Schedule Free Demo', 'Download Syllabus']
-                });
-                setCompletedSteps(prev => ({ ...prev, aiChallenge: true }));
-              }}
-              style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', fontSize: '0.88rem', cursor: 'pointer', marginBottom: '1.5rem' }}
-            >
-              ✨ Generate AI Hero Copy Suggestions
-            </button>
-
-            {aiGeneratedHero && (
-              <div style={{ background: '#faf5ff', border: '1px solid #e9d5ff', padding: '1.25rem', borderRadius: '12px', marginBottom: '1.5rem' }}>
-                <h4 style={{ margin: '0 0 8px 0', color: '#6b21a8', fontSize: '1rem', fontWeight: 900 }}>AI Suggested Headlines:</h4>
-                <ul style={{ margin: '0 0 1rem 0', paddingLeft: '1.2rem', fontSize: '0.88rem', color: '#4c1d95' }}>
-                  {aiGeneratedHero.headlines.map((h, i) => <li key={i} style={{ marginBottom: 4 }}>{h}</li>)}
-                </ul>
-
-                <h4 style={{ margin: '0 0 8px 0', color: '#6b21a8', fontSize: '1rem', fontWeight: 900 }}>AI Suggested Descriptions:</h4>
-                <ul style={{ margin: '0 0 1rem 0', paddingLeft: '1.2rem', fontSize: '0.88rem', color: '#4c1d95' }}>
-                  {aiGeneratedHero.descriptions.map((d, i) => <li key={i} style={{ marginBottom: 4 }}>{d}</li>)}
-                </ul>
-
-                <div style={{ marginTop: '1rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#6b21a8', display: 'block', marginBottom: 4 }}>Why did you choose your final headline? (Student Reflection):</label>
-                  <textarea
-                    rows={3}
-                    placeholder="Explain why this headline matches your business goal..."
-                    value={studentReflection}
-                    onChange={e => setStudentReflection(e.target.value)}
-                    style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #d8b4fe', fontSize: '0.84rem', boxSizing: 'border-box' }}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* ==================== SECTION 28, 29, 30: KNOWLEDGE CHECK & DAY 3 COMPLETION ==================== */}
-      {activeTab === 'quiz' && (
+      {/* ==================== TOPIC 11: KNOWLEDGE CHECK & PROGRESS ==================== */}
+      {isTabActive('quiz') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           
           {/* Quiz Section */}
