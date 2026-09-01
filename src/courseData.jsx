@@ -2397,18 +2397,18 @@ export const webDesignCourseData = [
   },
   {
     id: 'web_design_day12',
-    title: 'Day 12 — JavaScript Fundamentals & DOM Interaction',
+    title: 'Day 12 — JavaScript & DOM Interaction',
     items: [
-      { id: 'intro', label: 'Topic 1: Intro to JavaScript & Role', icon: <BookOpen size={18} /> },
-      { id: 'connecting_js', label: 'Topic 2: Project Structure & Dev Console', icon: <Code size={18} /> },
-      { id: 'data_types', label: 'Topic 3: Variables (const/let) & Types', icon: <Sliders size={18} /> },
-      { id: 'operators', label: 'Topic 4: Operators & Template Literals', icon: <Terminal size={18} /> },
-      { id: 'dom_intro', label: 'Topic 5: The DOM & querySelector', icon: <MousePointerClick size={18} /> },
-      { id: 'dom_text_events', label: 'Topic 6: Modifying Text Content', icon: <Zap size={18} /> },
-      { id: 'events', label: 'Topic 7: Event Listeners & Interaction', icon: <PenTool size={18} /> },
-      { id: 'functions_classlist', label: 'Topic 8: Functions & Reusable Logic', icon: <LayoutGrid size={18} /> },
-      { id: 'classlist', label: 'Topic 9: Manipulating CSS classList', icon: <Layers size={18} /> },
-      { id: 'mobile_menu', label: 'Topic 10: Mobile Drawer Project & Quiz', icon: <CheckCircle size={18} /> }
+      { id: 'intro', label: '1. From Static to Interactive', icon: <BookOpen size={18} /> },
+      { id: 'dom_tree', label: '2. Understanding the DOM', icon: <Code size={18} /> },
+      { id: 'selecting', label: '3. Selecting HTML Elements', icon: <MousePointerClick size={18} /> },
+      { id: 'modifying', label: '4. Modifying Content & Attributes', icon: <Sliders size={18} /> },
+      { id: 'classlist_styling', label: '5. ClassList & Dynamic Styling', icon: <Layers size={18} /> },
+      { id: 'events', label: '6. Event Listeners & Event Object', icon: <Zap size={18} /> },
+      { id: 'forms_validation', label: '7. Form Interaction & Validation', icon: <FileText size={18} /> },
+      { id: 'projects_interactive', label: '8. Mobile Drawer, Counter & Show/Hide', icon: <Smartphone size={18} /> },
+      { id: 'debugging', label: '9. DOM Debugging & DevTools', icon: <Terminal size={18} /> },
+      { id: 'assessment', label: '10. Practice, Quiz, Projects & Assessment', icon: <CheckCircle size={18} /> }
     ]
   }
 ];

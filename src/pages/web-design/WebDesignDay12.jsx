@@ -28,1774 +28,1509 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
   // Helper for checking active tab mapping with robust fallback across 10 topics
   const isTabActive = (tabName) => {
     const validTabs = [
-      'intro', 'connecting_js', 'data_types', 'operators', 'dom_intro',
-      'dom_text_events', 'events', 'functions_classlist', 'classlist', 'mobile_menu'
+      'intro', 'dom_tree', 'selecting', 'modifying', 'classlist_styling',
+      'events', 'forms_validation', 'projects_interactive', 'debugging', 'assessment'
     ];
     if (tabName === 'intro') {
       return activeTab === 'intro' || !validTabs.includes(activeTab);
     }
-    if (tabName === 'connecting_js') return activeTab === 'connecting_js';
-    if (tabName === 'data_types') return activeTab === 'data_types';
-    if (tabName === 'operators') return activeTab === 'operators';
-    if (tabName === 'dom_intro') return activeTab === 'dom_intro';
-    if (tabName === 'dom_text_events') return activeTab === 'dom_text_events';
-    if (tabName === 'events') return activeTab === 'events';
-    if (tabName === 'functions_classlist') return activeTab === 'functions_classlist';
-    if (tabName === 'classlist') return activeTab === 'classlist';
-    if (tabName === 'mobile_menu') return activeTab === 'mobile_menu' || activeTab === 'conditions' || activeTab === 'guided_build' || activeTab === 'interactive_activities' || activeTab === 'ai_tools' || activeTab === 'practice_assignment' || activeTab === 'quiz';
     return activeTab === tabName;
   };
 
-  // --- Interactive Syntax-Highlighted Code Editor component ---
-  const LiveSyntaxCodeEditor = ({ value, onChange, language = 'javascript', rows = 8, label = '' }) => {
-    const preRef = useRef(null);
+  // Section 3: Element Selector Studio
+  const [selectedElement, setSelectedElement] = useState('#main-heading');
+  
+  // Section 4: Text & Image Attribute Switcher
+  const [welcomeText, setWelcomeText] = useState('Welcome Student');
+  const [currentImg, setCurrentImg] = useState('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&q=80');
 
-    const handleScroll = (e) => {
-      if (preRef.current) {
-        preRef.current.scrollTop = e.target.scrollTop;
-        preRef.current.scrollLeft = e.target.scrollLeft;
-      }
-    };
+  // Section 5: ClassList Panel Toggle
+  const [isPanelVisible, setIsPanelVisible] = useState(false);
+  const [isHighlightClass, setIsHighlightClass] = useState(false);
 
-    const escapeHTML = (str) =>
-      str ? str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+  // Section 6: Event Listener & Event Object Log
+  const [eventLogs, setEventLogs] = useState([]);
+  const [clickCount, setClickCount] = useState(0);
 
-    const highlightCode = (codeStr, lang) => {
-      if (!codeStr) return '';
-      const escaped = escapeHTML(codeStr);
+  // Section 7: Form Interaction & Validation
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [formErrors, setFormErrors] = useState({});
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
-      if (lang === 'html') {
-        const tokenRegex = /(&lt;<!--[\s\S]*?--&gt;)|(&lt;!DOCTYPE html&gt;)|(&lt;\/?[a-zA-Z0-9\-]+)|([a-zA-Z\-]+)(?=\s*=)|("[\s\S]*?"|'[\s\S]*?')/gi;
-        return escaped.replace(tokenRegex, (match, comment, doctype, tag, attr, stringVal) => {
-          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
-          if (doctype) return `<span style="color:#c084fc;font-weight:bold;">${doctype}</span>`;
-          if (tag) {
-            const m = tag.match(/^(&lt;\/?)([a-zA-Z0-9\-]+)$/);
-            return m ? `${m[1]}<span style="color:#f43f5e;font-weight:bold;">${m[2]}</span>` : tag;
-          }
-          if (attr) return `<span style="color:#fbbf24;font-weight:600;">${attr}</span>`;
-          if (stringVal) return `<span style="color:#34d399;">${stringVal}</span>`;
-          return match;
-        });
-      }
+  // Section 8: Mobile Drawer, Counter & Show/Hide Password
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [counterVal, setCounterVal] = useState(0);
+  const [showReadMore, setShowReadMore] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('SecretPass123!');
 
-      if (lang === 'css') {
-        const cssTokenRegex = /(\/\*[\s\S]*?\*\/)|([.#:][a-zA-Z0-9_\-]+|[a-zA-Z0-9_\-]+(?=\s*\{))|([a-zA-Z\-]+)(?=\s*:)|(:\s*[^;\}]+;)/gi;
-        return escaped.replace(cssTokenRegex, (match, comment, selector, prop, val) => {
-          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
-          if (selector) return `<span style="color:#38bdf8;font-weight:bold;">${selector}</span>`;
-          if (prop) return `<span style="color:#fb923c;font-weight:600;">${prop}</span>`;
-          if (val) return `:<span style="color:#34d399;">${val.slice(1)}</span>`;
-          return match;
-        });
-      }
+  // Section 9: Console Debugger Simulator
+  const [debugLog, setDebugLog] = useState(['> Console initialized.', '> Ready for DOM debugging.']);
 
-      if (lang === 'javascript' || lang === 'js') {
-        const jsTokenRegex = /(\/\*[\s\S]*?\*\/|\/\/[^\n]*)|(\b(?:let|const|var|function|if|else|return|true|false|console|document)\b)|("[\s\S]*?"|'[\s\S]*?'|`[\s\S]*?`)|(\b\d+\b)/gi;
-        return escaped.replace(jsTokenRegex, (match, comment, keyword, stringVal, num) => {
-          if (comment) return `<span style="color:#64748b;font-style:italic;">${comment}</span>`;
-          if (keyword) return `<span style="color:#c084fc;font-weight:bold;">${keyword}</span>`;
-          if (stringVal) return `<span style="color:#34d399;">${stringVal}</span>`;
-          if (num) return `<span style="color:#fb923c;font-weight:bold;">${num}</span>`;
-          return match;
-        });
-      }
+  // Practice Challenges & Guided Solutions Toggle
+  const [showPracticeSol, setShowPracticeSol] = useState({});
+  const [showChallengeSol, setShowChallengeSol] = useState({});
 
-      return escaped;
-    };
-
-    const highlightedHTML = highlightCode(value, language);
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-        {label && (
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-            <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#f59e0b', letterSpacing: '0.5px' }}>
-              {label}
-            </label>
-            <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Interactive Code Editor ({language.toUpperCase()})</span>
-          </div>
-        )}
-
-        <div style={{ position: 'relative', width: '100%', borderRadius: '12px', overflow: 'hidden', background: '#090d16', border: '1px solid #1e293b', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
-          <pre
-            ref={preRef}
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              margin: 0,
-              padding: '1rem',
-              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
-              fontSize: '0.84rem',
-              lineHeight: '1.6',
-              color: '#f8fafc',
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
-              pointerEvents: 'none',
-              overflow: 'hidden',
-              boxSizing: 'border-box'
-            }}
-            dangerouslySetInnerHTML={{ __html: highlightedHTML + '\n' }}
-          />
-
-          <textarea
-            rows={rows}
-            value={value}
-            onChange={onChange}
-            onScroll={handleScroll}
-            spellCheck={false}
-            style={{
-              position: 'relative',
-              width: '100%',
-              minHeight: `${rows * 1.6}rem`,
-              margin: 0,
-              padding: '1rem',
-              fontFamily: "'Cascadia Code', Consolas, Monaco, monospace",
-              fontSize: '0.84rem',
-              lineHeight: '1.6',
-              color: 'transparent',
-              caretColor: '#f59e0b',
-              background: 'transparent',
-              border: 'none',
-              outline: 'none',
-              resize: 'vertical',
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
-              boxSizing: 'border-box'
-            }}
-          />
-        </div>
-      </div>
-    );
-  };
-
-  // ==========================================
-  // STATE MANAGEMENT FOR DAY 12 LESSONS
-  // ==========================================
-
-  // 1. Script & Console Sandbox State
-  const [consoleLogOutput, setConsoleLogOutput] = useState([]);
-  const [consoleCode, setConsoleCode] = useState(`console.log("Hello from my website");\nconst businessName = "Alpha Fly Theni";\nconsole.log(\`Welcome to \${businessName}\`);`);
-
-  // 2. Variables & Math Playground State
-  const [varBusinessName, setVarBusinessName] = useState('Alpha Fly Theni');
-  const [varServiceName, setVarServiceName] = useState('Website Design');
-  const [varPrice, setVarPrice] = useState(5000);
-  const [varQuantity, setVarQuantity] = useState(2);
-  const [varIsAvailable, setVarIsAvailable] = useState(true);
-
-  // 3. Selector Practice State
-  const [selectorAnswers, setSelectorAnswers] = useState({ q1: '', q2: '', q3: '' });
-  const [selectorFeedback, setSelectorFeedback] = useState({});
-  const [showSelectorHint, setShowSelectorHint] = useState(false);
-  const [showSelectorSol, setShowSelectorSol] = useState(false);
-
-  // 4. Live Text & Event Flow State
-  const [headingText, setHeadingText] = useState('Welcome to Our Website');
-  const [eventStageIndex, setEventStageIndex] = useState(0);
-
-  // 5. Function Practice State
-  const [fnPlaygroundCode, setFnPlaygroundCode] = useState(`function showWelcome() {\n  title.textContent = "Welcome to Alpha Fly Theni!";\n}`);
-  const [fnOutputMessage, setFnOutputMessage] = useState('');
-
-  // 6. classList Highlight Card State
-  const [cardIsHighlighted, setCardIsHighlighted] = useState(false);
-
-  // 7. Mobile Menu Interactive Demo State
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // 8. Conditions & Availability State
-  const [serviceAvailability, setServiceAvailability] = useState(true);
-
-  // 9. 10-Min Mini Interaction Challenge State
-  const [offerVisible, setOfferVisible] = useState(false);
-
-  // 10. Guided Build (9 Steps) State
-  const [guidedStep, setGuidedStep] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState(Array(9).fill(false));
-  const [guidedCodes, setGuidedCodes] = useState([
-    `<!-- Step 1: Create a button ID in HTML -->\n<button id="menuBtn" class="menu-toggle">\u2630</button>`,
-    `// Step 2: Create a JavaScript reference\nconst menuBtn = document.querySelector("#menuBtn");\nconst mobileMenu = document.querySelector(".mobile-menu");`,
-    `// Step 3: Add a click event listener\nmenuBtn.addEventListener("click", () => {\n  mobileMenu.classList.toggle("active");\n});`,
-    `// Step 4: Create a function\nfunction toggleNavigation() {\n  mobileMenu.classList.toggle("active");\n}`,
-    `// Step 5: Change text content dynamically\nconst statusMsg = document.querySelector("#statusMsg");\nstatusMsg.textContent = "Menu toggled!";`,
-    `// Step 6: Test interaction live\nconsole.log("Mobile menu click event triggered!");`,
-    `// Step 7: Add CSS active class\nmobileMenu.classList.add("active");`,
-    `// Step 8: Toggle the active class\nmobileMenu.classList.toggle("active");`,
-    `// Step 9: Test complete mobile menu interaction verified!`
-  ]);
-
-  const guidedStepsList = [
-    { title: "1. Create Button ID", desc: "Add id='menuBtn' to your mobile menu button in index.html." },
-    { title: "2. Create JS References", desc: "Use document.querySelector('#menuBtn') and document.querySelector('.mobile-menu')." },
-    { title: "3. Add Click Event Listener", desc: "Attach addEventListener('click', ...) to listen for user clicks." },
-    { title: "4. Create a Function", desc: "Group menu toggling into a reusable function toggleNavigation()." },
-    { title: "5. Change Element Text", desc: "Update statusMsg.textContent when menu opens or closes." },
-    { title: "6. Test Interaction", desc: "Click the menu button in the preview to test live behavior." },
-    { title: "7. Add CSS Class", desc: "Use mobileMenu.classList.add('active') to apply CSS styles." },
-    { title: "8. Toggle Active Class", desc: "Use mobileMenu.classList.toggle('active') to switch state on click." },
-    { title: "9. Test Complete Menu", desc: "Test mobile drawer toggle behavior from ☰ to ✕!" }
-  ];
-
-  // 11. Predict Output State
-  const [predictAns, setPredictAns] = useState({});
-
-  // 12. Debugging Challenge State
-  const [debugCode, setDebugCode] = useState(`// BROKEN CODE EXAMPLE:\nconst contactBtn = document.querySelector("contactBtn"); // Bug 1: Missing # for ID\n\ncontactBtn.addEventlistener("click", function() { // Bug 2: Lowercase 'l' in addEventListener\n  const title = document.querySelector("#mainTitle");\n  title.textcontent = "Welcome!"; // Bug 3: Lowercase 'c' in textContent\n});`);
-  const [debugSolved, setDebugSolved] = useState(false);
-  const [showDebugHint, setShowDebugHint] = useState(false);
-  const [showDebugSol, setShowDebugSol] = useState(false);
-
-  // 13. AI Tools State
-  const [aiExplainCode, setAiExplainCode] = useState(`button.addEventListener("click", function () {\n  title.textContent = "Welcome!";\n});`);
-  const [aiExplainResult, setAiExplainResult] = useState('');
-  const [aiErrorCode, setAiErrorCode] = useState(`Uncaught ReferenceError: title is not defined at script.js:4`);
-  const [aiErrorResult, setAiErrorResult] = useState(null);
-  const [aiBusinessType, setAiBusinessType] = useState('Restaurant');
-  const [aiIdeasResult, setAiIdeasResult] = useState(null);
-
-  // 14. Assignment & Reflection State
-  const [reflectionAnswers, setReflectionAnswers] = useState({
-    q1_elem: '#menuBtn, #mainTitle',
-    q2_event: 'click',
-    q3_fn: 'toggleNavigation(), showMessage()',
-    q4_class: '.active, .highlight',
-    q5_ifelse: 'Checked isAvailable boolean to show/hide booking message',
-    q6_error: 'Uncaught TypeError: Cannot read properties of null',
-    q7_fix: 'Added missing # in querySelector("#menuBtn") selector'
-  });
-  const [assignmentSubmitted, setAssignmentSubmitted] = useState(false);
-
-  // 15. Quiz State (15 Questions matching prompt specs)
-  const quizQuestions = [
-    { q: "1. What is JavaScript?", opts: ["A markup language for page structure", "A styling language for colors", "A programming language used to add interaction and behavior to websites", "A database engine"], ans: 2 },
-    { q: "2. What is the role of JavaScript in a website?", opts: ["HTML = Structure, CSS = Design, JavaScript = Behaviour", "JS replaces HTML completely", "JS creates image files", "JS sets font sizes only"], ans: 0 },
-    { q: "3. What is a variable in JavaScript?", opts: ["A CSS class name", "A named place to store information so we can use it later", "An HTML tag", "A browser window"], ans: 1 },
-    { q: "4. What is the practical difference between const and let?", opts: ["const is used when value shouldn't be reassigned; let is used when value may change", "let is for CSS; const is for HTML", "const can only store numbers", "There is no difference"], ans: 0 },
-    { q: "5. What is the DOM (Document Object Model)?", opts: ["A backend database", "The browser's converted structure of HTML that JavaScript can interact with", "A CSS framework", "A text editor"], ans: 1 },
-    { q: "6. What does document.querySelector('#title') select?", opts: ["All paragraph tags", "The element with id='title'", "The element with class='title'", "The head section"], ans: 1 },
-    { q: "7. How do you select an element by class name using querySelector?", opts: ["querySelector('#classname')", "querySelector('.classname')", "querySelector('classname')", "querySelector('class:classname')"], ans: 1 },
-    { q: "8. What does addEventListener('click', ...) do?", opts: ["Waits for a user to click an element and executes a function", "Automatically clicks buttons on page load", "Changes page URL", "Closes the window"], ans: 0 },
-    { q: "9. What is an event in web development?", opts: ["Something that happens on a webpage (e.g. click, mouseover, submit)", "A scheduled calendar item", "A server crash", "A CSS rule"], ans: 0 },
-    { q: "10. What is a function in JavaScript?", opts: ["A reusable block of instructions executed when called", "A CSS property", "An HTML image element", "A font style"], ans: 0 },
-    { q: "11. What does element.textContent do?", opts: ["Changes background color", "Gets or sets the text content inside an HTML element", "Applies drop shadow", "Deletes element"], ans: 1 },
-    { q: "12. What does classList.add('active') do?", opts: ["Adds the 'active' CSS class to an element", "Removes all classes", "Toggles font size", "Deletes the class"], ans: 0 },
-    { q: "13. What does classList.toggle('active') do?", opts: ["Adds the class if missing, or removes it if present", "Deletes CSS files", "Changes background to black", "Hides body tag"], ans: 0 },
-    { q: "14. What does a simple if / else condition allow JavaScript to do?", opts: ["Make decisions based on boolean true/false states", "Loop 100 times", "Create forms", "Calculate padding"], ans: 0 },
-    { q: "15. Where can developers inspect JavaScript errors and console.log() output?", opts: ["Browser Developer Tools -> Console", "HTML file source code", "CSS stylesheet", "Desktop taskbar"], ans: 0 }
-  ];
-
-  const [quizAns, setQuizAns] = useState(Array(15).fill(null));
+  // Quiz State (15 Questions)
+  const [userAnswers, setUserAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
 
-  const calculateScore = () => {
+  // Self-Assessment Checklist (14 Items)
+  const [checklist, setChecklist] = useState({
+    dom: false,
+    elements: false,
+    querySelector: false,
+    textContent: false,
+    attributes: false,
+    classList: false,
+    toggle: false,
+    clickEvents: false,
+    addEventListener: false,
+    inputValues: false,
+    preventDefault: false,
+    mobileMenu: false,
+    debugging: false,
+    makeInteractive: false
+  });
+
+  const quizQuestions = [
+    {
+      id: 1,
+      question: "Which technology is responsible for making static HTML/CSS web pages interactive?",
+      options: ["HTML", "CSS", "JavaScript", "SQL"],
+      correct: 2,
+      explanation: "HTML provides the structure, CSS provides design/styling, and JavaScript handles dynamic behavior and user interaction."
+    },
+    {
+      id: 2,
+      question: "What does DOM stand for in web development?",
+      options: ["Data Object Model", "Document Object Model", "Digital Oriented Module", "Document Oriented Matrix"],
+      correct: 1,
+      explanation: "DOM stands for Document Object Model. It is the tree structure representation of HTML elements created by the browser."
+    },
+    {
+      id: 3,
+      question: "Which method selects the FIRST element matching a specified CSS selector?",
+      options: ["document.getElement()", "document.querySelector()", "document.querySelectorAll()", "document.find()"],
+      correct: 1,
+      explanation: "document.querySelector() returns the first element inside the document that matches the specified CSS selector."
+    },
+    {
+      id: 4,
+      question: "What does document.querySelectorAll('.card') return?",
+      options: ["The first card element", "An array of numbers", "A NodeList (collection) of all matching elements", "A single string"],
+      correct: 2,
+      explanation: "document.querySelectorAll() returns a NodeList containing all elements matching the selector."
+    },
+    {
+      id: 5,
+      question: "Which property should you use to safely change plain text inside an element without parsing HTML tags?",
+      options: ["innerHTML", "textContent", "innerTextHTML", "value"],
+      correct: 1,
+      explanation: "textContent safely sets or gets plain text without security risks (XSS) or HTML tag execution."
+    },
+    {
+      id: 6,
+      question: "Which method is used to change an HTML element attribute value dynamically in JavaScript?",
+      options: ["element.changeAttr()", "element.setAttribute(name, value)", "element.modify()", "element.prop()"],
+      correct: 1,
+      explanation: "element.setAttribute(name, value) sets a new attribute value for the specified element."
+    },
+    {
+      id: 7,
+      question: "Which classList method adds a CSS class if it is missing, or removes it if it is already present?",
+      options: ["classList.add()", "classList.remove()", "classList.toggle()", "classList.contains()"],
+      correct: 2,
+      explanation: "classList.toggle('className') flips the presence of a class, returning true if added and false if removed."
+    },
+    {
+      id: 8,
+      question: "Why is modifying CSS class names preferred over setting many inline style properties directly in JavaScript?",
+      options: [
+        "Inline styles run faster",
+        "It maintains separation of concerns: CSS handles design rules, JavaScript controls behavior/state",
+        "JavaScript cannot change colors directly",
+        "Browsers disable inline styles"
+      ],
+      correct: 1,
+      explanation: "Toggling CSS classes keeps presentation in CSS and logical state control in JavaScript, making code maintainable and clean."
+    },
+    {
+      id: 9,
+      question: "What is the recommended modern method to attach an event handler to a DOM element?",
+      options: ["element.onclick = fn", "element.addEventListener('click', fn)", "element.attach('click')", "element.listen('click')"],
+      correct: 1,
+      explanation: "element.addEventListener('event', handler) is the standard modern method. It allows multiple listeners and better event control."
+    },
+    {
+      id: 10,
+      question: "Inside an event handler function, what does event.target represent?",
+      options: [
+        "The browser window",
+        "The DOM element that triggered the event",
+        "The parent document",
+        "The CSS selector string"
+      ],
+      correct: 1,
+      explanation: "event.target references the exact element on which the event was dispatched (e.g. the specific button clicked)."
+    },
+    {
+      id: 11,
+      question: "Which method stops a form from reloading the webpage when submitted?",
+      options: ["event.stopForm()", "event.preventDefault()", "event.cancelSubmit()", "event.pause()"],
+      correct: 1,
+      explanation: "event.preventDefault() cancels the default browser action, preventing the form from submitting and reloading the page."
+    },
+    {
+      id: 12,
+      question: "How do you read the text entered by a user into an <input id='username'> element?",
+      options: [
+        "document.querySelector('#username').textContent",
+        "document.querySelector('#username').value",
+        "document.querySelector('#username').innerHTML",
+        "document.querySelector('#username').getText()"
+      ],
+      correct: 1,
+      explanation: "Form input elements store user text in the .value property."
+    },
+    {
+      id: 13,
+      question: "What happens if document.querySelector('#missing-id') does not find any element in the HTML document?",
+      options: ["It throws a fatal crash", "It returns null", "It creates a new div", "It returns undefined"],
+      correct: 1,
+      explanation: "If no element matches the selector, querySelector() returns null. Accessing properties on null causes a TypeError."
+    },
+    {
+      id: 14,
+      question: "What developer tool is most useful for inspecting elements and logging variable values during DOM debugging?",
+      options: ["CSS Validator", "Browser DevTools (Console & Elements tab)", "Database Manager", "Photoshop"],
+      correct: 1,
+      explanation: "Browser DevTools Console allows you to log values with console.log() and inspect DOM nodes live."
+    },
+    {
+      id: 15,
+      question: "In a mobile drawer navigation bar, what JavaScript action is typically triggered when clicking the hamburger icon?",
+      options: [
+        "navMenu.classList.toggle('active')",
+        "document.reload()",
+        "location.href = 'mobile.html'",
+        "window.close()"
+      ],
+      correct: 0,
+      explanation: "Toggling an 'active' class on the menu drawer container opens/closes the menu via CSS transform or display rules."
+    }
+  ];
+
+  const handleQuizOptionSelect = (qId, optionIdx) => {
+    setUserAnswers(prev => ({ ...prev, [qId]: optionIdx }));
+  };
+
+  const calculateQuizScore = () => {
     let score = 0;
-    quizQuestions.forEach((qObj, idx) => {
-      if (quizAns[idx] === qObj.ans) score++;
+    quizQuestions.forEach(q => {
+      if (userAnswers[q.id] === q.correct) {
+        score += 1;
+      }
     });
     return score;
   };
 
-  // Run console simulation
-  const handleRunConsole = () => {
-    const logs = [];
-    const customConsole = {
-      log: (...args) => {
-        logs.push(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '));
-      },
-      warn: (...args) => {
-        logs.push(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '));
-      },
-      error: (...args) => {
-        logs.push(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '));
-      }
-    };
+  const toggleChecklist = (key) => {
+    setChecklist(prev => ({ ...prev, [key]: !prev[key] }));
+  };
 
-    try {
-      const runFn = new Function('console', consoleCode);
-      runFn(customConsole);
-    } catch (err) {
-      logs.push(`Error: ${err.message}`);
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    const errors = {};
+    if (!formData.name.trim()) errors.name = 'Full Name is required';
+    if (!formData.email.trim() || !formData.email.includes('@')) errors.email = 'Valid Email is required';
+    if (!formData.message.trim()) errors.message = 'Message cannot be empty';
+
+    setFormErrors(errors);
+    if (Object.keys(errors).length === 0) {
+      setFormSubmitted(true);
+    } else {
+      setFormSubmitted(false);
     }
+  };
 
-    setConsoleLogOutput(logs.length > 0 ? logs : ["Code executed cleanly with no output."]);
+  const addEventLog = (msg) => {
+    const time = new Date().toLocaleTimeString();
+    setEventLogs(prev => [`[${time}] ${msg}`, ...prev.slice(0, 4)]);
   };
 
   return (
-    <div style={{ background: '#f8fafc', minHeight: '100vh', color: '#0f172a', padding: '1.5rem', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-
-      {/* TOP HEADER BANNER */}
-      <div style={{
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%)',
-        borderRadius: '20px',
-        padding: '2rem',
-        color: '#ffffff',
-        marginBottom: '1.5rem',
-        boxShadow: '0 10px 25px -5px rgba(30, 27, 75, 0.4)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '1.5rem'
-      }}>
-        <div style={{ maxWidth: '850px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(4px)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 800, letterSpacing: '0.5px', marginBottom: '0.75rem' }}>
-            <Zap size={14} color="#f59e0b" />
-            DAY 12 • JAVASCRIPT FUNDAMENTALS &amp; DOM INTERACTION
-          </div>
-          <h1 style={{ fontSize: '2.2rem', fontWeight: 900, margin: '0 0 0.5rem 0', letterSpacing: '-0.5px' }}>
-            Day 12 — JavaScript Fundamentals &amp; DOM Interaction
-          </h1>
-          <p style={{ fontSize: '1rem', color: '#c7d2fe', margin: 0, lineHeight: 1.6 }}>
-            Understand how JavaScript works with HTML and CSS to build your first real website interactions: DOM selection (`querySelector`), Click Events (`addEventListener`), Functions, `classList` toggling, Mobile Menus, and `if / else` decision making!
-          </p>
-        </div>
-
-        <button
-          onClick={() => openAITutor && openAITutor("Help me understand DOM selection, click events, addEventListener, classList toggle, and mobile menu build for Day 12!")}
-          style={{
-            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-            color: '#ffffff',
-            border: 'none',
-            padding: '12px 20px',
-            borderRadius: '12px',
-            fontWeight: 800,
-            fontSize: '0.9rem',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: '0 4px 14px rgba(217, 119, 6, 0.4)',
-            whiteSpace: 'nowrap'
-          }}
-        >
-          <Sparkles size={18} /> Ask AI Tutor
-        </button>
-      </div>
-
-      {/* CORE FORMULA BANNER */}
-      <div style={{
-        background: '#ffffff',
-        borderRadius: '16px',
-        padding: '1rem 1.5rem',
-        marginBottom: '1.5rem',
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '1rem'
-      }}>
-        <div>
-          <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '4px' }}>
-            Today's Core Formula:
-          </span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', fontSize: '0.95rem', fontWeight: 900 }}>
-            <span style={{ background: '#eff6ff', color: '#2563eb', padding: '6px 14px', borderRadius: '8px' }}>HTML → Structure</span>
-            <span style={{ background: '#faf5ff', color: '#7e22ce', padding: '6px 14px', borderRadius: '8px' }}>CSS → Design</span>
-            <span style={{ background: '#fff7ed', color: '#ea580c', border: '1px solid #f59e0b', padding: '6px 14px', borderRadius: '8px' }}>JavaScript → Behaviour ✨</span>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: 700, color: '#475569' }}>
-          <Clock size={16} color="#2563eb" /> Daily Duration: <strong>1 Hour</strong>
-        </div>
-      </div>
-
-      {/* MAIN CONTENT TAB ROUTER */}
-      <div>
-
-        {/* ==================== TAB 1: WHY JS & FORMULA ==================== */}
+    <div style={{ background: '#f8fafc', minHeight: '100vh', padding: '2rem 1.5rem', fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        
+        {/* ==================== TAB 1: FROM STATIC TO INTERACTIVE ==================== */}
         {isTabActive('intro') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Topic 1: Introduction to JavaScript &amp; Role in Web Development
-              </span>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Making Your Website Respond to Visitors
-              </h2>
 
-              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
-                HTML provides structure, CSS provides design, and JavaScript provides dynamic behavior and user interaction!
-              </p>
-
-              {/* Real Website Interactive Questions Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-                {[
-                  { q: "What happens when I click the mobile menu?", ans: "Mobile menu drawer opens/closes (JavaScript toggles class)." },
-                  { q: "What happens when I click 'View Details'?", ans: "Service modal or card highlight appears dynamically." },
-                  { q: "What happens when I open an FAQ?", ans: "Accordion expands to reveal answer text." },
-                  { q: "What happens when I submit a form?", ans: "JavaScript validates input fields and displays confirmation message." }
-                ].map((item, idx) => (
-                  <div key={idx} style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                    <div style={{ fontWeight: 800, color: '#2563eb', fontSize: '0.9rem', marginBottom: '6px' }}>{item.q}</div>
-                    <div style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.5 }}>{item.ans}</div>
+            {/* HEADER METADATA BANNER (Shown on Intro Tab) */}
+            <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: '24px', padding: '2.5rem', color: '#ffffff', boxShadow: '0 20px 40px rgba(15, 23, 42, 0.12)', border: '1px solid #334155' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+                <div>
+                  <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '6px 14px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', border: '1px solid rgba(56, 189, 248, 0.3)', display: 'inline-block', marginBottom: '12px' }}>
+                    DAY 12 — JavaScript &amp; DOM Interaction
+                  </span>
+                  <h1 style={{ fontSize: '2.2rem', fontWeight: 900, color: '#ffffff', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
+                    Make Static Websites Interactive with JavaScript
+                  </h1>
+                  <p style={{ fontSize: '1.05rem', color: '#94a3b8', margin: 0, maxWidth: '850px', lineHeight: 1.6 }}>
+                    <strong>Learning Goal:</strong> Connect JavaScript with HTML elements, respond to user actions (clicks, inputs, submits), dynamically modify webpage content and styles using classList, and build practical website features like mobile navigation drawers, counters, and form validation.
+                  </p>
+                </div>
+                
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <div style={{ background: 'rgba(255, 255, 255, 0.08)', padding: '10px 16px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.12)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>Estimated Duration</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', marginTop: '2px' }}>⏱️ 60–90 Mins</div>
                   </div>
-                ))}
+                  <div style={{ background: 'rgba(255, 255, 255, 0.08)', padding: '10px 16px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.12)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>Difficulty Level</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fbbf24', marginTop: '2px' }}>⚡ Intermediate</div>
+                  </div>
+                </div>
               </div>
 
-              {/* Real Website Feature vs JS Role Table */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
-                  Real Website Features &amp; JavaScript Roles
+              {/* 13 Learning Outcomes Grid */}
+              <div style={{ marginTop: '1.75rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                <h3 style={{ fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#38bdf8', margin: '0 0 1rem 0', fontWeight: 800 }}>
+                  🎯 Day 12 Learning Outcomes (13 Core Skills)
                 </h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px' }}>
                   {[
-                    { feat: "Mobile menu", role: "Open / close" },
-                    { feat: "FAQ accordion", role: "Expand / collapse" },
-                    { feat: "Modal dialog", role: "Open / close" },
-                    { feat: "Tabbed content", role: "Switch content" },
-                    { feat: "Contact form", role: "Validate input" },
-                    { feat: "CTA Button", role: "Trigger action" },
-                    { feat: "Price Calculator", role: "Calculate values" },
-                    { feat: "Theme switcher", role: "Change theme" }
-                  ].map((row, i) => (
-                    <div key={i} style={{ background: '#1e293b', padding: '10px 14px', borderRadius: '8px', border: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.88rem', color: '#f8fafc', fontWeight: 700 }}>{row.feat}</span>
-                      <span style={{ fontSize: '0.78rem', color: '#34d399', fontWeight: 800, background: '#064e3b', padding: '2px 8px', borderRadius: '6px' }}>{row.role}</span>
+                    "1. Relationship between HTML, CSS & JavaScript",
+                    "2. Understand the Document Object Model (DOM)",
+                    "3. Select HTML elements using querySelector()",
+                    "4. Read & modify content with textContent",
+                    "5. Modify element attributes (src, href, alt)",
+                    "6. Dynamic styling using classList.toggle()",
+                    "7. Handle user click, input & submit events",
+                    "8. Utilize event object & event.preventDefault()",
+                    "9. Validate user inputs & feedback states",
+                    "10. Build interactive mobile drawer navigation",
+                    "11. Implement dynamic increment/decrement counters",
+                    "12. Create show/hide content panels & password toggles",
+                    "13. Debug DOM null errors & use DevTools console"
+                  ].map((outcome, idx) => (
+                    <div key={idx} style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', color: '#cbd5e1', border: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <CheckCircle size={14} color="#34d399" />
+                      {outcome}
                     </div>
                   ))}
                 </div>
               </div>
+            </div>
 
-              {/* Topic 1 Source Code Example */}
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Section 1 — From Static to Interactive Websites
+              </span>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
+                The Core Triad: HTML, CSS &amp; JavaScript
+              </h2>
+
+              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
+                A static website displays text and images, but cannot respond dynamically when a user clicks a button, submits a form, or toggles a menu. JavaScript brings web pages to life by listening to user actions and modifying the page in real-time.
+              </p>
+
+              {/* The Triad Comparison Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem', marginBottom: '1.75rem' }}>
+                <div style={{ background: '#eff6ff', padding: '1.25rem', borderRadius: '14px', border: '1px solid #bfdbfe' }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', marginBottom: '4px' }}>1. HTML — Structure</div>
+                  <h4 style={{ margin: '0 0 8px 0', fontSize: '1.1rem', color: '#1e3a8a', fontWeight: 800 }}>The Bones of the Site</h4>
+                  <p style={{ margin: 0, fontSize: '0.88rem', color: '#1e40af', lineHeight: 1.5 }}>
+                    Defines headings, paragraphs, buttons, forms, images, and container boxes.
+                  </p>
+                </div>
+
+                <div style={{ background: '#f0fdf4', padding: '1.25rem', borderRadius: '14px', border: '1px solid #bbf7d0' }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#16a34a', textTransform: 'uppercase', marginBottom: '4px' }}>2. CSS — Design</div>
+                  <h4 style={{ margin: '0 0 8px 0', fontSize: '1.1rem', color: '#14532d', fontWeight: 800 }}>The Skin &amp; Clothing</h4>
+                  <p style={{ margin: 0, fontSize: '0.88rem', color: '#166534', lineHeight: 1.5 }}>
+                    Defines colors, typography, spacing, layouts (Grid/Flexbox), and visual states.
+                  </p>
+                </div>
+
+                <div style={{ background: '#fef3c7', padding: '1.25rem', borderRadius: '14px', border: '1px solid #fde68a' }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#d97706', textTransform: 'uppercase', marginBottom: '4px' }}>3. JavaScript — Behavior</div>
+                  <h4 style={{ margin: '0 0 8px 0', fontSize: '1.1rem', color: '#78350f', fontWeight: 800 }}>The Brain &amp; Muscles</h4>
+                  <p style={{ margin: 0, fontSize: '0.88rem', color: '#92400e', lineHeight: 1.5 }}>
+                    Listens for clicks/taps, modifies text, toggles menus, calculates prices, and validates forms.
+                  </p>
+                </div>
+              </div>
+
+              {/* Code Example */}
               <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                  📄 Topic 1 Source Code: Linking JavaScript in HTML
-                </h3>
                 <CodeBlock
-                  title="index.html"
+                  title="Section 1: Linking JavaScript to HTML (script tag)"
                   language="html"
                   code={`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Alpha Fly Theni - Home</title>
+  <title>My Interactive Business Site</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Welcome to Alpha Fly Theni</h1>
+  <h1 id="greeting">Welcome Student</h1>
+  <button id="actionBtn">Click to Unlock</button>
 
-  <!-- Place script tag at the bottom of <body> so HTML loads first -->
-  <script src="script.js"></script>
+  <!-- ALWAYS place script tag right before closing </body> tag -->
+  <script src="app.js"></script>
 </body>
 </html>`}
                 />
               </div>
 
-              {/* Visual Flow diagram */}
-              <div style={{ background: '#eff6ff', padding: '1.25rem', borderRadius: '14px', border: '1px solid #bfdbfe' }}>
-                <h4 style={{ margin: '0 0 8px 0', color: '#1e40af', fontSize: '1rem', fontWeight: 900 }}>How JavaScript Operates in a Webpage:</h4>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontWeight: 800, fontSize: '0.85rem' }}>
-                  <span style={{ background: '#fff', color: '#1e3a8a', padding: '6px 12px', borderRadius: '6px', border: '1px solid #93c5fd' }}>USER INTERACTION</span>
-                  <ChevronRight size={14} color="#2563eb" />
-                  <span style={{ background: '#fff', color: '#1e3a8a', padding: '6px 12px', borderRadius: '6px', border: '1px solid #93c5fd' }}>JAVASCRIPT DETECTS</span>
-                  <ChevronRight size={14} color="#2563eb" />
-                  <span style={{ background: '#fff', color: '#1e3a8a', padding: '6px 12px', borderRadius: '6px', border: '1px solid #93c5fd' }}>HTML / CSS CHANGE</span>
-                  <ChevronRight size={14} color="#2563eb" />
-                  <span style={{ background: '#10b981', color: '#fff', padding: '6px 12px', borderRadius: '6px' }}>UPDATED WEBSITE ✨</span>
-                </div>
-              </div>
-
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => handleTabChange('connecting_js')}
-                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Next: Topic 2 - Console &amp; File Structure <ArrowRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== TAB 2: CONNECTING JS & CONSOLE ==================== */}
-        {isTabActive('connecting_js') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Topic 2: Project Structure &amp; Browser Console (console.log)
-              </span>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Adding JavaScript &amp; Outputting Console Logs
-              </h2>
-
-              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
-                Keep HTML, CSS, and JavaScript cleanly organized in separate files throughout your project:
-              </p>
-
-              {/* Recommended File Structure */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
-                <div style={{ background: '#0f172a', padding: '1.25rem', borderRadius: '14px', color: '#fff', fontFamily: 'monospace' }}>
-                  <div style={{ color: '#38bdf8', fontWeight: 800, marginBottom: '6px' }}>📁 project/</div>
-                  <div style={{ color: '#cbd5e1', marginLeft: '1rem' }}>├── index.html</div>
-                  <div style={{ color: '#cbd5e1', marginLeft: '1rem' }}>├── style.css</div>
-                  <div style={{ color: '#f59e0b', fontWeight: 800, marginLeft: '1rem' }}>└── script.js ✨</div>
-                </div>
-
-                <div style={{ background: '#f0fdf4', padding: '1.25rem', borderRadius: '14px', border: '2px solid #10b981' }}>
-                  <h4 style={{ margin: '0 0 6px 0', color: '#166534', fontWeight: 900 }}>External Script Link:</h4>
-                  <code style={{ background: '#fff', padding: '8px', borderRadius: '6px', display: 'block', fontSize: '0.85rem', color: '#15803d', border: '1px solid #86efac' }}>
-                    &lt;script src="script.js"&gt;&lt;/script&gt;
-                  </code>
-                  <p style={{ margin: '8px 0 0 0', fontSize: '0.82rem', color: '#14532d' }}>
-                    Place at the bottom of <code>&lt;body&gt;</code> to ensure HTML loads before JS executes!
-                  </p>
-                </div>
-              </div>
-
-              {/* Topic 2 Source Code Example */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                  📄 Topic 2 Source Code: console.log() Output
+              {/* Real World Examples List */}
+              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '14px', border: '1px solid #e2e8f0' }}>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', margin: '0 0 10px 0' }}>
+                  🌐 Real-World JavaScript Interactions on Client Websites
                 </h3>
-                <CodeBlock
-                  title="script.js"
-                  language="javascript"
-                  code={`// Log messages to the browser Developer Tools console
-console.log("Hello from script.js!");
-console.log("JavaScript is working smoothly!");
-const businessName = "Alpha Fly Theni";
-console.log("Welcome to " + businessName);`}
-                />
-              </div>
-
-              {/* Console.log Simulator */}
-              <div style={{ background: '#090d16', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #1e293b' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', color: '#38bdf8', margin: 0, fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Terminal size={18} /> Interactive Browser Console Sandbox
-                  </h3>
-                  <button
-                    onClick={handleRunConsole}
-                    style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
-                  >
-                    <Play size={14} /> Run console.log()
-                  </button>
-                </div>
-
-                <LiveSyntaxCodeEditor
-                  language="js"
-                  rows={4}
-                  value={consoleCode}
-                  onChange={(e) => setConsoleCode(e.target.value)}
-                  label="JavaScript Input Code"
-                />
-
-                <div style={{ marginTop: '1rem', background: '#000000', borderRadius: '8px', padding: '1rem', border: '1px solid #334155', fontFamily: 'monospace', fontSize: '0.85rem' }}>
-                  <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '6px', borderBottom: '1px solid #1e293b', paddingBottom: '4px' }}>
-                    🖥️ Simulated Browser DevTools Console Output:
-                  </div>
-                  {consoleLogOutput.length > 0 ? (
-                    consoleLogOutput.map((log, i) => (
-                      <div key={i} style={{ color: '#34d399', margin: '4px 0' }}>
-                        &gt; {log}
-                      </div>
-                    ))
-                  ) : (
-                    <div style={{ color: '#64748b' }}>Click "Run console.log()" above to test execution!</div>
-                  )}
-                </div>
-              </div>
-
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => handleTabChange('data_types')}
-                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Next: Variables, const/let &amp; Operators <ArrowRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== TAB 3: VARIABLES, CONST/LET & OPERATORS ==================== */}
-        {isTabActive('data_types') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Topic 3: Variables (const vs let) &amp; Topic 4: Data Types, Operators &amp; Template Literals
-              </span>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Storing Values &amp; Dynamic Template Literals
-              </h2>
-
-              {/* const vs let Box */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
-                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                  <h4 style={{ margin: '0 0 4px 0', color: '#2563eb', fontWeight: 800 }}>let (Value May Change)</h4>
-                  <code style={{ fontSize: '0.85rem', color: '#0f172a' }}>let menuOpen = false;</code>
-                  <p style={{ margin: '6px 0 0 0', fontSize: '0.82rem', color: '#64748b' }}>Used when UI state or counts change on user interaction.</p>
-                </div>
-
-                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                  <h4 style={{ margin: '0 0 4px 0', color: '#2563eb', fontWeight: 800 }}>const (Value Remains Constant)</h4>
-                  <code style={{ fontSize: '0.85rem', color: '#0f172a' }}>const businessName = "Alpha Fly Theni";</code>
-                  <p style={{ margin: '6px 0 0 0', fontSize: '0.82rem', color: '#64748b' }}>Used when reference or value should not be reassigned.</p>
-                </div>
-              </div>
-
-              {/* Topic 3 & Topic 4 Source Code Examples */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
-                <div>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                    📄 Topic 3 Source Code: Variables &amp; Types
-                  </h3>
-                  <CodeBlock
-                    title="Topic 3: Variables"
-                    language="javascript"
-                    code={`// const: fixed value
-const businessName = "Alpha Fly Theni";
-const serviceName = "Web Design";
-
-// let: reassignable value
-let quantity = 2;
-quantity = 3; // Allowed
-
-// Primitive Data Types
-const price = 5000;         // Number
-const isAvailable = true;   // Boolean`}
-                  />
-                </div>
-
-                <div>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                    📄 Topic 4 Source Code: Operators &amp; Templates
-                  </h3>
-                  <CodeBlock
-                    title="Topic 4: Template Literals"
-                    language="javascript"
-                    code={`const price = 5000;
-const qty = 2;
-
-// Arithmetic calculation operator (*)
-const total = price * qty;
-
-// Template string with backticks \`...\`
-const msg = \`Welcome to \${businessName}! Total for \${qty} packages is ₹\${total}.\`;
-console.log(msg);`}
-                  />
-                </div>
-              </div>
-
-              {/* Variables & Math Playground */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155' }}>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
-                  🎛️ Live Interactive Variables &amp; Math Playground
-                </h3>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Business Name</label>
-                    <input type="text" value={varBusinessName} onChange={(e) => setVarBusinessName(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '6px', background: '#1e293b', color: '#fff', border: '1px solid #475569', boxSizing: 'border-box' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Service Name</label>
-                    <input type="text" value={varServiceName} onChange={(e) => setVarServiceName(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '6px', background: '#1e293b', color: '#fff', border: '1px solid #475569', boxSizing: 'border-box' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Price: ₹{varPrice}</label>
-                    <input type="range" min="1000" max="25000" step="500" value={varPrice} onChange={(e) => setVarPrice(Number(e.target.value))} style={{ width: '100%' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Quantity: {varQuantity}</label>
-                    <input type="range" min="1" max="5" value={varQuantity} onChange={(e) => setVarQuantity(Number(e.target.value))} style={{ width: '100%' }} />
-                  </div>
-                </div>
-
-                {/* Template Literal Output */}
-                <div style={{ background: '#ffffff', color: '#0f172a', padding: '1.25rem', borderRadius: '12px' }}>
-                  <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>
-                    Template String Evaluation Output:
-                  </div>
-                  <h3 style={{ margin: '0 0 6px 0', color: '#111827', fontSize: '1.3rem' }}>Welcome to {varBusinessName}</h3>
-                  <div style={{ fontSize: '0.95rem', color: '#374151', marginBottom: '4px' }}>
-                    Service: <strong>{varServiceName}</strong> | Price: <strong>₹{varPrice.toLocaleString()}</strong> x <strong>{varQuantity}</strong>
-                  </div>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 900, color: '#2563eb', margin: '6px 0' }}>
-                    Operator Calculation (price * quantity): ₹{(varPrice * varQuantity).toLocaleString()}
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => handleTabChange('dom_intro')}
-                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Next: DOM Concept &amp; Selector Practice <ArrowRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== TAB 4: DOM INTRO & SELECTOR PRACTICE ==================== */}
-        {isTabActive('dom_intro') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Topic 5: The DOM (Document Object Model) &amp; Selecting Elements (querySelector)
-              </span>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Connecting JavaScript to HTML Elements
-              </h2>
-
-              <div style={{ background: '#eff6ff', padding: '1.25rem', borderRadius: '14px', border: '1px solid #bfdbfe', marginBottom: '1.5rem' }}>
-                <h4 style={{ margin: '0 0 4px 0', color: '#1e40af', fontSize: '1rem', fontWeight: 900 }}>What is the DOM?</h4>
-                <p style={{ margin: 0, fontSize: '0.95rem', color: '#1e3a8a', lineHeight: 1.5, fontWeight: 700 }}>
-                  "The browser converts your HTML code into a tree structure called the Document Object Model (DOM) that JavaScript can query and modify!"
-                </p>
-                <div style={{ marginTop: '8px', fontSize: '0.85rem', color: '#2563eb', fontWeight: 800 }}>
-                  HTML Code → Browser Parser → DOM Tree → JavaScript Manipulation
-                </div>
-              </div>
-
-              {/* Topic 5 Source Code Example */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                  📄 Topic 5 Source Code: Selecting Elements with querySelector()
-                </h3>
-                <CodeBlock
-                  title="script.js"
-                  language="javascript"
-                  code={`// 1. Select by Element ID (#)
-const heading = document.querySelector("#mainTitle");
-
-// 2. Select by CSS Class Name (.)
-const serviceCard = document.querySelector(".service-card");
-
-// 3. Select by HTML Tag Name
-const primaryBtn = document.querySelector("button");`}
-                />
-              </div>
-
-              {/* Selector Matching Rules */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
-                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                  <h4 style={{ margin: '0 0 4px 0', color: '#2563eb', fontWeight: 800 }}>14. Select by ID (#)</h4>
-                  <code style={{ fontSize: '0.85rem', color: '#0f172a' }}>const title = document.querySelector("#mainTitle");</code>
-                </div>
-
-                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                  <h4 style={{ margin: '0 0 4px 0', color: '#2563eb', fontWeight: 800 }}>15. Select by Class (.)</h4>
-                  <code style={{ fontSize: '0.85rem', color: '#0f172a' }}>const card = document.querySelector(".service-card");</code>
-                </div>
-              </div>
-
-              {/* 16. Selector Practice Widget */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: 0 }}>
-                    🎯 16. Selector Practice Challenge
-                  </h3>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={() => setShowSelectorHint(!showSelectorHint)} style={{ background: '#334155', color: '#fbbf24', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}>Hint</button>
-                    <button onClick={() => setShowSelectorSol(!showSelectorSol)} style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}>Show Solution</button>
-                  </div>
-                </div>
-
-                {showSelectorHint && <div style={{ background: '#1e293b', padding: '10px', borderRadius: '8px', color: '#fbbf24', fontSize: '0.85rem', marginBottom: '1rem' }}>💡 Hint: Use '#' for IDs (#mainTitle, #contactBtn) and '.' for classes (.description).</div>}
-                {showSelectorSol && <div style={{ background: '#064e3b', padding: '10px', borderRadius: '8px', color: '#6ee7b7', fontSize: '0.85rem', marginBottom: '1rem' }}>✅ Solution: Q1: <code>document.querySelector("#mainTitle")</code> | Q2: <code>document.querySelector(".description")</code> | Q3: <code>document.querySelector("#contactBtn")</code></div>}
-
-                <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '8px', fontFamily: 'monospace', fontSize: '0.82rem', marginBottom: '1.25rem', color: '#cbd5e1' }}>
-                  &lt;h1 id="mainTitle"&gt;Welcome&lt;/h1&gt;<br />
-                  &lt;p class="description"&gt;Build your website&lt;/p&gt;<br />
-                  &lt;button id="contactBtn"&gt;Contact Us&lt;/button&gt;
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Question 1: Select the heading</label>
-                    <input type="text" value={selectorAnswers.q1} onChange={(e) => setSelectorAnswers({ ...selectorAnswers, q1: e.target.value })} placeholder="document.querySelector(...)" style={{ width: '100%', padding: '8px', borderRadius: '6px', background: '#1e293b', color: '#fff', border: '1px solid #475569' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Question 2: Select the paragraph</label>
-                    <input type="text" value={selectorAnswers.q2} onChange={(e) => setSelectorAnswers({ ...selectorAnswers, q2: e.target.value })} placeholder="document.querySelector(...)" style={{ width: '100%', padding: '8px', borderRadius: '6px', background: '#1e293b', color: '#fff', border: '1px solid #475569' }} />
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => handleTabChange('dom_text_events')}
-                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Next: textContent &amp; Event Flow <ArrowRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== TAB 5: TEXTCONTENT & EVENT FLOW ==================== */}
-        {isTabActive('dom_text_events') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Topic 6: Modifying Text Content (textContent) &amp; Topic 7: Event Listeners (addEventListener)
-              </span>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Changing Page Text Dynamically on User Interaction
-              </h2>
-
-              {/* Topic 6 & Topic 7 Source Code Examples */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
-                <div>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                    📄 Topic 6 Source Code: textContent
-                  </h3>
-                  <CodeBlock
-                    title="Topic 6: Changing Text"
-                    language="javascript"
-                    code={`// 1. Select the title element
-const title = document.querySelector("#mainTitle");
-
-// 2. Change text dynamically
-title.textContent = "Welcome to Alpha Fly Theni!";`}
-                  />
-                </div>
-
-                <div>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                    📄 Topic 7 Source Code: addEventListener
-                  </h3>
-                  <CodeBlock
-                    title="Topic 7: Click Event"
-                    language="javascript"
-                    code={`const btn = document.querySelector("#changeBtn");
-const title = document.querySelector("#mainTitle");
-
-// Listen for click event
-btn.addEventListener("click", function() {
-  title.textContent = "Button Clicked! Text Updated!";
-});`}
-                  />
-                </div>
-              </div>
-
-              {/* Live Heading Text Change Widget */}
-              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '1.5rem' }}>
-                <h1 style={{ color: '#0f172a', fontSize: '1.8rem', fontWeight: 900, margin: '0 0 12px 0' }}>
-                  {headingText}
-                </h1>
-                <button
-                  onClick={() => setHeadingText(headingText === 'Welcome to Our Website' ? 'Build Something Amazing! ✨' : 'Welcome to Our Website')}
-                  style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 12px rgba(37,99,235,0.3)' }}
-                >
-                  [ Change Heading ] (title.textContent)
-                </button>
-              </div>
-
-              {/* Event Flow Visualizer */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155' }}>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
-                  ⚡ Interactive Event Flow Visualizer
-                </h3>
-
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px' }}>
                   {[
-                    "1. BUTTON",
-                    "2. USER CLICKS",
-                    "3. EVENT DETECTED",
-                    "4. FUNCTION RUNS",
-                    "5. PAGE CHANGES"
-                  ].map((stage, idx) => (
-                    <div
-                      key={idx}
-                      onClick={() => setEventStageIndex(idx)}
-                      style={{
-                        background: eventStageIndex === idx ? '#10b981' : '#1e293b',
-                        color: eventStageIndex === idx ? '#ffffff' : '#94a3b8',
-                        border: eventStageIndex === idx ? '2px solid #34d399' : '1px solid #334155',
-                        padding: '10px 14px',
-                        borderRadius: '8px',
-                        fontWeight: 800,
-                        fontSize: '0.85rem',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease'
-                      }}
-                    >
-                      {stage}
+                    "📱 Mobile Navigation Drawer toggle",
+                    "👁️ Show / Hide Password fields",
+                    "🛒 Shopping Cart Quantity Counter",
+                    "📋 Real-time Form Field Validation",
+                    "🖼️ Image Gallery / Portfolio Switcher",
+                    "💬 Notification Alert Banners"
+                  ].map((ex, i) => (
+                    <div key={i} style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', fontSize: '0.86rem', color: '#334155', border: '1px solid #cbd5e1', fontWeight: 600 }}>
+                      {ex}
                     </div>
                   ))}
                 </div>
-
-                <div style={{ background: '#1e293b', padding: '1.25rem', borderRadius: '12px', border: '1px solid #475569' }}>
-                  <div style={{ color: '#fbbf24', fontWeight: 800, fontSize: '0.95rem', marginBottom: '4px' }}>
-                    Active Stage Explanation:
-                  </div>
-                  <p style={{ margin: 0, color: '#cbd5e1', fontSize: '0.9rem', lineHeight: 1.5 }}>
-                    {[
-                      "1. Button element is defined in HTML with a unique ID.",
-                      "2. Visitor clicks the button on the webpage.",
-                      "3. addEventListener('click', ...) detects the interaction event.",
-                      "4. JavaScript executes the assigned event handler function.",
-                      "5. Document text or CSS class updates, refreshing the visible website!"
-                    ][eventStageIndex]}
-                  </p>
-                </div>
               </div>
 
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+              {/* Navigation button */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
                 <button
-                  onClick={() => handleTabChange('functions_classlist')}
+                  onClick={() => handleTabChange('dom_tree')}
                   style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Next: Functions &amp; classList Toggle <ArrowRight size={18} />
+                  Next: Understanding the DOM <ArrowRight size={18} />
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== TAB 6: FUNCTIONS & CLASSLIST ==================== */}
-        {isTabActive('functions_classlist') && (
+        {/* ==================== TAB 2: UNDERSTANDING THE DOM ==================== */}
+        {isTabActive('dom_tree') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Topic 8: Functions &amp; Reusable Logic &amp; Topic 9: Manipulating CSS Classes (classList)
+                Section 2 — Understanding the Document Object Model (DOM)
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Functions &amp; Dynamic CSS Class Toggling
+                How the Browser Sees Your Webpage
               </h2>
 
               <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
-                Functions group code into reusable blocks. JavaScript toggles CSS class names (`classList.add`, `remove`, `toggle`) to change styling dynamically!
+                When a web browser loads your HTML document, it converts the raw code into an in-memory tree of objects called the <strong>Document Object Model (DOM)</strong>. JavaScript uses the global <code>document</code> object to inspect, modify, and delete nodes live.
               </p>
 
-              {/* Topic 8 & Topic 9 Source Code Examples */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
-                <div>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                    📄 Topic 8 Source Code: Functions
-                  </h3>
-                  <CodeBlock
-                    title="Topic 8: Reusable Function"
-                    language="javascript"
-                    code={`// Define function
-function showWelcomeMessage(name) {
-  const heading = document.querySelector("#mainTitle");
-  heading.textContent = \`Welcome to Alpha Fly Theni, \${name}!\`;
-}
-
-// Call function
-showWelcomeMessage("Student");`}
-                  />
-                </div>
-
-                <div>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                    📄 Topic 9 Source Code: classList
-                  </h3>
-                  <CodeBlock
-                    title="Topic 9: classList Methods"
-                    language="javascript"
-                    code={`const card = document.querySelector(".card");
-const btn = document.querySelector("#highlightBtn");
-
-// classList.add("highlight")
-// classList.remove("highlight")
-// classList.toggle("highlight") -> Add if missing, remove if present!
-btn.addEventListener("click", () => {
-  card.classList.toggle("highlight");
-});`}
-                  />
+              {/* Conceptual Pipeline Flow */}
+              <div style={{ background: '#0f172a', padding: '1.5rem', borderRadius: '16px', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
+                <h4 style={{ color: '#38bdf8', margin: '0 0 12px 0', fontSize: '1rem', fontWeight: 800 }}>
+                  ⚡ The HTML → DOM → JavaScript Pipeline
+                </h4>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                  <div style={{ background: '#1e293b', padding: '12px 18px', borderRadius: '10px', border: '1px solid #475569', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Step 1</div>
+                    <div style={{ fontWeight: 800, color: '#f43f5e' }}>Raw HTML File</div>
+                  </div>
+                  <ChevronRight color="#94a3b8" />
+                  <div style={{ background: '#1e293b', padding: '12px 18px', borderRadius: '10px', border: '1px solid #475569', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Step 2</div>
+                    <div style={{ fontWeight: 800, color: '#fbbf24' }}>Browser Parser</div>
+                  </div>
+                  <ChevronRight color="#94a3b8" />
+                  <div style={{ background: '#1e293b', padding: '12px 18px', borderRadius: '10px', border: '1px solid #475569', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Step 3</div>
+                    <div style={{ fontWeight: 800, color: '#38bdf8' }}>DOM Tree Object</div>
+                  </div>
+                  <ChevronRight color="#94a3b8" />
+                  <div style={{ background: '#1e293b', padding: '12px 18px', borderRadius: '10px', border: '1px solid #475569', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Step 4</div>
+                    <div style={{ fontWeight: 800, color: '#34d399' }}>JavaScript Action</div>
+                  </div>
                 </div>
               </div>
 
-              {/* Highlight Card Toggle Demo */}
-              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '1.5rem' }}>
-                <h3 style={{ margin: '0 0 10px 0', fontSize: '1.1rem', color: '#0f172a', fontWeight: 800 }}>
-                  Real Website Example — Highlight Service Card
+              {/* Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <CodeBlock
+                  title="Section 2: DOM Tree Hierarchy Representation"
+                  language="html"
+                  code={`<!-- HTML Markup -->
+<div class="card">
+  <h1 id="title">Welcome</h1>
+  <p class="description">Learn Web Design</p>
+</div>
+
+/* How JavaScript Views the DOM Tree */
+document (Root)
+  └── html
+       └── body
+            └── div.card
+                 ├── h1#title ("Welcome")
+                 └── p.description ("Learn Web Design")`}
+                />
+              </div>
+
+              {/* Navigation button */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button
+                  onClick={() => handleTabChange('selecting')}
+                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  Next: Selecting HTML Elements <ArrowRight size={18} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== TAB 3: SELECTING HTML ELEMENTS ==================== */}
+        {isTabActive('selecting') && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Section 3 — Selecting HTML Elements
+              </span>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
+                Mastering <code>querySelector()</code> and <code>querySelectorAll()</code>
+              </h2>
+
+              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
+                Before JavaScript can modify an element, it must select it first. While legacy methods like <code>getElementById()</code> exist, modern developers use <strong><code>querySelector()</code></strong> because it accepts standard CSS selector syntax.
+              </p>
+
+              {/* Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <CodeBlock
+                  title="Section 3: DOM Element Selection Syntax"
+                  language="javascript"
+                  code={`// 1. Select by ID (#)
+const mainTitle = document.querySelector("#title");
+
+// 2. Select by Class (.) - Returns the FIRST matching element
+const actionButton = document.querySelector(".btn-primary");
+
+// 3. Select by Element Tag Name
+const heading = document.querySelector("h1");
+
+// 4. Select ALL matching elements - Returns a NodeList collection
+const allCards = document.querySelectorAll(".card");
+
+console.log(mainTitle); // Output: <h1 id="title">...</h1>
+console.log(allCards.length); // Output: Number of cards found`}
+                />
+              </div>
+
+              {/* Interactive Practice Studio: Live Element Selector Visualizer */}
+              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
+                  🎯 Interactive Studio: Live DOM Selector Playground
                 </h3>
+                <p style={{ fontSize: '0.88rem', color: '#94a3b8', marginBottom: '1.25rem' }}>
+                  Click a CSS selector below to watch JavaScript target and highlight the element in real-time!
+                </p>
+
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+                  {[
+                    { label: 'document.querySelector("#main-heading")', val: '#main-heading' },
+                    { label: 'document.querySelector(".badge-tag")', val: '.badge-tag' },
+                    { label: 'document.querySelector(".btn-cta")', val: '.btn-cta' },
+                    { label: 'document.querySelectorAll(".feature-box")', val: '.feature-box' }
+                  ].map((btn, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setSelectedElement(btn.val)}
+                      style={{
+                        background: selectedElement === btn.val ? '#2563eb' : '#1e293b',
+                        color: selectedElement === btn.val ? '#ffffff' : '#94a3b8',
+                        border: `1px solid ${selectedElement === btn.val ? '#2563eb' : '#475569'}`,
+                        padding: '8px 14px',
+                        borderRadius: '8px',
+                        fontWeight: 700,
+                        fontSize: '0.82rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {btn.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Simulated Target HTML Canvas */}
+                <div style={{ background: '#ffffff', color: '#0f172a', padding: '1.5rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
+                  <div
+                    id="main-heading"
+                    style={{
+                      fontSize: '1.4rem',
+                      fontWeight: 900,
+                      marginBottom: '10px',
+                      padding: '8px',
+                      borderRadius: '6px',
+                      outline: selectedElement === '#main-heading' ? '3px solid #2563eb' : 'none',
+                      background: selectedElement === '#main-heading' ? 'rgba(37,99,235,0.1)' : 'transparent'
+                    }}
+                  >
+                    🚀 AlphaFly Digital Agency <span className="badge-tag" style={{ fontSize: '0.75rem', background: '#38bdf8', color: '#fff', padding: '3px 8px', borderRadius: '12px', verticalAlign: 'middle', outline: selectedElement === '.badge-tag' ? '3px solid #f59e0b' : 'none' }}>PRO</span>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '12px' }}>
+                    <div className="feature-box" style={{ background: '#f8fafc', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', outline: selectedElement === '.feature-box' ? '3px solid #10b981' : 'none' }}>
+                      ⚡ Fast Web Design
+                    </div>
+                    <div className="feature-box" style={{ background: '#f8fafc', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', outline: selectedElement === '.feature-box' ? '3px solid #10b981' : 'none' }}>
+                      📱 Fully Responsive
+                    </div>
+                  </div>
+
+                  <button className="btn-cta" style={{ background: '#0f172a', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', outline: selectedElement === '.btn-cta' ? '3px solid #ec4899' : 'none' }}>
+                    Contact Client
+                  </button>
+                </div>
+              </div>
+
+              {/* Navigation button */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button
+                  onClick={() => handleTabChange('modifying')}
+                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  Next: Modifying Content &amp; Attributes <ArrowRight size={18} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== TAB 4: MODIFYING CONTENT & ATTRIBUTES ==================== */}
+        {isTabActive('modifying') && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Sections 4 &amp; 5 — Modifying Content &amp; Element Attributes
+              </span>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
+                <code>textContent</code> vs <code>innerHTML</code> &amp; <code>setAttribute()</code>
+              </h2>
+
+              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
+                Use <strong><code>textContent</code></strong> when updating plain text (safe from security vulnerabilities). Use <code>setAttribute()</code> to modify image sources (<code>src</code>), link targets (<code>href</code>), or form placeholders dynamically.
+              </p>
+
+              {/* Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <CodeBlock
+                  title="Section 4: Updating Content & Image Attributes"
+                  language="javascript"
+                  code={`const title = document.querySelector("#title");
+const heroImage = document.querySelector("#heroImg");
+
+// 1. Safe text modification
+title.textContent = "Welcome to Web Design!";
+
+// 2. Modifying attributes (getAttribute / setAttribute)
+heroImage.setAttribute("src", "laptop-modern.jpg");
+heroImage.setAttribute("alt", "Modern laptop workspace");
+
+console.log(heroImage.getAttribute("src")); // Output: laptop-modern.jpg`}
+                />
+              </div>
+
+              {/* Interactive Practice Studio */}
+              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
+                  🖼️ Interactive Practice Studio: Text &amp; Image Switcher
+                </h3>
+                <p style={{ fontSize: '0.88rem', color: '#94a3b8', marginBottom: '1.25rem' }}>
+                  Click the buttons below to trigger JavaScript DOM updates on the card headline and image source!
+                </p>
+
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={() => {
+                      setWelcomeText('Welcome Student');
+                      setCurrentImg('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&q=80');
+                    }}
+                    style={{ background: '#1e293b', color: '#fff', border: '1px solid #475569', padding: '8px 14px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}
+                  >
+                    Reset (Default)
+                  </button>
+                  <button
+                    onClick={() => {
+                      setWelcomeText('Welcome to Web Design!');
+                      setCurrentImg('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80');
+                    }}
+                    style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
+                  >
+                    Change to "Web Design!" + Code Image
+                  </button>
+                </div>
+
+                <div style={{ background: '#ffffff', color: '#0f172a', padding: '1.5rem', borderRadius: '12px', display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <img
+                    id="heroImg"
+                    src={currentImg}
+                    alt="Dynamic Switcher"
+                    style={{ width: '160px', height: '110px', objectFit: 'cover', borderRadius: '10px', border: '2px solid #e2e8f0' }}
+                  />
+                  <div>
+                    <h3 id="title" style={{ fontSize: '1.3rem', fontWeight: 900, color: '#0f172a', margin: '0 0 6px 0' }}>
+                      {welcomeText}
+                    </h3>
+                    <p style={{ margin: 0, fontSize: '0.88rem', color: '#64748b' }}>
+                      Image <code>src</code> attribute set to: <br />
+                      <span style={{ fontSize: '0.78rem', color: '#2563eb', wordBreak: 'break-all', fontWeight: 700 }}>{currentImg}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Navigation button */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button
+                  onClick={() => handleTabChange('classlist_styling')}
+                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  Next: ClassList &amp; Dynamic Styling <ArrowRight size={18} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== TAB 5: CLASSLIST & DYNAMIC STYLING ==================== */}
+        {isTabActive('classlist_styling') && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Section 6 — ClassList &amp; Dynamic Styling
+              </span>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
+                Behavior vs Presentation: <code>classList.toggle()</code>
+              </h2>
+
+              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
+                Avoid changing dozens of individual inline CSS properties directly in JavaScript (e.g. <code>element.style.background = 'blue'</code>). Instead, write your styles in CSS classes and use JavaScript's <strong><code>classList.toggle()</code></strong> to switch state!
+              </p>
+
+              {/* Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <CodeBlock
+                  title="Section 6: Managing CSS Class State in JavaScript"
+                  language="javascript"
+                  code={`const navMenu = document.querySelector("#navMenu");
+const toggleBtn = document.querySelector("#toggleBtn");
+
+// classList methods:
+navMenu.classList.add("active");      // Adds 'active' class
+navMenu.classList.remove("active");   // Removes 'active' class
+navMenu.classList.toggle("active");   // Flips presence of 'active'
+console.log(navMenu.classList.contains("active")); // Returns true/false`}
+                />
+              </div>
+
+              {/* Interactive Practice Studio */}
+              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
+                  🎛️ Live Practice Studio: Toggle Information Panel
+                </h3>
+                <p style={{ fontSize: '0.88rem', color: '#94a3b8', marginBottom: '1.25rem' }}>
+                  Click the toggle button to trigger <code>classList.toggle('active')</code> on the panel!
+                </p>
+
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={() => setIsPanelVisible(!isPanelVisible)}
+                    style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                  >
+                    <Layers size={16} /> Toggle Panel (<code>classList.toggle</code>)
+                  </button>
+                  <button
+                    onClick={() => setIsHighlightClass(!isHighlightClass)}
+                    style={{ background: '#10b981', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                  >
+                    <Sparkles size={16} /> Toggle Highlight Class
+                  </button>
+                </div>
 
                 <div
                   style={{
-                    background: cardIsHighlighted ? '#eff6ff' : '#ffffff',
-                    border: cardIsHighlighted ? '2px solid #2563eb' : '1px solid #e5e7eb',
-                    borderRadius: '12px',
+                    background: isHighlightClass ? '#fef3c7' : '#ffffff',
+                    color: '#0f172a',
                     padding: '1.5rem',
-                    boxShadow: cardIsHighlighted ? '0 12px 24px rgba(37,99,235,0.2)' : '0 4px 12px rgba(0,0,0,0.04)',
-                    transition: 'all 0.3s ease',
-                    marginBottom: '1rem'
+                    borderRadius: '12px',
+                    border: `2px solid ${isHighlightClass ? '#f59e0b' : '#e2e8f0'}`,
+                    display: isPanelVisible ? 'block' : 'none',
+                    transition: 'all 0.3s ease'
                   }}
                 >
-                  <h4 style={{ margin: '0 0 6px 0', color: cardIsHighlighted ? '#1e40af' : '#111827' }}>
-                    Website Design Service {cardIsHighlighted ? '(Highlighted State ✨)' : '(Normal State)'}
+                  <h4 style={{ margin: '0 0 6px 0', fontSize: '1.1rem', color: '#0f172a', fontWeight: 800 }}>
+                    ℹ️ Secret Client Information Panel
                   </h4>
-                  <p style={{ margin: 0, color: '#4b5563', fontSize: '0.88rem' }}>
-                    Click the button below to see JavaScript trigger <code>card.classList.toggle("highlight")</code>!
+                  <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569', lineHeight: 1.5 }}>
+                    This panel is controlled by toggling CSS classes! JavaScript manages state while CSS controls presentation.
                   </p>
                 </div>
 
-                <button
-                  onClick={() => setCardIsHighlighted(!cardIsHighlighted)}
-                  style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
-                >
-                  [ Highlight Card ] (classList.toggle("highlight"))
-                </button>
-              </div>
-
-              {/* 23. Function Practice */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: 0 }}>
-                    ⚡ 23. Function Practice
-                  </h3>
-                  <button
-                    onClick={() => setFnOutputMessage("Function Executed! Welcome to Alpha Fly Theni! ✨")}
-                    style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
-                  >
-                    <Play size={14} /> [ Run Function ]
-                  </button>
-                </div>
-
-                <LiveSyntaxCodeEditor
-                  language="js"
-                  rows={4}
-                  value={fnPlaygroundCode}
-                  onChange={(e) => setFnPlaygroundCode(e.target.value)}
-                  label="JavaScript Function Code"
-                />
-
-                {fnOutputMessage && (
-                  <div style={{ marginTop: '1rem', background: '#064e3b', color: '#6ee7b7', padding: '10px 14px', borderRadius: '8px', fontWeight: 800, fontSize: '0.88rem', border: '1px solid #10b981' }}>
-                    {fnOutputMessage}
+                {!isPanelVisible && (
+                  <div style={{ background: '#1e293b', padding: '12px', borderRadius: '8px', color: '#94a3b8', fontSize: '0.85rem', textAlign: 'center' }}>
+                    Panel is currently <strong>hidden</strong> (active class removed).
                   </div>
                 )}
               </div>
 
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+              {/* Navigation button */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <button
-                  onClick={() => handleTabChange('mobile_menu')}
+                  onClick={() => handleTabChange('events')}
                   style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Next: Build Mobile Menu (☰ / ✕) <ArrowRight size={18} />
+                  Next: Event Listeners &amp; Event Object <ArrowRight size={18} />
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== TAB 7: MOBILE MENU BUILD ==================== */}
-        {isTabActive('mobile_menu') && (
+        {/* ==================== TAB 6: EVENT LISTENERS & EVENT OBJECT ==================== */}
+        {isTabActive('events') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Topic 10: Interactive Mobile Navigation Drawer Toggle Project
+                Sections 7 &amp; 8 — Event Listeners &amp; The Event Object
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Putting It All Together: Complete Mobile Drawer Toggle
+                Responding to User Actions: <code>addEventListener()</code>
               </h2>
 
               <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
-                Combine querySelector, click addEventListener, and classList.toggle('active') to build a real mobile drawer menu!
+                An <strong>event</strong> occurs whenever a user interacts with the page (clicking a button, typing into an input field, or submitting a form). The event handler receives an <strong><code>event</code></strong> object containing details like <code>event.target</code>.
               </p>
 
-              {/* Topic 10 Full Source Code Example */}
+              {/* Code Example */}
               <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-                  📄 Topic 10 Complete Source Code (HTML + CSS + JS)
-                </h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <CodeBlock
-                    title="index.html"
-                    language="html"
-                    code={`<!-- Mobile Navbar Header -->
-<header class="navbar">
-  <div class="logo">Alpha Fly Theni</div>
-  <button id="menuBtn">☰</button>
-</header>
+                <CodeBlock
+                  title="Section 7: Modern Event Listener Syntax"
+                  language="javascript"
+                  code={`const btn = document.querySelector("#actionBtn");
 
-<!-- Mobile Navigation Drawer -->
-<nav class="mobile-drawer">
-  <a href="#home">Home</a>
-  <a href="#services">Services</a>
-  <a href="#contact">Contact</a>
-</nav>`}
-                  />
-
-                  <CodeBlock
-                    title="script.js"
-                    language="javascript"
-                    code={`// 1. Select menu elements
-const menuBtn = document.querySelector("#menuBtn");
-const drawer = document.querySelector(".mobile-drawer");
-
-// 2. Attach click event listener
-menuBtn.addEventListener("click", () => {
-  // 3. Toggle 'active' class on menu drawer
-  drawer.classList.toggle("active");
+// Syntax: element.addEventListener("event_name", callbackFunction);
+btn.addEventListener("click", (event) => {
+  console.log("Button clicked!");
+  console.log("Triggered element:", event.target);
   
-  // 4. Update button text (☰ or ✕)
-  if (drawer.classList.contains("active")) {
-    menuBtn.textContent = "✕";
-  } else {
-    menuBtn.textContent = "☰";
-  }
-});`}
-                  />
-                </div>
-              </div>
-
-              {/* Mobile Menu Interactive Simulation Box */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
-                  📱 Live Interactive Mobile Menu Tester
-                </h3>
-
-                {/* Simulated Phone Frame */}
-                <div style={{ maxWidth: '360px', margin: '0 auto', background: '#1e293b', borderRadius: '16px', border: '2px solid #334155', overflow: 'hidden' }}>
-                  <div style={{ background: '#090d16', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ fontWeight: 900, color: '#fff', fontSize: '1rem' }}>LOGO</div>
-                    <button
-                      onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                      style={{ background: 'transparent', color: '#fff', border: '1px solid #475569', padding: '4px 10px', borderRadius: '6px', fontSize: '1.2rem', cursor: 'pointer' }}
-                    >
-                      {mobileMenuOpen ? '✕' : '☰'}
-                    </button>
-                  </div>
-
-                  {mobileMenuOpen && (
-                    <div style={{ background: '#1e1b4b', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '10px', borderTop: '1px solid #312e81' }}>
-                      {['HOME', 'ABOUT', 'SERVICES', 'CONTACT'].map((link, i) => (
-                        <div key={i} style={{ color: '#c7d2fe', fontWeight: 800, fontSize: '0.9rem', padding: '6px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                          {link}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* 27. Implementation Code Snippets */}
-              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid #cbd5e1' }}>
-                <h4 style={{ margin: '0 0 10px 0', fontSize: '1.1rem', color: '#0f172a', fontWeight: 800 }}>
-                  27. Mobile Menu JavaScript Code:
-                </h4>
-                <LiveSyntaxCodeEditor
-                  language="js"
-                  rows={6}
-                  value={`const menuButton = document.querySelector("#menuBtn");
-const mobileMenu = document.querySelector(".mobile-menu");
-
-menuButton.addEventListener("click", () => {
-  mobileMenu.classList.toggle("active");
+  // Prevent default link / form behavior if needed:
+  // event.preventDefault();
 });`}
                 />
               </div>
 
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => handleTabChange('conditions')}
-                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Next: if/else &amp; Availability <ArrowRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== TAB 8: CONDITIONS & LOGIC ==================== */}
-        {isTabActive('conditions') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Conditional Logic (if / else) &amp; Business Logic
-              </span>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Making Decisions in JavaScript
-              </h2>
-
-              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
-                `if / else` statements evaluate boolean conditions (`true` or `false`) to run different blocks of code!
-              </p>
-
-              <CodeBlock
-                title="Topic: Conditional Logic (if / else)"
-                language="javascript"
-                code={`const isAvailable = true;
-const statusMsg = document.querySelector("#status");
-
-if (isAvailable) {
-  statusMsg.textContent = "Bookings are currently open!";
-  statusMsg.style.color = "green";
-} else {
-  statusMsg.textContent = "Bookings are closed for today.";
-  statusMsg.style.color = "red";
-}`}
-              />
-
-              {/* Service Availability Interactive Demo */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', marginTop: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 1rem 0' }}>
-                  🏢 Service Status Decision Box
+              {/* Interactive Practice Studio */}
+              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
+                  ⚡ Live Practice Studio: Event Listener Inspector
                 </h3>
-
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={{ fontSize: '0.85rem', color: '#cbd5e1', display: 'block', marginBottom: '6px' }}>
-                    Select Service Status:
-                  </label>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button
-                      onClick={() => setServiceAvailability(true)}
-                      style={{ background: serviceAvailability ? '#10b981' : '#1e293b', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
-                    >
-                      [ Available (true) ]
-                    </button>
-                    <button
-                      onClick={() => setServiceAvailability(false)}
-                      style={{ background: !serviceAvailability ? '#ef4444' : '#1e293b', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
-                    >
-                      [ Not Available (false) ]
-                    </button>
-                  </div>
-                </div>
-
-                <div style={{ background: serviceAvailability ? '#dcfce7' : '#fee2e2', color: serviceAvailability ? '#166534' : '#991b1b', padding: '1.25rem', borderRadius: '12px', fontWeight: 800, fontSize: '1.05rem' }}>
-                  {serviceAvailability ? "Bookings are open. Book your consultation today!" : "Please check again later. Bookings currently closed."}
-                </div>
-              </div>
-
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => handleTabChange('guided_build')}
-                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Next: Mini Challenge &amp; Guided Build <ArrowRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== TAB 9: GUIDED BUILD (9 STEPS) ==================== */}
-        {isTabActive('guided_build') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              {/* 10-Minute Mini Interaction Challenge */}
-              <div style={{ background: '#fff7ed', padding: '1.5rem', borderRadius: '16px', border: '2px solid #f59e0b', marginBottom: '1.5rem' }}>
-                <h3 style={{ margin: '0 0 6px 0', fontSize: '1.2rem', color: '#9a3412', fontWeight: 900 }}>
-                  ⏱️ 10-Minute Mini Interaction Challenge
-                </h3>
-                <p style={{ margin: '0 0 12px 0', fontSize: '0.88rem', color: '#7c2d12' }}>
-                  Task: Create a button <code>[ View Offer ]</code> that toggles a message on click:
-                </p>
-                <button
-                  onClick={() => setOfferVisible(!offerVisible)}
-                  style={{ background: '#ea580c', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
-                >
-                  [ View Offer ] (classList.toggle)
-                </button>
-                {offerVisible && (
-                  <div style={{ marginTop: '10px', background: '#fff', color: '#ea580c', padding: '10px', borderRadius: '8px', fontWeight: 800, fontSize: '0.9rem', border: '1px solid #f97316' }}>
-                    🎉 Special offer available today! 20% discount on web packages.
-                  </div>
-                )}
-              </div>
-
-              {/* Guided Build Steps Bar */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '10px' }}>
-                <div>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                    Guided Build Activity
-                  </span>
-                  <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '4px 0 0 0' }}>
-                    Add Mobile Menu &amp; Interactions to Mini Project 1
-                  </h2>
-                </div>
-                <div style={{ background: '#eff6ff', color: '#2563eb', padding: '8px 16px', borderRadius: '20px', fontWeight: 800, fontSize: '0.9rem', border: '1px solid #bfdbfe' }}>
-                  Progress: {completedSteps.filter(Boolean).length}/9 Steps Completed
-                </div>
-              </div>
-
-              {/* Steps Navigation */}
-              <div style={{ display: 'flex', gap: '6px', marginBottom: '1.5rem', overflowX: 'auto', paddingBottom: '4px' }}>
-                {guidedStepsList.map((st, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setGuidedStep(idx)}
-                    style={{
-                      background: guidedStep === idx ? '#2563eb' : completedSteps[idx] ? '#10b981' : '#f1f5f9',
-                      color: guidedStep === idx || completedSteps[idx] ? '#ffffff' : '#64748b',
-                      border: 'none',
-                      padding: '8px 12px',
-                      borderRadius: '8px',
-                      fontWeight: 700,
-                      fontSize: '0.78rem',
-                      whiteSpace: 'nowrap',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Step {idx + 1}
-                  </button>
-                ))}
-              </div>
-
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155' }}>
-                <h3 style={{ fontSize: '1.2rem', color: '#38bdf8', margin: '0 0 0.5rem 0', fontWeight: 800 }}>
-                  {guidedStepsList[guidedStep].title}
-                </h3>
-                <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6, margin: '0 0 1rem 0' }}>
-                  {guidedStepsList[guidedStep].desc}
+                <p style={{ fontSize: '0.88rem', color: '#94a3b8', marginBottom: '1.25rem' }}>
+                  Click the buttons below to trigger events and inspect live event logs!
                 </p>
 
-                <LiveSyntaxCodeEditor
-                  language={guidedStep === 0 ? "html" : "js"}
-                  rows={6}
-                  value={guidedCodes[guidedStep]}
-                  onChange={(e) => {
-                    const newArr = [...guidedCodes];
-                    newArr[guidedStep] = e.target.value;
-                    setGuidedCodes(newArr);
-                  }}
-                  label={`Step ${guidedStep + 1} Implementation Code`}
-                />
-
-                <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
                   <button
                     onClick={() => {
-                      const newComp = [...completedSteps];
-                      newComp[guidedStep] = true;
-                      setCompletedSteps(newComp);
-                      if (guidedStep < 8) setGuidedStep(guidedStep + 1);
+                      setClickCount(c => c + 1);
+                      addEventLog(`Clicked 'Primary CTA' (Count: ${clickCount + 1})`);
                     }}
-                    style={{ background: '#10b981', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                    style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
                   >
-                    <CheckCircle size={16} /> Mark Step Complete &amp; Continue
+                    Click Primary CTA (Count: {clickCount})
                   </button>
 
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    {guidedStep > 0 && (
-                      <button onClick={() => setGuidedStep(guidedStep - 1)} style={{ background: '#334155', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>
-                        Previous Step
-                      </button>
-                    )}
-                  </div>
+                  <button
+                    onClick={(e) => {
+                      addEventLog(`Target Tag: <${e.target.tagName.toLowerCase()}> with text '${e.target.innerText}'`);
+                    }}
+                    style={{ background: '#10b981', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
+                  >
+                    Inspect event.target
+                  </button>
+                </div>
+
+                {/* Event Logs Console View */}
+                <div style={{ background: '#090d16', padding: '1rem', borderRadius: '10px', border: '1px solid #1e293b', fontFamily: 'monospace', fontSize: '0.82rem' }}>
+                  <div style={{ color: '#38bdf8', fontWeight: 'bold', marginBottom: '6px' }}>📟 Event Inspector Log:</div>
+                  {eventLogs.length === 0 ? (
+                    <div style={{ color: '#64748b' }}>No events triggered yet. Click a button above!</div>
+                  ) : (
+                    eventLogs.map((log, idx) => (
+                      <div key={idx} style={{ color: '#34d399', margin: '3px 0' }}>{log}</div>
+                    ))
+                  )}
                 </div>
               </div>
 
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+              {/* Navigation button */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <button
-                  onClick={() => handleTabChange('interactive_activities')}
+                  onClick={() => handleTabChange('forms_validation')}
                   style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Next: Debugging Challenge &amp; Console <ArrowRight size={18} />
+                  Next: Form Interaction &amp; Validation <ArrowRight size={18} />
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== TAB 10: INTERACTIVE ACTIVITIES ==================== */}
-        {isTabActive('interactive_activities') && (
+        {/* ==================== TAB 7: FORM INTERACTION & VALIDATION ==================== */}
+        {isTabActive('forms_validation') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Interactive Practice: Debugging &amp; Console Inspection
+                Section 9 — Form Interaction &amp; Basic Validation
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Find and Fix the JavaScript Bugs
+                Reading <code>value</code> &amp; Preventing Page Reloads
               </h2>
 
-              {/* Debugging Challenge */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f59e0b', margin: 0 }}>
-                    🐛 Buggy Code Challenge
-                  </h3>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={() => setShowDebugHint(!showDebugHint)} style={{ background: '#334155', color: '#fbbf24', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}>Hint</button>
-                    <button onClick={() => setShowDebugSol(!showDebugSol)} style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}>Show Solution</button>
-                  </div>
-                </div>
+              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
+                Forms reload the browser by default on submission. JavaScript intercepts form submission using <strong><code>event.preventDefault()</code></strong>, reads input field <strong><code>.value</code></strong>, and performs validation before giving instant user feedback.
+              </p>
 
-                {showDebugHint && <div style={{ background: '#1e293b', padding: '10px', borderRadius: '8px', color: '#fbbf24', fontSize: '0.85rem', marginBottom: '1rem' }}>💡 Hint: Check 1) missing '#' in querySelector("#contactBtn"), 2) capital 'L' in addEventListener, 3) capital 'C' in textContent.</div>}
-                {showDebugSol && <div style={{ background: '#064e3b', padding: '10px', borderRadius: '8px', color: '#6ee7b7', fontSize: '0.85rem', marginBottom: '1rem' }}>✅ Solution: <code>querySelector("#contactBtn")</code>, <code>addEventListener</code> (capital L), and <code>textContent</code> (capital C)!</div>}
+              {/* Code Example */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <CodeBlock
+                  title="Section 9: Client-Side Form Validation Pattern"
+                  language="javascript"
+                  code={`const contactForm = document.querySelector("#contactForm");
+const nameInput = document.querySelector("#name");
 
-                <LiveSyntaxCodeEditor
-                  language="js"
-                  rows={8}
-                  value={debugCode}
-                  onChange={(e) => setDebugCode(e.target.value)}
-                  label="Fix the 3 Syntax Bugs Below"
+contactForm.addEventListener("submit", (event) => {
+  // 1. Prevent form from refreshing the page
+  event.preventDefault();
+
+  // 2. Read input value
+  const nameValue = nameInput.value.trim();
+
+  // 3. Validation check
+  if (nameValue === "") {
+    alert("Please enter your name!");
+  } else {
+    console.log("Submitted name:", nameValue);
+  }
+});`}
                 />
+              </div>
 
-                <div style={{ marginTop: '1rem' }}>
-                  <button
-                    onClick={() => setDebugSolved(true)}
-                    style={{ background: '#10b981', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
-                  >
-                    Check Fixes
+              {/* Interactive Form Validator Practice */}
+              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
+                  📋 Interactive Practice: Real-Time Form Validator
+                </h3>
+                <p style={{ fontSize: '0.88rem', color: '#94a3b8', marginBottom: '1.25rem' }}>
+                  Test submitting the form with empty fields vs valid details to see dynamic validation messages!
+                </p>
+
+                <form onSubmit={handleFormSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: '#1e293b', padding: '1.25rem', borderRadius: '12px', border: '1px solid #475569' }}>
+                  <div>
+                    <label style={{ fontSize: '0.82rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Full Name *</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Kowsalya Devi"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      style={{ width: '100%', padding: '10px', borderRadius: '6px', background: '#0f172a', color: '#fff', border: formErrors.name ? '1px solid #ef4444' : '1px solid #475569' }}
+                    />
+                    {formErrors.name && <span style={{ color: '#f87171', fontSize: '0.78rem' }}>{formErrors.name}</span>}
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '0.82rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Email Address *</label>
+                    <input
+                      type="email"
+                      placeholder="kowsalya@example.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      style={{ width: '100%', padding: '10px', borderRadius: '6px', background: '#0f172a', color: '#fff', border: formErrors.email ? '1px solid #ef4444' : '1px solid #475569' }}
+                    />
+                    {formErrors.email && <span style={{ color: '#f87171', fontSize: '0.78rem' }}>{formErrors.email}</span>}
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '0.82rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>Project Requirements *</label>
+                    <textarea
+                      rows="3"
+                      placeholder="I need a modern landing page for my business..."
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      style={{ width: '100%', padding: '10px', borderRadius: '6px', background: '#0f172a', color: '#fff', border: formErrors.message ? '1px solid #ef4444' : '1px solid #475569' }}
+                    />
+                    {formErrors.message && <span style={{ color: '#f87171', fontSize: '0.78rem' }}>{formErrors.message}</span>}
+                  </div>
+
+                  <button type="submit" style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    <Send size={16} /> Submit Form (event.preventDefault())
                   </button>
-                  {debugSolved && (
-                    <div style={{ marginTop: '10px', color: '#34d399', fontWeight: 800, fontSize: '0.9rem' }}>
-                      🎉 Excellent debugging! All 3 syntax errors fixed!
+                </form>
+
+                {formSubmitted && (
+                  <div style={{ marginTop: '1rem', background: '#064e3b', color: '#6ee7b7', padding: '1rem', borderRadius: '8px', border: '1px solid #065f46', fontWeight: 700 }}>
+                    ✅ Form validated successfully! JavaScript intercepted submission without refreshing the page.
+                  </div>
+                )}
+              </div>
+
+              {/* Navigation button */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button
+                  onClick={() => handleTabChange('projects_interactive')}
+                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  Next: Mobile Drawer, Counter &amp; Show/Hide <ArrowRight size={18} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== TAB 8: PRACTICAL INTERACTIVE FEATURES ==================== */}
+        {isTabActive('projects_interactive') && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Sections 10, 11 &amp; 12 — Practical Interactive Features
+              </span>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
+                Building Mobile Drawer Nav, Dynamic Counter &amp; Password Toggle
+              </h2>
+
+              {/* Feature A: Mobile Navigation Drawer */}
+              <div style={{ background: '#0f172a', padding: '1.5rem', borderRadius: '16px', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
+                  📱 1. Mobile Drawer Navigation Drawer Component
+                </h3>
+                <p style={{ fontSize: '0.88rem', color: '#94a3b8', marginBottom: '1rem' }}>
+                  Click the hamburger menu button below to open/close the mobile navigation drawer!
+                </p>
+
+                <div style={{ background: '#1e293b', borderRadius: '12px', padding: '1rem', border: '1px solid #475569' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ fontWeight: 800, color: '#ffffff' }}>AlphaFly Agency</div>
+                    <button
+                      onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                      style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}
+                    >
+                      {isMobileMenuOpen ? <X size={18} /> : <Menu size={18} />} Menu
+                    </button>
+                  </div>
+
+                  {/* Mobile Navigation Drawer Dropdown */}
+                  {isMobileMenuOpen && (
+                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #334155', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {['Home', 'Services', 'About', 'Portfolio', 'Contact Us'].map((item, idx) => (
+                        <a key={idx} href={`#${item.toLowerCase()}`} style={{ color: '#38bdf8', textDecoration: 'none', fontWeight: 700, padding: '6px', borderRadius: '4px', background: '#0f172a' }}>
+                          {item}
+                        </a>
+                      ))}
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Console Debugging Guide */}
-              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid #cbd5e1' }}>
-                <h3 style={{ margin: '0 0 8px 0', fontSize: '1.1rem', color: '#0f172a', fontWeight: 800 }}>
-                  Browser Console Error Debugging Guide
+              {/* Feature B: Dynamic Counter */}
+              <div style={{ background: '#0f172a', padding: '1.5rem', borderRadius: '16px', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
+                  🔢 2. Dynamic Interactive Counter
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.5 }}>
-                  Always inspect browser Developer Tools $\rightarrow$ Console when JS fails to run. Look for: <strong>Error Type</strong> (e.g. <code>Uncaught ReferenceError</code>), <strong>File Name</strong> (e.g. <code>script.js</code>), and <strong>Line Number</strong>!
+                <p style={{ fontSize: '0.88rem', color: '#94a3b8', marginBottom: '1rem' }}>
+                  Modify count variables and update <code>textContent</code> live.
                 </p>
+
+                <div style={{ background: '#1e293b', padding: '1.25rem', borderRadius: '12px', border: '1px solid #475569', display: 'flex', alignItems: 'center', gap: '1.5rem', justifyContent: 'center' }}>
+                  <button onClick={() => setCounterVal(c => c - 1)} style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 900, fontSize: '1.2rem', cursor: 'pointer' }}>-</button>
+                  <div style={{ fontSize: '2rem', fontWeight: 900, color: '#ffffff', minWidth: '60px', textAlign: 'center' }}>{counterVal}</div>
+                  <button onClick={() => setCounterVal(c => c + 1)} style={{ background: '#10b981', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 900, fontSize: '1.2rem', cursor: 'pointer' }}>+</button>
+                  <button onClick={() => setCounterVal(0)} style={{ background: '#475569', color: '#fff', border: 'none', padding: '10px 14px', borderRadius: '8px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}>Reset</button>
+                </div>
               </div>
 
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+              {/* Feature C: Show/Hide Password & Read More */}
+              <div style={{ background: '#0f172a', padding: '1.5rem', borderRadius: '16px', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
+                  👁️ 3. Show / Hide Password &amp; Read More Panel
+                </h3>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
+                  {/* Password Toggle */}
+                  <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '12px', border: '1px solid #475569' }}>
+                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '6px' }}>Password Input Field</label>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={passwordInput}
+                        onChange={(e) => setPasswordInput(e.target.value)}
+                        style={{ width: '100%', padding: '8px', borderRadius: '6px', background: '#0f172a', color: '#fff', border: '1px solid #475569' }}
+                      />
+                      <button onClick={() => setShowPassword(!showPassword)} style={{ background: '#3b82f6', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer' }}>
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Read More Toggle */}
+                  <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '12px', border: '1px solid #475569' }}>
+                    <div style={{ fontSize: '0.88rem', color: '#cbd5e1', marginBottom: '8px' }}>
+                      Freelance Web Design Contract Terms...
+                      {showReadMore && <span style={{ color: '#38bdf8' }}> Full payment required upon client signoff within 14 business days.</span>}
+                    </div>
+                    <button onClick={() => setShowReadMore(!showReadMore)} style={{ background: '#10b981', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
+                      {showReadMore ? 'Show Less' : 'Read More'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Navigation button */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <button
-                  onClick={() => handleTabChange('ai_tools')}
+                  onClick={() => handleTabChange('debugging')}
                   style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Next: AI Explainer &amp; Debugger <ArrowRight size={18} />
+                  Next: DOM Debugging &amp; DevTools <ArrowRight size={18} />
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== TAB 11: AI TOOLS ==================== */}
-        {isTabActive('ai_tools') && (
+        {/* ==================== TAB 9: DOM DEBUGGING ==================== */}
+        {isTabActive('debugging') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                AI Studio: JavaScript Explainer, Debugger &amp; Idea Generator
+                Section 13 — Simple DOM Debugging &amp; DevTools
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                AI-Powered Code Assistance Studio
+                Fixing Common DOM &amp; Event Handling Problems
               </h2>
 
-              {/* AI JS Explainer */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.2rem', color: '#38bdf8', margin: '0 0 1rem 0', fontWeight: 800 }}>
-                  🤖 AI JavaScript Explainer (Line-by-Line)
-                </h3>
-                <textarea
-                  rows={3}
-                  value={aiExplainCode}
-                  onChange={(e) => setAiExplainCode(e.target.value)}
-                  style={{ width: '100%', padding: '10px', borderRadius: '8px', background: '#1e293b', color: '#fff', border: '1px solid #475569', fontSize: '0.85rem', marginBottom: '10px' }}
-                />
-                <button
-                  onClick={() => setAiExplainResult("Line 1: Find the button element on the webpage.\nLine 2: Wait for a click event from the visitor.\nLine 3: Run the inner function and change title.textContent to 'Welcome!'.")}
-                  style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
-                >
-                  Explain Code Line-by-Line
-                </button>
-                {aiExplainResult && (
-                  <pre style={{ marginTop: '10px', background: '#1e293b', padding: '12px', borderRadius: '8px', color: '#34d399', fontSize: '0.85rem', whiteSpace: 'pre-wrap' }}>
-                    {aiExplainResult}
-                  </pre>
-                )}
+              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.65, margin: '0 0 1.25rem 0' }}>
+                When your JavaScript code fails to update the page, the root cause is almost always a <strong><code>null</code> selector</strong> or a typo in your event listener name. Use <code>console.log()</code> and browser DevTools to catch errors fast!
+              </p>
+
+              {/* Common Pitfalls Table */}
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #e2e8f0', marginBottom: '1.5rem' }}>
+                <h4 style={{ color: '#0f172a', margin: '0 0 10px 0', fontSize: '1rem', fontWeight: 800 }}>
+                  ⚠️ Top 5 Common DOM Bug Scenarios
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {[
+                    { bug: "Uncaught TypeError: Cannot set properties of null", fix: "Selector misspelled or <script> loaded before HTML elements rendered." },
+                    { bug: "Form reloads page instantly without logging", fix: "Forgot to call event.preventDefault() inside submit listener." },
+                    { bug: "Click event not triggering", fix: "Typo in event name ('onclick' instead of 'click' in addEventListener)." },
+                    { bug: "Input value is empty", fix: "Reading input.value on page load instead of inside event callback." },
+                    { bug: "Styles not updating", fix: "Used classList.toggle without CSS definition in stylesheet." }
+                  ].map((item, idx) => (
+                    <div key={idx} style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.86rem' }}>
+                      <strong style={{ color: '#ef4444' }}>Bug:</strong> {item.bug} <br />
+                      <strong style={{ color: '#10b981' }}>Fix:</strong> {item.fix}
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              {/* AI Debugging Assistant */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.2rem', color: '#f59e0b', margin: '0 0 1rem 0', fontWeight: 800 }}>
-                  🛠️ AI Debugging Assistant
+              {/* Interactive Debug Console */}
+              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff', border: '1px solid #334155', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
+                  📟 Console.log() Debugging Simulator
                 </h3>
-                <textarea
-                  rows={2}
-                  value={aiErrorCode}
-                  onChange={(e) => setAiErrorCode(e.target.value)}
-                  style={{ width: '100%', padding: '10px', borderRadius: '8px', background: '#1e293b', color: '#fff', border: '1px solid #475569', fontSize: '0.85rem', marginBottom: '10px' }}
-                />
-                <button
-                  onClick={() => setAiErrorResult({
-                    what: "ReferenceError: title is not defined",
-                    why: "You tried to use variable 'title' before creating it with const title = document.querySelector('#mainTitle');",
-                    hint: "Verify querySelector reference exists before calling title.textContent",
-                    fix: "const title = document.querySelector('#mainTitle'); title.textContent = 'Welcome!';"
-                  })}
-                  style={{ background: '#f59e0b', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
-                >
-                  Analyze Error
-                </button>
-                {aiErrorResult && (
-                  <div style={{ marginTop: '10px', background: '#1e293b', padding: '12px', borderRadius: '8px', fontSize: '0.85rem' }}>
-                    <div style={{ color: '#ef4444', fontWeight: 800 }}>Problem: {aiErrorResult.what}</div>
-                    <div style={{ color: '#fbbf24' }}>Reason: {aiErrorResult.why}</div>
-                    <div style={{ color: '#34d399' }}>Fix Section: {aiErrorResult.fix}</div>
-                  </div>
-                )}
-              </div>
 
-              {/* AI Interaction Idea Generator */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff' }}>
-                <h3 style={{ fontSize: '1.2rem', color: '#a855f7', margin: '0 0 1rem 0', fontWeight: 800 }}>
-                  💡 AI Business Interaction Idea Generator
-                </h3>
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-                  <input
-                    type="text"
-                    value={aiBusinessType}
-                    onChange={(e) => setAiBusinessType(e.target.value)}
-                    placeholder="e.g. Restaurant, Law Firm, Clinic"
-                    style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #475569', background: '#1e293b', color: '#fff', width: '240px' }}
-                  />
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '1rem', flexWrap: 'wrap' }}>
                   <button
-                    onClick={() => setAiIdeasResult([
-                      "1. Mobile navigation menu drawer (☰ / ✕)",
-                      "2. Special offer banner toggle",
-                      "3. Service card highlight on click",
-                      "4. Consultation availability status switcher",
-                      "5. Callback reservation alert message"
-                    ])}
-                    style={{ background: '#a855f7', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer' }}
+                    onClick={() => setDebugLog(prev => [...prev, `> console.log(document.querySelector('#title')) => <h1 id="title">`])}
+                    style={{ background: '#1e293b', color: '#fff', border: '1px solid #475569', padding: '8px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
                   >
-                    Generate 5 JS Ideas
+                    Run: Log Element
+                  </button>
+                  <button
+                    onClick={() => setDebugLog(prev => [...prev, `> console.log(document.querySelector('#missing')) => null ❌ (Check selector ID!)`])}
+                    style={{ background: '#991b1b', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
+                  >
+                    Simulate Null Error
+                  </button>
+                  <button
+                    onClick={() => setDebugLog(['> Console cleared.'])}
+                    style={{ background: '#475569', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
+                  >
+                    Clear Console
                   </button>
                 </div>
-                {aiIdeasResult && (
-                  <div style={{ background: '#1e293b', padding: '12px', borderRadius: '8px', color: '#c084fc', fontSize: '0.88rem' }}>
-                    {aiIdeasResult.map((idea, i) => <div key={i} style={{ margin: '4px 0' }}>{idea}</div>)}
-                  </div>
-                )}
-              </div>
 
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => handleTabChange('practice_assignment')}
-                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Next: Practice, Assignment &amp; Reflection <ArrowRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== TAB 12: PRACTICE & ASSIGNMENT ==================== */}
-        {isTabActive('practice_assignment') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Practice Task &amp; Student Assignment Reflection
-              </span>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
-                Day 12 Assignment — JavaScript Interaction
-              </h2>
-
-              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '1.5rem' }}>
-                <h3 style={{ margin: '0 0 10px 0', fontSize: '1.1rem', color: '#0f172a', fontWeight: 800 }}>
-                  Practice Task Requirements:
-                </h3>
-                <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
-                  <li>✓ External JS file linked in HTML</li>
-                  <li>✓ Build Mobile Menu (☰ / ✕)</li>
-                  <li>✓ Plus ONE additional interaction (Card highlight, Offer message, Theme toggle, or Text change)</li>
-                  <li>✓ Add ONE simple <code>if / else</code> condition (e.g. Service availability)</li>
-                </ul>
-              </div>
-
-              {/* Assignment Reflection Form */}
-              <div style={{ background: '#0f172a', borderRadius: '16px', padding: '1.5rem', color: '#ffffff' }}>
-                <h3 style={{ fontSize: '1.2rem', color: '#38bdf8', margin: '0 0 1rem 0', fontWeight: 800 }}>
-                  Student Assignment Reflection Form
-                </h3>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.25rem' }}>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>1. What HTML element did JavaScript control?</label>
-                    <input type="text" value={reflectionAnswers.q1_elem} onChange={(e) => setReflectionAnswers({ ...reflectionAnswers, q1_elem: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '6px', background: '#1e293b', color: '#fff', border: '1px solid #475569' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>2. What event did you use?</label>
-                    <input type="text" value={reflectionAnswers.q2_event} onChange={(e) => setReflectionAnswers({ ...reflectionAnswers, q2_event: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '6px', background: '#1e293b', color: '#fff', border: '1px solid #475569' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>3. What function did you create?</label>
-                    <input type="text" value={reflectionAnswers.q3_fn} onChange={(e) => setReflectionAnswers({ ...reflectionAnswers, q3_fn: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '6px', background: '#1e293b', color: '#fff', border: '1px solid #475569' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>4. Which CSS class did JavaScript change?</label>
-                    <input type="text" value={reflectionAnswers.q4_class} onChange={(e) => setReflectionAnswers({ ...reflectionAnswers, q4_class: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '6px', background: '#1e293b', color: '#fff', border: '1px solid #475569' }} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'block', marginBottom: '4px' }}>5. Where did you use if / else?</label>
-                    <input type="text" value={reflectionAnswers.q5_ifelse} onChange={(e) => setReflectionAnswers({ ...reflectionAnswers, q5_ifelse: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '6px', background: '#1e293b', color: '#fff', border: '1px solid #475569' }} />
-                  </div>
+                <div style={{ background: '#090d16', padding: '1rem', borderRadius: '8px', border: '1px solid #1e293b', fontFamily: 'monospace', fontSize: '0.82rem', color: '#38bdf8' }}>
+                  {debugLog.map((line, i) => (
+                    <div key={i}>{line}</div>
+                  ))}
                 </div>
-
-                <button
-                  onClick={() => setAssignmentSubmitted(true)}
-                  style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
-                >
-                  <Send size={16} /> Submit Day 12 Assignment &amp; Reflection
-                </button>
-
-                {assignmentSubmitted && (
-                  <div style={{ marginTop: '10px', color: '#34d399', fontWeight: 800, fontSize: '0.9rem' }}>
-                    🎉 Day 12 Assignment &amp; Reflection submitted successfully! Instructor evaluation recorded.
-                  </div>
-                )}
               </div>
 
-              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+              {/* Navigation button */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <button
-                  onClick={() => handleTabChange('quiz')}
+                  onClick={() => handleTabChange('assessment')}
                   style={{ background: '#2563eb', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  Next: Knowledge Check &amp; Course Progress <ArrowRight size={18} />
+                  Next: Guided Practice, Quiz &amp; Mini Project <ArrowRight size={18} />
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== TAB 13: QUIZ & PROGRESS ==================== */}
-        {isTabActive('quiz') && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            {/* 39. Quiz Section (15 Questions) */}
+        {/* ==================== TAB 10: PRACTICE, QUIZ, PROJECTS & ASSESSMENT ==================== */}
+        {isTabActive('assessment') && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+            {/* PART A: 6 GUIDED CODING EXERCISES */}
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Knowledge Check
-              </span>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1.25rem 0' }}>
-                Day 12 Quiz (15 Questions)
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '0 0 1rem 0' }}>
+                Part A: Guided Practice (6 Hands-on Exercises)
               </h2>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '1.5rem' }}>
-                {quizQuestions.map((qObj, qIdx) => (
-                  <div key={qIdx} style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                    <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1e1b4b', marginBottom: '10px' }}>
-                      {qObj.q}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                {[
+                  {
+                    id: 1,
+                    title: "Exercise 1: Change Heading Text on Button Click",
+                    objective: "Select an h1 element and change its textContent when a button is clicked.",
+                    html: `<h1 id="headline">Original Headline</h1>\n<button id="changeBtn">Update Headline</button>`,
+                    js: `const headline = document.querySelector("#headline");\nconst changeBtn = document.querySelector("#changeBtn");\n\nchangeBtn.addEventListener("click", () => {\n  headline.textContent = "JavaScript is Awesome!";\n});`,
+                    hint: "Use querySelector and addEventListener('click', callback)."
+                  },
+                  {
+                    id: 2,
+                    title: "Exercise 2: Create a Show/Hide Information Panel",
+                    objective: "Toggle an info panel between visible and hidden using classList.toggle().",
+                    html: `<button id="toggleBtn">Show Info</button>\n<div id="infoBox" className="hidden">Secret client details...</div>`,
+                    js: `const toggleBtn = document.querySelector("#toggleBtn");\nconst infoBox = document.querySelector("#infoBox");\n\ntoggleBtn.addEventListener("click", () => {\n  infoBox.classList.toggle("hidden");\n});`,
+                    hint: "Define .hidden { display: none; } in your CSS file."
+                  },
+                  {
+                    id: 3,
+                    title: "Exercise 3: Create an Interactive Counter",
+                    objective: "Build an increment/decrement counter updating textContent.",
+                    html: `<button id="dec">-</button>\n<span id="num">0</span>\n<button id="inc">+</button>`,
+                    js: `let count = 0;\nconst num = document.querySelector("#num");\ndocument.querySelector("#inc").addEventListener("click", () => {\n  count++;\n  num.textContent = count;\n});`,
+                    hint: "Store the number in a let count variable."
+                  },
+                  {
+                    id: 4,
+                    title: "Exercise 4: Toggle CSS Class on Card Element",
+                    objective: "Add/remove a 'highlight' class to a card when clicked.",
+                    html: `<div id="card" className="card">Click to Highlight</div>`,
+                    js: `const card = document.querySelector("#card");\ncard.addEventListener("click", () => {\n  card.classList.toggle("highlight");\n});`,
+                    hint: "Target element directly with querySelector."
+                  },
+                  {
+                    id: 5,
+                    title: "Exercise 5: Dynamic Image Switcher",
+                    objective: "Change an img src attribute when clicking thumbnails.",
+                    html: `<img id="mainImg" src="pic1.jpg">\n<button id="btnImg">Switch Image</button>`,
+                    js: `const mainImg = document.querySelector("#mainImg");\ndocument.querySelector("#btnImg").addEventListener("click", () => {\n  mainImg.setAttribute("src", "pic2.jpg");\n});`,
+                    hint: "Use setAttribute('src', newUrl)."
+                  },
+                  {
+                    id: 6,
+                    title: "Exercise 6: Mobile Navigation Drawer Toggle",
+                    objective: "Toggle a mobile drawer menu when clicking a hamburger icon.",
+                    html: `<button id="menuBtn">☰</button>\n<nav id="mobileNav" className="drawer">Menu Links</nav>`,
+                    js: `const menuBtn = document.querySelector("#menuBtn");\nconst mobileNav = document.querySelector("#mobileNav");\nmenuBtn.addEventListener("click", () => {\n  mobileNav.classList.toggle("active");\n});`,
+                    hint: "Toggle the 'active' class on mobileNav."
+                  }
+                ].map((ex) => (
+                  <div key={ex.id} style={{ background: '#f8fafc', borderRadius: '14px', padding: '1.25rem', border: '1px solid #e2e8f0' }}>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#2563eb', margin: '0 0 6px 0' }}>
+                      {ex.title}
+                    </h3>
+                    <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 10px 0' }}>
+                      <strong>Objective:</strong> {ex.objective}
+                    </p>
+
+                    <button
+                      onClick={() => setShowPracticeSol(prev => ({ ...prev, [ex.id]: !prev[ex.id] }))}
+                      style={{ background: '#1e293b', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', marginBottom: '10px' }}
+                    >
+                      {showPracticeSol[ex.id] ? 'Hide Solution' : 'View Code Solution & Explanation'}
+                    </button>
+
+                    {showPracticeSol[ex.id] && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '6px' }}>
+                        <CodeBlock title={`Exercise ${ex.id} HTML`} language="html" code={ex.html} />
+                        <CodeBlock title={`Exercise ${ex.id} JavaScript`} language="javascript" code={ex.js} />
+                        <div style={{ background: '#eff6ff', color: '#1e40af', padding: '10px', borderRadius: '8px', fontSize: '0.82rem' }}>
+                          💡 <strong>Hint:</strong> {ex.hint}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* PART B: KNOWLEDGE CHECK QUIZ (15 QUESTIONS) */}
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
+                <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: 0 }}>
+                  Part B: Knowledge Check Quiz (15 Questions)
+                </h2>
+                {quizSubmitted && (
+                  <div style={{ background: '#10b981', color: '#fff', padding: '6px 14px', borderRadius: '20px', fontWeight: 800, fontSize: '0.9rem' }}>
+                    Score: {calculateQuizScore()} / 15
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {quizQuestions.map((q, qIndex) => (
+                  <div key={q.id} style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #e2e8f0' }}>
+                    <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a', marginBottom: '10px' }}>
+                      Q{qIndex + 1}: {q.question}
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '8px' }}>
-                      {qObj.opts.map((opt, oIdx) => (
-                        <button
-                          key={oIdx}
-                          onClick={() => {
-                            const newAns = [...quizAns];
-                            newAns[qIdx] = oIdx;
-                            setQuizAns(newAns);
-                          }}
-                          style={{
-                            textAlign: 'left',
-                            background: quizAns[qIdx] === oIdx ? (quizSubmitted ? (oIdx === qObj.ans ? '#dcfce7' : '#fee2e2') : '#dbeafe') : '#ffffff',
-                            color: quizAns[qIdx] === oIdx ? (quizSubmitted ? (oIdx === qObj.ans ? '#166534' : '#991b1b') : '#1e40af') : '#334155',
-                            border: quizAns[qIdx] === oIdx ? '2px solid #2563eb' : '1px solid #cbd5e1',
-                            padding: '10px 14px',
-                            borderRadius: '8px',
-                            fontSize: '0.85rem',
-                            fontWeight: 600,
-                            cursor: 'pointer'
-                          }}
-                        >
-                          {opt}
-                        </button>
-                      ))}
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '8px', marginBottom: '10px' }}>
+                      {q.options.map((opt, optIdx) => {
+                        const isSelected = userAnswers[q.id] === optIdx;
+                        const isCorrect = q.correct === optIdx;
+                        let bg = '#ffffff';
+                        let border = '#cbd5e1';
+
+                        if (quizSubmitted) {
+                          if (isCorrect) { bg = '#dcfce7'; border = '#22c55e'; }
+                          else if (isSelected && !isCorrect) { bg = '#fee2e2'; border = '#ef4444'; }
+                        } else if (isSelected) {
+                          bg = '#eff6ff'; border = '#2563eb';
+                        }
+
+                        return (
+                          <button
+                            key={optIdx}
+                            onClick={() => !quizSubmitted && handleQuizOptionSelect(q.id, optIdx)}
+                            style={{
+                              background: bg,
+                              border: `2px solid ${border}`,
+                              padding: '10px 14px',
+                              borderRadius: '8px',
+                              textAlign: 'left',
+                              fontSize: '0.86rem',
+                              fontWeight: isSelected ? 800 : 500,
+                              cursor: quizSubmitted ? 'default' : 'pointer'
+                            }}
+                          >
+                            {String.fromCharCode(65 + optIdx)}. {opt}
+                          </button>
+                        );
+                      })}
                     </div>
+
+                    {quizSubmitted && (
+                      <div style={{ background: '#f1f5f9', padding: '10px', borderRadius: '8px', fontSize: '0.82rem', color: '#334155' }}>
+                        💡 <strong>Explanation:</strong> {q.explanation}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
 
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              {!quizSubmitted ? (
                 <button
                   onClick={() => setQuizSubmitted(true)}
-                  style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer' }}
+                  style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '14px 28px', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', marginTop: '1.5rem', width: '100%' }}
                 >
-                  Submit Quiz
+                  Submit 15-Question Quiz &amp; View Explanations
                 </button>
-                {quizSubmitted && (
-                  <div style={{ fontSize: '1.1rem', fontWeight: 900, color: '#10b981' }}>
-                    Score: {calculateScore()} / 15 ({Math.round((calculateScore() / 15) * 100)}%)
-                  </div>
-                )}
-              </div>
+              ) : (
+                <button
+                  onClick={() => setQuizSubmitted(false)}
+                  style={{ background: '#475569', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', marginTop: '1.5rem' }}
+                >
+                  Reset Quiz &amp; Retake
+                </button>
+              )}
             </div>
 
-            {/* 42. Completion Banner */}
-            <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%)', borderRadius: '20px', padding: '2rem', color: '#ffffff', boxShadow: '0 10px 25px rgba(30, 27, 75, 0.4)' }}>
-              <h2 style={{ fontSize: '1.8rem', fontWeight: 900, margin: '0 0 0.75rem 0' }}>
-                🎉 Day 12 Complete!
+            {/* PART C & D: PRACTICAL TASK & ASSIGNMENT */}
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '0 0 1rem 0' }}>
+                Part C &amp; D: Practical Task &amp; Freelance Assignment
               </h2>
-              <p style={{ fontSize: '0.95rem', color: '#c7d2fe', marginBottom: '1rem' }}>
-                Today you learned:
-              </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '8px', fontSize: '0.88rem' }}>
-                {[
-                  'What JavaScript is',
-                  'HTML + CSS + JavaScript Formula',
-                  'Variables & let / const',
-                  'Strings, Numbers, Booleans',
-                  'Basic Operators & Template Literals',
-                  'DOM & querySelector()',
-                  'element.textContent',
-                  'addEventListener("click")',
-                  'Functions & Event Flow',
-                  'classList.add / remove / toggle',
-                  'Mobile Menu Build (☰ / ✕)',
-                  'if / else Conditions',
-                  'console.log() & DevTools',
-                  'AI Explainer & Debugging'
-                ].map((item, i) => (
-                  <div key={i} style={{ background: 'rgba(255,255,255,0.12)', padding: '8px 12px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <CheckCircle size={16} color="#34d399" /> {item}
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                {/* Practical Task */}
+                <div style={{ background: '#0f172a', padding: '1.5rem', borderRadius: '16px', color: '#ffffff', border: '1px solid #334155' }}>
+                  <h3 style={{ color: '#38bdf8', fontSize: '1.1rem', fontWeight: 800, margin: '0 0 8px 0' }}>
+                    🛠️ Practical Task: Convert Static Site to Interactive
+                  </h3>
+                  <p style={{ fontSize: '0.86rem', color: '#94a3b8', lineHeight: 1.5, marginBottom: '12px' }}>
+                    Take an existing static HTML/CSS business template and add 10 Vanilla JavaScript features:
+                  </p>
+                  <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.82rem', color: '#cbd5e1', lineHeight: 1.6 }}>
+                    <li>1. Mobile navigation drawer toggle</li>
+                    <li>2. Dynamic welcome message update</li>
+                    <li>3. Show/hide client information panel</li>
+                    <li>4. Interactive counter for stats</li>
+                    <li>5. Button hover/active class state changes</li>
+                    <li>6. Contact form validation with preventDefault()</li>
+                    <li>7. Image src attribute switcher</li>
+                    <li>8. Event listeners attached via addEventListener</li>
+                    <li>9. Clean DOM selection with querySelector</li>
+                    <li>10. Zero console errors during DevTools audit</li>
+                  </ul>
+                </div>
+
+                {/* Assignment */}
+                <div style={{ background: '#0f172a', padding: '1.5rem', borderRadius: '16px', color: '#ffffff', border: '1px solid #334155' }}>
+                  <h3 style={{ color: '#fbbf24', fontSize: '1.1rem', fontWeight: 800, margin: '0 0 8px 0' }}>
+                    💼 Freelance Assignment: Interactive Business Site
+                  </h3>
+                  <p style={{ fontSize: '0.86rem', color: '#94a3b8', lineHeight: 1.5, marginBottom: '12px' }}>
+                    Choose 1 client niche (IT Institute, Restaurant, Salon, Real Estate, Gym, Agency) and add 5+ interactions:
+                  </p>
+                  <div style={{ background: '#1e293b', padding: '10px', borderRadius: '8px', fontSize: '0.82rem', color: '#cbd5e1', marginBottom: '10px' }}>
+                    ✅ Required Submission Deliverables:<br />
+                    • index.html &amp; style.css<br />
+                    • app.js (Vanilla JS file)<br />
+                    • Screenshots / Live demo link
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* PART E: MINI PROJECT */}
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '0 0 1rem 0' }}>
+                Part E: Mini Project — Interactive Business Landing Page
+              </h2>
+
+              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '14px', border: '1px solid #e2e8f0' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#2563eb', margin: '0 0 8px 0' }}>
+                  🚀 Capstone Landing Page with 9 Sections &amp; 8 Vanilla JS Features
+                </h3>
+                <p style={{ fontSize: '0.88rem', color: '#475569', lineHeight: 1.6, marginBottom: '12px' }}>
+                  Build a complete landing page containing: Header, Navigation, Hero, Services, About, Statistics, Testimonials, Contact, and Footer.
+                </p>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '10px' }}>
+                  {[
+                    "1. Mobile Navigation Drawer",
+                    "2. Dynamic Hero Button State",
+                    "3. Service Highlight Selector",
+                    "4. Statistics Counter Component",
+                    "5. Read More Show/Hide Panel",
+                    "6. Form Validation & Error Feedback",
+                    "7. Success Alert State",
+                    "8. Smooth Scroll / Focus Action"
+                  ].map((feat, idx) => (
+                    <div key={idx} style={{ background: '#ffffff', padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.84rem', fontWeight: 700, color: '#0f172a' }}>
+                      ✅ {feat}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* PART F: 14-ITEM SELF-ASSESSMENT CHECKLIST */}
+            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '0 0 1rem 0' }}>
+                Part F: Student Self-Assessment Checklist (14 Skills)
+              </h2>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px', marginBottom: '1.5rem' }}>
+                {[
+                  { key: 'dom', label: "I understand the DOM and document object." },
+                  { key: 'elements', label: "I can identify DOM elements in HTML." },
+                  { key: 'querySelector', label: "I can select elements with querySelector()." },
+                  { key: 'textContent', label: "I can modify plain text with textContent." },
+                  { key: 'attributes', label: "I can update attributes with setAttribute()." },
+                  { key: 'classList', label: "I understand classList methods." },
+                  { key: 'toggle', label: "I can toggle CSS classes with classList.toggle()." },
+                  { key: 'clickEvents', label: "I can handle user click events." },
+                  { key: 'addEventListener', label: "I can attach events with addEventListener()." },
+                  { key: 'inputValues', label: "I can read user inputs using input.value." },
+                  { key: 'preventDefault', label: "I can prevent form reloads with preventDefault()." },
+                  { key: 'mobileMenu', label: "I can build a mobile drawer navigation bar." },
+                  { key: 'debugging', label: "I can debug null errors using console.log()." },
+                  { key: 'makeInteractive', label: "I can convert static web pages to interactive UI." }
+                ].map((item) => (
+                  <button
+                    key={item.key}
+                    onClick={() => toggleChecklist(item.key)}
+                    style={{
+                      background: checklist[item.key] ? '#f0fdf4' : '#ffffff',
+                      border: `2px solid ${checklist[item.key] ? '#22c55e' : '#cbd5e1'}`,
+                      padding: '10px 14px',
+                      borderRadius: '10px',
+                      textAlign: 'left',
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                      color: checklist[item.key] ? '#166534' : '#334155',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px'
+                    }}
+                  >
+                    <CheckSquare size={18} color={checklist[item.key] ? '#22c55e' : '#94a3b8'} />
+                    {item.label}
+                  </button>
                 ))}
               </div>
             </div>
 
-            {/* Course Progress & Project Continuity Screen */}
-            <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <h3 style={{ fontSize: '1.3rem', fontWeight: 900, color: '#0f172a', margin: 0 }}>
-                  Course Progress: DAY 12 / 20
-                </h3>
-                <span style={{ fontSize: '1.2rem', fontWeight: 900, color: '#2563eb' }}>60% COMPLETE</span>
-              </div>
+            {/* PART G: DAY COMPLETION & UNLOCK DAY 13 */}
+            <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: '20px', padding: '2rem', color: '#ffffff', border: '1px solid #334155', textAlign: 'center' }}>
+              <Trophy size={48} color="#fbbf24" style={{ margin: '0 auto 12px auto', display: 'block' }} />
+              <h2 style={{ fontSize: '1.8rem', fontWeight: 900, margin: '0 0 8px 0' }}>
+                Ready to Complete Day 12?
+              </h2>
+              <p style={{ fontSize: '0.95rem', color: '#94a3b8', maxWidth: '600px', margin: '0 auto 1.5rem auto', lineHeight: 1.6 }}>
+                Once you have completed all lessons, guided exercises, quiz questions, and the self-assessment checklist, click below to mark Day 12 finished and unlock <strong>Day 13 — Advanced JavaScript UI Components</strong>!
+              </p>
 
-              {/* Progress Bar */}
-              <div style={{ background: '#e2e8f0', borderRadius: '10px', height: '12px', width: '100%', marginBottom: '1.5rem', overflow: 'hidden' }}>
-                <div style={{ background: 'linear-gradient(90deg, #2563eb, #10b981)', height: '100%', width: '60%', borderRadius: '10px' }} />
-              </div>
-
-              {/* Completed Days Checklist */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', marginBottom: '1.5rem' }}>
-                {[
-                  "Day 1 ✓ Website & HTML Foundation",
-                  "Day 2 ✓ Advanced HTML & Forms",
-                  "Day 3 ✓ CSS Fundamentals",
-                  "Day 4 ✓ Box Model & Positioning",
-                  "Day 5 ✓ Flexbox",
-                  "Day 6 ✓ CSS Grid",
-                  "Day 7 ✓ CSS Units & UI Styling",
-                  "Day 8 ✓ Animation & Responsive Design",
-                  "Day 9 ✓ Complete Website Assembly",
-                  "Day 10 ✓ Mini Project 1",
-                  "Day 11 ✓ Advanced CSS Upgrade",
-                  "Day 12 ✓ JavaScript Fundamentals"
-                ].map((d, i) => (
-                  <div key={i} style={{ background: '#f0fdf4', color: '#166534', padding: '8px 12px', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 700, border: '1px solid #bbf7d0' }}>
-                    {d}
-                  </div>
-                ))}
-              </div>
-
-              {/* 44. Next Day Preview */}
-              <div style={{ background: '#eff6ff', padding: '1.25rem', borderRadius: '14px', border: '1px solid #bfdbfe' }}>
-                <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Next Up:</span>
-                <h4 style={{ fontSize: '1.1rem', fontWeight: 900, color: '#1e40af', margin: '4px 0 6px 0' }}>
-                  DAY 13 — DOM &amp; INTERACTIVE WEBSITE COMPONENTS
-                </h4>
-                <p style={{ margin: 0, fontSize: '0.88rem', color: '#1e3a8a' }}>
-                  Learn Show / Hide content, FAQ Accordion, Tabs, Modals, Dynamic content, and Multiple event handling!
-                </p>
-              </div>
+              <button
+                onClick={() => {
+                  if (onNavigate) {
+                    onNavigate('web_design_day13');
+                  } else {
+                    alert('🎉 Congratulations on completing Day 12! Unlocking Day 13...');
+                  }
+                }}
+                style={{
+                  background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '16px 36px',
+                  borderRadius: '14px',
+                  fontWeight: 900,
+                  fontSize: '1.1rem',
+                  cursor: 'pointer',
+                  boxShadow: '0 10px 25px rgba(37, 99, 235, 0.4)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px'
+                }}
+              >
+                <CheckCircle size={22} /> Mark Day 12 Completed &amp; Unlock Day 13 <ArrowRight size={22} />
+              </button>
             </div>
 
           </div>
