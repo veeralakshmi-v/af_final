@@ -453,6 +453,40 @@ export default function FoodAgenda() {
     </div>
   );
 }`} />
+
+                    {/* Step-by-Step Code Explanation Box */}
+                    <div style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', padding: '1.25rem', borderRadius: '12px', border: '1px solid #bbf7d0', marginTop: '1rem' }}>
+                      <h4 style={{ margin: '0 0 10px 0', color: '#15803d', fontSize: '1.05rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        💡 Step-by-Step Code Explanation for <code>src/FoodAgenda.jsx</code>
+                      </h4>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
+                          <strong style={{ color: '#15803d' }}>1. Imports &amp; State Initialization (Lines 1 &amp; 4–5):</strong><br />
+                          • <code>useState("")</code> initializes <code>food</code> state string to store input text.<br />
+                          • <code>useState(["Apple", "Banana"])</code> initializes <code>agenda</code> state array with starting list items.
+                        </div>
+
+                        <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
+                          <strong style={{ color: '#15803d' }}>2. Adding New Food Items (Lines 7–11 — <code>addFood</code>):</strong><br />
+                          • <code>if (food.trim() === "") return;</code> prevents adding blank/empty text.<br />
+                          • <code>setAgenda([...agenda, food.trim()])</code> copies existing list items using spread operator <code>...agenda</code> and appends the new item.<br />
+                          • <code>setFood("")</code> resets input box back to empty.
+                        </div>
+
+                        <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
+                          <strong style={{ color: '#15803d' }}>3. Deleting Items (Lines 13–15 — <code>deleteFood</code>):</strong><br />
+                          • <code>agenda.filter((_, idx) =&gt; idx !== indexToDelete)</code> creates a new array excluding the clicked item index.
+                        </div>
+
+                        <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
+                          <strong style={{ color: '#15803d' }}>4. UI Controlled Input &amp; Event Bindings (Lines 20–27):</strong><br />
+                          • <code>value={"{food}"}</code> binds input value to <code>food</code> state variable.<br />
+                          • <code>onChange={"(e) => setFood(e.target.value)"}</code> updates state live on every keystroke.<br />
+                          • <code>onClick={"addFood"}</code> triggers add handler when button is clicked.
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #2563eb' }}>
