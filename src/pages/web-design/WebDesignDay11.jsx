@@ -311,25 +311,22 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
     return score;
   };
 
-  // Helper for checking active tab mapping
+  // Helper for checking active tab mapping across 10 topics
   const isTabActive = (tabName) => {
+    const validTabs = ['intro', 'colors', 'typography', 'spacing', 'buttons', 'cards_hero', 'flexbox_nav', 'responsive', 'guided_build', 'quiz'];
     if (tabName === 'intro') {
-      return activeTab === 'intro' || !['intro', 'before_after', 'visual', 'colors', 'variables', 'typography', 'spacing', 'flexbox_nav', 'buttons', 'ui_components', 'cards_hero', 'grid_lab', 'responsive', 'guided_build', 'matching', 'comparison', 'practice_ai', 'playground', 'challenges', 'assignment', 'quiz'].includes(activeTab);
+      return activeTab === 'intro' || activeTab === 'before_after' || activeTab === 'visual' || !validTabs.includes(activeTab);
     }
-    if (tabName === 'before_after') return activeTab === 'before_after' || activeTab === 'visual';
     if (tabName === 'colors') return activeTab === 'colors' || activeTab === 'variables';
     if (tabName === 'typography') return activeTab === 'typography';
-    if (tabName === 'spacing') return activeTab === 'spacing' || activeTab === 'flexbox_nav';
+    if (tabName === 'spacing') return activeTab === 'spacing';
     if (tabName === 'buttons') return activeTab === 'buttons' || activeTab === 'ui_components';
     if (tabName === 'cards_hero') return activeTab === 'cards_hero' || activeTab === 'grid_lab';
+    if (tabName === 'flexbox_nav') return activeTab === 'flexbox_nav';
     if (tabName === 'responsive') return activeTab === 'responsive';
     if (tabName === 'guided_build') return activeTab === 'guided_build';
-    if (tabName === 'matching') return activeTab === 'matching';
-    if (tabName === 'comparison') return activeTab === 'comparison';
-    if (tabName === 'practice_ai') return activeTab === 'practice_ai' || activeTab === 'playground' || activeTab === 'challenges';
-    if (tabName === 'assignment') return activeTab === 'assignment';
-    if (tabName === 'quiz') return activeTab === 'quiz';
-    return false;
+    if (tabName === 'quiz') return activeTab === 'quiz' || activeTab === 'matching' || activeTab === 'comparison' || activeTab === 'practice_ai' || activeTab === 'playground' || activeTab === 'challenges' || activeTab === 'assignment';
+    return activeTab === tabName;
   };
 
   // ==========================================
@@ -423,7 +420,7 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                1. Review the Existing Website
+                Topic 1: Review Existing Website & Audit
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
                 "Today we are not building a new website. We are improving the website we already created."
@@ -632,7 +629,7 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                3. Improve Colors &amp; Color Practice
+                Topic 2: Design Tokens & Palette Colors
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
                 Mastering the 4-Role Color Palette
@@ -759,7 +756,7 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                4. Improve Typography
+                Topic 3: Typography & Web Fonts
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
                 Typography Visualizer &amp; Properties
@@ -1037,7 +1034,7 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                7 - 9. Cards, Hero Section &amp; Existing Sections
+                Topic 6: Feature Cards & Grid Layout
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
                 Styling Core Content Components
@@ -1126,7 +1123,7 @@ export default function WebDesignDay11({ activeTab: propActiveTab = 'intro', onN
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 14px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                10 - 11. Simple Responsive Layout &amp; Mobile Testing
+                Topic 8: Responsive Layout & Mobile Testing
               </span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '6px 0 1rem 0' }}>
                 Basic Mobile Media Query &amp; Breakpoint Viewport Tester

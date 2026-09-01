@@ -25,16 +25,24 @@ export default function WebDesignDay12({ activeTab: propActiveTab = 'intro', onN
     }
   };
 
-  // Helper for checking active tab mapping with robust fallback
+  // Helper for checking active tab mapping with robust fallback across 10 topics
   const isTabActive = (tabName) => {
     const validTabs = [
-      'intro', 'connecting_js', 'data_types', 'dom_intro', 'dom_text_events',
-      'functions_classlist', 'mobile_menu', 'conditions', 'guided_build',
-      'interactive_activities', 'ai_tools', 'practice_assignment', 'quiz'
+      'intro', 'connecting_js', 'data_types', 'operators', 'dom_intro',
+      'dom_text_events', 'events', 'functions_classlist', 'classlist', 'mobile_menu'
     ];
     if (tabName === 'intro') {
       return activeTab === 'intro' || !validTabs.includes(activeTab);
     }
+    if (tabName === 'connecting_js') return activeTab === 'connecting_js';
+    if (tabName === 'data_types') return activeTab === 'data_types';
+    if (tabName === 'operators') return activeTab === 'operators';
+    if (tabName === 'dom_intro') return activeTab === 'dom_intro';
+    if (tabName === 'dom_text_events') return activeTab === 'dom_text_events';
+    if (tabName === 'events') return activeTab === 'events';
+    if (tabName === 'functions_classlist') return activeTab === 'functions_classlist';
+    if (tabName === 'classlist') return activeTab === 'classlist';
+    if (tabName === 'mobile_menu') return activeTab === 'mobile_menu' || activeTab === 'conditions' || activeTab === 'guided_build' || activeTab === 'interactive_activities' || activeTab === 'ai_tools' || activeTab === 'practice_assignment' || activeTab === 'quiz';
     return activeTab === tabName;
   };
 

@@ -2383,39 +2383,32 @@ export const webDesignCourseData = [
     id: 'web_design_day11',
     title: 'Day 11 — Improve Your Existing Website with Simple CSS',
     items: [
-      { id: 'intro', label: '1. Review Existing Website', icon: <BookOpen size={18} /> },
-      { id: 'before_after', label: '2. Before & After Preview', icon: <MonitorPlay size={18} /> },
-      { id: 'colors', label: '3. Improve Colors & Practice', icon: <Sliders size={18} /> },
-      { id: 'typography', label: '4. Typography Visualizer', icon: <Type size={18} /> },
-      { id: 'spacing', label: '5. Spacing Demonstration', icon: <LayoutTemplate size={18} /> },
-      { id: 'buttons', label: '6. Style Buttons & Editor', icon: <PenTool size={18} /> },
-      { id: 'cards_hero', label: '7-9. Cards, Hero & Sections', icon: <LayoutGrid size={18} /> },
-      { id: 'responsive', label: '10-11. Mobile Layout & Testing', icon: <Smartphone size={18} /> },
-      { id: 'guided_build', label: '12. Guided Build (11 Steps)', icon: <Code size={18} /> },
-      { id: 'matching', label: '13. CSS Matching Activity', icon: <CheckSquare size={18} /> },
-      { id: 'comparison', label: '14. Before & After Comparison', icon: <Layers size={18} /> },
-      { id: 'practice_ai', label: '15-16. Practice & AI Review', icon: <Sparkles size={18} /> },
-      { id: 'assignment', label: '17. Day 11 Assignment', icon: <Briefcase size={18} /> },
-      { id: 'quiz', label: '18-20. Quiz & Course Progress', icon: <CheckCircle size={18} /> }
+      { id: 'intro', label: 'Topic 1: Review Existing Website & Audit', icon: <BookOpen size={18} /> },
+      { id: 'colors', label: 'Topic 2: Design Tokens & Palette Colors', icon: <Sliders size={18} /> },
+      { id: 'typography', label: 'Topic 3: Typography & Web Fonts', icon: <Type size={18} /> },
+      { id: 'spacing', label: 'Topic 4: Spacing & Box Model Margins', icon: <LayoutTemplate size={18} /> },
+      { id: 'buttons', label: 'Topic 5: Interactive Buttons & Styling', icon: <PenTool size={18} /> },
+      { id: 'cards_hero', label: 'Topic 6: Feature Cards & Grid Layout', icon: <LayoutGrid size={18} /> },
+      { id: 'flexbox_nav', label: 'Topic 7: Hero & Navbar Redesign', icon: <Layers size={18} /> },
+      { id: 'responsive', label: 'Topic 8: Responsive Layout & Mobile Testing', icon: <Smartphone size={18} /> },
+      { id: 'guided_build', label: 'Topic 9: Step-by-Step Guided CSS Project', icon: <Code size={18} /> },
+      { id: 'quiz', label: 'Topic 10: Before/After Showcase & Quiz', icon: <CheckCircle size={18} /> }
     ]
   },
   {
     id: 'web_design_day12',
     title: 'Day 12 — JavaScript Fundamentals & DOM Interaction',
     items: [
-      { id: 'intro', label: '1-4. Why JS & Formula', icon: <BookOpen size={18} /> },
-      { id: 'connecting_js', label: '5-6. File Structure & Console', icon: <Code size={18} /> },
-      { id: 'data_types', label: '7-12. Variables, const/let & Operators', icon: <Sliders size={18} /> },
-      { id: 'dom_intro', label: '13-16. DOM Concept & Selector Practice', icon: <MousePointerClick size={18} /> },
-      { id: 'dom_text_events', label: '17-21. textContent & Event Flow', icon: <Zap size={18} /> },
-      { id: 'functions_classlist', label: '22-25. Functions & classList Toggle', icon: <LayoutGrid size={18} /> },
-      { id: 'mobile_menu', label: '26-27. Build Mobile Menu (☰ / ✕)', icon: <Smartphone size={18} /> },
-      { id: 'conditions', label: '28-29. if/else & Availability', icon: <Layers size={18} /> },
-      { id: 'guided_build', label: '30. Mini Challenge & Guided Build', icon: <Terminal size={18} /> },
-      { id: 'interactive_activities', label: '31-32. Debugging Challenge & Console', icon: <CheckSquare size={18} /> },
-      { id: 'ai_tools', label: '33-35. AI Explainer & Debugger', icon: <Sparkles size={18} /> },
-      { id: 'practice_assignment', label: '36-38. Practice, Assignment & Reflection', icon: <Briefcase size={18} /> },
-      { id: 'quiz', label: '39-45. 15-Q Quiz & Live Output', icon: <CheckCircle size={18} /> }
+      { id: 'intro', label: 'Topic 1: Intro to JavaScript & Role', icon: <BookOpen size={18} /> },
+      { id: 'connecting_js', label: 'Topic 2: Project Structure & Dev Console', icon: <Code size={18} /> },
+      { id: 'data_types', label: 'Topic 3: Variables (const/let) & Types', icon: <Sliders size={18} /> },
+      { id: 'operators', label: 'Topic 4: Operators & Template Literals', icon: <Terminal size={18} /> },
+      { id: 'dom_intro', label: 'Topic 5: The DOM & querySelector', icon: <MousePointerClick size={18} /> },
+      { id: 'dom_text_events', label: 'Topic 6: Modifying Text Content', icon: <Zap size={18} /> },
+      { id: 'events', label: 'Topic 7: Event Listeners & Interaction', icon: <PenTool size={18} /> },
+      { id: 'functions_classlist', label: 'Topic 8: Functions & Reusable Logic', icon: <LayoutGrid size={18} /> },
+      { id: 'classlist', label: 'Topic 9: Manipulating CSS classList', icon: <Layers size={18} /> },
+      { id: 'mobile_menu', label: 'Topic 10: Mobile Drawer Project & Quiz', icon: <CheckCircle size={18} /> }
     ]
   }
 ];
