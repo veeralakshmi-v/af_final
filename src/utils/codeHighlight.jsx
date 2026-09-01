@@ -71,7 +71,7 @@ function tokenizePyLine(raw) {
   let i = 0;
   while (i < raw.length) {
     if (raw[i] === '#') {
-      out += `<span style="color:#8b949e">${esc(raw.slice(i))}</span>`;
+      out += `<span style="color:#34d399;font-style:italic;">${esc(raw.slice(i))}</span>`;
       break;
     }
     if (raw[i] === '"' || raw[i] === "'") {
@@ -119,11 +119,23 @@ export function highlightJSString(code) {
   const len = code.length;
 
   while (i < len) {
+    // 0. HTML Comment in JSX <!-- -->
+    if (code[i] === '<' && code.slice(i, i + 4) === '&lt;!--' || code.slice(i, i + 4) === '<!--') {
+      let endTag = code.indexOf('-->', i);
+      if (endTag === -1) endTag = code.indexOf('--&gt;', i);
+      if (endTag !== -1) {
+        let j = endTag + (code.slice(endTag, endTag + 6) === '--&gt;' ? 6 : 3);
+        out += `<span style="color:#34d399;font-style:italic;font-weight:600;">${esc(code.slice(i, j))}</span>`;
+        i = j;
+        continue;
+      }
+    }
+
     // 1. Single-line comment //
     if (code[i] === '/' && code[i + 1] === '/') {
       let j = code.indexOf('\n', i);
       if (j === -1) j = len;
-      out += `<span style="color:#8892b0">${esc(code.slice(i, j))}</span>`;
+      out += `<span style="color:#34d399;font-style:italic;">${esc(code.slice(i, j))}</span>`;
       i = j;
       continue;
     }
@@ -132,7 +144,7 @@ export function highlightJSString(code) {
     if (code[i] === '/' && code[i + 1] === '*') {
       let j = code.indexOf('*/', i + 2);
       if (j === -1) j = len; else j += 2;
-      out += `<span style="color:#8892b0">${esc(code.slice(i, j))}</span>`;
+      out += `<span style="color:#34d399;font-style:italic;">${esc(code.slice(i, j))}</span>`;
       i = j;
       continue;
     }
@@ -143,7 +155,7 @@ export function highlightJSString(code) {
       if (prev === ' ' || prev === '\t' || prev === '\n' || prev === '\r') {
         let j = code.indexOf('\n', i);
         if (j === -1) j = len;
-        out += `<span style="color:#8892b0">${esc(code.slice(i, j))}</span>`;
+        out += `<span style="color:#34d399;font-style:italic;">${esc(code.slice(i, j))}</span>`;
         i = j;
         continue;
       }
@@ -237,11 +249,19 @@ export function highlightJS(code) {
 
 /* ── HTML/Django template highlighter ── */
 function highlightHtmlTemplate(code) {
-  let h = esc(code);
-  h = h.replace(/(\{%[\s\S]*?%\})/g, '<span style="color:#ff7b72;font-weight:bold">$1</span>');
-  h = h.replace(/(\{\{[\s\S]*?\}\})/g, '<span style="color:#a5d6ff;font-weight:bold">$1</span>');
-  h = h.replace(/(&lt;\/?)([\w-]+)/g, '$1<span style="color:#7ee787">$2</span>');
-  return h;
+  const escaped = esc(code);
+  const commentRegex = /(&lt;!--[\s\S]*?--&gt;)/g;
+  const comments = [];
+  let tokenized = escaped.replace(commentRegex, (match) => {
+    comments.push(`<span style="color:#34d399;font-style:italic;font-weight:600;">${match}</span>`);
+    return `___HTML_COMMENT_${comments.length - 1}___`;
+  });
+
+  tokenized = tokenized.replace(/(\{%[\s\S]*?%\})/g, '<span style="color:#ff7b72;font-weight:bold">$1</span>');
+  tokenized = tokenized.replace(/(\{\{[\s\S]*?\}\})/g, '<span style="color:#a5d6ff;font-weight:bold">$1</span>');
+  tokenized = tokenized.replace(/(&lt;\/?)([\w-]+)/g, '$1<span style="color:#7ee787">$2</span>');
+
+  return tokenized.replace(/___HTML_COMMENT_(\d+)___/g, (_, index) => comments[Number(index)]);
 }
 
 /* ── Main highlight dispatcher ── */
