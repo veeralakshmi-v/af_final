@@ -845,6 +845,33 @@ console.log(infoPanel.classList.contains("active")); // Returns true or false`}
                 An <strong>event</strong> occurs whenever a user interacts with the page (clicking a button, typing into an input field, or submitting a form). The event handler receives an <strong><code>event</code></strong> object containing details like <code>event.target</code>.
               </p>
 
+              {/* Super Simple event.target Explanation Box */}
+              <div style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', padding: '1.5rem', borderRadius: '16px', border: '1px solid #bbf7d0', marginBottom: '1.5rem' }}>
+                <h3 style={{ margin: '0 0 8px 0', color: '#15803d', fontSize: '1.15rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  🎯 What is <code>event.target</code>? (The Laser Pointer Analogy)
+                </h3>
+                <p style={{ margin: '0 0 12px 0', color: '#166534', fontSize: '0.96rem', lineHeight: 1.6 }}>
+                  Imagine a <strong>laser pointer pointing directly at whatever element you touched</strong>:
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginBottom: '12px' }}>
+                  <div style={{ background: '#ffffff', padding: '12px 16px', borderRadius: '10px', border: '1px solid #86efac' }}>
+                    <div style={{ fontWeight: 800, color: '#15803d', marginBottom: '4px' }}><code>event.target</code></div>
+                    <div style={{ fontSize: '0.88rem', color: '#374151' }}>The exact HTML element that received the user's click or action.</div>
+                  </div>
+                  <div style={{ background: '#ffffff', padding: '12px 16px', borderRadius: '10px', border: '1px solid #86efac' }}>
+                    <div style={{ fontWeight: 800, color: '#15803d', marginBottom: '4px' }}><code>event.target.tagName</code></div>
+                    <div style={{ fontSize: '0.88rem', color: '#374151' }}>Tells you the tag type (e.g. <code>"BUTTON"</code>, <code>"INPUT"</code>, <code>"DIV"</code>).</div>
+                  </div>
+                  <div style={{ background: '#ffffff', padding: '12px 16px', borderRadius: '10px', border: '1px solid #86efac' }}>
+                    <div style={{ fontWeight: 800, color: '#15803d', marginBottom: '4px' }}><code>event.target.innerText</code></div>
+                    <div style={{ fontSize: '0.88rem', color: '#374151' }}>Reads the text inside the clicked element (e.g. <code>"Inspect event.target"</code>).</div>
+                  </div>
+                </div>
+                <p style={{ margin: 0, color: '#166534', fontSize: '0.92rem', lineHeight: 1.6 }}>
+                  <strong>Key Takeaway:</strong> When a user clicks anything on the screen, JavaScript sends an <code>event</code> object to your function, and <strong><code>event.target</code> answers the question: <em>"WHO WAS CLICKED?"</em></strong>
+                </p>
+              </div>
+
               {/* Code Example */}
               <div style={{ marginBottom: '1.5rem' }}>
                 <CodeBlock
