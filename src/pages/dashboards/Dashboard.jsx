@@ -3,7 +3,8 @@ import {
   LayoutTemplate, Database, Code, ArrowRight, Sparkles, Bot, Terminal, Brain, 
   UserPlus, Users, LogIn, LogOut, CheckCircle, BarChart3, Layers, GitBranch, 
   Server, RefreshCw, Trash2, Key, Star, ShieldAlert, Award, Grid, HelpCircle,
-  BookOpen, ExternalLink, Upload, Download, FileText, Lock, AlertTriangle, Menu, X
+  BookOpen, ExternalLink, Upload, Download, FileText, Lock, AlertTriangle, Menu, X,
+  Search, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { 
   getAssignmentValidations, 
@@ -355,6 +356,67 @@ const formatTaskTitle = (task) => {
   return id.replace(/_/g, ' ').toUpperCase();
 };
 
+const availableCourseOptions = [
+  { value: "web_design_20days", label: "AI-Powered Web Design (20 Days)" },
+  { value: "html_css", label: "HTML, CSS & Bootstrap" },
+  { value: "sql", label: "Databases & SQL (Full Stack)" },
+  { value: "sql_da", label: "SQL for Data Analytics" },
+  { value: "python_course", label: "Core Python & OOPs" },
+  { value: "python_da", label: "Python for Data Analytics" },
+  { value: "javascript_course", label: "AI-Powered JavaScript" },
+  { value: "generative_ai_course", label: "Generative AI" },
+  { value: "agentic_ai", label: "Agentic AI Development" },
+  { value: "summer_sql", label: "Summer SQL" },
+  { value: "powerbi", label: "Power BI Data Analytics" },
+  { value: "react_course", label: "AI-Powered React JS" },
+  { value: "git_github", label: "Git & GitHub" },
+  { value: "json_course", label: "JSON Essentials" },
+  { value: "django_course", label: "Django Framework" },
+  { value: "stats_course", label: "Statistics for Data Analytics" },
+  { value: "numpy_course", label: "NumPy for Data Science" },
+  { value: "pandas_course", label: "Pandas for Data Science" },
+  { value: "matplotlib_course", label: "Matplotlib for Data Science" },
+  { value: "seaborn_course", label: "Seaborn for Data Science" },
+  { value: "core_js", label: "Core JavaScript" },
+  { value: "tally_prime", label: "AI powered Tally" }
+];
+
+const getCourseLabel = (courseKey) => {
+  if (!courseKey) return 'Unassigned';
+  if (courseKey === 'all') return 'All Access';
+  if (courseKey.includes(',')) {
+    return courseKey.split(',').map(k => getCourseLabel(k.trim())).filter(Boolean).join(', ');
+  }
+  const found = availableCourseOptions.find(c => c.value === courseKey);
+  if (found) return found.label;
+  const labels = {
+    html_css: 'Web Design (HTML, CSS & Bootstrap)',
+    sql: 'AI-Powered SQL Course',
+    sql_da: 'SQL for Data Analytics',
+    python_course: 'Core Python & OOPs',
+    python_da: 'Python for Data Analytics',
+    javascript_course: 'AI-Powered JavaScript',
+    generative_ai_course: 'Generative AI',
+    agentic_ai: 'Agentic AI Development',
+    summer_sql: 'Summer SQL Crash Course',
+    powerbi: 'AI-Powered Data Analytics (Power BI)',
+    react_course: 'AI-Powered React JS',
+    git_github: 'Git & GitHub',
+    json_course: 'JSON Essentials',
+    django_course: 'Django Framework',
+    stats_course: 'Statistics for Data Analytics',
+    numpy_course: 'NumPy for Data Science',
+    pandas_course: 'Pandas for Data Science',
+    matplotlib_course: 'Matplotlib for Data Science',
+    seaborn_course: 'Seaborn for Data Science',
+    core_js: 'Core JavaScript',
+    tally_prime: 'AI powered Tally'
+  };
+  if (labels[courseKey]) return labels[courseKey];
+  return courseKey.replace(/_/g, ' ').toUpperCase();
+};
+
+
 export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledCourse, session, onLogout, completedLessons = [], taskSubmissions = [] }) {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'courses' | 'register' | 'database' | 'demos' | 'grading'
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -374,6 +436,29 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   const [staff, setStaff] = useState([]);
   const [enrollRole, setEnrollRole] = useState('student'); // 'student' | 'staff'
   const [dbTab, setDbTab] = useState('students'); // 'students' | 'staff'
+
+  // Student Search & Pagination States
+  const [studentSearch, setStudentSearch] = useState('');
+  const [studentPage, setStudentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Filtered Students for Live Database
+  const filteredStudents = students.filter(s => {
+    if (!studentSearch.trim()) return true;
+    const query = studentSearch.toLowerCase().trim();
+    const nameMatch = (s.name || '').toLowerCase().includes(query);
+    const codeMatch = (s.accessCode || '').toLowerCase().includes(query);
+    const rawCourse = (s.enrolledCourse || '').toLowerCase();
+    const courseLabel = getCourseLabel(s.enrolledCourse).toLowerCase();
+    const courseMatch = rawCourse.includes(query) || courseLabel.includes(query);
+    return nameMatch || codeMatch || courseMatch;
+  });
+
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage) || 1;
+  const safeStudentPage = Math.min(Math.max(1, studentPage), totalPages);
+  const startIndex = (safeStudentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, filteredStudents.length);
+  const paginatedStudents = filteredStudents.slice(startIndex, startIndex + itemsPerPage);
 
   // HTML & CSS Course Validation State
   const [htmlCssValidations, setHtmlCssValidations] = useState(() => getAssignmentValidations());
@@ -860,37 +945,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     document.body.removeChild(link);
   };
 
-  const getCourseLabel = (key) => {
-    if (!key) return '';
-    if (key === 'all') return 'All Access';
-    if (key.includes(',')) {
-      return key.split(',').map(k => getCourseLabel(k)).filter(Boolean).join(', ');
-    }
-    const labels = {
-      html_css: 'Web Design (HTML, CSS & Bootstrap)',
-      sql: 'AI-Powered SQL Course',
-      sql_da: 'SQL for Data Analytics',
-      python_course: 'Core Python & OOPs',
-      python_da: 'Python for Data Analytics',
-      javascript_course: 'AI-Powered JavaScript',
-      generative_ai_course: 'Generative AI',
-      agentic_ai: 'Agentic AI Development',
-      summer_sql: 'Summer SQL Crash Course',
-      powerbi: 'AI-Powered Data Analytics (Power BI)',
-      react_course: 'AI-Powered React JS',
-      git_github: 'Git & GitHub',
-      json_course: 'JSON Essentials',
-      django_course: 'Django Framework',
-      stats_course: 'Statistics for Data Analytics',
-      numpy_course: 'NumPy for Data Science',
-      pandas_course: 'Pandas for Data Science',
-      matplotlib_course: 'Matplotlib for Data Science',
-      seaborn_course: 'Seaborn for Data Science',
-      core_js: 'Core JavaScript',
-      tally_prime: 'AI powered Tally'
-    };
-    return labels[key] || key;
-  };
+
 
   const totalLocked = students.filter(s => s.deviceId).length;
   const totalStudents = students.length;
@@ -2022,91 +2077,277 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
             {dbTab === 'students' ? (
               <>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontWeight: 800, fontSize: '1.25rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
-                  <Users size={24} color="#10b981" /> Enrolled Student Credentials Directory
+                <div style={{ 
+                  display: 'flex', 
+                  flexDirection: isMobile ? 'column' : 'row', 
+                  alignItems: isMobile ? 'flex-start' : 'center', 
+                  justifyContent: 'space-between', 
+                  gap: '1rem', 
+                  marginBottom: '1.5rem', 
+                  borderBottom: '1px solid var(--surface-border)', 
+                  paddingBottom: '1rem' 
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-primary)', fontWeight: 800, fontSize: '1.25rem' }}>
+                    <Users size={24} color="#10b981" /> 
+                    <span>Enrolled Student Credentials Directory</span>
+                    <span style={{
+                      background: 'rgba(16, 185, 129, 0.1)',
+                      color: '#10b981',
+                      fontSize: '0.8rem',
+                      fontWeight: 800,
+                      padding: '0.2rem 0.6rem',
+                      borderRadius: '12px'
+                    }}>
+                      {filteredStudents.length} {filteredStudents.length === 1 ? 'Student' : 'Students'}
+                    </span>
+                  </div>
+
+                  {/* Search Bar */}
+                  <div style={{ 
+                    position: 'relative', 
+                    width: isMobile ? '100%' : '320px', 
+                    display: 'flex', 
+                    alignItems: 'center' 
+                  }}>
+                    <Search size={18} style={{ position: 'absolute', left: '12px', color: '#94a3b8', pointerEvents: 'none' }} />
+                    <input
+                      type="text"
+                      value={studentSearch}
+                      onChange={(e) => {
+                        setStudentSearch(e.target.value);
+                        setStudentPage(1);
+                      }}
+                      placeholder="Search student, access key, course..."
+                      style={{
+                        width: '100%',
+                        padding: '0.55rem 2.2rem 0.55rem 2.3rem',
+                        fontSize: '0.88rem',
+                        borderRadius: '10px',
+                        border: '1px solid var(--surface-border)',
+                        background: 'var(--bg-color)',
+                        color: 'var(--text-primary)',
+                        outline: 'none',
+                        transition: 'border-color 0.2s ease'
+                      }}
+                    />
+                    {studentSearch && (
+                      <button
+                        onClick={() => {
+                          setStudentSearch('');
+                          setStudentPage(1);
+                        }}
+                        style={{
+                          position: 'absolute',
+                          right: '10px',
+                          background: 'none',
+                          border: 'none',
+                          color: '#94a3b8',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          padding: 2
+                        }}
+                        title="Clear search"
+                      >
+                        <X size={16} />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 
-                {students.length > 0 ? (
-                  <div style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid var(--surface-border)' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
-                      <thead>
-                        <tr style={{ textAlign: 'left', color: 'var(--text-secondary)' }}>
-                          <th style={{ padding: '1rem' }}>Student Name</th>
-                          <th style={{ padding: '1rem' }}>Enrolled Course</th>
-                          <th style={{ padding: '1rem' }}>Access Key</th>
-                          <th style={{ padding: '1rem' }}>Shareable URL</th>
-                          <th style={{ padding: '1rem' }}>Lock Status</th>
-                          <th style={{ padding: '1rem', textAlign: 'center' }}>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {students.map(s => (
-                          <tr key={s._id || s.id} style={{ color: 'var(--text-primary)' }}>
-                            <td style={{ padding: '1rem', fontWeight: 800 }}>{s.name}</td>
-                            <td style={{ padding: '1rem' }}>{getCourseLabel(s.enrolledCourse)}</td>
-                            <td style={{ padding: '1rem', fontWeight: 800, color: '#ca8a04', fontFamily: 'monospace' }}>{s.accessCode}</td>
-                            <td style={{ padding: '1rem' }}>
-                              <button
-                                onClick={() => {
-                                  const loginUrl = `${window.location.origin}/?code=${s.accessCode}`;
-                                  navigator.clipboard.writeText(loginUrl);
-                                  alert(`Copied direct access link for ${s.name}!\n\nLink: ${loginUrl}`);
-                                }}
-                                style={{
-                                  background: '#f8fafc', border: '1px solid var(--surface-border)', color: 'var(--text-primary)',
-                                  padding: '0.4rem 0.8rem', borderRadius: '8px', cursor: 'pointer',
-                                  fontSize: '0.8rem', fontWeight: 700, transition: 'var(--transition)'
-                                }}
-                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e2e8f0'}
-                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
-                              >
-                                Copy Login Link
-                              </button>
-                            </td>
-                            <td style={{ padding: '1rem' }}>
-                              {s.deviceId ? (
-                                <span style={{ color: '#10b981', fontWeight: 700, fontSize: '0.78rem', background: 'rgba(16, 185, 129, 0.08)', padding: '0.3rem 0.7rem', borderRadius: '20px' }}>
-                                  🔒 Device Locked
-                                </span>
-                              ) : (
-                                <span style={{ color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.78rem', background: 'rgba(0, 0, 0, 0.03)', padding: '0.3rem 0.7rem', borderRadius: '20px' }}>
-                                  🆕 Unlocked
-                                </span>
-                              )}
-                            </td>
-                            <td style={{ padding: '1rem', textAlign: 'center' }}>
-                              <button 
-                                onClick={() => handleOpenEditCoursesModal(s)}
-                                style={{ background: 'none', border: 'none', color: '#2563eb', fontWeight: 800, cursor: 'pointer', fontSize: '0.85rem', marginRight: '10px' }}
-                              >
-                                Edit Courses
-                              </button>
-                              {s.deviceId && (
-                                <button 
-                                  onClick={() => handleResetDevice(s._id || s.id)}
-                                  style={{ background: 'none', border: 'none', color: '#f59e0b', fontWeight: 800, cursor: 'pointer', fontSize: '0.85rem', marginRight: '10px' }}
-                                >
-                                  Reset Lock
-                                </button>
-                              )}
-                              {session?.role === 'admin' && (
-                                <button 
-                                  onClick={() => handleDeleteStudent(s._id || s.id)}
-                                  style={{ background: 'none', border: 'none', color: '#ef4444', fontWeight: 800, cursor: 'pointer', fontSize: '0.85rem' }}
-                                >
-                                  Delete
-                                </button>
-                              )}
-                            </td>
+                {filteredStudents.length > 0 ? (
+                  <>
+                    <div style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid var(--surface-border)' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+                        <thead>
+                          <tr style={{ textAlign: 'left', color: 'var(--text-secondary)', background: 'rgba(0,0,0,0.02)' }}>
+                            <th style={{ padding: '1rem' }}>Student Name</th>
+                            <th style={{ padding: '1rem' }}>Enrolled Course</th>
+                            <th style={{ padding: '1rem' }}>Access Key</th>
+                            <th style={{ padding: '1rem' }}>Shareable URL</th>
+                            <th style={{ padding: '1rem' }}>Lock Status</th>
+                            <th style={{ padding: '1rem', textAlign: 'center' }}>Action</th>
                           </tr>
+                        </thead>
+                        <tbody>
+                          {paginatedStudents.map(s => (
+                            <tr key={s._id || s.id} style={{ color: 'var(--text-primary)', borderBottom: '1px solid var(--surface-border)' }}>
+                              <td style={{ padding: '1rem', fontWeight: 800 }}>{s.name}</td>
+                              <td style={{ padding: '1rem' }}>{getCourseLabel(s.enrolledCourse)}</td>
+                              <td style={{ padding: '1rem', fontWeight: 800, color: '#ca8a04', fontFamily: 'monospace' }}>{s.accessCode}</td>
+                              <td style={{ padding: '1rem' }}>
+                                <button
+                                  onClick={() => {
+                                    const loginUrl = `${window.location.origin}/?code=${s.accessCode}`;
+                                    navigator.clipboard.writeText(loginUrl);
+                                    alert(`Copied direct access link for ${s.name}!\n\nLink: ${loginUrl}`);
+                                  }}
+                                  style={{
+                                    background: '#f8fafc', border: '1px solid var(--surface-border)', color: 'var(--text-primary)',
+                                    padding: '0.4rem 0.8rem', borderRadius: '8px', cursor: 'pointer',
+                                    fontSize: '0.8rem', fontWeight: 700, transition: 'var(--transition)'
+                                  }}
+                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e2e8f0'}
+                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                                >
+                                  Copy Login Link
+                                </button>
+                              </td>
+                              <td style={{ padding: '1rem' }}>
+                                {s.deviceId ? (
+                                  <span style={{ color: '#10b981', fontWeight: 700, fontSize: '0.78rem', background: 'rgba(16, 185, 129, 0.08)', padding: '0.3rem 0.7rem', borderRadius: '20px' }}>
+                                    🔒 Device Locked
+                                  </span>
+                                ) : (
+                                  <span style={{ color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.78rem', background: 'rgba(0, 0, 0, 0.03)', padding: '0.3rem 0.7rem', borderRadius: '20px' }}>
+                                    🆕 Unlocked
+                                  </span>
+                                )}
+                              </td>
+                              <td style={{ padding: '1rem', textAlign: 'center' }}>
+                                <button 
+                                  onClick={() => handleOpenEditCoursesModal(s)}
+                                  style={{ background: 'none', border: 'none', color: '#2563eb', fontWeight: 800, cursor: 'pointer', fontSize: '0.85rem', marginRight: '10px' }}
+                                >
+                                  Edit Courses
+                                </button>
+                                {s.deviceId && (
+                                  <button 
+                                    onClick={() => handleResetDevice(s._id || s.id)}
+                                    style={{ background: 'none', border: 'none', color: '#f59e0b', fontWeight: 800, cursor: 'pointer', fontSize: '0.85rem', marginRight: '10px' }}
+                                  >
+                                    Reset Lock
+                                  </button>
+                                )}
+                                {session?.role === 'admin' && (
+                                  <button 
+                                    onClick={() => handleDeleteStudent(s._id || s.id)}
+                                    style={{ background: 'none', border: 'none', color: '#ef4444', fontWeight: 800, cursor: 'pointer', fontSize: '0.85rem' }}
+                                  >
+                                    Delete
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Pagination Controls */}
+                    <div style={{ 
+                      display: 'flex', 
+                      flexDirection: isMobile ? 'column' : 'row',
+                      alignItems: 'center', 
+                      justifyContent: 'space-between', 
+                      gap: '1rem',
+                      marginTop: '1.25rem', 
+                      paddingTop: '1rem', 
+                      borderTop: '1px solid var(--surface-border)',
+                      fontSize: '0.85rem',
+                      color: 'var(--text-secondary)'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                        <span>
+                          Showing <strong>{startIndex + 1}</strong> to <strong>{endIndex}</strong> of <strong>{filteredStudents.length}</strong> students
+                          {studentSearch && ` (filtered from ${students.length} total)`}
+                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                          <span>Per page:</span>
+                          <select
+                            value={itemsPerPage}
+                            onChange={(e) => {
+                              setItemsPerPage(Number(e.target.value));
+                              setStudentPage(1);
+                            }}
+                            style={{
+                              padding: '0.25rem 0.5rem',
+                              borderRadius: '6px',
+                              border: '1px solid var(--surface-border)',
+                              background: 'var(--bg-color)',
+                              color: 'var(--text-primary)',
+                              fontSize: '0.82rem',
+                              fontWeight: 700,
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <button
+                          onClick={() => setStudentPage(p => Math.max(1, p - 1))}
+                          disabled={safeStudentPage <= 1}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            padding: '0.4rem 0.7rem',
+                            borderRadius: '8px',
+                            border: '1px solid var(--surface-border)',
+                            background: safeStudentPage <= 1 ? '#f1f5f9' : '#ffffff',
+                            color: safeStudentPage <= 1 ? '#cbd5e1' : 'var(--text-primary)',
+                            fontWeight: 700,
+                            cursor: safeStudentPage <= 1 ? 'not-allowed' : 'pointer'
+                          }}
+                        >
+                          <ChevronLeft size={16} /> Prev
+                        </button>
+
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                          <button
+                            key={pageNum}
+                            onClick={() => setStudentPage(pageNum)}
+                            style={{
+                              padding: '0.4rem 0.75rem',
+                              borderRadius: '8px',
+                              border: pageNum === safeStudentPage ? 'none' : '1px solid var(--surface-border)',
+                              background: pageNum === safeStudentPage ? '#10b981' : '#ffffff',
+                              color: pageNum === safeStudentPage ? '#ffffff' : 'var(--text-primary)',
+                              fontWeight: 800,
+                              cursor: 'pointer',
+                              boxShadow: pageNum === safeStudentPage ? '0 2px 6px rgba(16,185,129,0.3)' : 'none'
+                            }}
+                          >
+                            {pageNum}
+                          </button>
                         ))}
-                      </tbody>
-                    </table>
-                  </div>
+
+                        <button
+                          onClick={() => setStudentPage(p => Math.min(totalPages, p + 1))}
+                          disabled={safeStudentPage >= totalPages}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            padding: '0.4rem 0.7rem',
+                            borderRadius: '8px',
+                            border: '1px solid var(--surface-border)',
+                            background: safeStudentPage >= totalPages ? '#f1f5f9' : '#ffffff',
+                            color: safeStudentPage >= totalPages ? '#cbd5e1' : 'var(--text-primary)',
+                            fontWeight: 700,
+                            cursor: safeStudentPage >= totalPages ? 'not-allowed' : 'pointer'
+                          }}
+                        >
+                          Next <ChevronRight size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  </>
                 ) : (
                   <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-secondary)' }}>
                     <Users size={48} style={{ opacity: 0.3, marginBottom: '1rem' }} />
-                    <p>No registered students found in database. Enroll new records above.</p>
+                    <p>
+                      {studentSearch 
+                        ? `No students found matching "${studentSearch}". Try clearing your search.`
+                        : 'No registered students found in database. Enroll new records above.'
+                      }
+                    </p>
                   </div>
                 )}
               </>
