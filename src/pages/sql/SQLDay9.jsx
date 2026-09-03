@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Database, Code, Play, CheckCircle, Shield, RefreshCw, Zap, Lock, BookOpen, Layers, Terminal } from 'lucide-react';
+import { Database, Code, Play, CheckCircle, Shield, RefreshCw, Zap, Lock, BookOpen, Layers, Terminal, AlertTriangle, Plus, Bell } from 'lucide-react';
 
 const Section = ({ id, eyebrow, title, children }) => (
   <motion.div
@@ -20,11 +20,39 @@ const Section = ({ id, eyebrow, title, children }) => (
 export default function SQLDay9({ activeTab, onNavigate }) {
   // Stored Procedure simple interactive demo state
   const [selectedDept, setSelectedDept] = useState('Engineering');
-  const [procedureExecuted, setProcedureExecuted] = useState(false);
+
+  // Trigger simple interactive demo state
+  const [employeesList, setEmployeesList] = useState([
+    { id: 101, name: 'Alice Smith', dept: 'Engineering', salary: '$85,000' },
+    { id: 102, name: 'Bob Jones', dept: 'Marketing', salary: '$55,000' }
+  ]);
+  const [auditLogsList, setAuditLogsList] = useState([
+    { log_id: 1, event: 'System Initialized', emp_id: 'SYSTEM', time: '10:00:00 AM' }
+  ]);
+  const [triggerFired, setTriggerFired] = useState(false);
 
   const handleContinue = (nextSectionId) => {
     onNavigate('sql_module9', nextSectionId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleAddEmployeeWithTrigger = () => {
+    const newId = 100 + employeesList.length + 1;
+    const newEmp = { id: newId, name: 'David Miller', dept: 'Sales', salary: '$75,000' };
+    
+    // Add to employees
+    setEmployeesList([...employeesList, newEmp]);
+
+    // TRIGGER AUTOMATICALLY FIRES! Adds record to audit log
+    const currentTime = new Date().toLocaleTimeString();
+    const newLog = {
+      log_id: auditLogsList.length + 1,
+      event: `AFTER INSERT TRIGGER: New Hire Logged (${newEmp.name})`,
+      emp_id: `#${newId}`,
+      time: currentTime
+    };
+    setAuditLogsList([...auditLogsList, newLog]);
+    setTriggerFired(true);
   };
 
   const sampleStaffData = {
@@ -198,7 +226,7 @@ export default function SQLDay9({ activeTab, onNavigate }) {
                   {['Engineering', 'Marketing', 'Sales'].map(dept => (
                     <button
                       key={dept}
-                      onClick={() => { setSelectedDept(dept); setProcedureExecuted(true); }}
+                      onClick={() => setSelectedDept(dept)}
                       style={{
                         padding: '0.45rem 0.9rem',
                         borderRadius: '6px',
@@ -258,28 +286,50 @@ export default function SQLDay9({ activeTab, onNavigate }) {
       )}
 
       {/* ========================================================= */}
-      {/* 4. TRIGGERS TAB (SIMPLE FOR BEGINNERS) */}
+      {/* 4. TRIGGERS TAB (SUPER SIMPLE & INTERACTIVE FOR BEGINNERS) */}
       {/* ========================================================= */}
       {activeTab === 'triggers' && (
-        <Section key="triggers" id="triggers" eyebrow="Day 9 • Automation" title="SQL Triggers (Automatic Actions)">
+        <Section key="triggers" id="triggers" eyebrow="Day 9 • Automation" title="SQL Triggers (Automatic Event Handlers)">
           <div className="panel">
             
             {/* Simple Concept Box */}
             <div style={{ background: '#fff1f2', borderLeft: '4px solid #ef4444', padding: '1.25rem', borderRadius: '12px', marginBottom: '2rem' }}>
               <h3 style={{ color: '#991b1b', margin: '0 0 0.5rem 0', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Zap size={20} color="#ef4444" /> What is a Trigger? (Alarm System Analogy)
+                <Zap size={20} color="#ef4444" /> What is a Trigger? (Motion Sensor Analogy)
               </h3>
               <p style={{ margin: 0, color: '#9f1239', fontSize: '0.95rem', lineHeight: '1.6' }}>
-                A <strong>Trigger</strong> is like an <strong>Automatic Security Sensor</strong> 🚨! 
-                It listens for database events (like when a new row is added or updated) and automatically runs an action without human intervention.
+                A <strong>Trigger</strong> is like an <strong>Automatic Security Alarm / Motion Sensor 🚨</strong>! 
+                You attach it to a table. Whenever a row is added, changed, or deleted, the trigger <strong>automatically fires an action</strong> without you running extra code!
               </p>
             </div>
 
-            {/* Simple Trigger Example */}
+            {/* 3 Main Trigger Events */}
+            <h3 style={{ marginBottom: '1rem', fontSize: '1.3rem' }}>When Do Triggers Fire?</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
+              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '1.25rem', borderRadius: '12px' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#10b981', textTransform: 'uppercase' }}>Event 1</span>
+                <h4 style={{ margin: '4px 0 0.4rem 0', color: '#0f172a' }}>AFTER INSERT</h4>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Fires automatically right after a new row is added (e.g. send welcome email or log new hire).</p>
+              </div>
+
+              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '1.25rem', borderRadius: '12px' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#3b82f6', textTransform: 'uppercase' }}>Event 2</span>
+                <h4 style={{ margin: '4px 0 0.4rem 0', color: '#0f172a' }}>AFTER UPDATE</h4>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Fires automatically when data changes (e.g. track price changes or audit edits).</p>
+              </div>
+
+              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '1.25rem', borderRadius: '12px' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#ef4444', textTransform: 'uppercase' }}>Event 3</span>
+                <h4 style={{ margin: '4px 0 0.4rem 0', color: '#0f172a' }}>BEFORE DELETE</h4>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Fires before a row is removed (e.g. backup deleted data before it is lost).</p>
+              </div>
+            </div>
+
+            {/* Simple Code Example */}
             <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '14px', padding: '1.5rem', marginBottom: '2.5rem' }}>
-              <h4 style={{ margin: '0 0 0.5rem 0', color: '#0f172a' }}>Example: Automatically Log New Hires to Audit Table</h4>
+              <h4 style={{ margin: '0 0 0.5rem 0', color: '#0f172a' }}>Code Example: Automatically Log New Hires</h4>
               <p style={{ fontSize: '0.88rem', color: '#64748b', marginBottom: '0.75rem' }}>
-                Every time a new employee is inserted into <code>Employees</code>, this trigger automatically logs the event into <code>AuditLog</code>.
+                Every time someone inserts a row into <code>Employees</code>, this trigger automatically inserts a log record into <code>AuditLog</code>.
               </p>
               
               <pre style={{ background: '#0f172a', color: '#f8fafc', padding: '1.25rem', borderRadius: '10px', fontSize: '0.85rem', lineHeight: '1.6', margin: 0 }}>
@@ -288,12 +338,109 @@ export default function SQLDay9({ activeTab, onNavigate }) {
 <span style={{ color: '#c792ea' }}>AFTER INSERT ON</span> Employees<br/>
 <span style={{ color: '#c792ea' }}>FOR EACH ROW</span><br/>
 <span style={{ color: '#c792ea' }}>BEGIN</span><br/>
-&nbsp;&nbsp;<span style={{ color: '#64748b' }}>-- NEW refers to the employee record just inserted!</span><br/>
+&nbsp;&nbsp;<span style={{ color: '#64748b' }}>-- NEW refers to the employee row being inserted!</span><br/>
 &nbsp;&nbsp;<span style={{ color: '#c792ea' }}>INSERT INTO</span> AuditLog (emp_id, message, log_time)<br/>
-&nbsp;&nbsp;<span style={{ color: '#89ddff' }}>VALUES</span> (<span style={{ color: '#82aaff' }}>NEW</span>.emp_id, 'New Employee Hired', <span style={{ color: '#82aaff' }}>NOW()</span>);<br/>
+&nbsp;&nbsp;<span style={{ color: '#89ddff' }}>VALUES</span> (<span style={{ color: '#82aaff' }}>NEW</span>.emp_id, 'New Hire Added', <span style={{ color: '#82aaff' }}>NOW()</span>);<br/>
 <span style={{ color: '#c792ea' }}>END</span>;
                 </code>
               </pre>
+            </div>
+
+            {/* Interactive Try-It Trigger Simulator */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '14px', padding: '1.5rem', marginBottom: '2.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '8px' }}>
+                <div>
+                  <h4 style={{ margin: 0, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Bell size={18} color="#ef4444" /> Interactive Trigger Simulator: Insert Employee Row
+                  </h4>
+                  <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: '#64748b' }}>
+                    Click button below to execute: <code>INSERT INTO Employees VALUES ('David Miller', '$75,000');</code>
+                  </p>
+                </div>
+
+                <button
+                  onClick={handleAddEmployeeWithTrigger}
+                  style={{
+                    background: '#ef4444',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '0.5rem 1.1rem',
+                    borderRadius: '6px',
+                    fontWeight: 700,
+                    fontSize: '0.85rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}
+                >
+                  <Plus size={16} /> Insert Row & Fire Trigger
+                </button>
+              </div>
+
+              {triggerFired && (
+                <div style={{ padding: '0.75rem 1rem', background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: '8px', fontSize: '0.85rem', color: '#991b1b', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Bell size={16} color="#ef4444" /> ⚡ TRIGGER FIRED AUTOMATICALLY! Audit log entry created without manual INSERT command!
+                </div>
+              )}
+
+              {/* Side by Side Tables */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+                
+                {/* Employees Table */}
+                <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '1rem' }}>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#0f172a', display: 'block', marginBottom: '0.5rem' }}>
+                    1. Employees Table ({employeesList.length} rows)
+                  </span>
+                  <table style={{ width: '100%', fontSize: '0.8rem', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ background: '#f1f5f9' }}>
+                        <th style={{ padding: '5px', textAlign: 'left' }}>ID</th>
+                        <th style={{ padding: '5px', textAlign: 'left' }}>Name</th>
+                        <th style={{ padding: '5px', textAlign: 'left' }}>Dept</th>
+                        <th style={{ padding: '5px', textAlign: 'right' }}>Salary</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {employeesList.map(emp => (
+                        <tr key={emp.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                          <td style={{ padding: '5px', fontFamily: 'monospace' }}>#{emp.id}</td>
+                          <td style={{ padding: '5px', fontWeight: 600 }}>{emp.name}</td>
+                          <td style={{ padding: '5px', color: '#64748b' }}>{emp.dept}</td>
+                          <td style={{ padding: '5px', textAlign: 'right', fontWeight: 700, color: '#10b981' }}>{emp.salary}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* AuditLog Table */}
+                <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '1rem' }}>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ef4444', display: 'block', marginBottom: '0.5rem' }}>
+                    2. AuditLog Table (Created by Trigger ⚡)
+                  </span>
+                  <table style={{ width: '100%', fontSize: '0.8rem', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ background: '#fff1f2' }}>
+                        <th style={{ padding: '5px', textAlign: 'left' }}>Log ID</th>
+                        <th style={{ padding: '5px', textAlign: 'left' }}>Event Message</th>
+                        <th style={{ padding: '5px', textAlign: 'right' }}>Time</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {auditLogsList.map(log => (
+                        <tr key={log.log_id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                          <td style={{ padding: '5px', fontFamily: 'monospace' }}>L{log.log_id}</td>
+                          <td style={{ padding: '5px', fontWeight: 600, color: '#991b1b' }}>{log.event}</td>
+                          <td style={{ padding: '5px', textAlign: 'right', color: '#64748b' }}>{log.time}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+
             </div>
 
             <div className="card-actions" style={{ marginTop: '2rem' }}>
