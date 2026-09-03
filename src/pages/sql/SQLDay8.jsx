@@ -420,22 +420,79 @@ export default function SQLDay8({ activeTab, onNavigate }) {
       {activeTab === 'practical' && (
         <Section key="practical" id="practical" eyebrow="Day 8 • Topic 4" title="Practical: Advanced SQL Examples">
           <div className="panel">
-            <p style={{ fontSize: '1rem', color: '#475569' }}>Here are 3 real-world SQL code snippets every developer uses:</p>
+            <p style={{ fontSize: '1rem', color: '#475569', marginBottom: '1.5rem' }}>
+              Here are <strong>6 real-world SQL practice scenarios</strong> covering Views, Subqueries, and Indexes:
+            </p>
 
-            <h3 style={{ marginTop: '1.5rem', marginBottom: '0.75rem', fontSize: '1.1rem' }}>1. Payroll Security View</h3>
-            <pre style={{ background: '#1e293b', color: '#f8fafc', padding: '1rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.85rem' }}>
-              <code>CREATE VIEW PublicPayroll AS<br/>SELECT emp_id, first_name, department FROM Employees;<br/><br/>SELECT * FROM PublicPayroll WHERE department = 'Sales';</code>
-            </pre>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
-            <h3 style={{ marginTop: '1.5rem', marginBottom: '0.75rem', fontSize: '1.1rem' }}>2. Top Earner Subquery</h3>
-            <pre style={{ background: '#1e293b', color: '#f8fafc', padding: '1rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.85rem' }}>
-              <code>SELECT name, salary FROM Employees<br/>WHERE salary &gt; (SELECT AVG(salary) FROM Employees);</code>
-            </pre>
+              {/* Practice 1 */}
+              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', borderLeft: '4px solid #3b82f6' }}>
+                <h3 style={{ margin: '0 0 0.4rem 0', fontSize: '1.1rem', color: '#0f172a' }}>1. Payroll Security View (Hide Sensitive Data)</h3>
+                <p style={{ fontSize: '0.88rem', color: '#64748b', margin: '0 0 0.75rem 0' }}>
+                  <strong>Scenario:</strong> HR needs a view for company directory that shows <code>emp_id</code>, <code>first_name</code>, and <code>department</code>, but hides private SSN and salary.
+                </p>
+                <pre style={{ background: '#0f172a', color: '#f8fafc', padding: '0.85rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.83rem', margin: 0 }}>
+                  <code>CREATE VIEW PublicPayroll AS<br/>SELECT emp_id, first_name, department FROM Employees;<br/><br/>-- Querying the safe view:<br/>SELECT * FROM PublicPayroll WHERE department = 'Sales';</code>
+                </pre>
+              </div>
 
-            <h3 style={{ marginTop: '1.5rem', marginBottom: '0.75rem', fontSize: '1.1rem' }}>3. Indexing Email Column</h3>
-            <pre style={{ background: '#1e293b', color: '#f8fafc', padding: '1rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.85rem' }}>
-              <code>CREATE INDEX idx_user_email ON Users(email);</code>
-            </pre>
+              {/* Practice 2 */}
+              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', borderLeft: '4px solid #10b981' }}>
+                <h3 style={{ margin: '0 0 0.4rem 0', fontSize: '1.1rem', color: '#0f172a' }}>2. Top Earner Subquery (Filter by Average)</h3>
+                <p style={{ fontSize: '0.88rem', color: '#64748b', margin: '0 0 0.75rem 0' }}>
+                  <strong>Scenario:</strong> Find all employees who earn more than the overall company average salary.
+                </p>
+                <pre style={{ background: '#0f172a', color: '#f8fafc', padding: '0.85rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.83rem', margin: 0 }}>
+                  <code>SELECT name, salary FROM Employees<br/>WHERE salary &gt; (SELECT AVG(salary) FROM Employees);</code>
+                </pre>
+              </div>
+
+              {/* Practice 3 */}
+              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', borderLeft: '4px solid #8b5cf6' }}>
+                <h3 style={{ margin: '0 0 0.4rem 0', fontSize: '1.1rem', color: '#0f172a' }}>3. Fast Search Indexing (Email Lookup)</h3>
+                <p style={{ fontSize: '0.88rem', color: '#64748b', margin: '0 0 0.75rem 0' }}>
+                  <strong>Scenario:</strong> Millions of users log in daily by typing their email. Create an index to make lookups instant.
+                </p>
+                <pre style={{ background: '#0f172a', color: '#f8fafc', padding: '0.85rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.83rem', margin: 0 }}>
+                  <code>CREATE INDEX idx_user_email ON Users(email);</code>
+                </pre>
+              </div>
+
+              {/* Practice 4 */}
+              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', borderLeft: '4px solid #f59e0b' }}>
+                <h3 style={{ margin: '0 0 0.4rem 0', fontSize: '1.1rem', color: '#0f172a' }}>4. Subquery with Set Filter (IN Clause)</h3>
+                <p style={{ fontSize: '0.88rem', color: '#64748b', margin: '0 0 0.75rem 0' }}>
+                  <strong>Scenario:</strong> Find all orders placed by customers who live in 'New York'.
+                </p>
+                <pre style={{ background: '#0f172a', color: '#f8fafc', padding: '0.85rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.83rem', margin: 0 }}>
+                  <code>SELECT order_id, total_amount, order_date FROM Orders<br/>WHERE customer_id IN (<br/>    SELECT customer_id FROM Customers WHERE city = 'New York'<br/>);</code>
+                </pre>
+              </div>
+
+              {/* Practice 5 */}
+              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', borderLeft: '4px solid #06b6d4' }}>
+                <h3 style={{ margin: '0 0 0.4rem 0', fontSize: '1.1rem', color: '#0f172a' }}>5. Customer Spending Summary View</h3>
+                <p style={{ fontSize: '0.88rem', color: '#64748b', margin: '0 0 0.75rem 0' }}>
+                  <strong>Scenario:</strong> Create a view that pre-calculates total order count and total money spent for each customer.
+                </p>
+                <pre style={{ background: '#0f172a', color: '#f8fafc', padding: '0.85rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.83rem', margin: 0 }}>
+                  <code>CREATE VIEW CustomerOrderTotals AS<br/>SELECT customer_id, COUNT(order_id) AS total_orders, SUM(total_amount) AS total_spent<br/>FROM Orders GROUP BY customer_id;<br/><br/>-- Query high-value VIP accounts easily:<br/>SELECT * FROM CustomerOrderTotals WHERE total_spent &gt; 1000;</code>
+                </pre>
+              </div>
+
+              {/* Practice 6 */}
+              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', borderLeft: '4px solid #ec4899' }}>
+                <h3 style={{ margin: '0 0 0.4rem 0', fontSize: '1.1rem', color: '#0f172a' }}>6. Unique Index Constraint (Prevent Duplicate Usernames)</h3>
+                <p style={{ fontSize: '0.88rem', color: '#64748b', margin: '0 0 0.75rem 0' }}>
+                  <strong>Scenario:</strong> Prevent users from registering duplicate usernames while speeding up login checks.
+                </p>
+                <pre style={{ background: '#0f172a', color: '#f8fafc', padding: '0.85rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.83rem', margin: 0 }}>
+                  <code>CREATE UNIQUE INDEX idx_unique_username ON Users(username);</code>
+                </pre>
+              </div>
+
+            </div>
 
             <div className="card-actions" style={{ marginTop: '2rem' }}>
               <button className="btn btn-primary" onClick={() => handleContinue('assignment')}>Next: Assignment &rarr;</button>
