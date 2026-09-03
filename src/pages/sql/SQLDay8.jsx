@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Database, Code, Play, CheckCircle, ArrowRight, Table, Filter, Layers, Zap, 
-  Eye, ShieldCheck, TrendingUp, Clock, Activity, Cpu, FileText, Sliders, Search, Lock 
+  Eye, ShieldCheck, TrendingUp, Clock, Activity, Cpu, FileText, Sliders, Search, Lock,
+  Plus, RefreshCw, Trash2 
 } from 'lucide-react';
 
 const Section = ({ id, eyebrow, title, children }) => (
@@ -733,30 +734,97 @@ export default function SQLDay8({ activeTab, onNavigate }) {
               </div>
             </div>
 
-            {/* SYNTAX QUICK CHEATSHEET */}
-            <div style={{ background: '#0f172a', padding: '1.25rem', borderRadius: '12px', marginBottom: '2.5rem' }}>
-              <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '1px' }}>SQL DDL Syntax Reference</span>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginTop: '0.75rem' }}>
-                <div>
-                  <span style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block' }}>-- 1. Create / Replace View</span>
-                  <code style={{ color: '#c792ea', fontSize: '0.82rem', fontFamily: 'monospace' }}>
-                    CREATE OR REPLACE VIEW vw_active_users AS<br/>
-                    SELECT id, name, email FROM Users WHERE status = 'Active';
-                  </code>
+            {/* 📖 COMPLETE SQL VIEWS SYNTAX GUIDE */}
+            <div style={{ marginTop: '2rem', marginBottom: '2.5rem' }}>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Code size={22} color="#3b82f6" /> SQL Views Syntax Guide
+              </h3>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
+                
+                {/* 1. CREATE VIEW SYNTAX */}
+                <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                  <h4 style={{ color: '#1d4ed8', fontSize: '1.05rem', fontWeight: 800, margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Plus size={16} /> 1. CREATE VIEW Syntax
+                  </h4>
+                  <p style={{ fontSize: '0.85rem', color: '#475569', margin: '0 0 0.75rem 0', lineHeight: '1.5' }}>
+                    Creates a new virtual table view based on the result of an SQL <code>SELECT</code> statement.
+                  </p>
+                  <pre style={{ background: '#0f172a', padding: '1rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.83rem', color: '#f8fafc', margin: 0, lineHeight: '1.6' }}>
+                    <code>
+<span style={{ color: '#c792ea' }}>CREATE VIEW</span> view_name <span style={{ color: '#89ddff' }}>AS</span><br/>
+<span style={{ color: '#c792ea' }}>SELECT</span> column1, column2, ...<br/>
+<span style={{ color: '#c792ea' }}>FROM</span> table_name<br/>
+<span style={{ color: '#c792ea' }}>WHERE</span> condition;
+                    </code>
+                  </pre>
+                  <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.8rem', background: '#eff6ff', borderRadius: '6px', fontSize: '0.8rem', color: '#1e40af' }}>
+                    <strong>Example:</strong><br/>
+                    <code>CREATE VIEW ActiveCustomers AS SELECT id, name, email FROM Customers WHERE status = 'Active';</code>
+                  </div>
                 </div>
-                <div>
-                  <span style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block' }}>-- 2. Querying a View</span>
-                  <code style={{ color: '#c3e88d', fontSize: '0.82rem', fontFamily: 'monospace' }}>
-                    SELECT * FROM vw_active_users<br/>
-                    WHERE email LIKE '%@gmail.com';
-                  </code>
+
+                {/* 2. ALTER / REPLACE VIEW SYNTAX */}
+                <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                  <h4 style={{ color: '#047857', fontSize: '1.05rem', fontWeight: 800, margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <RefreshCw size={16} /> 2. ALTER / REPLACE VIEW Syntax
+                  </h4>
+                  <p style={{ fontSize: '0.85rem', color: '#475569', margin: '0 0 0.75rem 0', lineHeight: '1.5' }}>
+                    Modifies or updates the structure of an existing view without dropping database permissions.
+                  </p>
+                  <pre style={{ background: '#0f172a', padding: '1rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.83rem', color: '#f8fafc', margin: 0, lineHeight: '1.6' }}>
+                    <code>
+<span style={{ color: '#c792ea' }}>CREATE OR REPLACE VIEW</span> view_name <span style={{ color: '#89ddff' }}>AS</span><br/>
+<span style={{ color: '#c792ea' }}>SELECT</span> column1, column2, column3<br/>
+<span style={{ color: '#c792ea' }}>FROM</span> table_name<br/>
+<span style={{ color: '#c792ea' }}>WHERE</span> new_condition;
+                    </code>
+                  </pre>
+                  <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.8rem', background: '#ecfdf5', borderRadius: '6px', fontSize: '0.8rem', color: '#065f46' }}>
+                    <strong>Example:</strong><br/>
+                    <code>CREATE OR REPLACE VIEW ActiveCustomers AS SELECT id, name, email, phone FROM Customers WHERE status = 'Active';</code>
+                  </div>
                 </div>
-                <div>
-                  <span style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block' }}>-- 3. Dropping a View</span>
-                  <code style={{ color: '#f43f5e', fontSize: '0.82rem', fontFamily: 'monospace' }}>
-                    DROP VIEW IF EXISTS vw_active_users;
-                  </code>
+
+                {/* 3. DROP VIEW SYNTAX */}
+                <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                  <h4 style={{ color: '#b91c1c', fontSize: '1.05rem', fontWeight: 800, margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Trash2 size={16} /> 3. DROP VIEW Syntax
+                  </h4>
+                  <p style={{ fontSize: '0.85rem', color: '#475569', margin: '0 0 0.75rem 0', lineHeight: '1.5' }}>
+                    Permanently deletes a virtual view definition (underlying table data remains untouched).
+                  </p>
+                  <pre style={{ background: '#0f172a', padding: '1rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.83rem', color: '#f8fafc', margin: 0, lineHeight: '1.6' }}>
+                    <code>
+<span style={{ color: '#f43f5e' }}>DROP VIEW</span> <span style={{ color: '#89ddff' }}>IF EXISTS</span> view_name;
+                    </code>
+                  </pre>
+                  <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.8rem', background: '#fef2f2', borderRadius: '6px', fontSize: '0.8rem', color: '#991b1b' }}>
+                    <strong>Example:</strong><br/>
+                    <code>DROP VIEW IF EXISTS ActiveCustomers;</code>
+                  </div>
                 </div>
+
+                {/* 4. QUERYING A VIEW SYNTAX */}
+                <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                  <h4 style={{ color: '#6d28d9', fontSize: '1.05rem', fontWeight: 800, margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Search size={16} /> 4. Querying a View Syntax
+                  </h4>
+                  <p style={{ fontSize: '0.85rem', color: '#475569', margin: '0 0 0.75rem 0', lineHeight: '1.5' }}>
+                    Select data from a virtual view just like querying any normal physical table.
+                  </p>
+                  <pre style={{ background: '#0f172a', padding: '1rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.83rem', color: '#f8fafc', margin: 0, lineHeight: '1.6' }}>
+                    <code>
+<span style={{ color: '#c792ea' }}>SELECT</span> * <span style={{ color: '#c792ea' }}>FROM</span> view_name<br/>
+<span style={{ color: '#c792ea' }}>WHERE</span> additional_filter = 'value';
+                    </code>
+                  </pre>
+                  <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.8rem', background: '#f5f3ff', borderRadius: '6px', fontSize: '0.8rem', color: '#5b21b6' }}>
+                    <strong>Example:</strong><br/>
+                    <code>SELECT * FROM ActiveCustomers WHERE email LIKE '%@gmail.com';</code>
+                  </div>
+                </div>
+
               </div>
             </div>
 
