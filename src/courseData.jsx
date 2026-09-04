@@ -252,6 +252,7 @@ export const sqlCourseData = [
       { id: 'practical_tables', label: 'Practical: Create Tables', icon: <Table size={18} /> },
       { id: 'practical_ddl', label: 'Practical: Modify Tables', icon: <Table size={18} /> },
       { id: 'mini_project', label: 'Library Project', icon: <MousePointerClick size={18} /> },
+      { id: 'assignment', label: '📝 Day 3 Assignment & Staff Review', icon: <PenTool size={18} /> },
     ]
   },
   {
@@ -362,6 +363,7 @@ export const daSqlCourseData = [
       { id: 'practical_tables', label: 'Practical: Create Tables', icon: <Table size={18} /> },
       { id: 'practical_ddl', label: 'Practical: Modify Tables', icon: <Table size={18} /> },
       { id: 'mini_project', label: 'Library Project', icon: <MousePointerClick size={18} /> },
+      { id: 'assignment', label: '📝 Day 3 Assignment & Staff Review', icon: <PenTool size={18} /> },
     ]
   },
   {

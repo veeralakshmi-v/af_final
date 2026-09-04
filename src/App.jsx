@@ -792,7 +792,7 @@ function App() {
             ) : (
               <>
                 {/* Assignment & Staff Review Page — Applicable for All Courses */}
-                {activeNode.tabId === 'assignment' ? (
+                {['assignment', 'assignment_work', 'assessment', 'submission', 'js_assignment', 'assignment_day7', 'assignment_day8'].includes(activeNode.tabId) ? (
                   <AssignmentSubmissionPage courseKey={activeCourse} moduleId={activeNode.moduleId} onNavigate={handleNavClick} session={session} />
                 ) : (
                   <>
