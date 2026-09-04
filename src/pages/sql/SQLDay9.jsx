@@ -385,10 +385,10 @@ export default function SQLDay9({ activeTab, onNavigate }) {
               )}
 
               {/* Side by Side Tables */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', width: '100%' }}>
                 
                 {/* Employees Table */}
-                <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '1rem' }}>
+                <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '1rem', overflowX: 'auto', width: '100%' }}>
                   <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#0f172a', display: 'block', marginBottom: '0.5rem' }}>
                     1. Employees Table ({employeesList.length} rows)
                   </span>
@@ -415,7 +415,7 @@ export default function SQLDay9({ activeTab, onNavigate }) {
                 </div>
 
                 {/* AuditLog Table */}
-                <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '1rem' }}>
+                <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '1rem', overflowX: 'auto', width: '100%' }}>
                   <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ef4444', display: 'block', marginBottom: '0.5rem' }}>
                     2. AuditLog Table (Created by Trigger ⚡)
                   </span>
@@ -431,8 +431,8 @@ export default function SQLDay9({ activeTab, onNavigate }) {
                       {auditLogsList.map(log => (
                         <tr key={log.log_id} style={{ borderBottom: '1px solid #f1f5f9' }}>
                           <td style={{ padding: '5px', fontFamily: 'monospace' }}>L{log.log_id}</td>
-                          <td style={{ padding: '5px', fontWeight: 600, color: '#991b1b' }}>{log.event}</td>
-                          <td style={{ padding: '5px', textAlign: 'right', color: '#64748b' }}>{log.time}</td>
+                          <td style={{ padding: '5px', fontWeight: 600, color: '#991b1b', wordBreak: 'break-word', maxWidth: '200px' }}>{log.event}</td>
+                          <td style={{ padding: '5px', textAlign: 'right', color: '#64748b', whiteSpace: 'nowrap' }}>{log.time}</td>
                         </tr>
                       ))}
                     </tbody>

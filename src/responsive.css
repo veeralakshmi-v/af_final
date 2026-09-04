@@ -79,8 +79,13 @@ img, video {
   -webkit-overflow-scrolling: touch;
 }
 
-table {
+.table-responsive table {
   min-width: 480px;
+}
+
+table {
+  width: 100%;
+  max-width: 100%;
 }
 
 /* ── 8. CODE BOXES ──────────────────────────────────── */
