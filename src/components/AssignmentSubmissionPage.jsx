@@ -5,18 +5,13 @@ import {
 } from 'lucide-react';
 import { 
   HTML_CSS_ASSIGNMENTS_CONFIG, 
+  getModuleConfig,
   getAssignmentValidations, 
   saveAssignmentValidation 
 } from '../utils/htmlCssLocking';
 
-export default function AssignmentSubmissionPage({ moduleId, onNavigate, session }) {
-  const config = HTML_CSS_ASSIGNMENTS_CONFIG[moduleId] || {
-    dayTitle: 'Day Assignment',
-    assignmentTitle: 'Practical Assignment & Staff Validation',
-    tasks: ['Complete all practical exercises for this day module.', 'Submit your code and reflection below.'],
-    nextModuleId: null,
-    nextModuleTitle: 'Next Day'
-  };
+export default function AssignmentSubmissionPage({ courseKey = 'html_css', moduleId, onNavigate, session }) {
+  const config = getModuleConfig(courseKey, moduleId);
 
   const [validations, setValidations] = useState(getAssignmentValidations());
   const currentRecord = validations[moduleId] || {};

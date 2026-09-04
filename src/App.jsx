@@ -373,8 +373,8 @@ function App() {
       return;
     }
 
-    if (activeCourse === 'html_css' && isModuleLocked(moduleId)) {
-      const lockInfo = getLockReason(moduleId);
+    if (isModuleLocked(activeCourse, moduleId)) {
+      const lockInfo = getLockReason(activeCourse, moduleId);
       alert(`🔒 Day Content Locked!\n\n${lockInfo ? lockInfo.detail : 'You must submit the previous assignment with at least 100 characters of student feedback and receive Staff Validation to unlock this content.'}`);
       if (lockInfo && lockInfo.prevModuleId) {
         setActiveNode({ moduleId: lockInfo.prevModuleId, tabId: 'assignment' });
@@ -790,9 +790,9 @@ function App() {
               <AILearningStudio activeCourse={activeCourse} activeModuleId={activeNode.moduleId} openAITutor={openAITutor} />
             ) : (
               <>
-                {/* HTML & CSS Course Rendering */}
-                {activeCourse === 'html_css' && activeNode.tabId === 'assignment' ? (
-                  <AssignmentSubmissionPage moduleId={activeNode.moduleId} onNavigate={handleNavClick} session={session} />
+                {/* Assignment & Staff Review Page — Applicable for All Courses */}
+                {activeNode.tabId === 'assignment' ? (
+                  <AssignmentSubmissionPage courseKey={activeCourse} moduleId={activeNode.moduleId} onNavigate={handleNavClick} session={session} />
                 ) : (
                   <>
                     {activeNode.moduleId === 'module1' && <Day1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}

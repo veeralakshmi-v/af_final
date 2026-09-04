@@ -1,4 +1,38 @@
-// Utility for HTML & CSS Course Assignment Validation & Navigation Locking
+// Utility for LMS Course Assignment Validation & Navigation Locking across all courses
+import { 
+  htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, 
+  agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, 
+  pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, 
+  djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, 
+  pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData 
+} from '../courseData';
+
+export const COURSE_DATA_MAP = {
+  html_css: htmlCourseData,
+  sql: sqlCourseData,
+  summer_sql: summerSqlCourseData,
+  sql_da: daSqlCourseData,
+  powerbi: powerBiCourseData,
+  agentic_ai: agenticAiCourseData,
+  python_fullstack: pythonFullStackCourseData,
+  python_course: pythonCourseData,
+  python_da: pythonDaCourseData,
+  generative_ai_course: generativeAiCourseData,
+  react_course: reactCourseData,
+  git_github: gitCourseData,
+  json_course: jsonCourseData,
+  django_course: djangoCourseData,
+  devops: devopsCourseData,
+  stats_course: statsCourseData,
+  numpy_course: numpyCourseData,
+  pandas_course: pandasCourseData,
+  matplotlib_course: matplotlibCourseData,
+  seaborn_course: seabornCourseData,
+  core_js: coreJsCourseData,
+  induction: inductionCourseData,
+  tally_prime: tallyCourseData,
+  web_design_20days: webDesignCourseData
+};
 
 export const HTML_CSS_MODULE_ORDER = [
   'module1',        // Day 1 - HTML Fundamentals
@@ -195,24 +229,86 @@ export function saveAssignmentValidation(moduleId, record) {
   }
 }
 
-export function isModuleLocked(targetModuleId, validations = getAssignmentValidations()) {
-  const index = HTML_CSS_MODULE_ORDER.indexOf(targetModuleId);
-  // Module 1 (Day 1) is never locked
+export function getCourseModuleOrder(courseKey) {
+  if (courseKey === 'html_css') {
+    return HTML_CSS_MODULE_ORDER;
+  }
+  const courseModules = COURSE_DATA_MAP[courseKey];
+  if (courseModules && Array.isArray(courseModules)) {
+    return courseModules.map(m => m.id);
+  }
+  return [];
+}
+
+export function getModuleConfig(courseKey, moduleId) {
+  if (courseKey === 'html_css' && HTML_CSS_ASSIGNMENTS_CONFIG[moduleId]) {
+    return HTML_CSS_ASSIGNMENTS_CONFIG[moduleId];
+  }
+  const courseModules = COURSE_DATA_MAP[courseKey] || [];
+  const modObj = courseModules.find(m => m.id === moduleId);
+  const dayTitle = modObj ? modObj.title : 'Day Assignment';
+  const assignmentTitle = `${dayTitle} Practical Assignment & Staff Review`;
+  
+  const order = getCourseModuleOrder(courseKey);
+  const idx = order.indexOf(moduleId);
+  const nextModId = (idx >= 0 && idx < order.length - 1) ? order[idx + 1] : null;
+  const nextModObj = nextModId ? courseModules.find(m => m.id === nextModId) : null;
+  const nextModTitle = nextModObj ? nextModObj.title : 'Next Day';
+
+  return {
+    dayTitle,
+    assignmentTitle,
+    tasks: [
+      `Complete all practical exercises and coding tasks for ${dayTitle}.`,
+      'Submit your code snippet, GitHub/project link, and self-reflection feedback below.'
+    ],
+    nextModuleId: nextModId,
+    nextModuleTitle: nextModTitle
+  };
+}
+
+export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations, maybeValidations) {
+  let courseKey, targetModuleId, validations;
+
+  if (typeof targetModuleIdOrValidations === 'string') {
+    courseKey = courseKeyOrModuleId;
+    targetModuleId = targetModuleIdOrValidations;
+    validations = maybeValidations || getAssignmentValidations();
+  } else {
+    courseKey = 'html_css';
+    targetModuleId = courseKeyOrModuleId;
+    validations = targetModuleIdOrValidations || getAssignmentValidations();
+  }
+
+  const order = getCourseModuleOrder(courseKey);
+  const index = order.indexOf(targetModuleId);
   if (index <= 0) return false;
 
-  // Check if the immediately preceding module has staff approval
-  const prevModuleId = HTML_CSS_MODULE_ORDER[index - 1];
+  const prevModuleId = order[index - 1];
   const prevValidation = validations[prevModuleId];
 
   return !prevValidation || prevValidation.status !== 'approved';
 }
 
-export function getLockReason(targetModuleId, validations = getAssignmentValidations()) {
-  const index = HTML_CSS_MODULE_ORDER.indexOf(targetModuleId);
+export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, maybeValidations) {
+  let courseKey, targetModuleId, validations;
+
+  if (typeof targetModuleIdOrValidations === 'string') {
+    courseKey = courseKeyOrModuleId;
+    targetModuleId = targetModuleIdOrValidations;
+    validations = maybeValidations || getAssignmentValidations();
+  } else {
+    courseKey = 'html_css';
+    targetModuleId = courseKeyOrModuleId;
+    validations = targetModuleIdOrValidations || getAssignmentValidations();
+  }
+
+  const order = getCourseModuleOrder(courseKey);
+  const index = order.indexOf(targetModuleId);
   if (index <= 0) return null;
 
-  const prevModuleId = HTML_CSS_MODULE_ORDER[index - 1];
-  const config = HTML_CSS_ASSIGNMENTS_CONFIG[prevModuleId] || {};
+  const prevModuleId = order[index - 1];
+  const config = getModuleConfig(courseKey, prevModuleId);
   const prevValidation = validations[prevModuleId];
 
   if (!prevValidation) {

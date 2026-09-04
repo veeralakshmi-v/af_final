@@ -135,7 +135,7 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
       <div className="sidebar-links-container" style={{ flex: 1, overflowY: 'auto', padding: '1rem 0' }}>
         {courseStructure?.map((module) => {
           const isExpanded = expandedModules[module.id];
-          const isLocked = activeCourse === 'html_css' && isModuleLocked(module.id, validations);
+          const isLocked = isModuleLocked(activeCourse, module.id, validations);
 
           return (
             <div key={module.id} style={{ marginBottom: '0.5rem' }}>
