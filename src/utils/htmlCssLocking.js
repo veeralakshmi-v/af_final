@@ -267,22 +267,53 @@ export function getModuleConfig(courseKey, moduleId) {
   };
 }
 
-export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations, maybeValidations) {
-  let courseKey, targetModuleId, validations;
+export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations, maybeValidations, maybeSession) {
+  let courseKey, targetModuleId, validations, session;
 
   if (typeof targetModuleIdOrValidations === 'string') {
     courseKey = courseKeyOrModuleId;
     targetModuleId = targetModuleIdOrValidations;
     validations = maybeValidations || getAssignmentValidations();
+    session = maybeSession;
   } else {
     courseKey = 'html_css';
     targetModuleId = courseKeyOrModuleId;
     validations = targetModuleIdOrValidations || getAssignmentValidations();
+    session = maybeValidations;
   }
 
+  // 1. Staff users (Staff / Instructor / Admin) are NEVER locked out!
+  const isStaff = (() => {
+    if (session) {
+      return Boolean(session.role === 'staff' || session.role === 'admin' || session.role === 'instructor');
+    }
+    try {
+      const raw = localStorage.getItem('lms_user_session');
+      if (raw) {
+        const u = JSON.parse(raw);
+        return Boolean(u && (u.role === 'staff' || u.role === 'admin' || u.role === 'instructor'));
+      }
+    } catch (e) {}
+    return false;
+  })();
+
+  if (isStaff) return false;
+
+  // 2. Student locking rules:
   const order = getCourseModuleOrder(courseKey);
   const index = order.indexOf(targetModuleId);
+  
+  // First module of any course is never locked for students
   if (index <= 0) return false;
+
+  // If index is 1 and target module is Day 1 (e.g. react_module1 after react_js_essentials), it is open by default!
+  const targetModuleObj = (COURSE_DATA_MAP[courseKey] || []).find(m => m.id === targetModuleId);
+  if (index <= 1 && targetModuleObj) {
+    const titleLower = (targetModuleObj.title || '').toLowerCase();
+    if (titleLower.includes('day 1') || targetModuleId.endsWith('day1') || targetModuleId.endsWith('module1')) {
+      return false;
+    }
+  }
 
   const prevModuleId = order[index - 1];
   const prevValidation = validations[prevModuleId];
@@ -290,22 +321,49 @@ export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations,
   return !prevValidation || prevValidation.status !== 'approved';
 }
 
-export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, maybeValidations) {
-  let courseKey, targetModuleId, validations;
+export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, maybeValidations, maybeSession) {
+  let courseKey, targetModuleId, validations, session;
 
   if (typeof targetModuleIdOrValidations === 'string') {
     courseKey = courseKeyOrModuleId;
     targetModuleId = targetModuleIdOrValidations;
     validations = maybeValidations || getAssignmentValidations();
+    session = maybeSession;
   } else {
     courseKey = 'html_css';
     targetModuleId = courseKeyOrModuleId;
     validations = targetModuleIdOrValidations || getAssignmentValidations();
+    session = maybeValidations;
   }
+
+  // Staff users are never locked
+  const isStaff = (() => {
+    if (session) {
+      return Boolean(session.role === 'staff' || session.role === 'admin' || session.role === 'instructor');
+    }
+    try {
+      const raw = localStorage.getItem('lms_user_session');
+      if (raw) {
+        const u = JSON.parse(raw);
+        return Boolean(u && (u.role === 'staff' || u.role === 'admin' || u.role === 'instructor'));
+      }
+    } catch (e) {}
+    return false;
+  })();
+
+  if (isStaff) return null;
 
   const order = getCourseModuleOrder(courseKey);
   const index = order.indexOf(targetModuleId);
   if (index <= 0) return null;
+
+  const targetModuleObj = (COURSE_DATA_MAP[courseKey] || []).find(m => m.id === targetModuleId);
+  if (index <= 1 && targetModuleObj) {
+    const titleLower = (targetModuleObj.title || '').toLowerCase();
+    if (titleLower.includes('day 1') || targetModuleId.endsWith('day1') || targetModuleId.endsWith('module1')) {
+      return null;
+    }
+  }
 
   const prevModuleId = order[index - 1];
   const config = getModuleConfig(courseKey, prevModuleId);

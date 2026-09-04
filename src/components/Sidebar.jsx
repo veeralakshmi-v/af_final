@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, ExternalLink, ChevronRight, ChevronDown, CheckCircle, ArrowLeft, Lock } from 'lucide-react';
 import { isModuleLocked, getAssignmentValidations } from '../utils/htmlCssLocking';
 
-export default function Sidebar({ courseStructure, activeNode, onNavClick, onBackToDashboard, isMobileMenuOpen, completedLessons = [], activeCourse }) {
+export default function Sidebar({ courseStructure, activeNode, onNavClick, onBackToDashboard, isMobileMenuOpen, completedLessons = [], activeCourse, session }) {
   const [validations, setValidations] = useState(getAssignmentValidations());
 
   useEffect(() => {
