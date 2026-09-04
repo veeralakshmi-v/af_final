@@ -30,20 +30,20 @@ export default function AssignmentSubmissionPage({ moduleId, onNavigate, session
 
   // Check if logged-in account has staff or admin role
   const isStaffUser = (() => {
-    if (session && (session.role === 'staff' || session.role === 'admin' || session.role === 'instructor')) {
-      return true;
+    if (session) {
+      return Boolean(session.role === 'staff' || session.role === 'admin' || session.role === 'instructor');
     }
     try {
       const raw = localStorage.getItem('lms_user_session');
       if (raw) {
         const u = JSON.parse(raw);
-        return u && (u.role === 'staff' || u.role === 'admin' || u.role === 'instructor');
+        return Boolean(u && (u.role === 'staff' || u.role === 'admin' || u.role === 'instructor'));
       }
     } catch (e) {}
     return false;
   })();
 
-  const [staffFeedbackInput, setStaffFeedbackInput] = useState(currentRecord.staffFeedback || 'Great work! Code meets semantic standards and feedback is thoughtful. Approved.');
+  const [staffFeedbackInput, setStaffFeedbackInput] = useState(currentRecord.staffFeedback || '');
 
   useEffect(() => {
     const handleSync = () => {
@@ -82,7 +82,7 @@ export default function AssignmentSubmissionPage({ moduleId, onNavigate, session
       submissionNotes: submissionNotes.trim(),
       studentFeedback: studentFeedback.trim(),
       submittedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-      status: isStaffUser || currentRecord.status === 'approved' ? 'approved' : 'pending'
+      status: isStaffUser ? (currentRecord.status || 'approved') : 'pending'
     };
 
     const updated = saveAssignmentValidation(moduleId, newRecord);
