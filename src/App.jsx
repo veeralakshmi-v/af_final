@@ -701,94 +701,6 @@ function App() {
               </button>
             </div>
 
-            {session?.role === 'student' && activeNode.tabId !== 'ai_workflow' && (
-              <div style={{
-                background: '#ffffff',
-                border: '1px solid var(--surface-border)',
-                borderRadius: '16px',
-                padding: '1rem 1.5rem',
-                marginBottom: '2rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '1rem',
-                boxShadow: 'var(--shadow-sm)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 700 }}>
-                    Topic Progress:
-                  </span>
-                  <span style={{
-                    fontSize: '0.9rem',
-                    fontWeight: 800,
-                    color: 'var(--text-primary)',
-                    background: '#f1f5f9',
-                    padding: '0.3rem 0.6rem',
-                    borderRadius: '8px'
-                  }}>
-                    {currentCourseData?.flatMap(m => m.items || [])?.find(item => item.id === activeNode?.tabId)?.label || 'Lesson Content'}
-                  </span>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  {/* Mark Complete Checkbox Button */}
-                  {(() => {
-                    const currentLessonKey = `${activeCourse}:${activeNode.moduleId}:${activeNode.tabId}`;
-                    const isCompleted = completedLessons.includes(currentLessonKey) ||
-                      completedLessons.includes(`${activeNode.moduleId}:${activeNode.tabId}`);
-                    return (
-                      <button
-                        onClick={() => toggleLessonCompletion(currentLessonKey, !isCompleted)}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          border: '1px solid',
-                          borderColor: isCompleted ? '#10b981' : '#cbd5e1',
-                          background: isCompleted ? '#d1fae5' : '#ffffff',
-                          color: isCompleted ? '#065f46' : '#475569',
-                          padding: '0.5rem 1rem',
-                          borderRadius: '10px',
-                          fontSize: '0.88rem',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                          boxShadow: isCompleted ? '0 2px 4px rgba(16, 185, 129, 0.1)' : 'none'
-                        }}
-                      >
-                        <CheckCircle size={16} color={isCompleted ? '#10b981' : '#64748b'} fill={isCompleted ? '#ffffff' : 'transparent'} />
-                        {isCompleted ? 'Completed 🎉' : 'Mark Completed'}
-                      </button>
-                    );
-                  })()}
-
-                  {/* Task Submission Button — Navigates directly to the Assignment Submission Page */}
-                  {/* <button
-                    onClick={() => handleNavClick(activeNode.moduleId, 'assignment')}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      border: 'none',
-                      background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
-                      color: '#ffffff',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '10px',
-                      fontSize: '0.88rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      boxShadow: 'var(--glow-primary)'
-                    }}
-                    title="Go to Assignment Page to submit assignment and student feedback"
-                  >
-                    <Send size={16} /> Submit Assignment
-                  </button> */}
-                </div>
-              </div>
-            )}
-
             {activeNode.tabId === 'ai_workflow' ? (
               <AILearningStudio activeCourse={activeCourse} activeModuleId={activeNode.moduleId} openAITutor={openAITutor} />
             ) : (
@@ -1072,6 +984,73 @@ function App() {
                 {activeNode.moduleId === 'core_js_day10' && <CoreJSDay10 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId.startsWith('stats_day') && !['stats_day1', 'stats_day2', 'stats_day3', 'stats_day4', 'stats_day5', 'stats_day6', 'stats_day7', 'stats_day8', 'stats_day9', 'stats_day10', 'stats_day11', 'stats_day12', 'stats_day13', 'stats_day14', 'stats_day15', 'stats_day16', 'stats_day17', 'stats_mini_projects', 'stats_final_project'].includes(activeNode.moduleId) && <StatsDayPlaceholder activeTab={activeNode.tabId} onNavigate={handleNavClick} dayTitle={activeNode.moduleId.replace('stats_day', 'Day ')} />}
               </>
+            )}
+
+            {/* 🔽 TOPIC PROGRESS BAR AT BOTTOM OF EACH TOPIC */}
+            {session?.role === 'student' && activeNode.tabId !== 'ai_workflow' && !['assignment', 'assignment_work', 'assessment', 'submission', 'js_assignment', 'assignment_day7', 'assignment_day8'].includes(activeNode.tabId) && (
+              <div style={{
+                background: '#ffffff',
+                border: '1px solid var(--surface-border)',
+                borderRadius: '16px',
+                padding: '1.25rem 1.5rem',
+                marginTop: '2.5rem',
+                marginBottom: '2rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '1rem',
+                boxShadow: 'var(--shadow-sm)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                    Topic Progress:
+                  </span>
+                  <span style={{
+                    fontSize: '0.9rem',
+                    fontWeight: 800,
+                    color: 'var(--text-primary)',
+                    background: '#f1f5f9',
+                    padding: '0.3rem 0.6rem',
+                    borderRadius: '8px'
+                  }}>
+                    {currentCourseData?.flatMap(m => m.items || [])?.find(item => item.id === activeNode?.tabId)?.label || 'Lesson Content'}
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  {/* Mark Complete Checkbox Button */}
+                  {(() => {
+                    const currentLessonKey = `${activeCourse}:${activeNode.moduleId}:${activeNode.tabId}`;
+                    const isCompleted = completedLessons.includes(currentLessonKey) ||
+                      completedLessons.includes(`${activeNode.moduleId}:${activeNode.tabId}`);
+                    return (
+                      <button
+                        onClick={() => toggleLessonCompletion(currentLessonKey, !isCompleted)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          border: '1px solid',
+                          borderColor: isCompleted ? '#10b981' : '#cbd5e1',
+                          background: isCompleted ? '#d1fae5' : '#ffffff',
+                          color: isCompleted ? '#065f46' : '#475569',
+                          padding: '0.5rem 1rem',
+                          borderRadius: '10px',
+                          fontSize: '0.88rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                          boxShadow: isCompleted ? '0 2px 4px rgba(16, 185, 129, 0.1)' : 'none'
+                        }}
+                      >
+                        <CheckCircle size={16} color={isCompleted ? '#10b981' : '#64748b'} fill={isCompleted ? '#ffffff' : 'transparent'} />
+                        {isCompleted ? 'Completed 🎉' : 'Mark Completed'}
+                      </button>
+                    );
+                  })()}
+                </div>
+              </div>
             )}
           </div>
           <FloatingAITutor
