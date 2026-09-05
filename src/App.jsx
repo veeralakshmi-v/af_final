@@ -763,9 +763,9 @@ function App() {
                     );
                   })()}
 
-                  {/* Task Submission Button */}
+                  {/* Task Submission Button — Navigates directly to the Assignment Submission Page */}
                   <button
-                    onClick={() => setShowTaskModal(true)}
+                    onClick={() => handleNavClick(activeNode.moduleId, 'assignment')}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -781,6 +781,7 @@ function App() {
                       transition: 'all 0.2s ease',
                       boxShadow: 'var(--glow-primary)'
                     }}
+                    title="Go to Assignment Page to submit assignment and student feedback"
                   >
                     <Send size={16} /> Submit Assignment
                   </button>

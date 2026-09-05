@@ -1410,6 +1410,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                         <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Lesson Module</th>
                         <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Submitted At</th>
                         <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Project Link</th>
+                        <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Submitted Feedback</th>
                         <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Review Status</th>
                         <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Grade</th>
                         <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Instructor Feedback</th>
@@ -1448,6 +1449,9 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                               ) : (
                                 <span style={{ color: 'var(--text-tertiary)', fontStyle: 'italic' }}>Text Only</span>
                               )}
+                            </td>
+                            <td style={{ padding: '1rem', color: 'var(--text-secondary)', fontSize: '0.85rem', maxWidth: '200px', wordWrap: 'break-word', whiteSpace: 'normal' }}>
+                              {task.studentFeedback || task.taskText || task.submissionNotes || <span style={{ color: 'var(--text-tertiary)', fontStyle: 'italic' }}>—</span>}
                             </td>
                             <td style={{ padding: '1rem' }}>
                               <span style={{
@@ -2920,7 +2924,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                               )}
 
                               {/* Student Feedback Reflection Quote */}
-                              {task.studentFeedback && (
+                              {(task.studentFeedback || task.taskText || task.submissionNotes) && (
                                 <div style={{
                                   background: '#f8fafc',
                                   borderLeft: '4px solid #3b82f6',
@@ -2934,31 +2938,12 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                   <span style={{ fontWeight: 800, color: '#2563eb', fontStyle: 'normal', display: 'block', fontSize: '0.75rem', marginBottom: 2 }}>
                                     💬 Student Reflection &amp; Learner Feedback:
                                   </span>
-                                  "{task.studentFeedback}"
-                                </div>
-                              )}
-
-                              {/* Submission Notes */}
-                              {task.submissionNotes && !task.studentFeedback && (
-                                <div style={{
-                                  background: '#f8fafc',
-                                  border: '1px solid #e2e8f0',
-                                  padding: '10px 14px',
-                                  borderRadius: '10px',
-                                  fontSize: '0.86rem',
-                                  color: '#475569',
-                                  lineHeight: 1.5,
-                                  whiteSpace: 'pre-wrap'
-                                }}>
-                                  <span style={{ fontWeight: 800, color: '#64748b', display: 'block', fontSize: '0.75rem', marginBottom: 2 }}>
-                                    📝 Submission Notes:
-                                  </span>
-                                  {task.submissionNotes}
+                                  "{task.studentFeedback || task.taskText || task.submissionNotes}"
                                 </div>
                               )}
 
                               {/* Default fallback notice when no feedback/link attached */}
-                              {!task.submissionUrl && !task.studentFeedback && !task.submissionNotes && (
+                              {!task.submissionUrl && !task.studentFeedback && !task.taskText && !task.submissionNotes && (
                                 <div style={{ fontSize: '0.82rem', color: '#94a3b8', fontStyle: 'italic', background: '#fafafa', padding: '8px 12px', borderRadius: 8 }}>
                                   📝 Practical topic homework exercise submission record.
                                 </div>

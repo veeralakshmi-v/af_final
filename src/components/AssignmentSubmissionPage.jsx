@@ -62,7 +62,7 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
   const feedbackLength = Math.max(studentFeedback.trim().length, studentFeedback.length);
   const isFeedbackValid = feedbackLength >= MIN_CHARS;
 
-  const handleStudentSubmit = (e) => {
+  const handleStudentSubmit = async (e) => {
     if (e) e.preventDefault();
     if (!isFeedbackValid) {
       setShowError(true);
@@ -84,6 +84,24 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
     if (updated && Object.keys(updated).length > 0) {
       setValidations(updated);
     }
+
+    if (session && session.studentId) {
+      try {
+        await fetch(`/api/students/${session.studentId}/tasks`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            moduleId,
+            tabId: 'assignment',
+            taskUrl: submissionUrl.trim(),
+            taskText: `[Student Reflection Feedback]: ${studentFeedback.trim()}${submissionNotes.trim() ? `\n\n[Submission Notes]: ${submissionNotes.trim()}` : ''}`
+          })
+        });
+      } catch (err) {
+        console.warn('Failed to sync task submission to backend API:', err);
+      }
+    }
+
     setIsSubmittedNotice(true);
     setShowError(false);
     setTimeout(() => setIsSubmittedNotice(false), 5000);
