@@ -249,7 +249,7 @@ function App() {
     const saved = localStorage.getItem('lms_user_session');
     return saved ? JSON.parse(saved) : null;
   });
-  
+
   const [activeCourse, setActiveCourse] = useState('dashboard');
   const [enrolledCourse, setEnrolledCourse] = useState(() => {
     const savedSession = localStorage.getItem('lms_user_session');
@@ -435,9 +435,9 @@ function App() {
       if (m.items) {
         for (const item of m.items) {
           const key = `${courseKey}:${m.id}:${item.id}`;
-          const isDone = completedLessons.includes(key) || 
-                         completedLessons.includes(`${m.id}:${item.id}`) ||
-                         completedLessons.some(c => c.endsWith(`:${item.id}`));
+          const isDone = completedLessons.includes(key) ||
+            completedLessons.includes(`${m.id}:${item.id}`) ||
+            completedLessons.some(c => c.endsWith(`:${item.id}`));
           if (!isDone) {
             return { moduleId: m.id, tabId: item.id };
           }
@@ -578,7 +578,7 @@ function App() {
               studentId: studentData._id || studentData.id
             };
             handleLoginSuccess(sessionPayload);
-            
+
             // Clean query params to keep browser address bar tidy
             window.history.replaceState({}, document.title, window.location.pathname);
           } else {
@@ -659,10 +659,10 @@ function App() {
   return (
     <div className="app">
       {activeCourse === 'dashboard' ? (
-        <Dashboard 
-          onSelectCourse={handleSelectCourse} 
-          enrolledCourse={enrolledCourse} 
-          setEnrolledCourse={setEnrolledCourse} 
+        <Dashboard
+          onSelectCourse={handleSelectCourse}
+          enrolledCourse={enrolledCourse}
+          setEnrolledCourse={setEnrolledCourse}
           session={session}
           onLogout={handleLogout}
           completedLessons={completedLessons}
@@ -670,14 +670,14 @@ function App() {
         />
       ) : (
         <>
-          <div 
+          <div
             className={`sidebar-overlay ${isMobileMenuOpen ? 'mobile-open' : ''}`}
             onClick={() => setIsMobileMenuOpen(false)}
           ></div>
-          <Sidebar 
-            courseStructure={currentCourseData} 
-            activeNode={activeNode} 
-            onNavClick={handleNavClick} 
+          <Sidebar
+            courseStructure={currentCourseData}
+            activeNode={activeNode}
+            onNavClick={handleNavClick}
             onBackToDashboard={() => setActiveCourse('dashboard')}
             isMobileMenuOpen={isMobileMenuOpen}
             completedLessons={completedLessons}
@@ -686,15 +686,15 @@ function App() {
             taskSubmissions={taskSubmissions}
           />
           <div className="main-content" style={{ flex: 1, height: '100vh', overflowY: 'auto', backgroundColor: 'var(--bg-color)', width: '100%' }}>
-            
+
             {/* Mobile Header — shown on tablet/mobile via responsive.css */}
             <div className="mobile-header">
               <h2 style={{ fontSize: '1.2rem', margin: 0, color: '#1E3A8A' }}>
                 {activeCourse === 'tally_prime' ? 'AI powered Tally' : activeCourse === 'html_css' ? 'HTML, CSS & Bootstrap' : activeCourse === 'javascript_course' ? 'AI-Powered JavaScript' : activeCourse === 'core_js' ? 'Core JavaScript' : activeCourse === 'react_course' ? 'AI-Powered React JS' : activeCourse === 'powerbi' ? 'AI-Powered Data Analytics' : activeCourse === 'agentic_ai' ? 'Agentic AI Development' : activeCourse === 'induction' ? 'Free Induction & Demo Sessions' : activeCourse === 'devops' ? 'DevOps & CI/CD' : activeCourse === 'numpy_course' ? 'NumPy for Data Science' : activeCourse === 'pandas_course' ? 'Pandas for Data Science' : activeCourse === 'matplotlib_course' ? 'Matplotlib for Data Science' : activeCourse === 'seaborn_course' ? 'Seaborn for Data Science' : 'AI-Powered SQL'}
               </h2>
-              <button 
-                className="btn btn-outline" 
-                style={{ padding: '0.5rem' }} 
+              <button
+                className="btn btn-outline"
+                style={{ padding: '0.5rem' }}
                 onClick={() => setIsMobileMenuOpen(true)}
               >
                 <Menu size={24} />
@@ -719,9 +719,9 @@ function App() {
                   <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 700 }}>
                     Topic Progress:
                   </span>
-                  <span style={{ 
-                    fontSize: '0.9rem', 
-                    fontWeight: 800, 
+                  <span style={{
+                    fontSize: '0.9rem',
+                    fontWeight: 800,
                     color: 'var(--text-primary)',
                     background: '#f1f5f9',
                     padding: '0.3rem 0.6rem',
@@ -735,8 +735,8 @@ function App() {
                   {/* Mark Complete Checkbox Button */}
                   {(() => {
                     const currentLessonKey = `${activeCourse}:${activeNode.moduleId}:${activeNode.tabId}`;
-                    const isCompleted = completedLessons.includes(currentLessonKey) || 
-                                        completedLessons.includes(`${activeNode.moduleId}:${activeNode.tabId}`);
+                    const isCompleted = completedLessons.includes(currentLessonKey) ||
+                      completedLessons.includes(`${activeNode.moduleId}:${activeNode.tabId}`);
                     return (
                       <button
                         onClick={() => toggleLessonCompletion(currentLessonKey, !isCompleted)}
@@ -764,7 +764,7 @@ function App() {
                   })()}
 
                   {/* Task Submission Button — Navigates directly to the Assignment Submission Page */}
-                  <button
+                  {/* <button
                     onClick={() => handleNavClick(activeNode.moduleId, 'assignment')}
                     style={{
                       display: 'flex',
@@ -784,7 +784,7 @@ function App() {
                     title="Go to Assignment Page to submit assignment and student feedback"
                   >
                     <Send size={16} /> Submit Assignment
-                  </button>
+                  </button> */}
                 </div>
               </div>
             )}
@@ -827,7 +827,7 @@ function App() {
                     {activeNode.moduleId === 'web_design_day12' && <WebDesignDay12 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                   </>
                 )}
-                
+
                 {/* SQL Course Rendering */}
                 {activeNode.moduleId === 'sql_module1' && <SQLDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'sql_module2' && <SQLDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
@@ -860,76 +860,76 @@ function App() {
 
                 {/* Tally Prime Course Rendering */}
                 {activeNode.moduleId.startsWith('tally_') && (
-                  <TallyCourseDay 
-                    dayId={activeNode.tabId} 
-                    onNavigate={handleNavClick} 
-                    openAITutor={openAITutor} 
+                  <TallyCourseDay
+                    dayId={activeNode.tabId}
+                    onNavigate={handleNavClick}
+                    openAITutor={openAITutor}
                     onSubmitTask={() => setShowTaskModal(true)}
                   />
                 )}
 
-                 {/* Agentic AI Course Rendering */}
-                 {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day1' && <AgenticAIDemo activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day2' && <AgenticAIDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day3' && <AgenticAIDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day4' && <AgenticAIDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day5' && <AgenticAIDay5 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {/* Agentic AI Course Rendering */}
+                {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day1' && <AgenticAIDemo activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day2' && <AgenticAIDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day3' && <AgenticAIDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day4' && <AgenticAIDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day5' && <AgenticAIDay5 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
-                 {/* Agentic AI Module 2 & 3 Course Rendering */}
-                 {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day6' && <AgenticAIDay6 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day7' && <AgenticAIDay7 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day8' && <AgenticAIDay8 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day9' && <AgenticAIDay9 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day10' && <AgenticAIDay10 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'module2_project' && <GenAIModule2Project />}
-                 {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day11' && <AgenticAIDay11 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day12' && <AgenticAIDay12 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day13' && <AgenticAIDay13 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day14' && <AgenticAIDay14 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day15' && <AgenticAIDay15 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'module3_project' && <AgenticAIModule3Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {/* Agentic AI Module 2 & 3 Course Rendering */}
+                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day6' && <AgenticAIDay6 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day7' && <AgenticAIDay7 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day8' && <AgenticAIDay8 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day9' && <AgenticAIDay9 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day10' && <AgenticAIDay10 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'module2_project' && <GenAIModule2Project />}
+                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day11' && <AgenticAIDay11 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day12' && <AgenticAIDay12 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day13' && <AgenticAIDay13 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day14' && <AgenticAIDay14 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day15' && <AgenticAIDay15 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'module3_project' && <AgenticAIModule3Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
-                 {/* Agentic AI Module 4 — Flowise & Visual AI Agents */}
-                 {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day16' && <AgenticAIDay16 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day17' && <AgenticAIDay17 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day18' && <AgenticAIDay18 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day19' && <AgenticAIDay19 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day20' && <AgenticAIDay20 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'module4_project' && <AgenticAIModule4Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {/* Agentic AI Module 4 — Flowise & Visual AI Agents */}
+                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day16' && <AgenticAIDay16 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day17' && <AgenticAIDay17 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day18' && <AgenticAIDay18 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day19' && <AgenticAIDay19 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day20' && <AgenticAIDay20 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'module4_project' && <AgenticAIModule4Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
-                 {/* Agentic AI Module 5 — LangChain & Agent Development */}
-                 {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day21' && <AgenticAIDay21 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day22' && <AgenticAIDay22 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day23' && <AgenticAIDay23 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day24' && <AgenticAIDay24 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day25' && <AgenticAIDay25 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'module5_project' && <AgenticAIModule5Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {/* Agentic AI Module 5 — LangChain & Agent Development */}
+                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day21' && <AgenticAIDay21 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day22' && <AgenticAIDay22 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day23' && <AgenticAIDay23 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day24' && <AgenticAIDay24 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day25' && <AgenticAIDay25 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'module5_project' && <AgenticAIModule5Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
-                 {/* Agentic AI Module 6 — LangGraph & Stateful Agents */}
-                 {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day26' && <AgenticAIDay26 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day27' && <AgenticAIDay27 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day28' && <AgenticAIDay28 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day29' && <AgenticAIDay29 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day30' && <AgenticAIDay30 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'module6_project' && <AgenticAIModule6Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {/* Agentic AI Module 6 — LangGraph & Stateful Agents */}
+                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day26' && <AgenticAIDay26 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day27' && <AgenticAIDay27 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day28' && <AgenticAIDay28 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day29' && <AgenticAIDay29 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day30' && <AgenticAIDay30 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'module6_project' && <AgenticAIModule6Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
-                 {/* Agentic AI Module 7 — CrewAI Multi-Agent Systems */}
-                 {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day31' && <AgenticAIDay31 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day32' && <AgenticAIDay32 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day33' && <AgenticAIDay33 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day34' && <AgenticAIDay34 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day35' && <AgenticAIDay35 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'module7_project' && <AgenticAIModule7Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {/* Agentic AI Module 7 — CrewAI Multi-Agent Systems */}
+                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day31' && <AgenticAIDay31 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day32' && <AgenticAIDay32 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day33' && <AgenticAIDay33 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day34' && <AgenticAIDay34 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day35' && <AgenticAIDay35 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'module7_project' && <AgenticAIModule7Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
-                 {/* Agentic AI Module 8 — Agno AI & Advanced Agent Development */}
-                 {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day36' && <AgenticAIDay36 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day37' && <AgenticAIDay37 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day38' && <AgenticAIDay38 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day39' && <AgenticAIDay39 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day40' && <AgenticAIDay40 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'module8_project' && <AgenticAIModule8Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {/* Agentic AI Module 8 — Agno AI & Advanced Agent Development */}
+                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day36' && <AgenticAIDay36 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day37' && <AgenticAIDay37 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day38' && <AgenticAIDay38 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day39' && <AgenticAIDay39 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day40' && <AgenticAIDay40 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'module8_project' && <AgenticAIModule8Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
-                 {activeNode.moduleId === 'generative_ai_demo' && <GenerativeAIDemo activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'generative_ai_demo' && <GenerativeAIDemo activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
                 {/* AI Python Full Stack Demo Rendering */}
                 {activeNode.moduleId === 'python_fullstack_demo' && <PythonFullStackDemo activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
@@ -1018,7 +1018,7 @@ function App() {
                 {activeNode.moduleId === 'json_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="json" />}
                 {activeNode.moduleId === 'django_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="django" />}
                 {activeNode.moduleId === 'devops_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="devops" />}
-                
+
                 {/* Statistics Course Rendering */}
                 {activeNode.moduleId === 'stats_day1' && <StatsDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'stats_day2' && <StatsDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
@@ -1049,17 +1049,17 @@ function App() {
                 {activeNode.moduleId === 'pandas_day2' && <PandasDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'pandas_day3' && <PandasDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'pandas_day4' && <PandasDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'pandas_day5' && <PandasDay5 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'pandas_day6' && <PandasDay6 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'matplotlib_day1' && <MatplotlibDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'matplotlib_day2' && <MatplotlibDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'matplotlib_day3' && <MatplotlibDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'matplotlib_day4' && <MatplotlibDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'matplotlib_day5' && <MatplotlibDay5 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'seaborn_day1' && <SeabornDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'seaborn_day2' && <SeabornDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'seaborn_day3' && <SeabornDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                 {activeNode.moduleId === 'seaborn_day4' && <SeabornDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'pandas_day5' && <PandasDay5 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'pandas_day6' && <PandasDay6 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'matplotlib_day1' && <MatplotlibDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'matplotlib_day2' && <MatplotlibDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'matplotlib_day3' && <MatplotlibDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'matplotlib_day4' && <MatplotlibDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'matplotlib_day5' && <MatplotlibDay5 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'seaborn_day1' && <SeabornDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'seaborn_day2' && <SeabornDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'seaborn_day3' && <SeabornDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'seaborn_day4' && <SeabornDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'core_js_day1' && <CoreJSDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'core_js_day2' && <CoreJSDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'core_js_day3' && <CoreJSDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
@@ -1070,15 +1070,15 @@ function App() {
                 {activeNode.moduleId === 'core_js_day8' && <CoreJSDay8 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'core_js_day9' && <CoreJSDay9 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'core_js_day10' && <CoreJSDay10 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId.startsWith('stats_day') && !['stats_day1','stats_day2','stats_day3','stats_day4','stats_day5','stats_day6','stats_day7','stats_day8','stats_day9','stats_day10','stats_day11','stats_day12','stats_day13','stats_day14','stats_day15','stats_day16','stats_day17','stats_mini_projects','stats_final_project'].includes(activeNode.moduleId) && <StatsDayPlaceholder activeTab={activeNode.tabId} onNavigate={handleNavClick} dayTitle={activeNode.moduleId.replace('stats_day', 'Day ')} />}
+                {activeNode.moduleId.startsWith('stats_day') && !['stats_day1', 'stats_day2', 'stats_day3', 'stats_day4', 'stats_day5', 'stats_day6', 'stats_day7', 'stats_day8', 'stats_day9', 'stats_day10', 'stats_day11', 'stats_day12', 'stats_day13', 'stats_day14', 'stats_day15', 'stats_day16', 'stats_day17', 'stats_mini_projects', 'stats_final_project'].includes(activeNode.moduleId) && <StatsDayPlaceholder activeTab={activeNode.tabId} onNavigate={handleNavClick} dayTitle={activeNode.moduleId.replace('stats_day', 'Day ')} />}
               </>
             )}
           </div>
-          <FloatingAITutor 
-            isOpen={tutorOpen} 
+          <FloatingAITutor
+            isOpen={tutorOpen}
             onOpen={() => setTutorOpen(true)}
-            onClose={() => setTutorOpen(false)} 
-            initialQuestion={initialQuestion} 
+            onClose={() => setTutorOpen(false)}
+            initialQuestion={initialQuestion}
             activeCourse={activeCourse}
           />
         </>
@@ -1125,7 +1125,7 @@ function App() {
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginBottom: '0.5rem', fontFamily: 'system-ui' }}>
                   Submission URL (GitHub, Netlify, Vercel, CodePen, etc.)
                 </label>
-                <input 
+                <input
                   type="url"
                   placeholder="https://github.com/your-username/project-repo"
                   value={taskSubmitUrl}

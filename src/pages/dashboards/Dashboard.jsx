@@ -447,6 +447,55 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   const [studentPage, setStudentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
+  // Calculate Course Completion Progress % based on Mark Completed topics
+  const calculateStudentProgress = (student) => {
+    if (!student) return { completedCount: 0, totalCount: 0, percentage: 0 };
+    
+    const completedLessons = Array.isArray(student.completedLessons) ? student.completedLessons : [];
+    const enrolledCourse = student.enrolledCourse || 'all';
+    
+    let enrolledList = [];
+    if (enrolledCourse === 'all') {
+      const allKeys = [
+        'html_css', 'sql', 'sql_da', 'summer_sql', 'powerbi', 'agentic_ai',
+        'python_fullstack', 'python_course', 'python_da', 'generative_ai_course',
+        'react_course', 'git_github', 'json_course', 'django_course', 'devops',
+        'stats_course', 'numpy_course', 'pandas_course', 'matplotlib_course',
+        'seaborn_course', 'core_js', 'induction', 'tally', 'web_design_20days'
+      ];
+      allKeys.forEach(k => {
+        const data = getCourseDataList(k);
+        if (data) enrolledList = [...enrolledList, ...data];
+      });
+    } else {
+      enrolledList = getCourseDataList(enrolledCourse);
+    }
+
+    const allItems = enrolledList.flatMap(m => m.items || []);
+    const totalItems = allItems.length;
+
+    if (totalItems === 0) {
+      return {
+        completedCount: completedLessons.length,
+        totalCount: completedLessons.length || 0,
+        percentage: completedLessons.length > 0 ? 100 : 0
+      };
+    }
+
+    const completedCount = allItems.filter(item => {
+      return completedLessons.includes(item.id) ||
+             completedLessons.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
+    }).length;
+
+    const percentage = Math.min(100, Math.round((completedCount / totalItems) * 100));
+
+    return {
+      completedCount,
+      totalCount: totalItems,
+      percentage
+    };
+  };
+
   // Filtered Students for Live Database
   const filteredStudents = students.filter(s => {
     if (!studentSearch.trim()) return true;
@@ -456,7 +505,11 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     const rawCourse = (s.enrolledCourse || '').toLowerCase();
     const courseLabel = getCourseLabel(s.enrolledCourse).toLowerCase();
     const courseMatch = rawCourse.includes(query) || courseLabel.includes(query);
-    return nameMatch || codeMatch || courseMatch;
+    
+    const { percentage, completedCount, totalCount } = calculateStudentProgress(s);
+    const progressMatch = `${percentage}%`.includes(query) || `${completedCount}/${totalCount}`.includes(query);
+
+    return nameMatch || codeMatch || courseMatch || progressMatch;
   });
 
   const totalPages = Math.ceil(filteredStudents.length / itemsPerPage) || 1;
@@ -2152,6 +2205,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                             <th style={{ padding: '1rem' }}>Student Name</th>
                             <th style={{ padding: '1rem' }}>Enrolled Course</th>
                             <th style={{ padding: '1rem' }}>Access Key</th>
+                            <th style={{ padding: '1rem' }}>Course Progress</th>
                             <th style={{ padding: '1rem' }}>Shareable URL</th>
                             <th style={{ padding: '1rem' }}>Lock Status</th>
                             <th style={{ padding: '1rem', textAlign: 'center' }}>Action</th>
@@ -2163,6 +2217,45 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                               <td style={{ padding: '1rem', fontWeight: 800 }}>{s.name}</td>
                               <td style={{ padding: '1rem' }}>{getCourseLabel(s.enrolledCourse)}</td>
                               <td style={{ padding: '1rem', fontWeight: 800, color: '#ca8a04', fontFamily: 'monospace' }}>{s.accessCode}</td>
+                              <td style={{ padding: '1rem' }}>
+                                {(() => {
+                                  const { completedCount, totalCount, percentage } = calculateStudentProgress(s);
+                                  const badgeColor = percentage === 100 ? '#10b981' : percentage > 50 ? '#2563eb' : percentage > 0 ? '#d97706' : '#64748b';
+                                  const bgLight = percentage === 100 ? 'rgba(16, 185, 129, 0.1)' : percentage > 50 ? 'rgba(37, 99, 235, 0.1)' : percentage > 0 ? 'rgba(217, 119, 6, 0.1)' : 'rgba(100, 116, 139, 0.1)';
+                                  return (
+                                    <div style={{ minWidth: '140px' }}>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                                        <span style={{
+                                          fontSize: '0.78rem',
+                                          fontWeight: 800,
+                                          color: badgeColor,
+                                          background: bgLight,
+                                          padding: '2px 8px',
+                                          borderRadius: '12px'
+                                        }}>
+                                          {percentage}% Complete
+                                        </span>
+                                        <span style={{ fontSize: '0.74rem', color: 'var(--text-tertiary)', fontWeight: 700 }}>
+                                          {completedCount}/{totalCount} topics
+                                        </span>
+                                      </div>
+                                      <div style={{ width: '100%', height: '6px', background: '#e2e8f0', borderRadius: '10px', overflow: 'hidden' }}>
+                                        <div style={{
+                                          width: `${percentage}%`,
+                                          height: '100%',
+                                          background: percentage === 100
+                                            ? 'linear-gradient(90deg, #10b981 0%, #059669 100%)'
+                                            : percentage > 50
+                                            ? 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)'
+                                            : 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)',
+                                          borderRadius: '10px',
+                                          transition: 'width 0.4s ease'
+                                        }} />
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
+                              </td>
                               <td style={{ padding: '1rem' }}>
                                 <button
                                   onClick={() => {
