@@ -421,6 +421,36 @@ const getCourseLabel = (courseKey) => {
   return courseKey.replace(/_/g, ' ').toUpperCase();
 };
 
+const getCourseDataList = (courseKey) => {
+  if (!courseKey) return [];
+  const map = {
+    html_css: CourseData.htmlCourseData,
+    sql: CourseData.sqlCourseData,
+    summer_sql: CourseData.summerSqlCourseData,
+    sql_da: CourseData.daSqlCourseData,
+    powerbi: CourseData.powerBiCourseData,
+    agentic_ai: CourseData.agenticAiCourseData,
+    python_fullstack: CourseData.pythonFullStackCourseData,
+    python_course: CourseData.pythonCourseData,
+    python_da: CourseData.pythonDaCourseData,
+    generative_ai_course: CourseData.generativeAiCourseData,
+    react_course: CourseData.reactCourseData,
+    git_github: CourseData.gitCourseData,
+    json_course: CourseData.jsonCourseData,
+    django_course: CourseData.djangoCourseData,
+    devops: CourseData.devopsCourseData,
+    stats_course: CourseData.statsCourseData,
+    numpy_course: CourseData.numpyCourseData,
+    pandas_course: CourseData.pandasCourseData,
+    matplotlib_course: CourseData.matplotlibCourseData,
+    seaborn_course: CourseData.seabornCourseData,
+    core_js: CourseData.coreJsCourseData,
+    induction: CourseData.inductionCourseData,
+    tally: CourseData.tallyCourseData,
+    web_design_20days: CourseData.webDesignCourseData
+  };
+  return map[courseKey] || [];
+};
 
 export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledCourse, session, onLogout, completedLessons = [], taskSubmissions = [] }) {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'courses' | 'register' | 'database' | 'demos' | 'grading'
