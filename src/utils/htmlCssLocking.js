@@ -31,7 +31,8 @@ export const COURSE_DATA_MAP = {
   core_js: coreJsCourseData,
   induction: inductionCourseData,
   tally_prime: tallyCourseData,
-  web_design_20days: webDesignCourseData
+  web_design_20days: webDesignCourseData,
+  web_design: webDesignCourseData
 };
 
 export const HTML_CSS_MODULE_ORDER = [
@@ -267,7 +268,7 @@ export function getModuleConfig(courseKey, moduleId) {
   };
 }
 
-export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations, maybeValidations, maybeSession) {
+export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations, maybeValidations, maybeSession, completedLessons = [], taskSubmissions = []) {
   let courseKey, targetModuleId, validations, session;
 
   if (typeof targetModuleIdOrValidations === 'string') {
@@ -327,10 +328,31 @@ export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations,
   const prevModuleId = order[index - 1];
   const prevValidation = validations[prevModuleId];
 
-  return !prevValidation || prevValidation.status !== 'approved';
+  // Check if staff approved previous module
+  if (prevValidation && prevValidation.status === 'approved') {
+    return false;
+  }
+
+  // Check if completed in student progress or task submissions
+  if (Array.isArray(completedLessons) && completedLessons.length > 0) {
+    const hasCompletedPrevItem = completedLessons.some(item => 
+      item === prevModuleId || 
+      item.includes(`:${prevModuleId}:`) || 
+      item.startsWith(`${prevModuleId}:`) ||
+      item.endsWith(`:${prevModuleId}`)
+    );
+    if (hasCompletedPrevItem) return false;
+  }
+
+  if (Array.isArray(taskSubmissions) && taskSubmissions.length > 0) {
+    const hasSubmittedPrevTask = taskSubmissions.some(t => t.moduleId === prevModuleId);
+    if (hasSubmittedPrevTask) return false;
+  }
+
+  return true;
 }
 
-export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, maybeValidations, maybeSession) {
+export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, maybeValidations, maybeSession, completedLessons = [], taskSubmissions = []) {
   let courseKey, targetModuleId, validations, session;
 
   if (typeof targetModuleIdOrValidations === 'string') {
@@ -387,12 +409,30 @@ export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, 
   const config = getModuleConfig(courseKey, prevModuleId);
   const prevValidation = validations[prevModuleId];
 
+  // Check if staff approved
+  if (prevValidation && prevValidation.status === 'approved') return null;
+
+  if (Array.isArray(completedLessons) && completedLessons.length > 0) {
+    const hasCompletedPrevItem = completedLessons.some(item => 
+      item === prevModuleId || 
+      item.includes(`:${prevModuleId}:`) || 
+      item.startsWith(`${prevModuleId}:`) ||
+      item.endsWith(`:${prevModuleId}`)
+    );
+    if (hasCompletedPrevItem) return null;
+  }
+
+  if (Array.isArray(taskSubmissions) && taskSubmissions.length > 0) {
+    const hasSubmittedPrevTask = taskSubmissions.some(t => t.moduleId === prevModuleId);
+    if (hasSubmittedPrevTask) return null;
+  }
+
   if (!prevValidation) {
     return {
       prevModuleId,
       prevTitle: config.dayTitle || 'Previous Day',
       reason: 'Assignment not submitted yet',
-      detail: `You must submit the ${config.dayTitle || 'previous day'} assignment with student feedback (min 100 characters) and get Staff Validation before unlocking this content.`
+      detail: `You must submit the ${config.dayTitle || 'previous day'} assignment and complete its topics before unlocking this content.`
     };
   }
 

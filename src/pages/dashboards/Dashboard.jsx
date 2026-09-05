@@ -9,7 +9,8 @@ import {
 import { 
   getAssignmentValidations, 
   saveAssignmentValidation, 
-  HTML_CSS_ASSIGNMENTS_CONFIG 
+  HTML_CSS_ASSIGNMENTS_CONFIG,
+  isModuleLocked
 } from '../../utils/htmlCssLocking';
 import * as CourseData from '../../courseData';
 
@@ -676,7 +677,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       core_js: CourseData.coreJsCourseData,
       induction: CourseData.inductionCourseData,
       tally: CourseData.tallyCourseData,
-      web_design: CourseData.webDesignCourseData
+      web_design: CourseData.webDesignCourseData,
+      web_design_20days: CourseData.webDesignCourseData
     };
     return map[courseKey] || [];
   };

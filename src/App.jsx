@@ -373,9 +373,9 @@ function App() {
       return;
     }
 
-    if (isModuleLocked(activeCourse, moduleId, undefined, session)) {
-      const lockInfo = getLockReason(activeCourse, moduleId, undefined, session);
-      alert(`🔒 Day Content Locked!\n\n${lockInfo ? lockInfo.detail : 'You must submit the previous assignment with at least 100 characters of student feedback and receive Staff Validation to unlock this content.'}`);
+    if (isModuleLocked(activeCourse, moduleId, undefined, session, completedLessons, taskSubmissions)) {
+      const lockInfo = getLockReason(activeCourse, moduleId, undefined, session, completedLessons, taskSubmissions);
+      alert(`🔒 Day Content Locked!\n\n${lockInfo ? lockInfo.detail : 'You must complete the previous day assignment/topics to unlock this content.'}`);
       if (lockInfo && lockInfo.prevModuleId) {
         setActiveNode({ moduleId: lockInfo.prevModuleId, tabId: 'assignment' });
       }
@@ -683,6 +683,7 @@ function App() {
             completedLessons={completedLessons}
             activeCourse={activeCourse}
             session={session}
+            taskSubmissions={taskSubmissions}
           />
           <div className="main-content" style={{ flex: 1, height: '100vh', overflowY: 'auto', backgroundColor: 'var(--bg-color)', width: '100%' }}>
             

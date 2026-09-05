@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, ExternalLink, ChevronRight, ChevronDown, CheckCircle, ArrowLeft, Lock } from 'lucide-react';
 import { isModuleLocked, getAssignmentValidations } from '../utils/htmlCssLocking';
 
-export default function Sidebar({ courseStructure, activeNode, onNavClick, onBackToDashboard, isMobileMenuOpen, completedLessons = [], activeCourse, session }) {
+export default function Sidebar({ courseStructure, activeNode, onNavClick, onBackToDashboard, isMobileMenuOpen, completedLessons = [], activeCourse, session, taskSubmissions = [] }) {
   const [validations, setValidations] = useState(getAssignmentValidations());
 
   useEffect(() => {
@@ -113,6 +113,7 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
            courseStructure?.[0]?.id?.includes('git') ? 'Git & GitHub' :
            courseStructure?.[0]?.id?.includes('json') ? 'JSON Essentials' :
            courseStructure?.[0]?.id?.includes('django') ? 'Django Framework' :
+           courseStructure?.[0]?.id?.includes('devops') ? 'DevOps Framework' :
            courseStructure?.[0]?.id?.includes('pandas') ? 'Pandas for Data Science' :
            courseStructure?.[0]?.id?.includes('matplotlib') ? 'Matplotlib for Data Science' :
            courseStructure?.[0]?.id?.includes('seaborn') ? 'Seaborn for Data Science' :
@@ -135,7 +136,7 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
       <div className="sidebar-links-container" style={{ flex: 1, overflowY: 'auto', padding: '1rem 0' }}>
         {courseStructure?.map((module) => {
           const isExpanded = expandedModules[module.id];
-          const isLocked = isModuleLocked(activeCourse, module.id, validations);
+          const isLocked = isModuleLocked(activeCourse, module.id, validations, session, completedLessons, taskSubmissions);
 
           return (
             <div key={module.id} style={{ marginBottom: '0.5rem' }}>
@@ -156,7 +157,7 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
               >
                 {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
                 <span style={{ flex: 1 }}>{module.title}</span>
-                {isLocked && <Lock size={15} color="#ea580c" title="Staff Validation Required" />}
+                {isLocked && <Lock size={15} color="#ea580c" title="Previous Day Assignment/Completion Required" />}
               </div>
 
               {/* Accordion Content */}
