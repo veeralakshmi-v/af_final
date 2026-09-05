@@ -299,6 +299,15 @@ export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations,
 
   if (isStaff) return false;
 
+  // React course is exempt from approval locking (all topics unlocked for all students)
+  if (
+    courseKey === 'react_course' || 
+    courseKey === 'react' || 
+    (typeof targetModuleId === 'string' && (targetModuleId.startsWith('react_') || targetModuleId === 'react_js_essentials'))
+  ) {
+    return false;
+  }
+
   // 2. Student locking rules:
   const order = getCourseModuleOrder(courseKey);
   const index = order.indexOf(targetModuleId);
@@ -352,6 +361,15 @@ export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, 
   })();
 
   if (isStaff) return null;
+
+  // React course is exempt from approval locking (all topics unlocked for all students)
+  if (
+    courseKey === 'react_course' || 
+    courseKey === 'react' || 
+    (typeof targetModuleId === 'string' && (targetModuleId.startsWith('react_') || targetModuleId === 'react_js_essentials'))
+  ) {
+    return null;
+  }
 
   const order = getCourseModuleOrder(courseKey);
   const index = order.indexOf(targetModuleId);
