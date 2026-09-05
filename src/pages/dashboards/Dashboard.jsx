@@ -452,6 +452,129 @@ function getCourseDataList(courseKey) {
   return map[courseKey] || [];
 }
 
+// Detailed Per-Course Progress breakdown for a student
+function calculateDetailedCourseProgress(student) {
+  if (!student) return [];
+  const completedLessons = Array.isArray(student.completedLessons) ? student.completedLessons : [];
+  const enrolledCourse = student.enrolledCourse || 'all';
+
+  let courseKeys = [];
+  if (enrolledCourse === 'all') {
+    courseKeys = [
+      'html_css', 'react_course', 'python_course', 'django_course', 'git_github',
+      'core_js', 'web_design_20days', 'sql', 'powerbi', 'stats_course', 'devops',
+      'json_course', 'numpy_course', 'pandas_course', 'matplotlib_course', 'seaborn_course',
+      'summer_sql', 'sql_da', 'python_da', 'agentic_ai', 'generative_ai_course', 'induction', 'tally'
+    ];
+  } else if (Array.isArray(enrolledCourse)) {
+    courseKeys = enrolledCourse;
+  } else if (typeof enrolledCourse === 'string') {
+    courseKeys = enrolledCourse.split(',').map(k => k.trim()).filter(Boolean);
+  }
+
+  return courseKeys.map(courseKey => {
+    const label = getCourseLabel(courseKey);
+    const modules = getCourseDataList(courseKey) || [];
+
+    let courseTotal = 0;
+    let courseCompleted = 0;
+
+    const moduleBreakdown = modules.map(m => {
+      const items = m.items || [];
+      let moduleCompleted = 0;
+      
+      const itemBreakdown = items.map(item => {
+        const fullKey = `${courseKey}:${m.id}:${item.id}`;
+        const midKey = `${m.id}:${item.id}`;
+        const isDone = completedLessons.includes(fullKey) || 
+                       completedLessons.includes(midKey) || 
+                       completedLessons.includes(item.id) ||
+                       completedLessons.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
+        if (isDone) moduleCompleted++;
+        return {
+          id: item.id,
+          label: item.label,
+          isCompleted: isDone
+        };
+      });
+
+      courseTotal += items.length;
+      courseCompleted += moduleCompleted;
+
+      const modulePercentage = items.length > 0 ? Math.round((moduleCompleted / items.length) * 100) : 0;
+
+      return {
+        id: m.id,
+        title: m.title,
+        itemsCount: items.length,
+        completedCount: moduleCompleted,
+        percentage: modulePercentage,
+        items: itemBreakdown
+      };
+    });
+
+    const coursePercentage = courseTotal > 0 ? Math.min(100, Math.round((courseCompleted / courseTotal) * 100)) : 0;
+
+    return {
+      courseKey,
+      courseLabel: label,
+      totalTopics: courseTotal,
+      completedTopics: courseCompleted,
+      percentage: coursePercentage,
+      modules: moduleBreakdown
+    };
+  }).filter(c => c.totalTopics > 0 || c.modules.length > 0);
+}
+
+// Calculate Course Completion Progress % based on Mark Completed topics
+function calculateStudentProgress(student) {
+  if (!student) return { completedCount: 0, totalCount: 0, percentage: 0 };
+  
+  const completedLessons = Array.isArray(student.completedLessons) ? student.completedLessons : [];
+  const enrolledCourse = student.enrolledCourse || 'all';
+  
+  let enrolledList = [];
+  if (enrolledCourse === 'all') {
+    const allKeys = [
+      'html_css', 'sql', 'sql_da', 'summer_sql', 'powerbi', 'agentic_ai',
+      'python_fullstack', 'python_course', 'python_da', 'generative_ai_course',
+      'react_course', 'git_github', 'json_course', 'django_course', 'devops',
+      'stats_course', 'numpy_course', 'pandas_course', 'matplotlib_course',
+      'seaborn_course', 'core_js', 'induction', 'tally', 'web_design_20days'
+    ];
+    allKeys.forEach(k => {
+      const data = getCourseDataList(k);
+      if (data) enrolledList = [...enrolledList, ...data];
+    });
+  } else {
+    enrolledList = getCourseDataList(enrolledCourse);
+  }
+
+  const allItems = enrolledList.flatMap(m => m.items || []);
+  const totalItems = allItems.length;
+
+  if (totalItems === 0) {
+    return {
+      completedCount: completedLessons.length,
+      totalCount: completedLessons.length || 0,
+      percentage: completedLessons.length > 0 ? 100 : 0
+    };
+  }
+
+  const completedCount = allItems.filter(item => {
+    return completedLessons.includes(item.id) ||
+           completedLessons.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
+  }).length;
+
+  const percentage = Math.min(100, Math.round((completedCount / totalItems) * 100));
+
+  return {
+    completedCount,
+    totalCount: totalItems,
+    percentage
+  };
+}
+
 export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledCourse, session, onLogout, completedLessons = [], taskSubmissions = [] }) {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'courses' | 'register' | 'database' | 'demos' | 'grading'
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -478,129 +601,6 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [viewingProgressStudent, setViewingProgressStudent] = useState(null);
   const [expandedCourseModule, setExpandedCourseModule] = useState({});
-
-  // Detailed Per-Course Progress breakdown for a student
-  const calculateDetailedCourseProgress = (student) => {
-    if (!student) return [];
-    const completedLessons = Array.isArray(student.completedLessons) ? student.completedLessons : [];
-    const enrolledCourse = student.enrolledCourse || 'all';
-
-    let courseKeys = [];
-    if (enrolledCourse === 'all') {
-      courseKeys = [
-        'html_css', 'react_course', 'python_course', 'django_course', 'git_github',
-        'core_js', 'web_design_20days', 'sql', 'powerbi', 'stats_course', 'devops',
-        'json_course', 'numpy_course', 'pandas_course', 'matplotlib_course', 'seaborn_course',
-        'summer_sql', 'sql_da', 'python_da', 'agentic_ai', 'generative_ai_course', 'induction', 'tally'
-      ];
-    } else if (Array.isArray(enrolledCourse)) {
-      courseKeys = enrolledCourse;
-    } else if (typeof enrolledCourse === 'string') {
-      courseKeys = enrolledCourse.split(',').map(k => k.trim()).filter(Boolean);
-    }
-
-    return courseKeys.map(courseKey => {
-      const label = getCourseLabel(courseKey);
-      const modules = getCourseDataList(courseKey) || [];
-
-      let courseTotal = 0;
-      let courseCompleted = 0;
-
-      const moduleBreakdown = modules.map(m => {
-        const items = m.items || [];
-        let moduleCompleted = 0;
-        
-        const itemBreakdown = items.map(item => {
-          const fullKey = `${courseKey}:${m.id}:${item.id}`;
-          const midKey = `${m.id}:${item.id}`;
-          const isDone = completedLessons.includes(fullKey) || 
-                         completedLessons.includes(midKey) || 
-                         completedLessons.includes(item.id) ||
-                         completedLessons.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
-          if (isDone) moduleCompleted++;
-          return {
-            id: item.id,
-            label: item.label,
-            isCompleted: isDone
-          };
-        });
-
-        courseTotal += items.length;
-        courseCompleted += moduleCompleted;
-
-        const modulePercentage = items.length > 0 ? Math.round((moduleCompleted / items.length) * 100) : 0;
-
-        return {
-          id: m.id,
-          title: m.title,
-          itemsCount: items.length,
-          completedCount: moduleCompleted,
-          percentage: modulePercentage,
-          items: itemBreakdown
-        };
-      });
-
-      const coursePercentage = courseTotal > 0 ? Math.min(100, Math.round((courseCompleted / courseTotal) * 100)) : 0;
-
-      return {
-        courseKey,
-        courseLabel: label,
-        totalTopics: courseTotal,
-        completedTopics: courseCompleted,
-        percentage: coursePercentage,
-        modules: moduleBreakdown
-      };
-    }).filter(c => c.totalTopics > 0 || c.modules.length > 0);
-  };
-
-  // Calculate Course Completion Progress % based on Mark Completed topics
-  const calculateStudentProgress = (student) => {
-    if (!student) return { completedCount: 0, totalCount: 0, percentage: 0 };
-    
-    const completedLessons = Array.isArray(student.completedLessons) ? student.completedLessons : [];
-    const enrolledCourse = student.enrolledCourse || 'all';
-    
-    let enrolledList = [];
-    if (enrolledCourse === 'all') {
-      const allKeys = [
-        'html_css', 'sql', 'sql_da', 'summer_sql', 'powerbi', 'agentic_ai',
-        'python_fullstack', 'python_course', 'python_da', 'generative_ai_course',
-        'react_course', 'git_github', 'json_course', 'django_course', 'devops',
-        'stats_course', 'numpy_course', 'pandas_course', 'matplotlib_course',
-        'seaborn_course', 'core_js', 'induction', 'tally', 'web_design_20days'
-      ];
-      allKeys.forEach(k => {
-        const data = getCourseDataList(k);
-        if (data) enrolledList = [...enrolledList, ...data];
-      });
-    } else {
-      enrolledList = getCourseDataList(enrolledCourse);
-    }
-
-    const allItems = enrolledList.flatMap(m => m.items || []);
-    const totalItems = allItems.length;
-
-    if (totalItems === 0) {
-      return {
-        completedCount: completedLessons.length,
-        totalCount: completedLessons.length || 0,
-        percentage: completedLessons.length > 0 ? 100 : 0
-      };
-    }
-
-    const completedCount = allItems.filter(item => {
-      return completedLessons.includes(item.id) ||
-             completedLessons.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
-    }).length;
-
-    const percentage = Math.min(100, Math.round((completedCount / totalItems) * 100));
-
-    return {
-      completedCount,
-      totalCount: totalItems,
-      percentage
-    };
-  };
 
   // Filtered Students for Live Database
   const filteredStudents = students.filter(s => {
