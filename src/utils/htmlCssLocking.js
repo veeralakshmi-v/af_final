@@ -230,11 +230,21 @@ export function saveAssignmentValidation(moduleId, record) {
   }
 }
 
-export function getCourseModuleOrder(courseKey) {
+export function getCourseModuleOrder(courseKey, targetModuleId) {
   if (courseKey === 'html_css') {
     return HTML_CSS_MODULE_ORDER;
   }
-  const courseModules = COURSE_DATA_MAP[courseKey];
+  let courseModules = COURSE_DATA_MAP[courseKey];
+  if ((!courseModules || !Array.isArray(courseModules)) && targetModuleId) {
+    // Fallback search across COURSE_DATA_MAP for the course structure containing targetModuleId
+    for (const k of Object.keys(COURSE_DATA_MAP)) {
+      const list = COURSE_DATA_MAP[k];
+      if (Array.isArray(list) && list.some(m => m.id === targetModuleId)) {
+        courseModules = list;
+        break;
+      }
+    }
+  }
   if (courseModules && Array.isArray(courseModules)) {
     return courseModules.map(m => m.id);
   }
@@ -310,7 +320,7 @@ export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations,
   }
 
   // 2. Student locking rules:
-  const order = getCourseModuleOrder(courseKey);
+  const order = getCourseModuleOrder(courseKey, targetModuleId);
   const index = order.indexOf(targetModuleId);
   
   // First module of any course is never locked for students
@@ -382,7 +392,7 @@ export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, 
     return null;
   }
 
-  const order = getCourseModuleOrder(courseKey);
+  const order = getCourseModuleOrder(courseKey, targetModuleId);
   const index = order.indexOf(targetModuleId);
   if (index <= 0) return null;
 
