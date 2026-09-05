@@ -446,6 +446,82 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   const [studentSearch, setStudentSearch] = useState('');
   const [studentPage, setStudentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [viewingProgressStudent, setViewingProgressStudent] = useState(null);
+  const [expandedCourseModule, setExpandedCourseModule] = useState({});
+
+  // Detailed Per-Course Progress breakdown for a student
+  const calculateDetailedCourseProgress = (student) => {
+    if (!student) return [];
+    const completedLessons = Array.isArray(student.completedLessons) ? student.completedLessons : [];
+    const enrolledCourse = student.enrolledCourse || 'all';
+
+    let courseKeys = [];
+    if (enrolledCourse === 'all') {
+      courseKeys = [
+        'html_css', 'react_course', 'python_course', 'django_course', 'git_github',
+        'core_js', 'web_design_20days', 'sql', 'powerbi', 'stats_course', 'devops',
+        'json_course', 'numpy_course', 'pandas_course', 'matplotlib_course', 'seaborn_course',
+        'summer_sql', 'sql_da', 'python_da', 'agentic_ai', 'generative_ai_course', 'induction', 'tally'
+      ];
+    } else if (Array.isArray(enrolledCourse)) {
+      courseKeys = enrolledCourse;
+    } else if (typeof enrolledCourse === 'string') {
+      courseKeys = enrolledCourse.split(',').map(k => k.trim()).filter(Boolean);
+    }
+
+    return courseKeys.map(courseKey => {
+      const label = getCourseLabel(courseKey);
+      const modules = getCourseDataList(courseKey) || [];
+
+      let courseTotal = 0;
+      let courseCompleted = 0;
+
+      const moduleBreakdown = modules.map(m => {
+        const items = m.items || [];
+        let moduleCompleted = 0;
+        
+        const itemBreakdown = items.map(item => {
+          const fullKey = `${courseKey}:${m.id}:${item.id}`;
+          const midKey = `${m.id}:${item.id}`;
+          const isDone = completedLessons.includes(fullKey) || 
+                         completedLessons.includes(midKey) || 
+                         completedLessons.includes(item.id) ||
+                         completedLessons.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
+          if (isDone) moduleCompleted++;
+          return {
+            id: item.id,
+            label: item.label,
+            isCompleted: isDone
+          };
+        });
+
+        courseTotal += items.length;
+        courseCompleted += moduleCompleted;
+
+        const modulePercentage = items.length > 0 ? Math.round((moduleCompleted / items.length) * 100) : 0;
+
+        return {
+          id: m.id,
+          title: m.title,
+          itemsCount: items.length,
+          completedCount: moduleCompleted,
+          percentage: modulePercentage,
+          items: itemBreakdown
+        };
+      });
+
+      const coursePercentage = courseTotal > 0 ? Math.min(100, Math.round((courseCompleted / courseTotal) * 100)) : 0;
+
+      return {
+        courseKey,
+        courseLabel: label,
+        totalTopics: courseTotal,
+        completedTopics: courseCompleted,
+        percentage: coursePercentage,
+        modules: moduleBreakdown
+      };
+    }).filter(c => c.totalTopics > 0 || c.modules.length > 0);
+  };
 
   // Calculate Course Completion Progress % based on Mark Completed topics
   const calculateStudentProgress = (student) => {
@@ -2214,44 +2290,91 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                         <tbody>
                           {paginatedStudents.map(s => (
                             <tr key={s._id || s.id} style={{ color: 'var(--text-primary)', borderBottom: '1px solid var(--surface-border)' }}>
-                              <td style={{ padding: '1rem', fontWeight: 800 }}>{s.name}</td>
+                              <td style={{ padding: '1rem', fontWeight: 800 }}>
+                                <button
+                                  type="button"
+                                  onClick={() => setViewingProgressStudent(s)}
+                                  style={{
+                                    background: 'none', border: 'none', color: '#0f172a', fontWeight: 800, cursor: 'pointer',
+                                    fontSize: '0.9rem', textAlign: 'left', padding: 0
+                                  }}
+                                  title="Click to view detailed per-course progress breakdown"
+                                >
+                                  {s.name}
+                                </button>
+                              </td>
                               <td style={{ padding: '1rem' }}>{getCourseLabel(s.enrolledCourse)}</td>
                               <td style={{ padding: '1rem', fontWeight: 800, color: '#ca8a04', fontFamily: 'monospace' }}>{s.accessCode}</td>
                               <td style={{ padding: '1rem' }}>
                                 {(() => {
+                                  const detailed = calculateDetailedCourseProgress(s);
                                   const { completedCount, totalCount, percentage } = calculateStudentProgress(s);
-                                  const badgeColor = percentage === 100 ? '#10b981' : percentage > 50 ? '#2563eb' : percentage > 0 ? '#d97706' : '#64748b';
-                                  const bgLight = percentage === 100 ? 'rgba(16, 185, 129, 0.1)' : percentage > 50 ? 'rgba(37, 99, 235, 0.1)' : percentage > 0 ? 'rgba(217, 119, 6, 0.1)' : 'rgba(100, 116, 139, 0.1)';
                                   return (
-                                    <div style={{ minWidth: '140px' }}>
-                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: '165px' }}>
+                                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
                                         <span style={{
-                                          fontSize: '0.78rem',
+                                          fontSize: '0.75rem',
                                           fontWeight: 800,
-                                          color: badgeColor,
-                                          background: bgLight,
+                                          color: percentage === 100 ? '#10b981' : percentage > 0 ? '#2563eb' : '#64748b',
+                                          background: percentage === 100 ? 'rgba(16, 185, 129, 0.1)' : percentage > 0 ? 'rgba(37, 99, 235, 0.1)' : '#f1f5f9',
                                           padding: '2px 8px',
                                           borderRadius: '12px'
                                         }}>
-                                          {percentage}% Complete
+                                          {detailed.length} {detailed.length === 1 ? 'Track' : 'Tracks'} · {percentage}%
                                         </span>
                                         <span style={{ fontSize: '0.74rem', color: 'var(--text-tertiary)', fontWeight: 700 }}>
-                                          {completedCount}/{totalCount} topics
+                                          {completedCount}/{totalCount}
                                         </span>
                                       </div>
-                                      <div style={{ width: '100%', height: '6px', background: '#e2e8f0', borderRadius: '10px', overflow: 'hidden' }}>
-                                        <div style={{
-                                          width: `${percentage}%`,
-                                          height: '100%',
-                                          background: percentage === 100
-                                            ? 'linear-gradient(90deg, #10b981 0%, #059669 100%)'
-                                            : percentage > 50
-                                            ? 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)'
-                                            : 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)',
-                                          borderRadius: '10px',
-                                          transition: 'width 0.4s ease'
-                                        }} />
+
+                                      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                                        {detailed.slice(0, 3).map(c => (
+                                          <span 
+                                            key={c.courseKey}
+                                            style={{
+                                              fontSize: '0.7rem',
+                                              fontWeight: 700,
+                                              color: c.percentage === 100 ? '#059669' : c.percentage > 0 ? '#1d4ed8' : '#64748b',
+                                              background: c.percentage === 100 ? '#d1fae5' : c.percentage > 0 ? '#eff6ff' : '#f8fafc',
+                                              border: `1px solid ${c.percentage === 100 ? '#a7f3d0' : c.percentage > 0 ? '#bfdbfe' : '#e2e8f0'}`,
+                                              padding: '1px 6px',
+                                              borderRadius: '6px'
+                                            }}
+                                            title={`${c.courseLabel}: ${c.completedTopics}/${c.totalTopics} topics (${c.percentage}%)`}
+                                          >
+                                            {c.courseLabel.split(' ')[0]}: {c.percentage}%
+                                          </span>
+                                        ))}
+                                        {detailed.length > 3 && (
+                                          <span style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700 }}>
+                                            +{detailed.length - 3}
+                                          </span>
+                                        )}
                                       </div>
+
+                                      <button
+                                        type="button"
+                                        onClick={() => setViewingProgressStudent(s)}
+                                        style={{
+                                          marginTop: '2px',
+                                          display: 'inline-flex',
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                          gap: '4px',
+                                          background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                                          color: '#ffffff',
+                                          border: 'none',
+                                          padding: '4px 10px',
+                                          borderRadius: '8px',
+                                          fontSize: '0.75rem',
+                                          fontWeight: 800,
+                                          cursor: 'pointer',
+                                          boxShadow: '0 2px 6px rgba(37, 99, 235, 0.2)',
+                                          width: 'fit-content'
+                                        }}
+                                      >
+                                        <BarChart3 size={12} /> Detailed View
+                                      </button>
                                     </div>
                                   );
                                 })()}
@@ -3454,6 +3577,259 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         </div>
       )}
 
+      {/* 📊 DETAILED COURSE PROGRESS BREAKDOWN MODAL */}
+      {viewingProgressStudent && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(15, 23, 42, 0.7)',
+          backdropFilter: 'blur(5px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '1.5rem'
+        }}>
+          <div style={{
+            background: '#ffffff',
+            borderRadius: '24px',
+            width: '100%',
+            maxWidth: '880px',
+            maxHeight: '90vh',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            border: '1px solid #cbd5e1',
+            overflow: 'hidden'
+          }}>
+            {/* Modal Header */}
+            <div style={{
+              padding: '1.5rem 2rem',
+              borderBottom: '1px solid #e2e8f0',
+              background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+              color: '#ffffff',
+              display: 'flex',
+              justify: 'space-between',
+              alignItems: 'center'
+            }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+                  <div style={{
+                    width: 38, height: 38, borderRadius: '50%', background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
+                    color: '#ffffff', fontWeight: 900, fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  }}>
+                    {viewingProgressStudent.name ? viewingProgressStudent.name.substring(0, 2).toUpperCase() : 'ST'}
+                  </div>
+                  <h3 style={{ fontSize: '1.3rem', fontWeight: 900, margin: 0, fontFamily: 'system-ui', color: '#ffffff' }}>
+                    {viewingProgressStudent.name} — Course Progress Audit
+                  </h3>
+                </div>
+                <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontFamily: 'monospace', fontWeight: 700, background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: 4 }}>
+                  Access Key: {viewingProgressStudent.accessCode}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setViewingProgressStudent(null)}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  border: 'none',
+                  color: '#ffffff',
+                  width: 36,
+                  height: 36,
+                  borderRadius: '50%',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Modal Content - List of Courses */}
+            <div style={{ padding: '1.75rem 2rem', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              {(() => {
+                const coursesList = calculateDetailedCourseProgress(viewingProgressStudent);
+                if (coursesList.length === 0) {
+                  return (
+                    <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
+                      <BookOpen size={40} style={{ opacity: 0.3, marginBottom: '0.75rem' }} />
+                      <p style={{ margin: 0, fontSize: '0.95rem' }}>No enrolled course progress records found for this student.</p>
+                    </div>
+                  );
+                }
+
+                return coursesList.map(c => {
+                  const courseColor = c.percentage === 100 ? '#10b981' : c.percentage > 50 ? '#3b82f6' : c.percentage > 0 ? '#d97706' : '#64748b';
+
+                  return (
+                    <div
+                      key={c.courseKey}
+                      style={{
+                        background: '#f8fafc',
+                        border: `1px solid ${c.percentage === 100 ? '#bbf7d0' : '#e2e8f0'}`,
+                        borderRadius: '16px',
+                        padding: '1.25rem 1.5rem',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
+                      }}
+                    >
+                      {/* Course Header Bar */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '0.75rem' }}>
+                        <div>
+                          <h4 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', fontFamily: 'system-ui' }}>
+                            📚 {c.courseLabel}
+                          </h4>
+                          <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>
+                            {c.modules.length} Modules · Completed <strong>{c.completedTopics}</strong> of <strong>{c.totalTopics}</strong> topics
+                          </span>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <span style={{
+                            fontSize: '0.88rem',
+                            fontWeight: 800,
+                            color: courseColor,
+                            background: c.percentage === 100 ? '#d1fae5' : c.percentage > 50 ? '#eff6ff' : 'rgba(245, 158, 11, 0.1)',
+                            border: `1px solid ${c.percentage === 100 ? '#86efac' : c.percentage > 50 ? '#bfdbfe' : '#fde68a'}`,
+                            padding: '4px 12px',
+                            borderRadius: '20px'
+                          }}>
+                            {c.percentage}% Completed
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Course Overall Progress Bar */}
+                      <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '10px', overflow: 'hidden', marginBottom: '1.25rem' }}>
+                        <div style={{
+                          width: `${c.percentage}%`,
+                          height: '100%',
+                          background: c.percentage === 100
+                            ? 'linear-gradient(90deg, #10b981 0%, #059669 100%)'
+                            : 'linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)',
+                          borderRadius: '10px',
+                          transition: 'width 0.4s ease'
+                        }} />
+                      </div>
+
+                      {/* Modules & Sub-topics Accordion List */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {c.modules.map(mod => {
+                          const modKey = `${c.courseKey}_${mod.id}`;
+                          const isExpanded = expandedCourseModule[modKey] !== false; // default expanded
+
+                          return (
+                            <div
+                              key={mod.id}
+                              style={{
+                                background: '#ffffff',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '12px',
+                                overflow: 'hidden'
+                              }}
+                            >
+                              {/* Module Header Toggle */}
+                              <div
+                                onClick={() => setExpandedCourseModule(prev => ({ ...prev, [modKey]: !isExpanded }))}
+                                style={{
+                                  padding: '0.75rem 1rem',
+                                  background: '#f1f5f9',
+                                  cursor: 'pointer',
+                                  display: 'flex',
+                                  justify: 'space-between',
+                                  alignItems: 'center',
+                                  userSelect: 'none'
+                                }}
+                              >
+                                <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#1e293b' }}>
+                                  {mod.title}
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <span style={{
+                                    fontSize: '0.76rem',
+                                    fontWeight: 800,
+                                    color: mod.percentage === 100 ? '#16a34a' : '#475569',
+                                    background: mod.percentage === 100 ? '#dcfce7' : '#ffffff',
+                                    padding: '2px 8px',
+                                    borderRadius: '10px'
+                                  }}>
+                                    {mod.completedCount}/{mod.itemsCount} Done ({mod.percentage}%)
+                                  </span>
+                                  <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                                    {isExpanded ? '▲' : '▼'}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Topics List when expanded */}
+                              {isExpanded && (
+                                <div style={{ padding: '0.75rem 1rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '8px' }}>
+                                  {mod.items.map(item => (
+                                    <div
+                                      key={item.id}
+                                      style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justify: 'space-between',
+                                        padding: '6px 10px',
+                                        borderRadius: '8px',
+                                        background: item.isCompleted ? '#f0fdf4' : '#fafafa',
+                                        border: `1px solid ${item.isCompleted ? '#bbf7d0' : '#f1f5f9'}`,
+                                        fontSize: '0.82rem'
+                                      }}
+                                    >
+                                      <span style={{ color: item.isCompleted ? '#166534' : '#64748b', fontWeight: item.isCompleted ? 700 : 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                        {item.label}
+                                      </span>
+                                      {item.isCompleted ? (
+                                        <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#15803d', background: '#dcfce7', padding: '1px 6px', borderRadius: 4, flexShrink: 0 }}>
+                                          ✓ Done
+                                        </span>
+                                      ) : (
+                                        <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#94a3b8', background: '#f1f5f9', padding: '1px 6px', borderRadius: 4, flexShrink: 0 }}>
+                                          Pending
+                                        </span>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+
+            {/* Modal Footer */}
+            <div style={{ padding: '1rem 2rem', borderTop: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                type="button"
+                onClick={() => setViewingProgressStudent(null)}
+                style={{
+                  padding: '0.65rem 1.75rem',
+                  borderRadius: '10px',
+                  border: 'none',
+                  background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                  color: '#ffffff',
+                  fontSize: '0.88rem',
+                  fontWeight: 800,
+                  cursor: 'pointer'
+                }}
+              >
+                Close Audit View
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
