@@ -383,7 +383,7 @@ const availableCourseOptions = [
   { value: "tally_prime", label: "AI powered Tally" }
 ];
 
-const getCourseLabel = (courseKey) => {
+function getCourseLabel(courseKey) {
   if (!courseKey) return 'Unassigned';
   if (courseKey === 'all') return 'All Access';
   if (courseKey.includes(',')) {
@@ -419,9 +419,9 @@ const getCourseLabel = (courseKey) => {
   };
   if (labels[courseKey]) return labels[courseKey];
   return courseKey.replace(/_/g, ' ').toUpperCase();
-};
+}
 
-const getCourseDataList = (courseKey) => {
+function getCourseDataList(courseKey) {
   if (!courseKey) return [];
   const map = {
     html_css: CourseData.htmlCourseData,
@@ -450,7 +450,7 @@ const getCourseDataList = (courseKey) => {
     web_design_20days: CourseData.webDesignCourseData
   };
   return map[courseKey] || [];
-};
+}
 
 export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledCourse, session, onLogout, completedLessons = [], taskSubmissions = [] }) {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'courses' | 'register' | 'database' | 'demos' | 'grading'
