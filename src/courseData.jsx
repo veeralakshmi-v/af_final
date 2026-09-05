@@ -192,6 +192,7 @@ export const htmlCourseData = [
       { id: 'ai_component', label: '🧩 AI Component Dev', icon: <Layers size={18} /> },
       { id: 'ai_prompt_eng', label: '💬 AI Prompt Engineering', icon: <Sparkles size={18} /> },
       { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> },
+      { id: 'assignment', label: '📝 AI Task & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -204,6 +205,7 @@ export const htmlCourseData = [
       { id: 'ai_component', label: '🧩 AI Component Dev', icon: <Layers size={18} /> },
       { id: 'ai_prompt_eng', label: '💬 AI Prompt Engineering', icon: <Sparkles size={18} /> },
       { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> },
+      { id: 'assignment', label: '📝 AI Task & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -216,6 +218,7 @@ export const htmlCourseData = [
       { id: 'ai_component', label: '🧩 AI Component Dev', icon: <Layers size={18} /> },
       { id: 'ai_prompt_eng', label: '💬 AI Prompt Engineering', icon: <Sparkles size={18} /> },
       { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> },
+      { id: 'assignment', label: '📝 AI Task & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -433,7 +436,8 @@ export const daSqlCourseData = [
       { id: 'joins_groups', label: 'Joins, Group By & Aggregates', icon: <Table size={18} /> },
       { id: 'advanced_analytics', label: 'Window Functions & Ranking', icon: <Layers size={18} /> },
       { id: 'reports', label: 'Monthly Sales & Insights', icon: <BarChart2 size={18} /> },
-      { id: 'export_bi', label: 'Export to Power BI & Excel', icon: <FileSpreadsheet size={18} /> }
+      { id: 'export_bi', label: 'Export to Power BI & Excel', icon: <FileSpreadsheet size={18} /> },
+      { id: 'assignment', label: '📝 Final Project Submission & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -561,7 +565,8 @@ export const agenticAiCourseData = [
       { id: 'day2', label: 'Day 2: Agentic AI Architecture', icon: <Cpu size={18} /> },
       { id: 'day3', label: 'Day 3: Prompt Engineering', icon: <Code size={18} /> },
       { id: 'day4', label: 'Day 4: Agent Reasoning & Loops', icon: <RefreshCw size={18} /> },
-      { id: 'day5', label: 'Day 5: Building an Agent Flow', icon: <GitBranch size={18} /> }
+      { id: 'day5', label: 'Day 5: Building an Agent Flow', icon: <GitBranch size={18} /> },
+      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -573,7 +578,8 @@ export const agenticAiCourseData = [
       { id: 'day8', label: 'Day 8: Connecting Agents with APIs', icon: <Layers size={18} /> },
       { id: 'day9', label: 'Day 9: Structured Outputs', icon: <Sliders size={18} /> },
       { id: 'day10', label: 'Day 10: Real-Time Agent Project', icon: <Trophy size={18} /> },
-      { id: 'module2_project', label: 'Final Project: AI Agent Workspace', icon: <Trophy size={18} /> }
+      { id: 'module2_project', label: 'Final Project: AI Agent Workspace', icon: <Trophy size={18} /> },
+      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -585,7 +591,8 @@ export const agenticAiCourseData = [
       { id: 'day13', label: 'Day 13: AI Automation in n8n', icon: <Bot size={18} /> },
       { id: 'day14', label: 'Day 14: Business App Automation', icon: <Briefcase size={18} /> },
       { id: 'day15', label: 'Day 15: Capstone: n8n AI Admission System', icon: <Trophy size={18} /> },
-      { id: 'module3_project', label: 'Final Project: Student Admission System', icon: <Trophy size={18} /> }
+      { id: 'module3_project', label: 'Final Project: Student Admission System', icon: <Trophy size={18} /> },
+      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -597,7 +604,8 @@ export const agenticAiCourseData = [
       { id: 'day18', label: 'Day 18: Tool-Calling Agents in Flowise', icon: <Zap size={18} /> },
       { id: 'day19', label: 'Day 19: Deploying Flowise — Embed & API', icon: <Rocket size={18} /> },
       { id: 'day20', label: 'Day 20: Capstone: Enterprise AI Agent System', icon: <Trophy size={18} /> },
-      { id: 'module4_project', label: 'Final Project: Master AI Agent Platform', icon: <Trophy size={18} /> }
+      { id: 'module4_project', label: 'Final Project: Master AI Agent Platform', icon: <Trophy size={18} /> },
+      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -609,7 +617,8 @@ export const agenticAiCourseData = [
       { id: 'day23', label: 'Day 23: LangChain Memory & Chat History', icon: <Database size={18} /> },
       { id: 'day24', label: 'Day 24: LangChain Agents & Custom Tools', icon: <Bot size={18} /> },
       { id: 'day25', label: 'Day 25: Capstone: LangChain Orchestrator', icon: <Trophy size={18} /> },
-      { id: 'module5_project', label: 'Final Project: LangChain Orchestrator', icon: <Trophy size={18} /> }
+      { id: 'module5_project', label: 'Final Project: LangChain Orchestrator', icon: <Trophy size={18} /> },
+      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -621,7 +630,8 @@ export const agenticAiCourseData = [
       { id: 'day28', label: 'Day 28: Conditional Edges & Routing', icon: <GitBranch size={18} /> },
       { id: 'day29', label: 'Day 29: LangGraph Persistence & Memory', icon: <Database size={18} /> },
       { id: 'day30', label: 'Day 30: Capstone: LangGraph Agent', icon: <Trophy size={18} /> },
-      { id: 'module6_project', label: 'Final Project: LangGraph Agent', icon: <Trophy size={18} /> }
+      { id: 'module6_project', label: 'Final Project: LangGraph Agent', icon: <Trophy size={18} /> },
+      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -633,7 +643,8 @@ export const agenticAiCourseData = [
       { id: 'day33', label: 'Day 33: Memory & Context Collaboration', icon: <Database size={18} /> },
       { id: 'day34', label: 'Day 34: Sequential vs Hierarchical Crews', icon: <GitBranch size={18} /> },
       { id: 'day35', label: 'Day 35: Capstone: Multi-Agent Crew', icon: <Trophy size={18} /> },
-      { id: 'module7_project', label: 'Final Project: CrewAI System', icon: <Trophy size={18} /> }
+      { id: 'module7_project', label: 'Final Project: CrewAI System', icon: <Trophy size={18} /> },
+      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -645,7 +656,8 @@ export const agenticAiCourseData = [
       { id: 'day38', label: 'Day 38: Agno Knowledge Bases & Vector DBs', icon: <Database size={18} /> },
       { id: 'day39', label: 'Day 39: Agno Teams & Agent Collaboration', icon: <GitBranch size={18} /> },
       { id: 'day40', label: 'Day 40: Capstone: Production Agent with Agno', icon: <Trophy size={18} /> },
-      { id: 'module8_project', label: 'Final Project: Agno AI System', icon: <Trophy size={18} /> }
+      { id: 'module8_project', label: 'Final Project: Agno AI System', icon: <Trophy size={18} /> },
+      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -660,7 +672,8 @@ export const tallyCourseData = [
       { id: 'day3', label: 'Day 3: Ledgers Creation & Classification', icon: <FileText size={18} /> },
       { id: 'day4', label: 'Day 4: Voucher Types & Chart of Accounts', icon: <Sliders size={18} /> },
       { id: 'tally_project1', label: 'Mini Project: Small Trading Business', icon: <Trophy size={18} /> },
-      { id: 'day5', label: 'Day 5: Complete Accounting Practice', icon: <CheckCircle size={18} /> }
+      { id: 'day5', label: 'Day 5: Complete Accounting Practice', icon: <CheckCircle size={18} /> },
+      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -677,6 +690,7 @@ export const inductionCourseData = [
       { id: 'topics', label: 'Course Topics', icon: <Code size={18} /> },
       { id: 'paths', label: 'Learning Paths', icon: <Map size={18} /> },
       { id: 'jobs', label: 'Jobs & Industries', icon: <Briefcase size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -689,6 +703,7 @@ export const inductionCourseData = [
       { id: 'why_important', label: 'Why AI Agents?', icon: <Zap size={18} /> },
       { id: 'topics', label: 'Technologies & Tools', icon: <Cpu size={18} /> },
       { id: 'syllabus', label: '40-Day Roadmap', icon: <Map size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -702,6 +717,7 @@ export const inductionCourseData = [
       { id: 'topics', label: 'Technologies & Tools', icon: <Cpu size={18} /> },
       { id: 'syllabus', label: '140-Day Roadmap (~5 Months)', icon: <Map size={18} /> },
       { id: 'jobs', label: 'Career Paths & Jobs', icon: <Briefcase size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -715,6 +731,7 @@ export const inductionCourseData = [
       { id: 'topics', label: 'What We Cover', icon: <Layers size={18} /> },
       { id: 'tools', label: 'AI Tools Covered', icon: <Cpu size={18} /> },
       { id: 'careers', label: 'Jobs & Salaries', icon: <Briefcase size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -731,6 +748,7 @@ export const pythonFullStackCourseData = [
       { id: 'topics', label: 'Technologies & Tools', icon: <Cpu size={18} /> },
       { id: 'syllabus', label: '140-Day Roadmap (~5 Months)', icon: <Map size={18} /> },
       { id: 'jobs', label: 'Career Paths & Jobs', icon: <Briefcase size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -747,6 +765,7 @@ export const pythonCourseData = [
       { id: 'type_casting', label: 'Type Casting', icon: <Filter size={18} /> },
       { id: 'ai_superpowers', label: 'AI Python Superpowers', icon: <Zap size={18} /> },
       { id: 'playground', label: 'Live Python Playground', icon: <Code size={18} /> },
+      { id: 'assignment', label: '📝 Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -804,6 +823,7 @@ export const pythonCourseData = [
       { id: 'memory_game', label: 'Memory Game', icon: <Code size={18} /> },
       { id: 'reaction_time', label: '⚡ Reaction Time Test', icon: <Code size={18} /> },
       { id: 'police_thief', label: '👮 Police & Thief', icon: <Code size={18} /> },
+      { id: 'assignment', label: '📝 Project Submission & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -858,6 +878,7 @@ export const pythonCourseData = [
       { id: 'url_shortener', label: '🔗 URL Shortener', icon: <Code size={18} /> },
       { id: 'chat_app', label: '💬 Chat Application', icon: <Code size={18} /> },
       { id: 'countdown_timer', label: '⏱️ Countdown Timer', icon: <Code size={18} /> },
+      { id: 'assignment', label: '📝 Project Submission & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -960,6 +981,7 @@ export const pythonCourseData = [
       { id: 'project2', label: '🗄️ Database Manager', icon: <Database size={18} /> },
       { id: 'project3', label: '📊 API Data Dashboard', icon: <Sliders size={18} /> },
       { id: 'tasks', label: '📝 3 Final Project Tasks', icon: <CheckCircle size={18} /> },
+      { id: 'assignment', label: '📝 Final Project Submission & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -971,6 +993,7 @@ export const pythonCourseData = [
       { id: 'ai_component', label: '🧩 AI Component Dev', icon: <Layers size={18} /> },
       { id: 'ai_prompt_eng', label: '💬 AI Prompt Engineering', icon: <Sparkles size={18} /> },
       { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> },
+      { id: 'assignment', label: '📝 AI Task & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -989,6 +1012,7 @@ export const generativeAiCourseData = [
       { id: 'day4', label: 'Day 4: Popular AI Models', icon: <Zap size={18} /> },
       { id: 'day5', label: 'Day 5: AI Ethics & Best Practices', icon: <Shield size={18} /> },
       { id: 'mini_project', label: 'Mini Project: AI Prompt Library', icon: <Sliders size={18} /> },
+      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -1000,7 +1024,8 @@ export const generativeAiCourseData = [
       { id: 'day8', label: 'Day 8: Reasoning & Grounding', icon: <Layers size={18} /> },
       { id: 'day9', label: 'Day 9: Structured Outputs', icon: <Sliders size={18} /> },
       { id: 'day10', label: 'Day 10: Reusable Templates', icon: <LayoutTemplate size={18} /> },
-      { id: 'module2_project', label: 'Final Project: AI Agent Workspace', icon: <Trophy size={18} /> }
+      { id: 'module2_project', label: 'Final Project: AI Agent Workspace', icon: <Trophy size={18} /> },
+      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -1011,7 +1036,8 @@ export const generativeAiCourseData = [
       { id: 'day12', label: 'Day 12: Careers, Resumes & Socials', icon: <Briefcase size={18} /> },
       { id: 'day13', label: 'Day 13: Spreadsheets & Research', icon: <FileSpreadsheet size={18} /> },
       { id: 'day14', label: 'Day 14: Slide Decks & Presentations', icon: <MonitorPlay size={18} /> },
-      { id: 'day15', label: 'Day 15: Video Scripts & Podcasts', icon: <Music size={18} /> }
+      { id: 'day15', label: 'Day 15: Video Scripts & Podcasts', icon: <Music size={18} /> },
+      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -1022,7 +1048,8 @@ export const generativeAiCourseData = [
       { id: 'day17', label: 'Day 17: RAG & Knowledge Retrieval', icon: <Database size={18} /> },
       { id: 'day18', label: 'Day 18: RAG Implementation & SDKs', icon: <Terminal size={18} /> },
       { id: 'day19', label: 'Day 19: Capstone Projects Chooser', icon: <Wand2 size={18} /> },
-      { id: 'day20', label: 'Day 20: Submission & Graduation', icon: <Trophy size={18} /> }
+      { id: 'day20', label: 'Day 20: Submission & Graduation', icon: <Trophy size={18} /> },
+      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -1258,7 +1285,8 @@ export const reactCourseData = [
       { id: 'ai_ui_gen', label: '🎨 AI UI Generation', icon: <Wand2 size={18} /> },
       { id: 'ai_component', label: '🧩 AI Component Dev', icon: <Layers size={18} /> },
       { id: 'ai_prompt_eng', label: '💬 AI Prompt Engineering', icon: <Sparkles size={18} /> },
-      { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> }
+      { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> },
+      { id: 'assignment', label: '📝 AI Task & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -1295,7 +1323,8 @@ export const gitCourseData = [
       { id: 'ai_code_review', label: '🔍 AI Code Reviewer', icon: <Eye size={18} /> },
       { id: 'ai_debugging', label: '🐛 AI Debugging', icon: <Bot size={18} /> },
       { id: 'ai_prompt_eng', label: '💬 AI Prompt Engineering', icon: <Sparkles size={18} /> },
-      { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> }
+      { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> },
+      { id: 'assignment', label: '📝 AI Task & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -1322,7 +1351,8 @@ export const jsonCourseData = [
       { id: 'ai_code_review', label: '🔍 AI Code Reviewer', icon: <Eye size={18} /> },
       { id: 'ai_debugging', label: '🐛 AI Debugging', icon: <Bot size={18} /> },
       { id: 'ai_prompt_eng', label: '💬 AI Prompt Engineering', icon: <Sparkles size={18} /> },
-      { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> }
+      { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> },
+      { id: 'assignment', label: '📝 AI Task & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -1541,7 +1571,8 @@ export const djangoCourseData = [
       { id: 'ai_debugging', label: '🐛 AI Debugging', icon: <Bot size={18} /> },
       { id: 'ai_component', label: '🧩 AI Component Dev', icon: <Layers size={18} /> },
       { id: 'ai_prompt_eng', label: '💬 AI Prompt Engineering', icon: <Sparkles size={18} /> },
-      { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> }
+      { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> },
+      { id: 'assignment', label: '📝 AI Task & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -1590,7 +1621,8 @@ export const devopsCourseData = [
       { id: 'ai_code_review', label: '🔍 AI Code Reviewer', icon: <Eye size={18} /> },
       { id: 'ai_debugging', label: '🐛 AI Debugging', icon: <Bot size={18} /> },
       { id: 'ai_prompt_eng', label: '💬 AI Prompt Engineering', icon: <Sparkles size={18} /> },
-      { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> }
+      { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> },
+      { id: 'assignment', label: '📝 AI Task & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -1788,7 +1820,8 @@ export const statsCourseData = [
       { id: 'student_marks', label: '1. Student Marks Analysis', icon: <FileSpreadsheet size={18} /> },
       { id: 'sales_eda', label: '2. Sales Data EDA', icon: <BarChart2 size={18} /> },
       { id: 'customer_purchase', label: '3. Customer Purchase Analysis', icon: <ShoppingCart size={18} /> },
-      { id: 'hypothesis_biz', label: '4. Hypothesis Testing', icon: <Target size={18} /> }
+      { id: 'hypothesis_biz', label: '4. Hypothesis Testing', icon: <Target size={18} /> },
+      { id: 'assignment', label: '📝 Project Submission & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -1797,7 +1830,8 @@ export const statsCourseData = [
     items: [
       { id: 'final_overview', label: 'Business Analytics Brief', icon: <Briefcase size={18} /> },
       { id: 'final_dashboard', label: 'Interactive Final Dashboard', icon: <Sparkles size={18} /> },
-      { id: 'final_submission', label: 'Final Project Submission', icon: <FileText size={18} /> }
+      { id: 'final_submission', label: 'Final Project Submission', icon: <FileText size={18} /> },
+      { id: 'assignment', label: '📝 Final Project Submission & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
@@ -2027,6 +2061,7 @@ export const coreJsCourseData = [
       { id: 'project_kanban', label: '3. Task Management Kanban Board', icon: <Layers size={18} /> },
       { id: 'project_quiz', label: '4. Interactive Quiz Portal', icon: <Terminal size={18} /> },
       { id: 'project_contacts', label: '5. Contact Management Hub', icon: <PenTool size={18} /> },
+      { id: 'assignment', label: '📝 Capstone Project Submission & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
   {
@@ -2039,6 +2074,7 @@ export const coreJsCourseData = [
       { id: 'ai_component', label: '🧩 AI Component Dev', icon: <Layers size={18} /> },
       { id: 'ai_prompt_eng', label: '💬 AI Prompt Engineering', icon: <Sparkles size={18} /> },
       { id: 'ai_productivity', label: '⚡ AI Productivity Tools', icon: <Zap size={18} /> },
+      { id: 'assignment', label: '📝 AI Task & Staff Review', icon: <PenTool size={18} /> }
     ]
   }
 ];
