@@ -327,28 +327,17 @@ export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations,
 
   const prevModuleId = order[index - 1];
   const prevValidation = validations[prevModuleId];
+  const prevTask = Array.isArray(taskSubmissions) ? taskSubmissions.find(t => t.moduleId === prevModuleId) : null;
 
-  // Check if staff approved previous module
-  if (prevValidation && prevValidation.status === 'approved') {
+  // Next day is ONLY unlocked if staff has APPROVED previous day's submission!
+  const isApprovedByValidation = prevValidation && (prevValidation.status === 'approved' || prevValidation.status === 'Approved');
+  const isApprovedByTask = prevTask && (prevTask.status === 'Approved' || prevTask.status === 'approved');
+
+  if (isApprovedByValidation || isApprovedByTask) {
     return false;
   }
 
-  // Check if completed in student progress or task submissions
-  if (Array.isArray(completedLessons) && completedLessons.length > 0) {
-    const hasCompletedPrevItem = completedLessons.some(item => 
-      item === prevModuleId || 
-      item.includes(`:${prevModuleId}:`) || 
-      item.startsWith(`${prevModuleId}:`) ||
-      item.endsWith(`:${prevModuleId}`)
-    );
-    if (hasCompletedPrevItem) return false;
-  }
-
-  if (Array.isArray(taskSubmissions) && taskSubmissions.length > 0) {
-    const hasSubmittedPrevTask = taskSubmissions.some(t => t.moduleId === prevModuleId);
-    if (hasSubmittedPrevTask) return false;
-  }
-
+  // Without staff approval, next day is LOCKED for student!
   return true;
 }
 
@@ -408,51 +397,43 @@ export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, 
   const prevModuleId = order[index - 1];
   const config = getModuleConfig(courseKey, prevModuleId);
   const prevValidation = validations[prevModuleId];
+  const prevTask = Array.isArray(taskSubmissions) ? taskSubmissions.find(t => t.moduleId === prevModuleId) : null;
 
   // Check if staff approved
-  if (prevValidation && prevValidation.status === 'approved') return null;
+  const isApprovedByValidation = prevValidation && (prevValidation.status === 'approved' || prevValidation.status === 'Approved');
+  const isApprovedByTask = prevTask && (prevTask.status === 'Approved' || prevTask.status === 'approved');
 
-  if (Array.isArray(completedLessons) && completedLessons.length > 0) {
-    const hasCompletedPrevItem = completedLessons.some(item => 
-      item === prevModuleId || 
-      item.includes(`:${prevModuleId}:`) || 
-      item.startsWith(`${prevModuleId}:`) ||
-      item.endsWith(`:${prevModuleId}`)
-    );
-    if (hasCompletedPrevItem) return null;
-  }
+  if (isApprovedByValidation || isApprovedByTask) return null;
 
-  if (Array.isArray(taskSubmissions) && taskSubmissions.length > 0) {
-    const hasSubmittedPrevTask = taskSubmissions.some(t => t.moduleId === prevModuleId);
-    if (hasSubmittedPrevTask) return null;
-  }
+  // Check if student submitted but pending staff evaluation
+  const isPending = (prevValidation && (prevValidation.status === 'pending' || prevValidation.status === 'Submitted')) || 
+                    (prevTask && (prevTask.status === 'Pending' || prevTask.status === 'Submitted'));
 
-  if (!prevValidation) {
+  const isRejected = (prevValidation && (prevValidation.status === 'rejected' || prevValidation.status === 'Rejected')) || 
+                     (prevTask && (prevTask.status === 'Rejected' || prevTask.status === 'rejected'));
+
+  if (isPending) {
     return {
       prevModuleId,
       prevTitle: config.dayTitle || 'Previous Day',
-      reason: 'Assignment not submitted yet',
-      detail: `You must submit the ${config.dayTitle || 'previous day'} assignment and complete its topics before unlocking this content.`
+      reason: 'Pending Staff Review & Approval',
+      detail: `Your submission for ${config.dayTitle || 'previous day'} has been received! Please wait for staff evaluation and approval to unlock this day.`
     };
   }
 
-  if (prevValidation.status === 'pending') {
-    return {
-      prevModuleId,
-      prevTitle: config.dayTitle || 'Previous Day',
-      reason: 'Pending Staff Review & Validation',
-      detail: `Your submission for ${config.dayTitle || 'previous day'} is received! Wait for staff evaluation and approval to unlock this day.`
-    };
-  }
-
-  if (prevValidation.status === 'rejected') {
+  if (isRejected) {
     return {
       prevModuleId,
       prevTitle: config.dayTitle || 'Previous Day',
       reason: 'Revision Requested by Staff',
-      detail: `Staff requested changes on your ${config.dayTitle || 'previous day'} assignment. Please update your submission according to staff feedback.`
+      detail: `Staff requested changes on your ${config.dayTitle || 'previous day'} assignment. Please update and resubmit your assignment for staff approval.`
     };
   }
 
-  return null;
+  return {
+    prevModuleId,
+    prevTitle: config.dayTitle || 'Previous Day',
+    reason: 'Staff Approval Required',
+    detail: `You must submit the ${config.dayTitle || 'previous day'} assignment/reflection and receive Staff Approval before unlocking this day.`
+  };
 }
