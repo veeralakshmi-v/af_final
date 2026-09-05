@@ -373,6 +373,7 @@ const availableCourseOptions = [
   { value: "git_github", label: "Git & GitHub" },
   { value: "json_course", label: "JSON Essentials" },
   { value: "django_course", label: "Django Framework" },
+  { value: "devops", label: "DevOps Framework" },
   { value: "stats_course", label: "Statistics for Data Analytics" },
   { value: "numpy_course", label: "NumPy for Data Science" },
   { value: "pandas_course", label: "Pandas for Data Science" },
@@ -391,6 +392,8 @@ const getCourseLabel = (courseKey) => {
   const found = availableCourseOptions.find(c => c.value === courseKey);
   if (found) return found.label;
   const labels = {
+    web_design_20days: 'AI-Powered Web Design (20 Days)',
+    web_design: 'AI-Powered Web Design',
     html_css: 'Web Design (HTML, CSS & Bootstrap)',
     sql: 'AI-Powered SQL Course',
     sql_da: 'SQL for Data Analytics',
@@ -405,6 +408,7 @@ const getCourseLabel = (courseKey) => {
     git_github: 'Git & GitHub',
     json_course: 'JSON Essentials',
     django_course: 'Django Framework',
+    devops: 'DevOps Framework',
     stats_course: 'Statistics for Data Analytics',
     numpy_course: 'NumPy for Data Science',
     pandas_course: 'Pandas for Data Science',
@@ -1927,29 +1931,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     gap: '0.75rem',
                     background: '#f8fafc'
                   }}>
-                    {[
-                      { value: "html_css", label: "HTML, CSS & Bootstrap" },
-                      { value: "sql", label: "Databases & SQL (Full Stack)" },
-                      { value: "sql_da", label: "SQL for Data Analytics" },
-                      { value: "python_course", label: "Core Python & OOPs" },
-                      { value: "python_da", label: "Python for Data Analytics" },
-                      { value: "javascript_course", label: "AI-Powered JavaScript" },
-                      { value: "generative_ai_course", label: "Generative AI" },
-                      { value: "agentic_ai", label: "Agentic AI Development" },
-                      { value: "summer_sql", label: "Summer SQL" },
-                      { value: "powerbi", label: "Power BI Data Analytics" },
-                      { value: "react_course", label: "AI-Powered React JS" },
-                      { value: "git_github", label: "Git & GitHub" },
-                      { value: "json_course", label: "JSON Essentials" },
-                      { value: "django_course", label: "Django Framework" },
-                      { value: "stats_course", label: "Statistics for Data Analytics" },
-                      { value: "numpy_course", label: "NumPy for Data Science" },
-                      { value: "pandas_course", label: "Pandas for Data Science" },
-                      { value: "matplotlib_course", label: "Matplotlib for Data Science" },
-                      { value: "seaborn_course", label: "Seaborn for Data Science" },
-                      { value: "core_js", label: "Core JavaScript" },
-                      { value: "tally_prime", label: "AI powered Tally" }
-                    ].map(course => {
+                    {availableCourseOptions.map(course => {
                       const isChecked = (assignedCourse || '').split(',').includes(course.value);
                       return (
                         <label 
@@ -3302,29 +3284,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   background: '#f8fafc',
                   boxSizing: 'border-box'
                 }}>
-                  {[
-                    { value: "html_css", label: "HTML, CSS & Bootstrap" },
-                    { value: "sql", label: "Databases & SQL (Full Stack)" },
-                    { value: "sql_da", label: "SQL for Data Analytics" },
-                    { value: "python_course", label: "Core Python & OOPs" },
-                    { value: "python_da", label: "Python for Data Analytics" },
-                    { value: "javascript_course", label: "AI-Powered JavaScript" },
-                    { value: "generative_ai_course", label: "Generative AI" },
-                    { value: "agentic_ai", label: "Agentic AI Development" },
-                    { value: "summer_sql", label: "Summer SQL" },
-                    { value: "powerbi", label: "Power BI Data Analytics" },
-                    { value: "react_course", label: "AI-Powered React JS" },
-                    { value: "git_github", label: "Git & GitHub" },
-                    { value: "json_course", label: "JSON Essentials" },
-                    { value: "django_course", label: "Django Framework" },
-                    { value: "stats_course", label: "Statistics for Data Analytics" },
-                    { value: "numpy_course", label: "NumPy for Data Science" },
-                    { value: "pandas_course", label: "Pandas for Data Science" },
-                    { value: "matplotlib_course", label: "Matplotlib for Data Science" },
-                    { value: "seaborn_course", label: "Seaborn for Data Science" },
-                    { value: "core_js", label: "Core JavaScript" },
-                    { value: "tally_prime", label: "AI powered Tally" }
-                  ].map(course => {
+                  {availableCourseOptions.map(course => {
                     const isChecked = (editingCourses || '').split(',').includes(course.value);
                     return (
                       <label
