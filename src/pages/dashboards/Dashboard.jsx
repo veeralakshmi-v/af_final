@@ -2271,115 +2271,337 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     )}
                   </div>
                 </div>
-                
+
                 {filteredStudents.length > 0 ? (
                   <>
-                    <div style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid var(--surface-border)' }}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
-                        <thead>
-                          <tr style={{ textAlign: 'left', color: 'var(--text-secondary)', background: 'rgba(0,0,0,0.02)' }}>
-                            <th style={{ padding: '1rem' }}>Student Name</th>
-                            <th style={{ padding: '1rem' }}>Enrolled Course</th>
-                            <th style={{ padding: '1rem' }}>Access Key</th>
-                            <th style={{ padding: '1rem' }}>Course Progress</th>
-                            <th style={{ padding: '1rem' }}>Shareable URL</th>
-                            <th style={{ padding: '1rem' }}>Lock Status</th>
-                            <th style={{ padding: '1rem', textAlign: 'center' }}>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {paginatedStudents.map(s => (
-                            <tr key={s._id || s.id} style={{ color: 'var(--text-primary)', borderBottom: '1px solid var(--surface-border)' }}>
-                              <td style={{ padding: '1rem', fontWeight: 800 }}>
+                    {!isMobile ? (
+                      /* 🖥️ DESKTOP TABLE VIEW */
+                      <div style={{ overflowX: 'auto', borderRadius: '16px', border: '1px solid var(--surface-border)', boxShadow: 'var(--shadow-sm)' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem', textAlign: 'left' }}>
+                          <thead>
+                            <tr style={{ color: 'var(--text-secondary)', background: 'rgba(0,0,0,0.02)', borderBottom: '2px solid var(--surface-border)' }}>
+                              <th style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>STUDENT NAME</th>
+                              <th style={{ padding: '1rem 1.25rem' }}>ENROLLED CURRICULUMS</th>
+                              <th style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>ACCESS CODE</th>
+                              <th style={{ padding: '1rem 1.25rem', minWidth: '220px' }}>COURSE PROGRESS</th>
+                              <th style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>SHAREABLE LINK</th>
+                              <th style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>LOCK STATUS</th>
+                              <th style={{ padding: '1rem 1.25rem', textAlign: 'center', whiteSpace: 'nowrap' }}>ACTIONS</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {paginatedStudents.map(s => (
+                              <tr key={s._id || s.id} style={{ color: 'var(--text-primary)', borderBottom: '1px solid var(--surface-border)', transition: 'background 0.2s' }}>
+                                <td style={{ padding: '1rem 1.25rem', fontWeight: 800 }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <div style={{
+                                      width: 34, height: 34, borderRadius: '50%',
+                                      background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                                      color: '#ffffff', fontWeight: 900, fontSize: '0.82rem',
+                                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                                    }}>
+                                      {s.name ? s.name.substring(0, 2).toUpperCase() : 'ST'}
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => setViewingProgressStudent(s)}
+                                      style={{
+                                        background: 'none', border: 'none', color: '#0f172a', fontWeight: 800, cursor: 'pointer',
+                                        fontSize: '0.92rem', textAlign: 'left', padding: 0
+                                      }}
+                                      title="Click to view detailed per-course progress breakdown"
+                                    >
+                                      {s.name}
+                                    </button>
+                                  </div>
+                                </td>
+                                <td style={{ padding: '1rem 1.25rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                                  {getCourseLabel(s.enrolledCourse)}
+                                </td>
+                                <td style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>
+                                  <span style={{
+                                    fontFamily: 'monospace', fontWeight: 800, color: '#d97706',
+                                    background: '#fef3c7', border: '1px solid #fde68a',
+                                    padding: '4px 10px', borderRadius: '8px', fontSize: '0.84rem'
+                                  }}>
+                                    {s.accessCode}
+                                  </span>
+                                </td>
+                                <td style={{ padding: '1rem 1.25rem', minWidth: '220px' }}>
+                                  {(() => {
+                                    const detailed = calculateDetailedCourseProgress(s);
+                                    const { completedCount, totalCount, percentage } = calculateStudentProgress(s);
+                                    const badgeColor = percentage === 100 ? '#10b981' : percentage > 0 ? '#2563eb' : '#64748b';
+                                    const bgLight = percentage === 100 ? 'rgba(16, 185, 129, 0.1)' : percentage > 0 ? 'rgba(37, 99, 235, 0.1)' : '#f1f5f9';
+
+                                    return (
+                                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                        {/* Progress Summary Header */}
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px' }}>
+                                          <span style={{
+                                            fontSize: '0.75rem',
+                                            fontWeight: 800,
+                                            color: badgeColor,
+                                            background: bgLight,
+                                            padding: '2px 8px',
+                                            borderRadius: '12px'
+                                          }}>
+                                            {detailed.length} {detailed.length === 1 ? 'Track' : 'Tracks'} · {percentage}%
+                                          </span>
+                                          <span style={{ fontSize: '0.74rem', color: 'var(--text-tertiary)', fontWeight: 700 }}>
+                                            {completedCount}/{totalCount} topics
+                                          </span>
+                                        </div>
+
+                                        {/* Overall Progress Bar */}
+                                        <div style={{ width: '100%', height: '6px', background: '#e2e8f0', borderRadius: '10px', overflow: 'hidden' }}>
+                                          <div style={{
+                                            width: `${percentage}%`,
+                                            height: '100%',
+                                            background: percentage === 100
+                                              ? 'linear-gradient(90deg, #10b981 0%, #059669 100%)'
+                                              : 'linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)',
+                                            borderRadius: '10px',
+                                            transition: 'width 0.4s ease'
+                                          }} />
+                                        </div>
+
+                                        {/* Individual Course Micro Pills */}
+                                        <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '2px' }}>
+                                          {detailed.slice(0, 3).map(c => (
+                                            <span 
+                                              key={c.courseKey}
+                                              style={{
+                                                fontSize: '0.7rem',
+                                                fontWeight: 700,
+                                                color: c.percentage === 100 ? '#059669' : c.percentage > 0 ? '#1d4ed8' : '#64748b',
+                                                background: c.percentage === 100 ? '#d1fae5' : c.percentage > 0 ? '#eff6ff' : '#f8fafc',
+                                                border: `1px solid ${c.percentage === 100 ? '#a7f3d0' : c.percentage > 0 ? '#bfdbfe' : '#e2e8f0'}`,
+                                                padding: '1px 6px',
+                                                borderRadius: '6px'
+                                              }}
+                                              title={`${c.courseLabel}: ${c.completedTopics}/${c.totalTopics} topics (${c.percentage}%)`}
+                                            >
+                                              {c.courseLabel.split(' ')[0]}: {c.percentage}%
+                                            </span>
+                                          ))}
+                                          {detailed.length > 3 && (
+                                            <span style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700 }}>
+                                              +{detailed.length - 3}
+                                            </span>
+                                          )}
+                                        </div>
+
+                                        {/* Detail Modal Trigger Button */}
+                                        <button
+                                          type="button"
+                                          onClick={() => setViewingProgressStudent(s)}
+                                          style={{
+                                            marginTop: '4px',
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                                            color: '#ffffff',
+                                            border: 'none',
+                                            padding: '4px 10px',
+                                            borderRadius: '8px',
+                                            fontSize: '0.75rem',
+                                            fontWeight: 800,
+                                            cursor: 'pointer',
+                                            boxShadow: '0 2px 6px rgba(37, 99, 235, 0.2)',
+                                            width: 'fit-content'
+                                          }}
+                                        >
+                                          <BarChart3 size={12} /> Audit Progress
+                                        </button>
+                                      </div>
+                                    );
+                                  })()}
+                                </td>
+                                <td style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>
+                                  <button
+                                    onClick={() => {
+                                      const loginUrl = `${window.location.origin}/?code=${s.accessCode}`;
+                                      navigator.clipboard.writeText(loginUrl);
+                                      alert(`Copied direct access link for ${s.name}!\n\nLink: ${loginUrl}`);
+                                    }}
+                                    style={{
+                                      background: '#f8fafc', border: '1px solid var(--surface-border)', color: 'var(--text-primary)',
+                                      padding: '0.45rem 0.85rem', borderRadius: '8px', cursor: 'pointer',
+                                      fontSize: '0.8rem', fontWeight: 700, transition: 'var(--transition)',
+                                      display: 'inline-flex', alignItems: 'center', gap: '4px'
+                                    }}
+                                  >
+                                    <Copy size={12} /> Copy Link
+                                  </button>
+                                </td>
+                                <td style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>
+                                  {s.deviceId ? (
+                                    <span style={{ color: '#10b981', fontWeight: 700, fontSize: '0.78rem', background: 'rgba(16, 185, 129, 0.08)', padding: '0.35rem 0.75rem', borderRadius: '20px', display: 'inline-block', whiteSpace: 'nowrap' }}>
+                                      🔒 Device Locked
+                                    </span>
+                                  ) : (
+                                    <span style={{ color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.78rem', background: 'rgba(0, 0, 0, 0.03)', padding: '0.35rem 0.75rem', borderRadius: '20px', display: 'inline-block', whiteSpace: 'nowrap' }}>
+                                      🆕 Unlocked
+                                    </span>
+                                  )}
+                                </td>
+                                <td style={{ padding: '1rem 1.25rem', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                                  <button 
+                                    onClick={() => handleOpenEditCoursesModal(s)}
+                                    style={{ background: '#eff6ff', border: '1px solid #bfdbfe', color: '#2563eb', fontWeight: 800, cursor: 'pointer', fontSize: '0.8rem', padding: '0.35rem 0.75rem', borderRadius: '8px', marginRight: '6px' }}
+                                  >
+                                    Edit Tracks
+                                  </button>
+                                  {s.deviceId && (
+                                    <button 
+                                      onClick={() => handleResetDevice(s._id || s.id)}
+                                      style={{ background: '#fffbe8', border: '1px solid #fde68a', color: '#d97706', fontWeight: 800, cursor: 'pointer', fontSize: '0.8rem', padding: '0.35rem 0.75rem', borderRadius: '8px', marginRight: '6px' }}
+                                    >
+                                      Reset Lock
+                                    </button>
+                                  )}
+                                  {session?.role === 'admin' && (
+                                    <button 
+                                      onClick={() => handleDeleteStudent(s._id || s.id)}
+                                      style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#ef4444', fontWeight: 800, cursor: 'pointer', fontSize: '0.8rem', padding: '0.35rem 0.75rem', borderRadius: '8px' }}
+                                    >
+                                      Delete
+                                    </button>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      /* 📱 MOBILE RESPONSIVE CARD GRID VIEW */
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                        {paginatedStudents.map(s => {
+                          const detailed = calculateDetailedCourseProgress(s);
+                          const { completedCount, totalCount, percentage } = calculateStudentProgress(s);
+
+                          return (
+                            <div
+                              key={s._id || s.id}
+                              style={{
+                                background: '#ffffff',
+                                border: '1px solid var(--surface-border)',
+                                borderRadius: '18px',
+                                padding: '1.25rem',
+                                boxShadow: 'var(--shadow-sm)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '1rem'
+                              }}
+                            >
+                              {/* Student Header */}
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                  <div style={{
+                                    width: 40, height: 40, borderRadius: '50%',
+                                    background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                                    color: '#ffffff', fontWeight: 900, fontSize: '0.9rem',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                                  }}>
+                                    {s.name ? s.name.substring(0, 2).toUpperCase() : 'ST'}
+                                  </div>
+                                  <div>
+                                    <div style={{ fontWeight: 800, fontSize: '1rem', color: '#0f172a' }}>
+                                      {s.name}
+                                    </div>
+                                    <span style={{ fontFamily: 'monospace', fontWeight: 800, color: '#d97706', background: '#fef3c7', border: '1px solid #fde68a', padding: '1px 6px', borderRadius: '4px', fontSize: '0.75rem' }}>
+                                      {s.accessCode}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {s.deviceId ? (
+                                  <span style={{ color: '#10b981', fontWeight: 700, fontSize: '0.74rem', background: 'rgba(16, 185, 129, 0.08)', padding: '0.25rem 0.6rem', borderRadius: '20px' }}>
+                                    🔒 Locked
+                                  </span>
+                                ) : (
+                                  <span style={{ color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.74rem', background: 'rgba(0, 0, 0, 0.03)', padding: '0.25rem 0.6rem', borderRadius: '20px' }}>
+                                    🆕 Unlocked
+                                  </span>
+                                )}
+                              </div>
+
+                              {/* Enrolled Track Description */}
+                              <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', background: '#f8fafc', padding: '8px 12px', borderRadius: '10px' }}>
+                                <strong>Enrolled Tracks:</strong> {getCourseLabel(s.enrolledCourse)}
+                              </div>
+
+                              {/* Progress Card Section */}
+                              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#2563eb' }}>
+                                    {detailed.length} {detailed.length === 1 ? 'Track' : 'Tracks'} · {percentage}% Complete
+                                  </span>
+                                  <span style={{ fontSize: '0.74rem', color: '#64748b', fontWeight: 700 }}>
+                                    {completedCount}/{totalCount} topics
+                                  </span>
+                                </div>
+
+                                <div style={{ width: '100%', height: '6px', background: '#e2e8f0', borderRadius: '10px', overflow: 'hidden' }}>
+                                  <div style={{
+                                    width: `${percentage}%`,
+                                    height: '100%',
+                                    background: percentage === 100
+                                      ? 'linear-gradient(90deg, #10b981 0%, #059669 100%)'
+                                      : 'linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)',
+                                    borderRadius: '10px',
+                                    transition: 'width 0.4s ease'
+                                  }} />
+                                </div>
+
+                                <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                                  {detailed.map(c => (
+                                    <span
+                                      key={c.courseKey}
+                                      style={{
+                                        fontSize: '0.7rem',
+                                        fontWeight: 700,
+                                        color: c.percentage === 100 ? '#059669' : c.percentage > 0 ? '#1d4ed8' : '#64748b',
+                                        background: c.percentage === 100 ? '#d1fae5' : c.percentage > 0 ? '#eff6ff' : '#ffffff',
+                                        border: `1px solid ${c.percentage === 100 ? '#a7f3d0' : c.percentage > 0 ? '#bfdbfe' : '#e2e8f0'}`,
+                                        padding: '2px 6px',
+                                        borderRadius: '6px'
+                                      }}
+                                    >
+                                      {c.courseLabel.split(' ')[0]}: {c.percentage}%
+                                    </span>
+                                  ))}
+                                </div>
+
                                 <button
                                   type="button"
                                   onClick={() => setViewingProgressStudent(s)}
                                   style={{
-                                    background: 'none', border: 'none', color: '#0f172a', fontWeight: 800, cursor: 'pointer',
-                                    fontSize: '0.9rem', textAlign: 'left', padding: 0
+                                    marginTop: '4px',
+                                    width: '100%',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '6px',
+                                    background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                                    color: '#ffffff',
+                                    border: 'none',
+                                    padding: '8px',
+                                    borderRadius: '10px',
+                                    fontSize: '0.8rem',
+                                    fontWeight: 800,
+                                    cursor: 'pointer'
                                   }}
-                                  title="Click to view detailed per-course progress breakdown"
                                 >
-                                  {s.name}
+                                  <BarChart3 size={14} /> View Course Progress Breakdown
                                 </button>
-                              </td>
-                              <td style={{ padding: '1rem' }}>{getCourseLabel(s.enrolledCourse)}</td>
-                              <td style={{ padding: '1rem', fontWeight: 800, color: '#ca8a04', fontFamily: 'monospace' }}>{s.accessCode}</td>
-                              <td style={{ padding: '1rem' }}>
-                                {(() => {
-                                  const detailed = calculateDetailedCourseProgress(s);
-                                  const { completedCount, totalCount, percentage } = calculateStudentProgress(s);
-                                  return (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: '165px' }}>
-                                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
-                                        <span style={{
-                                          fontSize: '0.75rem',
-                                          fontWeight: 800,
-                                          color: percentage === 100 ? '#10b981' : percentage > 0 ? '#2563eb' : '#64748b',
-                                          background: percentage === 100 ? 'rgba(16, 185, 129, 0.1)' : percentage > 0 ? 'rgba(37, 99, 235, 0.1)' : '#f1f5f9',
-                                          padding: '2px 8px',
-                                          borderRadius: '12px'
-                                        }}>
-                                          {detailed.length} {detailed.length === 1 ? 'Track' : 'Tracks'} · {percentage}%
-                                        </span>
-                                        <span style={{ fontSize: '0.74rem', color: 'var(--text-tertiary)', fontWeight: 700 }}>
-                                          {completedCount}/{totalCount}
-                                        </span>
-                                      </div>
+                              </div>
 
-                                      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                                        {detailed.slice(0, 3).map(c => (
-                                          <span 
-                                            key={c.courseKey}
-                                            style={{
-                                              fontSize: '0.7rem',
-                                              fontWeight: 700,
-                                              color: c.percentage === 100 ? '#059669' : c.percentage > 0 ? '#1d4ed8' : '#64748b',
-                                              background: c.percentage === 100 ? '#d1fae5' : c.percentage > 0 ? '#eff6ff' : '#f8fafc',
-                                              border: `1px solid ${c.percentage === 100 ? '#a7f3d0' : c.percentage > 0 ? '#bfdbfe' : '#e2e8f0'}`,
-                                              padding: '1px 6px',
-                                              borderRadius: '6px'
-                                            }}
-                                            title={`${c.courseLabel}: ${c.completedTopics}/${c.totalTopics} topics (${c.percentage}%)`}
-                                          >
-                                            {c.courseLabel.split(' ')[0]}: {c.percentage}%
-                                          </span>
-                                        ))}
-                                        {detailed.length > 3 && (
-                                          <span style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700 }}>
-                                            +{detailed.length - 3}
-                                          </span>
-                                        )}
-                                      </div>
-
-                                      <button
-                                        type="button"
-                                        onClick={() => setViewingProgressStudent(s)}
-                                        style={{
-                                          marginTop: '2px',
-                                          display: 'inline-flex',
-                                          alignItems: 'center',
-                                          justifyContent: 'center',
-                                          gap: '4px',
-                                          background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-                                          color: '#ffffff',
-                                          border: 'none',
-                                          padding: '4px 10px',
-                                          borderRadius: '8px',
-                                          fontSize: '0.75rem',
-                                          fontWeight: 800,
-                                          cursor: 'pointer',
-                                          boxShadow: '0 2px 6px rgba(37, 99, 235, 0.2)',
-                                          width: 'fit-content'
-                                        }}
-                                      >
-                                        <BarChart3 size={12} /> Detailed View
-                                      </button>
-                                    </div>
-                                  );
-                                })()}
-                              </td>
-                              <td style={{ padding: '1rem' }}>
+                              {/* Card Action Controls */}
+                              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', paddingTop: '4px', borderTop: '1px solid #f1f5f9' }}>
                                 <button
                                   onClick={() => {
                                     const loginUrl = `${window.location.origin}/?code=${s.accessCode}`;
@@ -2387,38 +2609,23 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                     alert(`Copied direct access link for ${s.name}!\n\nLink: ${loginUrl}`);
                                   }}
                                   style={{
-                                    background: '#f8fafc', border: '1px solid var(--surface-border)', color: 'var(--text-primary)',
-                                    padding: '0.4rem 0.8rem', borderRadius: '8px', cursor: 'pointer',
-                                    fontSize: '0.8rem', fontWeight: 700, transition: 'var(--transition)'
+                                    flex: 1, background: '#f8fafc', border: '1px solid var(--surface-border)', color: 'var(--text-primary)',
+                                    padding: '0.45rem 0.6rem', borderRadius: '8px', cursor: 'pointer',
+                                    fontSize: '0.78rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px'
                                   }}
-                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e2e8f0'}
-                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
                                 >
-                                  Copy Login Link
+                                  <Copy size={12} /> Copy Link
                                 </button>
-                              </td>
-                              <td style={{ padding: '1rem' }}>
-                                {s.deviceId ? (
-                                  <span style={{ color: '#10b981', fontWeight: 700, fontSize: '0.78rem', background: 'rgba(16, 185, 129, 0.08)', padding: '0.3rem 0.7rem', borderRadius: '20px' }}>
-                                    🔒 Device Locked
-                                  </span>
-                                ) : (
-                                  <span style={{ color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.78rem', background: 'rgba(0, 0, 0, 0.03)', padding: '0.3rem 0.7rem', borderRadius: '20px' }}>
-                                    🆕 Unlocked
-                                  </span>
-                                )}
-                              </td>
-                              <td style={{ padding: '1rem', textAlign: 'center' }}>
                                 <button 
                                   onClick={() => handleOpenEditCoursesModal(s)}
-                                  style={{ background: 'none', border: 'none', color: '#2563eb', fontWeight: 800, cursor: 'pointer', fontSize: '0.85rem', marginRight: '10px' }}
+                                  style={{ background: '#eff6ff', border: '1px solid #bfdbfe', color: '#2563eb', fontWeight: 800, cursor: 'pointer', fontSize: '0.78rem', padding: '0.45rem 0.6rem', borderRadius: '8px' }}
                                 >
-                                  Edit Courses
+                                  Edit Tracks
                                 </button>
                                 {s.deviceId && (
                                   <button 
                                     onClick={() => handleResetDevice(s._id || s.id)}
-                                    style={{ background: 'none', border: 'none', color: '#f59e0b', fontWeight: 800, cursor: 'pointer', fontSize: '0.85rem', marginRight: '10px' }}
+                                    style={{ background: '#fffbe8', border: '1px solid #fde68a', color: '#d97706', fontWeight: 800, cursor: 'pointer', fontSize: '0.78rem', padding: '0.45rem 0.6rem', borderRadius: '8px' }}
                                   >
                                     Reset Lock
                                   </button>
@@ -2426,17 +2633,17 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                 {session?.role === 'admin' && (
                                   <button 
                                     onClick={() => handleDeleteStudent(s._id || s.id)}
-                                    style={{ background: 'none', border: 'none', color: '#ef4444', fontWeight: 800, cursor: 'pointer', fontSize: '0.85rem' }}
+                                    style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#ef4444', fontWeight: 800, cursor: 'pointer', fontSize: '0.78rem', padding: '0.45rem 0.6rem', borderRadius: '8px' }}
                                   >
                                     Delete
                                   </button>
                                 )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
 
                     {/* Pagination Controls */}
                     <div style={{ 
