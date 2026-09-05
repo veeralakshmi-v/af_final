@@ -4,7 +4,7 @@ import {
   UserPlus, Users, LogIn, LogOut, CheckCircle, BarChart3, Layers, GitBranch, 
   Server, RefreshCw, Trash2, Key, Star, ShieldAlert, Award, Grid, HelpCircle,
   BookOpen, ExternalLink, Upload, Download, FileText, Lock, AlertTriangle, Menu, X,
-  Search, ChevronLeft, ChevronRight
+  Search, ChevronLeft, ChevronRight, Copy
 } from 'lucide-react';
 import { 
   getAssignmentValidations, 
