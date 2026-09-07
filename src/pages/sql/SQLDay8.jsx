@@ -297,6 +297,16 @@ export default function SQLDay8({ activeTab, onNavigate }) {
                   </table>
                 </div>
               )}
+              {/* Quick Difference Note */}
+              <div style={{ marginTop: '1.5rem', background: '#eff6ff', borderLeft: '4px solid #3b82f6', padding: '1rem 1.25rem', borderRadius: '10px' }}>
+                <h5 style={{ margin: '0 0 0.35rem 0', color: '#1e40af', fontSize: '0.9rem', fontWeight: 700 }}>
+                  💡 View vs. Stored Procedure (Quick Difference):
+                </h5>
+                <p style={{ margin: 0, fontSize: '0.84rem', color: '#1e3a8a', lineHeight: '1.5' }}>
+                  A <strong>View</strong> is a <em>virtual table (saved SELECT query)</em> that you query with <code>SELECT * FROM ViewName</code> and does not take input parameters. A <strong>Stored Procedure</strong> (covered in Day 9) is a full <em>database subroutine/program</em> that can accept parameters (<code>IN</code>/<code>OUT</code>), run loops/conditions, and perform <code>INSERT/UPDATE/DELETE</code> operations!
+                </p>
+              </div>
+
             </div>
 
             <div className="card-actions" style={{ marginTop: '2.5rem' }}>
