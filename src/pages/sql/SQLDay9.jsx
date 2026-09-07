@@ -249,85 +249,74 @@ export default function SQLDay9({ activeTab, onNavigate }) {
               </pre>
             </div>
 
-            {/* The 3 Parameter Modes (IN, OUT, INOUT) */}
-            <h3 style={{ marginBottom: '1rem', fontSize: '1.3rem' }}>The 3 Stored Procedure Parameter Modes</h3>
-            <p style={{ color: '#64748b', fontSize: '0.9rem', marginTop: '-0.5rem', marginBottom: '1.25rem' }}>
-              Procedures become super powerful when you pass data in and receive calculated values back.
+            {/* The 3 Parameter Modes (IN, OUT, INOUT) with Simple Real-World Analogies */}
+            <h3 style={{ marginBottom: '0.75rem', fontSize: '1.3rem' }}>The 3 Parameter Modes Made Super Simple</h3>
+            <p style={{ color: '#64748b', fontSize: '0.92rem', marginTop: '-0.25rem', marginBottom: '1.5rem', lineHeight: '1.5' }}>
+              Parameters are just ways data goes <strong>INTO</strong> a procedure or comes <strong>OUT</strong> of it. Think of it like a kitchen order!
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
               
-              {/* IN Parameter */}
-              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              {/* 1. IN Parameter */}
+              <div style={{ background: '#ffffff', border: '2px solid #bfdbfe', borderRadius: '14px', padding: '1.35rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 2px 8px rgba(59, 130, 246, 0.05)' }}>
                 <div>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#3b82f6', textTransform: 'uppercase', background: '#eff6ff', padding: '2px 8px', borderRadius: '4px' }}>Mode 1 (Default)</span>
-                  <h4 style={{ margin: '8px 0 0.4rem 0', color: '#0f172a' }}>IN Parameter (Input Only)</h4>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#1d4ed8', background: '#dbeafe', padding: '3px 10px', borderRadius: '6px', textTransform: 'uppercase' }}>Mode 1 (Default)</span>
+                    <span style={{ fontSize: '1.2rem' }}>📥</span>
+                  </div>
+                  <h4 style={{ margin: '4px 0 0.35rem 0', color: '#0f172a', fontSize: '1.05rem' }}>IN Parameter (Input Only)</h4>
+                  <div style={{ background: '#eff6ff', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.82rem', color: '#1e40af', marginBottom: '0.75rem', lineHeight: '1.45' }}>
+                    💡 <strong>Analogy:</strong> Like typing a name in Google Search. You send data <strong>IN</strong> to filter records.
+                  </div>
                   <p style={{ fontSize: '0.84rem', color: '#64748b', marginBottom: '0.75rem' }}>
-                    Passes a value from the caller <strong>into</strong> the procedure. The procedure can read it, but cannot modify the original variable outside.
+                    The procedure reads this value, but cannot change it outside.
                   </p>
                 </div>
                 <pre style={{ background: '#0f172a', padding: '0.85rem', borderRadius: '8px', fontSize: '0.78rem', color: '#38bdf8', overflowX: 'auto', margin: 0 }}>
-                  <code>CREATE PROCEDURE GetDeptStaff(<br/>&nbsp;&nbsp;IN dept_name VARCHAR(50)<br/>)<br/>BEGIN<br/>&nbsp;&nbsp;SELECT * FROM Employees<br/>&nbsp;&nbsp;WHERE department = dept_name;<br/>END;</code>
+                  <code>-- Give 'Engineering' as INPUT:<br/>CREATE PROCEDURE GetDeptStaff(<br/>&nbsp;&nbsp;IN dept_name VARCHAR(50)<br/>)<br/>BEGIN<br/>&nbsp;&nbsp;SELECT * FROM Employees<br/>&nbsp;&nbsp;WHERE department = dept_name;<br/>END;<br/><br/>-- Run it:<br/>CALL GetDeptStaff('Engineering');</code>
                 </pre>
               </div>
 
-              {/* OUT Parameter */}
-              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              {/* 2. OUT Parameter */}
+              <div style={{ background: '#ffffff', border: '2px solid #bbf7d0', borderRadius: '14px', padding: '1.35rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 2px 8px rgba(16, 185, 129, 0.05)' }}>
                 <div>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#10b981', textTransform: 'uppercase', background: '#ecfdf5', padding: '2px 8px', borderRadius: '4px' }}>Mode 2</span>
-                  <h4 style={{ margin: '8px 0 0.4rem 0', color: '#0f172a' }}>OUT Parameter (Output Only)</h4>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#047857', background: '#d1fae5', padding: '3px 10px', borderRadius: '6px', textTransform: 'uppercase' }}>Mode 2</span>
+                    <span style={{ fontSize: '1.2rem' }}>📤</span>
+                  </div>
+                  <h4 style={{ margin: '4px 0 0.35rem 0', color: '#0f172a', fontSize: '1.05rem' }}>OUT Parameter (Output Only)</h4>
+                  <div style={{ background: '#ecfdf5', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.82rem', color: '#065f46', marginBottom: '0.75rem', lineHeight: '1.45' }}>
+                    💡 <strong>Analogy:</strong> Like asking a calculator for total price. The procedure calculates and hands the answer <strong>OUT</strong> to you.
+                  </div>
                   <p style={{ fontSize: '0.84rem', color: '#64748b', marginBottom: '0.75rem' }}>
-                    Calculates a value inside the procedure and <strong>returns it back</strong> to the caller in a user variable.
+                    The procedure saves the calculated answer into a variable you supply.
                   </p>
                 </div>
                 <pre style={{ background: '#0f172a', padding: '0.85rem', borderRadius: '8px', fontSize: '0.78rem', color: '#a6e3a1', overflowX: 'auto', margin: 0 }}>
-                  <code>CREATE PROCEDURE GetDeptCount(<br/>&nbsp;&nbsp;IN dept_name VARCHAR(50),<br/>&nbsp;&nbsp;OUT total_count INT<br/>)<br/>BEGIN<br/>&nbsp;&nbsp;SELECT COUNT(*) INTO total_count<br/>&nbsp;&nbsp;FROM Employees<br/>&nbsp;&nbsp;WHERE department = dept_name;<br/>END;</code>
+                  <code>-- Returns total count OUT to caller:<br/>CREATE PROCEDURE GetDeptCount(<br/>&nbsp;&nbsp;IN dept_name VARCHAR(50),<br/>&nbsp;&nbsp;OUT total_count INT<br/>)<br/>BEGIN<br/>&nbsp;&nbsp;SELECT COUNT(*) INTO total_count<br/>&nbsp;&nbsp;FROM Employees<br/>&nbsp;&nbsp;WHERE department = dept_name;<br/>END;<br/><br/>-- Run & read the @my_count variable:<br/>CALL GetDeptCount('Marketing', @my_count);<br/>SELECT @my_count;</code>
                 </pre>
               </div>
 
-              {/* INOUT Parameter */}
-              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              {/* 3. INOUT Parameter */}
+              <div style={{ background: '#ffffff', border: '2px solid #ddd6fe', borderRadius: '14px', padding: '1.35rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 2px 8px rgba(139, 92, 246, 0.05)' }}>
                 <div>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#8b5cf6', textTransform: 'uppercase', background: '#f5f3ff', padding: '2px 8px', borderRadius: '4px' }}>Mode 3</span>
-                  <h4 style={{ margin: '8px 0 0.4rem 0', color: '#0f172a' }}>INOUT Parameter (Dual Purpose)</h4>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#6d28d9', background: '#ede9fe', padding: '3px 10px', borderRadius: '6px', textTransform: 'uppercase' }}>Mode 3</span>
+                    <span style={{ fontSize: '1.2rem' }}>🔄</span>
+                  </div>
+                  <h4 style={{ margin: '4px 0 0.35rem 0', color: '#0f172a', fontSize: '1.05rem' }}>INOUT Parameter (Both In & Out)</h4>
+                  <div style={{ background: '#f5f3ff', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.82rem', color: '#581c87', marginBottom: '0.75rem', lineHeight: '1.45' }}>
+                    💡 <strong>Analogy:</strong> Like recharging your Metro / Bus card. You give your card with $20, the machine adds $30, and hands you back $50!
+                  </div>
                   <p style={{ fontSize: '0.84rem', color: '#64748b', marginBottom: '0.75rem' }}>
-                    Caller passes an initial value in, the procedure <strong>modifies it</strong>, and returns the modified result.
+                    You pass an initial value in, the procedure modifies it, and returns the new value.
                   </p>
                 </div>
                 <pre style={{ background: '#0f172a', padding: '0.85rem', borderRadius: '8px', fontSize: '0.78rem', color: '#c4b5fd', overflowX: 'auto', margin: 0 }}>
-                  <code>CREATE PROCEDURE AddBonus(<br/>&nbsp;&nbsp;INOUT current_salary DECIMAL(10,2),<br/>&nbsp;&nbsp;IN bonus_percent DECIMAL(4,2)<br/>)<br/>BEGIN<br/>&nbsp;&nbsp;SET current_salary = current_salary + <br/>&nbsp;&nbsp;&nbsp;&nbsp;(current_salary * (bonus_percent / 100));<br/>END;</code>
+                  <code>-- Modifies existing balance:<br/>CREATE PROCEDURE AddTopUp(<br/>&nbsp;&nbsp;INOUT card_balance INT,<br/>&nbsp;&nbsp;IN recharge_amount INT<br/>)<br/>BEGIN<br/>&nbsp;&nbsp;SET card_balance = card_balance + recharge_amount;<br/>END;<br/><br/>-- Pass 20, add 30 -&gt; Result: 50<br/>SET @my_balance = 20;<br/>CALL AddTopUp(@my_balance, 30);<br/>SELECT @my_balance; -- Returns 50</code>
                 </pre>
               </div>
 
-            </div>
-
-            {/* Control Flow & Programming inside Stored Procedures */}
-            <h3 style={{ marginBottom: '1rem', fontSize: '1.3rem' }}>Variables & Control Flow (IF / ELSE / WHILE)</h3>
-            <p style={{ color: '#64748b', fontSize: '0.9rem', marginTop: '-0.5rem', marginBottom: '1.25rem' }}>
-              Unlike simple SQL queries, Stored Procedures are true procedural programs with local variables, conditional branching, and loops!
-            </p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
-              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem' }}>
-                <h4 style={{ margin: '0 0 0.5rem 0', color: '#0f172a', fontSize: '0.95rem' }}>1. Local Variables (DECLARE & SET)</h4>
-                <pre style={{ background: '#0f172a', padding: '0.85rem', borderRadius: '8px', fontSize: '0.78rem', color: '#e2e8f0', margin: 0 }}>
-                  <code>DECLARE total_tax DECIMAL(10,2) DEFAULT 0.00;<br/>DECLARE emp_count INT;<br/><br/>SET total_tax = subtotal * 0.18;</code>
-                </pre>
-              </div>
-
-              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem' }}>
-                <h4 style={{ margin: '0 0 0.5rem 0', color: '#0f172a', fontSize: '0.95rem' }}>2. Conditional Logic (IF / ELSEIF / ELSE)</h4>
-                <pre style={{ background: '#0f172a', padding: '0.85rem', borderRadius: '8px', fontSize: '0.78rem', color: '#e2e8f0', margin: 0 }}>
-                  <code>IF salary &gt;= 80000 THEN<br/>&nbsp;&nbsp;SET tier = 'Senior Grade';<br/>ELSEIF salary &gt;= 50000 THEN<br/>&nbsp;&nbsp;SET tier = 'Mid Grade';<br/>ELSE<br/>&nbsp;&nbsp;SET tier = 'Associate';<br/>END IF;</code>
-                </pre>
-              </div>
-
-              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem' }}>
-                <h4 style={{ margin: '0 0 0.5rem 0', color: '#0f172a', fontSize: '0.95rem' }}>3. Iteration & Loops (WHILE / REPEAT)</h4>
-                <pre style={{ background: '#0f172a', padding: '0.85rem', borderRadius: '8px', fontSize: '0.78rem', color: '#e2e8f0', margin: 0 }}>
-                  <code>DECLARE i INT DEFAULT 1;<br/>WHILE i &lt;= 5 DO<br/>&nbsp;&nbsp;INSERT INTO BatchQueue VALUES (i, NOW());<br/>&nbsp;&nbsp;SET i = i + 1;<br/>END WHILE;</code>
-                </pre>
-              </div>
             </div>
 
             {/* ========================================================= */}
@@ -411,42 +400,22 @@ export default function SQLDay9({ activeTab, onNavigate }) {
                     </tr>
 
                     <tr style={{ borderBottom: '1px solid #f1f5f9', background: '#fafafa' }}>
-                      <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1e293b' }}>6. Control Flow & Variables</td>
-                      <td style={{ padding: '10px 12px', color: '#ef4444' }}>
-                        ❌ No variables, no <code>IF/ELSE</code>, no loops.
-                      </td>
-                      <td style={{ padding: '10px 12px', color: '#10b981' }}>
-                        ✓ Full control flow: <code>DECLARE</code>, <code>IF/ELSE</code>, <code>WHILE</code>, <code>CASE</code>.
-                      </td>
-                    </tr>
-
-                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1e293b' }}>7. Transactions (TCL)</td>
-                      <td style={{ padding: '10px 12px', color: '#ef4444' }}>
-                        ❌ Cannot initiate transactions or rollback.
-                      </td>
-                      <td style={{ padding: '10px 12px', color: '#10b981' }}>
-                        ✓ Can contain <code>START TRANSACTION</code>, <code>COMMIT</code>, and <code>ROLLBACK</code>.
-                      </td>
-                    </tr>
-
-                    <tr style={{ borderBottom: '1px solid #f1f5f9', background: '#fafafa' }}>
-                      <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1e293b' }}>8. Compilation & Caching</td>
+                      <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1e293b' }}>6. Compilation & Speed</td>
                       <td style={{ padding: '10px 12px', color: '#475569' }}>
                         Parsed and executed on every query run.
                       </td>
                       <td style={{ padding: '10px 12px', color: '#475569' }}>
-                        <strong>Pre-compiled & cached</strong> execution plan on DB server.
+                        <strong>Pre-compiled & cached</strong> execution plan on DB server for maximum speed.
                       </td>
                     </tr>
 
                     <tr>
-                      <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1e293b' }}>9. Primary Use Case</td>
+                      <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1e293b' }}>7. Primary Use Case</td>
                       <td style={{ padding: '10px 12px', color: '#2563eb', fontWeight: 600 }}>
                         Data masking (hiding columns), simplifying complex multi-table joins for reporting.
                       </td>
                       <td style={{ padding: '10px 12px', color: '#059669', fontWeight: 600 }}>
-                        Complex business operations, batch data processing, transactional workflows (e.g. checkout, payroll).
+                        Automating repetitive database tasks, safe data updates with parameters.
                       </td>
                     </tr>
                   </tbody>
