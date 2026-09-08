@@ -1589,7 +1589,8 @@ console.log("typeof grade   →", typeof grade);    // object (JS quirk!)`);
                               gap: '12px',
                               fontSize: '0.9rem',
                               color: '#334155',
-                              textAlign: 'left'
+                              textAlign: 'left',
+                              transition: 'all 0.15s ease'
                             }}
                           >
                             <input
@@ -1597,7 +1598,7 @@ console.log("typeof grade   →", typeof grade);    // object (JS quirk!)`);
                               name={`quiz-${q.id}`}
                               checked={isSelected}
                               onChange={() => handleSelectOption(q.id, optIdx)}
-                              style={{ accentColor: '#ca8a04', margin: 0, flexShrink: 0 }}
+                              style={{ accentColor: '#ca8a04', margin: 0, flexShrink: 0, width: '18px', height: '18px', cursor: 'pointer' }}
                             />
                             <span style={{ textAlign: 'left', flex: 1 }}>{opt}</span>
                           </label>
