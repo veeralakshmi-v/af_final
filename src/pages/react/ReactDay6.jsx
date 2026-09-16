@@ -6,7 +6,7 @@ import {
   Laptop, Terminal, Copy, FileText, User as UserIcon, Plus, 
   AlertTriangle, Check, BookOpenCheck, HelpCircle, Sliders,
   GitBranch, CheckSquare, Square, Mail, Lock, ShieldAlert,
-  Bell, Eye, EyeOff, Loader, FolderOpen, Heart
+  Bell, Eye, EyeOff, Loader, FolderOpen, Heart, Shield, LogIn, LogOut, X, UserCheck
 } from 'lucide-react';
 import { CodeBlock, highlightJS } from '../../utils/codeHighlight';
 
@@ -650,15 +650,676 @@ if (error) {
             </div>
 
             <div className="card-actions" style={{ marginTop: '2.5rem' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('quiz')} style={{ backgroundColor: '#6366f1', borderColor: '#6366f1' }}>
-                Go to Module Quiz <ArrowRight size={16} />
+              <button className="btn btn-primary" onClick={() => handleContinue('mini_project')} style={{ backgroundColor: '#6366f1', borderColor: '#6366f1' }}>
+                Next: Mini Project: Auth & Status Hub <ArrowRight size={16} />
               </button>
             </div>
           </div>
         </Section>
       )}
 
-      {/* ── 7. INTERACTIVE QUIZ ─────────────────────────────────────────────── */}
+      {/* ── 7. MINI PROJECT: SMART AUTH & MULTI-STATE PORTAL ────────────────── */}
+      {activeTab === 'mini_project' && (
+        <Section key="mini_project" id="mini_project" eyebrow="Hands-On Practice • Day 6" title="Mini Project: Smart Auth & Multi-State Portal">
+          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
+            
+            {/* Banner */}
+            <div style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', borderRadius: '16px', padding: '2rem', color: 'white', marginBottom: '2rem' }}>
+              <span style={{ background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.05em' }}>
+                🚀 DAY 6 CAPSTONE MINI PROJECT
+              </span>
+              <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginTop: '0.75rem', marginBottom: '0.5rem', color: 'white' }}>
+                Smart Authentication & Multi-State Notification Hub
+              </h3>
+              <p style={{ fontSize: '1rem', opacity: 0.95, lineHeight: 1.7, margin: 0, color: 'white' }}>
+                In this mini project, you will build a production-style user portal combining all five conditional rendering techniques: <strong>if/else return branching</strong>, <strong>ternary operator auth toggles</strong>, <strong>logical AND (&amp;&amp;) badge displays</strong>, <strong>role-based component switching</strong>, and <strong>async data lifecycle states (Loading / Error / Empty / Success)</strong>.
+              </p>
+            </div>
+
+            {/* Architecture Overview */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#4f46e5', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', marginBottom: '6px' }}>
+                  <Lock size={16} /> 1. Auth Guard (if / else)
+                </strong>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Renders a clean Login Gate if the user is unauthenticated, otherwise unlocks the full dashboard.</p>
+              </div>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#0ea5e9', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', marginBottom: '6px' }}>
+                  <Shield size={16} /> 2. Role Switcher (Ternary)
+                </strong>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Dynamically renders Admin badges, Student progress bars, or Guest previews using ternary operators.</p>
+              </div>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', marginBottom: '6px' }}>
+                  <Bell size={16} /> 3. Badges (Logical &amp;&amp;)
+                </strong>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Displays real-time unread alert counters and priority tags only when unread items exist.</p>
+              </div>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#f59e0b', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', marginBottom: '6px' }}>
+                  <Database size={16} /> 4. Async Data States
+                </strong>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Handles Idle, Loading spinners, Error banners, and Empty list fallbacks seamlessly.</p>
+              </div>
+            </div>
+
+            {/* Step-by-Step Implementation */}
+            <h4 style={{ fontSize: '1.2rem', color: '#0f172a', fontWeight: 800, marginBottom: '1.2rem' }}>
+              🛠️ Step-by-Step Project Implementation
+            </h4>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2.5rem' }}>
+              
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5' }}>
+                <strong style={{ display: 'block', marginBottom: '0.4rem', color: '#0f172a', fontSize: '1rem' }}>
+                  Step 1: Create Component File
+                </strong>
+                <p style={{ fontSize: '0.9rem', color: '#475569', margin: 0 }}>
+                  Create a new file named <code>src/SmartAuthPortal.jsx</code> in your React project directory.
+                </p>
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5' }}>
+                <strong style={{ display: 'block', marginBottom: '0.4rem', color: '#0f172a', fontSize: '1rem' }}>
+                  Step 2: Declare Multi-State Hooks
+                </strong>
+                <p style={{ fontSize: '0.9rem', color: '#475569', margin: 0 }}>
+                  Initialize state hooks for <code>isLoggedIn</code>, <code>userRole</code> ('student' | 'admin' | 'guest'), <code>notifications</code> array, <code>filterUnread</code> toggle, and <code>feedStatus</code> ('idle' | 'loading' | 'error' | 'empty' | 'success').
+                </p>
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5' }}>
+                <strong style={{ display: 'block', marginBottom: '0.4rem', color: '#0f172a', fontSize: '1rem' }}>
+                  Step 3: Full Source Code for <code>src/SmartAuthPortal.jsx</code>
+                </strong>
+                <p style={{ fontSize: '0.9rem', color: '#475569', marginBottom: '0.8rem' }}>
+                  Copy and paste the complete, production-ready React component code below:
+                </p>
+
+                <CodeBlock title="src/SmartAuthPortal.jsx" code={`import React, { useState } from 'react';
+
+export default function SmartAuthPortal() {
+  // 1. Auth & Role States
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [userRole, setUserRole] = useState('student'); // 'student' | 'admin' | 'guest'
+  const [userName, setUserName] = useState('Alex Morgan');
+
+  // 2. Notifications State
+  const [notifications, setNotifications] = useState([
+    { id: 1, text: 'React Module 6 Quiz is now open', unread: true, category: 'academic' },
+    { id: 2, text: 'New assignment: Smart Auth Portal submitted', unread: true, category: 'system' },
+    { id: 3, text: 'Mentor live doubt session scheduled for 5 PM', unread: false, category: 'event' }
+  ]);
+  const [filterUnreadOnly, setFilterUnreadOnly] = useState(false);
+
+  // 3. Async Feed Simulator State (loading / error / empty / success)
+  const [feedStatus, setFeedStatus] = useState('idle'); // 'idle' | 'loading' | 'error' | 'empty' | 'success'
+  const [feedItems, setFeedItems] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  // Handler: Mock API call
+  const fetchLiveFeeds = (simulatedOutcome) => {
+    setFeedStatus('loading');
+    setFeedItems([]);
+    setErrorMessage('');
+
+    setTimeout(() => {
+      if (simulatedOutcome === 'success') {
+        setFeedStatus('success');
+        setFeedItems([
+          'New React 19 Compiler Features Published',
+          'Vite 6 Bundler Optimization Guide',
+          'State Lifting Design Patterns Workshop'
+        ]);
+      } else if (simulatedOutcome === 'empty') {
+        setFeedStatus('empty');
+        setFeedItems([]);
+      } else if (simulatedOutcome === 'error') {
+        setFeedStatus('error');
+        setErrorMessage('Failed to connect to AlphaFly server (HTTP 503 Service Unavailable)');
+      }
+    }, 1200);
+  };
+
+  // Helper actions
+  const markAsRead = (id) => {
+    setNotifications(notifications.map(n => n.id === id ? { ...n, unread: false } : n));
+  };
+
+  const deleteNotification = (id) => {
+    setNotifications(notifications.filter(n => n.id !== id));
+  };
+
+  const unreadCount = notifications.filter(n => n.unread).length;
+  const displayedNotifications = filterUnreadOnly 
+    ? notifications.filter(n => n.unread) 
+    : notifications;
+
+  // ── CONDITIONAL RENDERING PATTERN 1: Early Return for Logged Out state ──
+  if (!isLoggedIn) {
+    return (
+      <div style={styles.cardContainer}>
+        <div style={styles.loggedOutBox}>
+          <div style={styles.lockIcon}>🔒</div>
+          <h2 style={{ margin: '0 0 8px 0', color: '#0f172a' }}>Portal Access Locked</h2>
+          <p style={{ color: '#64748b', fontSize: '0.95rem', margin: '0 0 1.5rem 0' }}>
+            You are currently logged out. Sign in to view your role dashboard and live notifications.
+          </p>
+          <button 
+            onClick={() => setIsLoggedIn(true)}
+            style={styles.primaryBtn}
+          >
+            Sign In as {userName}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── MAIN AUTHENTICATED PORTAL VIEW ──
+  return (
+    <div style={styles.cardContainer}>
+      
+      {/* 1. Header Bar with Ternary & Logical AND */}
+      <div style={styles.header}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h2 style={{ margin: 0, color: '#0f172a', fontSize: '1.4rem' }}>
+              Welcome, {userName}!
+            </h2>
+            {/* Logical AND (&&): Render badge only if unread items > 0 */}
+            {unreadCount > 0 && (
+              <span style={styles.badge}>
+                {unreadCount} Unread
+              </span>
+            )}
+          </div>
+          <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '0.88rem' }}>
+            Role: <strong>{userRole.toUpperCase()}</strong> • Status: <span style={{ color: '#16a34a' }}>● Online</span>
+          </p>
+        </div>
+
+        <button 
+          onClick={() => setIsLoggedIn(false)}
+          style={styles.outlineDangerBtn}
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* 2. Role Selector (Conditional Components switcher) */}
+      <div style={styles.roleBar}>
+        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#475569' }}>Switch View Role:</span>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          {['student', 'admin', 'guest'].map((r) => (
+            <button
+              key={r}
+              onClick={() => setUserRole(r)}
+              style={{
+                ...styles.roleBtn,
+                backgroundColor: userRole === r ? '#4f46e5' : '#f1f5f9',
+                color: userRole === r ? '#ffffff' : '#475569'
+              }}
+            >
+              {r.charAt(0).toUpperCase() + r.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── PATTERN 2: Role-Based Conditional UI Blocks ── */}
+      {userRole === 'admin' && (
+        <div style={styles.adminBanner}>
+          <strong style={{ color: '#b91c1c' }}>🛡️ Administrator Privileges Active:</strong>
+          <span style={{ fontSize: '0.85rem', color: '#7f1d1d', marginLeft: '6px' }}>
+            You have permissions to broadcast announcements and wipe system caches.
+          </span>
+          <button 
+            onClick={() => setNotifications([])}
+            style={styles.adminActionBtn}
+          >
+            Clear All System Alerts
+          </button>
+        </div>
+      )}
+
+      {userRole === 'student' && (
+        <div style={styles.studentBanner}>
+          <strong style={{ color: '#1e40af' }}>🎓 Student Portal:</strong>
+          <span style={{ fontSize: '0.85rem', color: '#1e3a8a', marginLeft: '6px' }}>
+            Course Progress: 75% Complete (React Mastery Track)
+          </span>
+        </div>
+      )}
+
+      {userRole === 'guest' && (
+        <div style={styles.guestBanner}>
+          <strong style={{ color: '#92400e' }}>👀 Guest Preview Mode:</strong>
+          <span style={{ fontSize: '0.85rem', color: '#78350f', marginLeft: '6px' }}>
+            Limited features enabled. Upgrade your account to participate in live coding exams.
+          </span>
+        </div>
+      )}
+
+      {/* 3. Notifications Section with Logical && and Ternary Filter */}
+      <div style={{ marginTop: '1.5rem' }}>
+        <div style={styles.sectionHeader}>
+          <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#0f172a' }}>
+            Notifications ({displayedNotifications.length})
+          </h3>
+          <button 
+            onClick={() => setFilterUnreadOnly(!filterUnreadOnly)}
+            style={styles.filterBtn}
+          >
+            {filterUnreadOnly ? 'Show All' : 'Show Unread Only'}
+          </button>
+        </div>
+
+        {/* ── PATTERN 3: Empty State vs Mapped List ── */}
+        {displayedNotifications.length === 0 ? (
+          <div style={styles.emptyStateBox}>
+            <div style={{ fontSize: '2rem' }}>🎉</div>
+            <p style={{ margin: '4px 0 0 0', fontWeight: 600, color: '#64748b' }}>
+              No notifications to display!
+            </p>
+            <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
+              {filterUnreadOnly ? 'All caught up on unread items' : 'Your inbox is clear'}
+            </span>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {displayedNotifications.map((n) => (
+              <div 
+                key={n.id} 
+                style={{
+                  ...styles.notifCard,
+                  backgroundColor: n.unread ? '#eff6ff' : '#ffffff',
+                  borderLeft: n.unread ? '4px solid #3b82f6' : '4px solid #cbd5e1'
+                }}
+              >
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '0.9rem', color: '#1e293b', fontWeight: n.unread ? 700 : 500 }}>
+                      {n.text}
+                    </span>
+                    {/* Logical AND: Render NEW badge if unread */}
+                    {n.unread && <span style={styles.newPill}>NEW</span>}
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  {/* Ternary: Show "Mark Read" button only when unread */}
+                  {n.unread && (
+                    <button 
+                      onClick={() => markAsRead(n.id)}
+                      style={styles.smallActionBtn}
+                    >
+                      Mark Read
+                    </button>
+                  )}
+                  <button 
+                    onClick={() => deleteNotification(n.id)}
+                    style={styles.deleteBtn}
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 4. Asynchronous Data Fetch Simulator (Loading / Error / Empty / Success) */}
+      <div style={styles.asyncSection}>
+        <h3 style={{ margin: '0 0 6px 0', fontSize: '1.1rem', color: '#0f172a' }}>
+          🌐 Async Feed Loader (Lifecycle UI Demonstration)
+        </h3>
+        <p style={{ margin: '0 0 1rem 0', fontSize: '0.85rem', color: '#64748b' }}>
+          Click an outcome to test how React shifts states conditionally:
+        </p>
+
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '1rem' }}>
+          <button 
+            onClick={() => fetchLiveFeeds('success')} 
+            style={{ ...styles.apiBtn, background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
+          >
+            Simulate 200 OK (Data)
+          </button>
+          <button 
+            onClick={() => fetchLiveFeeds('empty')} 
+            style={{ ...styles.apiBtn, background: '#fef3c7', color: '#b45309', borderColor: '#fde68a' }}
+          >
+            Simulate 200 OK (Empty)
+          </button>
+          <button 
+            onClick={() => fetchLiveFeeds('error')} 
+            style={{ ...styles.apiBtn, background: '#fee2e2', color: '#b91c1c', borderColor: '#fca5a5' }}
+          >
+            Simulate 503 Error
+          </button>
+        </div>
+
+        {/* ── PATTERN 4: Multi-Branch Async Render ── */}
+        <div style={styles.feedDisplayContainer}>
+          {feedStatus === 'idle' && (
+            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.88rem', textAlign: 'center' }}>
+              Click any button above to trigger asynchronous fetch.
+            </p>
+          )}
+
+          {feedStatus === 'loading' && (
+            <div style={{ textAlign: 'center', padding: '1rem' }}>
+              <div style={styles.spinner} />
+              <span style={{ fontSize: '0.88rem', color: '#4f46e5', fontWeight: 600 }}>
+                Fetching server resources...
+              </span>
+            </div>
+          )}
+
+          {feedStatus === 'error' && (
+            <div style={styles.errorBox}>
+              <strong style={{ color: '#b91c1c' }}>⚠️ Fetch Failed!</strong>
+              <p style={{ margin: '4px 0 0 0', color: '#dc2626', fontSize: '0.85rem' }}>
+                {errorMessage}
+              </p>
+            </div>
+          )}
+
+          {feedStatus === 'empty' && (
+            <div style={{ textAlign: 'center', padding: '1rem', color: '#64748b' }}>
+              <span style={{ fontSize: '1.5rem' }}>📭</span>
+              <p style={{ margin: '4px 0 0 0', fontSize: '0.9rem', fontWeight: 600 }}>
+                Feed server returned 0 new articles.
+              </p>
+            </div>
+          )}
+
+          {feedStatus === 'success' && (
+            <div>
+              <h4 style={{ margin: '0 0 8px 0', color: '#166534', fontSize: '0.95rem' }}>
+                ✓ {feedItems.length} Feed Articles Received:
+              </h4>
+              <ul style={{ margin: 0, paddingLeft: '1.2rem', color: '#334155', fontSize: '0.88rem' }}>
+                {feedItems.map((item, idx) => (
+                  <li key={idx} style={{ marginBottom: '4px' }}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+// ── Embedded CSS-in-JS Stylesheet ──
+const styles = {
+  cardContainer: {
+    maxWidth: '650px',
+    margin: '0 auto',
+    backgroundColor: '#ffffff',
+    borderRadius: '16px',
+    border: '1px solid #e2e8f0',
+    padding: '1.75rem',
+    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05)',
+    fontFamily: 'system-ui, -apple-system, sans-serif'
+  },
+  loggedOutBox: {
+    textAlign: 'center',
+    padding: '3rem 1.5rem'
+  },
+  lockIcon: {
+    fontSize: '3rem',
+    marginBottom: '1rem'
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: '1.25rem',
+    borderBottom: '1px solid #f1f5f9'
+  },
+  badge: {
+    backgroundColor: '#ef4444',
+    color: '#ffffff',
+    fontSize: '0.75rem',
+    fontWeight: 700,
+    padding: '2px 8px',
+    borderRadius: '12px'
+  },
+  primaryBtn: {
+    backgroundColor: '#4f46e5',
+    color: '#ffffff',
+    border: 'none',
+    padding: '0.75rem 1.5rem',
+    borderRadius: '10px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    fontSize: '0.95rem'
+  },
+  outlineDangerBtn: {
+    backgroundColor: 'transparent',
+    color: '#ef4444',
+    border: '1px solid #fca5a5',
+    padding: '0.45rem 0.9rem',
+    borderRadius: '8px',
+    fontSize: '0.85rem',
+    fontWeight: 600,
+    cursor: 'pointer'
+  },
+  roleBar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '0.75rem 0',
+    borderBottom: '1px solid #f1f5f9'
+  },
+  roleBtn: {
+    border: 'none',
+    padding: '4px 12px',
+    borderRadius: '8px',
+    fontSize: '0.8rem',
+    fontWeight: 600,
+    cursor: 'pointer'
+  },
+  adminBanner: {
+    backgroundColor: '#fef2f2',
+    border: '1px solid #fee2e2',
+    borderRadius: '10px',
+    padding: '0.75rem 1rem',
+    marginTop: '1rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: '8px'
+  },
+  adminActionBtn: {
+    backgroundColor: '#dc2626',
+    color: 'white',
+    border: 'none',
+    borderRadius: '6px',
+    padding: '4px 8px',
+    fontSize: '0.75rem',
+    fontWeight: 600,
+    cursor: 'pointer'
+  },
+  studentBanner: {
+    backgroundColor: '#eff6ff',
+    border: '1px solid #dbeafe',
+    borderRadius: '10px',
+    padding: '0.75rem 1rem',
+    marginTop: '1rem'
+  },
+  guestBanner: {
+    backgroundColor: '#fffbeb',
+    border: '1px solid #fef3c7',
+    borderRadius: '10px',
+    padding: '0.75rem 1rem',
+    marginTop: '1rem'
+  },
+  sectionHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '0.75rem'
+  },
+  filterBtn: {
+    backgroundColor: '#f8fafc',
+    border: '1px solid #cbd5e1',
+    color: '#475569',
+    borderRadius: '6px',
+    padding: '4px 10px',
+    fontSize: '0.78rem',
+    fontWeight: 600,
+    cursor: 'pointer'
+  },
+  emptyStateBox: {
+    textAlign: 'center',
+    padding: '2rem 1rem',
+    backgroundColor: '#f8fafc',
+    borderRadius: '12px',
+    border: '1px dashed #cbd5e1'
+  },
+  notifCard: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '0.75rem 1rem',
+    borderRadius: '10px',
+    border: '1px solid #e2e8f0'
+  },
+  newPill: {
+    backgroundColor: '#3b82f6',
+    color: 'white',
+    fontSize: '0.65rem',
+    fontWeight: 800,
+    padding: '1px 6px',
+    borderRadius: '4px'
+  },
+  smallActionBtn: {
+    backgroundColor: '#e0e7ff',
+    color: '#4338ca',
+    border: 'none',
+    padding: '4px 8px',
+    borderRadius: '6px',
+    fontSize: '0.75rem',
+    fontWeight: 600,
+    cursor: 'pointer'
+  },
+  deleteBtn: {
+    backgroundColor: '#fee2e2',
+    color: '#ef4444',
+    border: 'none',
+    padding: '4px 8px',
+    borderRadius: '6px',
+    fontSize: '0.75rem',
+    fontWeight: 700,
+    cursor: 'pointer'
+  },
+  asyncSection: {
+    marginTop: '2rem',
+    paddingTop: '1.5rem',
+    borderTop: '1px solid #e2e8f0'
+  },
+  apiBtn: {
+    border: '1px solid transparent',
+    padding: '6px 12px',
+    borderRadius: '8px',
+    fontSize: '0.8rem',
+    fontWeight: 600,
+    cursor: 'pointer'
+  },
+  feedDisplayContainer: {
+    backgroundColor: '#f8fafc',
+    border: '1px solid #e2e8f0',
+    borderRadius: '12px',
+    padding: '1.25rem',
+    minHeight: '90px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
+  errorBox: {
+    backgroundColor: '#fef2f2',
+    border: '1px solid #fee2e2',
+    borderRadius: '8px',
+    padding: '0.75rem 1rem'
+  },
+  spinner: {
+    width: '24px',
+    height: '24px',
+    border: '3px solid #e0e7ff',
+    borderTop: '3px solid #4f46e5',
+    borderRadius: '50%',
+    margin: '0 auto 8px auto',
+    animation: 'spin 0.8s linear infinite'
+  }
+};`} />
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5' }}>
+                <strong style={{ display: 'block', marginBottom: '0.4rem', color: '#0f172a', fontSize: '1rem' }}>
+                  Step 4: Mount Component in <code>src/App.jsx</code>
+                </strong>
+                <p style={{ fontSize: '0.9rem', color: '#475569', marginBottom: '0.8rem' }}>
+                  Import and render the component inside your main application file:
+                </p>
+                <CodeBlock title="src/App.jsx" code={`import React from 'react';
+import SmartAuthPortal from './SmartAuthPortal';
+
+function App() {
+  return (
+    <div style={{ minHeight: '100vh', backgroundColor: '#f1f5f9', padding: '2rem' }}>
+      <SmartAuthPortal />
+    </div>
+  );
+}
+
+export default App;`} />
+              </div>
+
+            </div>
+
+            {/* Code Explanation Breakdown Table */}
+            <div style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', padding: '1.5rem', borderRadius: '16px', border: '1px solid #bbf7d0', marginBottom: '2.5rem' }}>
+              <h4 style={{ margin: '0 0 12px 0', color: '#15803d', fontSize: '1.15rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                💡 Key Conditional Rendering Concepts Applied:
+              </h4>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
+                  <strong style={{ color: '#15803d' }}>1. Early Return Guard (<code>if (!isLoggedIn) return &lt;Locked /&gt;</code>):</strong><br />
+                  Stops rendering the authenticated dashboard completely when logged out, avoiding messy nested if statements.
+                </div>
+                <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
+                  <strong style={{ color: '#15803d' }}>2. Logical AND Badges (<code>unreadCount &gt; 0 &amp;&amp; &lt;Badge /&gt;</code>):</strong><br />
+                  If unread count is zero, React renders nothing. When greater than zero, the badge displays instantly.
+                </div>
+                <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
+                  <strong style={{ color: '#15803d' }}>3. Dynamic Component Switching (<code>userRole === 'admin' &amp;&amp; ...</code>):</strong><br />
+                  Swaps layout banners and action buttons based on whether the active user is an Admin, Student, or Guest.
+                </div>
+                <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
+                  <strong style={{ color: '#15803d' }}>4. Async Lifecycle Resolution (Loading / Error / Empty / Data):</strong><br />
+                  Displays a spinner during async requests, an alert on failure, an empty mailbox card if 0 items return, or mapped list rows on success.
+                </div>
+              </div>
+            </div>
+
+            <div className="card-actions" style={{ marginTop: '2.5rem' }}>
+              <button className="btn btn-primary" onClick={() => handleContinue('quiz')} style={{ backgroundColor: '#6366f1', borderColor: '#6366f1' }}>
+                Next: Check Your Knowledge (Quiz) <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ── 8. INTERACTIVE QUIZ ─────────────────────────────────────────────── */}
       {activeTab === 'quiz' && (
         <Section key="quiz" id="quiz" eyebrow="Knowledge Check" title="Day 6 Interactive Quiz">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>

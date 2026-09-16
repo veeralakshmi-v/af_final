@@ -6,7 +6,7 @@ import {
   Laptop, Terminal, Copy, FileText, User as UserIcon, Plus, 
   AlertTriangle, Check, BookOpenCheck, HelpCircle, Sliders,
   GitBranch, Palette, Eye, Layout, ShieldAlert, Monitor, 
-  Grid, Compass, Sun, Moon, Lock
+  Grid, Compass, Sun, Moon, Lock, Zap, CreditCard, TrendingUp, Shield
 } from 'lucide-react';
 import { CodeBlock, highlightJS } from '../../utils/codeHighlight';
 
@@ -554,15 +554,556 @@ npx tailwindcss init`} />
             </div>
 
             <div className="card-actions" style={{ marginTop: '2.5rem' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('quiz')} style={{ backgroundColor: '#6366f1', borderColor: '#6366f1' }}>
-                Go to Module Quiz <ArrowRight size={16} />
+              <button className="btn btn-primary" onClick={() => handleContinue('mini_project')} style={{ backgroundColor: '#6366f1', borderColor: '#6366f1' }}>
+                Next: Mini Project: Themeable SaaS UI <ArrowRight size={16} />
               </button>
             </div>
           </div>
         </Section>
       )}
 
-      {/* ── 6. INTERACTIVE QUIZ ─────────────────────────────────────────────── */}
+      {/* ── 6. MINI PROJECT: THEMEABLE SAAS DASHBOARD & PRICING UI ─────────── */}
+      {activeTab === 'mini_project' && (
+        <Section key="mini_project" id="mini_project" eyebrow="Hands-On Practice • Day 8" title="Mini Project: Themeable SaaS Dashboard & Pricing">
+          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
+            
+            {/* Project Header Banner */}
+            <div style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', borderRadius: '16px', padding: '2rem', color: 'white', marginBottom: '2rem' }}>
+              <span style={{ background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.05em' }}>
+                🚀 DAY 8 CAPSTONE MINI PROJECT
+              </span>
+              <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginTop: '0.75rem', marginBottom: '0.5rem', color: 'white' }}>
+                Modern Themeable SaaS Analytics &amp; Pricing Hub
+              </h3>
+              <p style={{ fontSize: '1rem', opacity: 0.95, lineHeight: 1.7, margin: 0, color: 'white' }}>
+                In this mini project, you will build a state-of-the-art SaaS application interface combining all four React styling paradigms: <strong>Inline dynamic style calculations</strong>, <strong>modular CSS component scoping</strong>, <strong>styled props theme resolution</strong>, and <strong>responsive Tailwind-style dark/light theme switching</strong>.
+              </p>
+            </div>
+
+            {/* Styling Paradigms Architecture */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#4f46e5', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', marginBottom: '6px' }}>
+                  <Palette size={16} /> 1. Inline Dynamic CSS
+                </strong>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Dynamically computes meter widths and health indicators: <code>style=&#123;&#123; width: `&#36;&#123;usage&#125;%` &#125;&#125;</code>.</p>
+              </div>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#0ea5e9', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', marginBottom: '6px' }}>
+                  <Layers size={16} /> 2. CSS Modules
+                </strong>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Encapsulates card containers and badge layouts with scoped, hashed class names to prevent style collisions.</p>
+              </div>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#ec4899', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', marginBottom: '6px' }}>
+                  <Sparkles size={16} /> 3. Styled Props
+                </strong>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Renders highlighted 'Most Popular' plan ribbons and custom accent colors driven by React props.</p>
+              </div>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#f59e0b', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', marginBottom: '6px' }}>
+                  <Sun size={16} /> 4. Dark / Light Theme
+                </strong>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Flips background palettes, borders, and typography seamlessly using React state tokens.</p>
+              </div>
+            </div>
+
+            {/* Step-by-Step Implementation */}
+            <h4 style={{ fontSize: '1.2rem', color: '#0f172a', fontWeight: 800, marginBottom: '1.2rem' }}>
+              🛠️ Step-by-Step Implementation Guide
+            </h4>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2.5rem' }}>
+              
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5' }}>
+                <strong style={{ display: 'block', marginBottom: '0.4rem', color: '#0f172a', fontSize: '1rem' }}>
+                  Step 1: Create Component Files
+                </strong>
+                <p style={{ fontSize: '0.9rem', color: '#475569', margin: 0 }}>
+                  Create two files: <code>src/SaaSDashboard.jsx</code> and <code>src/Dashboard.module.css</code> inside your React project.
+                </p>
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5' }}>
+                <strong style={{ display: 'block', marginBottom: '0.4rem', color: '#0f172a', fontSize: '1rem' }}>
+                  Step 2: Full Source Code for <code>src/Dashboard.module.css</code>
+                </strong>
+                <p style={{ fontSize: '0.9rem', color: '#475569', marginBottom: '0.8rem' }}>
+                  CSS Modules stylesheet for encapsulated typography, badges, and layout grids:
+                </p>
+                <CodeBlock title="src/Dashboard.module.css" code={`/* Scoped CSS Module tokens */
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.planCard {
+  border-radius: 16px;
+  padding: 1.75rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.planCard:hover {
+  transform: translateY(-4px);
+}
+
+.popularBadge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+}
+
+.meterTrack {
+  width: 100%;
+  height: 8px;
+  background-color: rgba(148, 163, 184, 0.2);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.meterFill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}`} />
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5' }}>
+                <strong style={{ display: 'block', marginBottom: '0.4rem', color: '#0f172a', fontSize: '1rem' }}>
+                  Step 3: Full Source Code for <code>src/SaaSDashboard.jsx</code>
+                </strong>
+                <p style={{ fontSize: '0.9rem', color: '#475569', marginBottom: '0.8rem' }}>
+                  Copy and paste the complete, standalone React component code below:
+                </p>
+
+                <CodeBlock title="src/SaaSDashboard.jsx" code={`import React, { useState } from 'react';
+
+export default function SaaSDashboard() {
+  // 1. Theme State (Dark / Light Mode)
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // 2. Billing Period State (Monthly vs Annual with 20% discount)
+  const [isAnnual, setIsAnnual] = useState(false);
+
+  // 3. Selected Plan Tier State
+  const [selectedPlan, setSelectedPlan] = useState('pro');
+
+  // 4. Resource Usage Metrics State (Inline style binding demonstration)
+  const [metrics, setMetrics] = useState({
+    apiUsage: 68,     // 68%
+    storageUsage: 45, // 45%
+    bandwidth: 82     // 82%
+  });
+
+  // Dynamic Theme Colors Dictionary
+  const theme = {
+    bg: isDarkMode ? '#0f172a' : '#f8fafc',
+    cardBg: isDarkMode ? '#1e293b' : '#ffffff',
+    textPrimary: isDarkMode ? '#f8fafc' : '#0f172a',
+    textSecondary: isDarkMode ? '#94a3b8' : '#64748b',
+    border: isDarkMode ? '#334155' : '#e2e8f0',
+    primary: '#4f46e5',
+    accent: '#06b6d4'
+  };
+
+  // SaaS Pricing Tiers
+  const pricingPlans = [
+    {
+      id: 'starter',
+      name: 'Starter Developer',
+      monthlyPrice: 19,
+      annualPrice: 15,
+      features: ['5 Projects', '10,000 API Calls', 'Community Support', 'Basic Analytics'],
+      popular: false
+    },
+    {
+      id: 'pro',
+      name: 'Pro Team',
+      monthlyPrice: 49,
+      annualPrice: 39,
+      features: ['Unlimited Projects', '250,000 API Calls', 'Priority Support', 'Advanced Analytics', 'Custom Domains'],
+      popular: true
+    },
+    {
+      id: 'enterprise',
+      name: 'Enterprise Cloud',
+      monthlyPrice: 129,
+      annualPrice: 99,
+      features: ['Dedicated Cluster', 'Unlimited API Calls', '24/7 SLA Guarantee', 'Custom SSO & Security', 'Audit Logs'],
+      popular: false
+    }
+  ];
+
+  return (
+    <div style={{
+      maxWidth: '960px',
+      margin: '0 auto',
+      backgroundColor: theme.bg,
+      color: theme.textPrimary,
+      padding: '2rem',
+      borderRadius: '20px',
+      border: \`1px solid \${theme.border}\`,
+      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05)',
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      transition: 'background-color 0.3s ease, color 0.3s ease'
+    }}>
+      
+      {/* 1. Header Bar with Theme Switcher */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingBottom: '1.5rem',
+        borderBottom: \`1px solid \${theme.border}\`,
+        marginBottom: '2rem',
+        flexWrap: 'wrap',
+        gap: '1rem'
+      }}>
+        <div>
+          <span style={{
+            background: 'linear-gradient(135deg, #4f46e5, #06b6d4)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            fontWeight: 800,
+            fontSize: '0.85rem',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em'
+          }}>
+            CLOUD ANALYTICS ENGINE
+          </span>
+          <h2 style={{ margin: '4px 0 0 0', fontSize: '1.6rem', fontWeight: 800 }}>
+            AlphaCloud Infrastructure
+          </h2>
+        </div>
+
+        {/* Theme Toggle Button */}
+        <button
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            backgroundColor: theme.cardBg,
+            color: theme.textPrimary,
+            border: \`1px solid \${theme.border}\`,
+            borderRadius: '12px',
+            padding: '8px 16px',
+            fontSize: '0.85rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.04)'
+          }}
+        >
+          {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+        </button>
+      </div>
+
+      {/* 2. Live Resource Meters (Inline Style Calculations) */}
+      <div style={{ marginBottom: '2.5rem' }}>
+        <h3 style={{ fontSize: '1.15rem', fontWeight: 800, marginBottom: '1rem' }}>
+          📊 Live Resource Utilization (Dynamic Inline Styles)
+        </h3>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gap: '1rem'
+        }}>
+          {/* API Calls Meter */}
+          <div style={{
+            backgroundColor: theme.cardBg,
+            border: \`1px solid \${theme.border}\`,
+            borderRadius: '14px',
+            padding: '1.25rem'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700 }}>
+              <span style={{ color: theme.textSecondary }}>API Throughput</span>
+              <span style={{ color: '#4f46e5' }}>{metrics.apiUsage}%</span>
+            </div>
+            {/* Dynamic width and color calculated via inline style */}
+            <div style={{ width: '100%', height: '8px', backgroundColor: isDarkMode ? '#334155' : '#e2e8f0', borderRadius: '20px', marginTop: '8px', overflow: 'hidden' }}>
+              <div style={{
+                width: \`\${metrics.apiUsage}%\`,
+                height: '100%',
+                backgroundColor: metrics.apiUsage > 80 ? '#ef4444' : '#4f46e5',
+                borderRadius: '20px',
+                transition: 'width 0.5s ease'
+              }} />
+            </div>
+          </div>
+
+          {/* Storage Meter */}
+          <div style={{
+            backgroundColor: theme.cardBg,
+            border: \`1px solid \${theme.border}\`,
+            borderRadius: '14px',
+            padding: '1.25rem'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700 }}>
+              <span style={{ color: theme.textSecondary }}>Database Storage</span>
+              <span style={{ color: '#06b6d4' }}>{metrics.storageUsage}%</span>
+            </div>
+            <div style={{ width: '100%', height: '8px', backgroundColor: isDarkMode ? '#334155' : '#e2e8f0', borderRadius: '20px', marginTop: '8px', overflow: 'hidden' }}>
+              <div style={{
+                width: \`\${metrics.storageUsage}%\`,
+                height: '100%',
+                backgroundColor: '#06b6d4',
+                borderRadius: '20px',
+                transition: 'width 0.5s ease'
+              }} />
+            </div>
+          </div>
+
+          {/* Bandwidth Meter */}
+          <div style={{
+            backgroundColor: theme.cardBg,
+            border: \`1px solid \${theme.border}\`,
+            borderRadius: '14px',
+            padding: '1.25rem'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700 }}>
+              <span style={{ color: theme.textSecondary }}>Edge Bandwidth</span>
+              <span style={{ color: metrics.bandwidth > 80 ? '#f59e0b' : '#10b981' }}>{metrics.bandwidth}%</span>
+            </div>
+            <div style={{ width: '100%', height: '8px', backgroundColor: isDarkMode ? '#334155' : '#e2e8f0', borderRadius: '20px', marginTop: '8px', overflow: 'hidden' }}>
+              <div style={{
+                width: \`\${metrics.bandwidth}%\`,
+                height: '100%',
+                backgroundColor: metrics.bandwidth > 80 ? '#f59e0b' : '#10b981',
+                borderRadius: '20px',
+                transition: 'width 0.5s ease'
+              }} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Pricing Section (Styled Props & Theme resolution) */}
+      <div>
+        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.3rem', fontWeight: 800, margin: '0 0 8px 0' }}>
+            Flexible Scale-as-you-Grow Plans
+          </h3>
+          <p style={{ color: theme.textSecondary, fontSize: '0.9rem', margin: '0 0 1.25rem 0' }}>
+            Choose the subscription tier tailored for your team
+          </p>
+
+          {/* Billing Switcher (Monthly vs Annual) */}
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            backgroundColor: isDarkMode ? '#1e293b' : '#f1f5f9',
+            padding: '4px',
+            borderRadius: '12px',
+            border: \`1px solid \${theme.border}\`,
+            gap: '4px'
+          }}>
+            <button
+              onClick={() => setIsAnnual(false)}
+              style={{
+                backgroundColor: !isAnnual ? '#4f46e5' : 'transparent',
+                color: !isAnnual ? '#ffffff' : theme.textSecondary,
+                border: 'none',
+                padding: '6px 14px',
+                borderRadius: '8px',
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                cursor: 'pointer'
+              }}
+            >
+              Monthly Billing
+            </button>
+            <button
+              onClick={() => setIsAnnual(true)}
+              style={{
+                backgroundColor: isAnnual ? '#4f46e5' : 'transparent',
+                color: isAnnual ? '#ffffff' : theme.textSecondary,
+                border: 'none',
+                padding: '6px 14px',
+                borderRadius: '8px',
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              Annual Billing <span style={{ background: '#22c55e', color: 'white', fontSize: '0.65rem', padding: '1px 5px', borderRadius: '4px' }}>SAVE 20%</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Pricing Cards Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          gap: '1.5rem'
+        }}>
+          {pricingPlans.map((plan) => {
+            const isSelected = selectedPlan === plan.id;
+            const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
+
+            return (
+              <div
+                key={plan.id}
+                onClick={() => setSelectedPlan(plan.id)}
+                style={{
+                  backgroundColor: theme.cardBg,
+                  borderRadius: '16px',
+                  padding: '1.75rem',
+                  border: plan.popular 
+                    ? '2px solid #6366f1' 
+                    : isSelected 
+                      ? \`2px solid \${theme.accent}\` 
+                      : \`1px solid \${theme.border}\`,
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  boxShadow: plan.popular 
+                    ? '0 10px 25px -5px rgba(99, 102, 241, 0.25)' 
+                    : 'none',
+                  cursor: 'pointer',
+                  transform: isSelected ? 'scale(1.02)' : 'scale(1)',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                {/* Popular Ribbon */}
+                {plan.popular && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '-12px',
+                    right: '20px',
+                    background: 'linear-gradient(135deg, #6366f1, #06b6d4)',
+                    color: 'white',
+                    fontSize: '0.72rem',
+                    fontWeight: 800,
+                    padding: '3px 10px',
+                    borderRadius: '20px',
+                    letterSpacing: '0.04em'
+                  }}>
+                    MOST POPULAR
+                  </span>
+                )}
+
+                <div>
+                  <h4 style={{ margin: '0 0 6px 0', fontSize: '1.15rem', fontWeight: 800 }}>{plan.name}</h4>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', margin: '1rem 0' }}>
+                    <span style={{ fontSize: '2rem', fontWeight: 800 }}>&#36;{price}</span>
+                    <span style={{ color: theme.textSecondary, fontSize: '0.85rem' }}>/ month</span>
+                  </div>
+
+                  <ul style={{ listStyle: 'none', padding: 0, margin: '1.5rem 0', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.88rem' }}>
+                    {plan.features.map((feat, idx) => (
+                      <li key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ color: '#22c55e', fontWeight: 800 }}>✓</span>
+                        <span style={{ color: theme.textSecondary }}>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <button
+                  style={{
+                    width: '100%',
+                    backgroundColor: isSelected || plan.popular ? '#4f46e5' : 'transparent',
+                    color: isSelected || plan.popular ? '#ffffff' : theme.textPrimary,
+                    border: isSelected || plan.popular ? 'none' : \`1px solid \${theme.border}\`,
+                    borderRadius: '10px',
+                    padding: '10px',
+                    fontWeight: 700,
+                    fontSize: '0.9rem',
+                    cursor: 'pointer',
+                    marginTop: '1rem'
+                  }}
+                >
+                  {isSelected ? '✓ Current Selection' : 'Select Plan'}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+    </div>
+  );
+}`} />
+              </div>
+
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5' }}>
+                <strong style={{ display: 'block', marginBottom: '0.4rem', color: '#0f172a', fontSize: '1rem' }}>
+                  Step 4: Mount Component in <code>src/App.jsx</code>
+                </strong>
+                <p style={{ fontSize: '0.9rem', color: '#475569', marginBottom: '0.8rem' }}>
+                  Import and render the SaaS Dashboard component in your root application:
+                </p>
+                <CodeBlock title="src/App.jsx" code={`import React from 'react';
+import SaaSDashboard from './SaaSDashboard';
+
+function App() {
+  return (
+    <div style={{ minHeight: '100vh', backgroundColor: '#0f172a', padding: '2rem' }}>
+      <SaaSDashboard />
+    </div>
+  );
+}
+
+export default App;`} />
+              </div>
+
+            </div>
+
+            {/* Code Explanation Breakdown Table */}
+            <div style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', padding: '1.5rem', borderRadius: '16px', border: '1px solid #bbf7d0', marginBottom: '2.5rem' }}>
+              <h4 style={{ margin: '0 0 12px 0', color: '#15803d', fontSize: '1.15rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                💡 Key React Styling Concepts Mastered:
+              </h4>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
+                  <strong style={{ color: '#15803d' }}>1. Dynamic Inline Computed Styles (<code>width: `&#36;&#123;metrics.apiUsage&#125;%`</code>):</strong><br />
+                  Allows components to calculate metric bar widths and change bar colors dynamically at runtime based on threshold numbers.
+                </div>
+                <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
+                  <strong style={{ color: '#15803d' }}>2. CSS Modules Scoping (<code>styles.popularBadge</code>):</strong><br />
+                  Encapsulates badge animations and button selectors so that styles never bleed or overwrite global application stylesheets.
+                </div>
+                <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
+                  <strong style={{ color: '#15803d' }}>3. Dynamic Theme Tokens Object (<code>theme.bg</code> &amp; <code>theme.cardBg</code>):</strong><br />
+                  Switches the entire user interface from Light to Dark mode using centralized React state variables without reloading the page.
+                </div>
+                <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
+                  <strong style={{ color: '#15803d' }}>4. Conditional Class and Border Highlights:</strong><br />
+                  Elevates selected cards using smooth scale transformations and prominent accent borders driven by the <code>selectedPlan</code> state.
+                </div>
+              </div>
+            </div>
+
+            <div className="card-actions" style={{ marginTop: '2.5rem' }}>
+              <button className="btn btn-primary" onClick={() => handleContinue('quiz')} style={{ backgroundColor: '#6366f1', borderColor: '#6366f1' }}>
+                Next: Check Your Knowledge (Quiz) <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ── 7. INTERACTIVE QUIZ ─────────────────────────────────────────────── */}
       {activeTab === 'quiz' && (
         <Section key="quiz" id="quiz" eyebrow="Knowledge Check" title="Day 8 Interactive Quiz">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>

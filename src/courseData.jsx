@@ -1157,6 +1157,7 @@ export const reactCourseData = [
       { id: 'object_state', label: 'Logical AND (&&)', icon: <Database size={18} /> },
       { id: 'nested_state', label: 'Loading & error UI', icon: <Sliders size={18} /> },
       { id: 'state_lifting', label: 'Empty state UI', icon: <GitBranch size={18} /> },
+      { id: 'mini_project', label: 'Mini Project: Auth & Status Hub', icon: <Sparkles size={18} /> },
       { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
       { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> }
     ]
@@ -1170,6 +1171,7 @@ export const reactCourseData = [
       { id: 'multiple_states', label: 'Edit Item Operations', icon: <Layers size={18} /> },
       { id: 'object_state', label: 'Search, Filter & Sorting', icon: <Database size={18} /> },
       { id: 'nested_state', label: 'React To-Do CRUD App', icon: <Sliders size={18} /> },
+      { id: 'mini_project', label: 'Mini Project: Student Directory CRUD', icon: <Sparkles size={18} /> },
       { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
       { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> }
     ]
@@ -1183,6 +1185,7 @@ export const reactCourseData = [
       { id: 'multiple_states', label: 'Styled Components', icon: <Layers size={18} /> },
       { id: 'object_state', label: 'Tailwind CSS Setup', icon: <Database size={18} /> },
       { id: 'nested_state', label: 'Tailwind Student Dashboard', icon: <Sliders size={18} /> },
+      { id: 'mini_project', label: 'Mini Project: Themeable SaaS UI', icon: <Sparkles size={18} /> },
       { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
       { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> }
     ]
