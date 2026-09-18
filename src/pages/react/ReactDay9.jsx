@@ -220,6 +220,56 @@ export default function ReactDay9({ activeTab, onNavigate }) {
               </div>
             </div>
 
+            {/* ⏳ Mount vs. Render Comparison Card */}
+            <div style={{ background: '#f8fafc', border: '1.5px solid #e2e8f0', borderRadius: 16, padding: '1.5rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '0.6rem' }}>
+                <span style={{ fontSize: '1.5rem' }}>⏳</span>
+                <h4 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>Mount vs. Render</h4>
+              </div>
+              <p style={{ margin: '0 0 1.2rem', fontSize: '0.95rem', color: '#475569' }}>
+                It is common to confuse <strong>mounting</strong> with <strong>rendering</strong>, but they are completely different steps in a component's lifecycle:
+              </p>
+
+              <div style={{ overflowX: 'auto', marginBottom: '1.2rem' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem', background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, overflow: 'hidden' }}>
+                  <thead>
+                    <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1', textAlign: 'left' }}>
+                      <th style={{ padding: '12px 16px', color: '#0f172a', fontWeight: 800, width: '15%' }}>Concept</th>
+                      <th style={{ padding: '12px 16px', color: '#0f172a', fontWeight: 800, width: '55%' }}>What React is doing</th>
+                      <th style={{ padding: '12px 16px', color: '#0f172a', fontWeight: 800, width: '30%' }}>How often it happens</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '12px 16px', fontWeight: 800, color: '#10b981' }}>🌱 Mount</td>
+                      <td style={{ padding: '12px 16px', color: '#334155' }}>
+                        React builds the component for the <strong>first time</strong> and inserts it into the webpage (DOM).
+                      </td>
+                      <td style={{ padding: '12px 16px', color: '#10b981', fontWeight: 700 }}>
+                        <strong>Only once</strong> per component lifetime.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: '12px 16px', fontWeight: 800, color: '#6366f1' }}>🔄 Render</td>
+                      <td style={{ padding: '12px 16px', color: '#334155' }}>
+                        React calls the component function to see what the HTML layout <em>should</em> look like based on current data.
+                      </td>
+                      <td style={{ padding: '12px 16px', color: '#6366f1', fontWeight: 700 }}>
+                        <strong>Many times</strong> (every time state or props change).
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 10, padding: '1rem 1.2rem', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <Lightbulb size={20} color="#2563eb" style={{ flexShrink: 0 }} />
+                <p style={{ margin: 0, fontSize: '0.92rem', color: '#1e40af', lineHeight: 1.6 }}>
+                  <em><strong>Analogy:</strong></em> <strong>Mounting</strong> is like building a brand-new house. <strong>Rendering</strong> is like changing or rearranging the furniture inside that house.
+                </p>
+              </div>
+            </div>
+
             {/* Why Can't We Just Put Code in the Component Body? */}
             <div style={{ background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 14, padding: '1.25rem 1.5rem', marginBottom: '2rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#be123c', fontWeight: 800, marginBottom: '0.5rem' }}>
