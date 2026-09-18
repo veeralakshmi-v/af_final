@@ -565,6 +565,192 @@ const filtered = items.filter(item =>
               </div>
             </div>
 
+            {/* --- COMPLETE PROGRAM CODE --- */}
+            <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginTop: '2.5rem', marginBottom: '0.8rem' }}>
+              📄 Complete Program Source Code
+            </h4>
+            <p style={{ fontSize: '0.9rem', color: '#64748b', margin: '0 0 0.75rem 0' }}>
+              Create a file named <code>TodoApp.jsx</code> in your <code>src/</code> directory and copy-paste the full code below:
+            </p>
+
+            <CodeBlock title="src/TodoApp.jsx" code={`import React, { useState } from 'react';
+
+export default function TodoApp() {
+  // 1. Initial State for Todos Array
+  const [todos, setTodos] = useState([
+    { id: 1, text: "Study Conditional Rendering" },
+    { id: 2, text: "Take notes on useState" }
+  ]);
+
+  // Input & Edit States
+  const [taskText, setTaskText] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // CREATE / UPDATE Operation
+  const handleSaveTodo = () => {
+    if (!taskText.trim()) return;
+
+    if (editingId) {
+      // UPDATE: map over array and replace matching item
+      setTodos(todos.map(t => t.id === editingId ? { ...t, text: taskText.trim() } : t));
+      setEditingId(null);
+    } else {
+      // CREATE: append new todo immutably
+      const newTodo = { id: Date.now(), text: taskText.trim() };
+      setTodos([...todos, newTodo]);
+    }
+    setTaskText("");
+  };
+
+  // DELETE Operation
+  const handleDelete = (id) => {
+    // filter() removes matching item and returns new array
+    setTodos(todos.filter(t => t.id !== id));
+  };
+
+  // EDIT Setup
+  const handleStartEdit = (todo) => {
+    setTaskText(todo.text);
+    setEditingId(todo.id);
+  };
+
+  // SORT Operation (A-Z)
+  const handleSort = () => {
+    setTodos([...todos].sort((a, b) => a.text.localeCompare(b.text)));
+  };
+
+  // FILTER / SEARCH Query
+  const filteredTodos = todos.filter(t =>
+    t.text.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div style={{ maxWidth: '500px', margin: '2rem auto', padding: '1.5rem', border: '1px solid #e2e8f0', borderRadius: '16px', background: '#ffffff', fontFamily: 'sans-serif', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+      <h2 style={{ color: '#1e293b', marginBottom: '1rem' }}>📝 React To-Do App</h2>
+
+      {/* 1. Search Bar */}
+      <input
+        type="text"
+        placeholder="🔍 Search tasks..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', marginBottom: '12px', boxSizing: 'border-box' }}
+      />
+
+      {/* 2. Add / Edit Input Form */}
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '1.25rem' }}>
+        <input
+          type="text"
+          placeholder="Enter todo item..."
+          value={taskText}
+          onChange={(e) => setTaskText(e.target.value)}
+          style={{ flex: 1, padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px' }}
+        />
+        <button
+          onClick={handleSaveTodo}
+          style={{ background: '#6366f1', color: 'white', border: 'none', padding: '10px 16px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
+        >
+          {editingId ? "Update" : "Add"}
+        </button>
+        <button
+          onClick={handleSort}
+          style={{ background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', padding: '10px 12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
+        >
+          ⇅ Sort
+        </button>
+      </div>
+
+      {/* 3. Render Todos List (READ) */}
+      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {filteredTodos.length === 0 ? (
+          <li style={{ textAlign: 'center', color: '#94a3b8', padding: '1rem' }}>No tasks found</li>
+        ) : (
+          filteredTodos.map((todo) => (
+            <li
+              key={todo.id}
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }}
+            >
+              <span style={{ color: '#1e293b' }}>{todo.text}</span>
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <button
+                  onClick={() => handleStartEdit(todo)}
+                  style={{ background: '#e0e7ff', color: '#4f46e5', border: 'none', padding: '4px 8px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
+                >
+                  ✏️ Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(todo.id)}
+                  style={{ background: '#fee2e2', color: '#ef4444', border: 'none', padding: '4px 8px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
+                >
+                  🗑️ Delete
+                </button>
+              </div>
+            </li>
+          ))
+        )}
+      </ul>
+    </div>
+  );
+}`} />
+
+            {/* Mount in App.jsx */}
+            <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginTop: '2rem', marginBottom: '0.8rem' }}>
+              🚀 How to Render in <code>App.jsx</code>:
+            </h4>
+
+            <CodeBlock title="src/App.jsx" code={`import React from 'react';
+import TodoApp from './TodoApp';
+
+function App() {
+  return (
+    <div>
+      <TodoApp />
+    </div>
+  );
+}
+
+export default App;`} />
+
+            {/* CRUD Operations Cheat-Sheet */}
+            <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginTop: '2rem', marginBottom: '0.8rem' }}>
+              🧠 The 5 Essential CRUD Operations in React:
+            </h4>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#16a34a', display: 'block', marginBottom: '4px' }}>1. Create (Add Item)</strong>
+                <code style={{ fontSize: '0.82rem', background: '#0f172a', color: '#a5d6ff', padding: '4px 8px', borderRadius: '6px', display: 'block', margin: '4px 0' }}>
+                  setTodos([...todos, newItem])
+                </code>
+                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Appends new item without mutating state.</span>
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#dc2626', display: 'block', marginBottom: '4px' }}>2. Delete (Remove Item)</strong>
+                <code style={{ fontSize: '0.82rem', background: '#0f172a', color: '#a5d6ff', padding: '4px 8px', borderRadius: '6px', display: 'block', margin: '4px 0' }}>
+                  todos.filter(t =&gt; t.id !== id)
+                </code>
+                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Returns a new array omitting the deleted ID.</span>
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#2563eb', display: 'block', marginBottom: '4px' }}>3. Update (Edit Item)</strong>
+                <code style={{ fontSize: '0.82rem', background: '#0f172a', color: '#a5d6ff', padding: '4px 8px', borderRadius: '6px', display: 'block', margin: '4px 0' }}>
+                  todos.map(t =&gt; t.id === id ? &#123;...t, text&#125; : t)
+                </code>
+                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Replaces matching item with modified copy.</span>
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#7c3aed', display: 'block', marginBottom: '4px' }}>4. Search &amp; Sort</strong>
+                <code style={{ fontSize: '0.82rem', background: '#0f172a', color: '#a5d6ff', padding: '4px 8px', borderRadius: '6px', display: 'block', margin: '4px 0' }}>
+                  [...todos].sort((a,b) =&gt; ...)
+                </code>
+                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Sorts alphabetically using localeCompare.</span>
+              </div>
+            </div>
+
             <div className="card-actions" style={{ marginTop: '2.5rem' }}>
               <button className="btn btn-primary" onClick={() => handleContinue('mini_project')} style={{ backgroundColor: '#6366f1', borderColor: '#6366f1' }}>
                 Next: Mini Project: Student Directory CRUD <ArrowRight size={16} />

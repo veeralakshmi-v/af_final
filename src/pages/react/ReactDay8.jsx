@@ -46,6 +46,13 @@ export default function ReactDay8({ activeTab, onNavigate }) {
   // --- Widget 4: Tailwind Theme Dashboard simulator ---
   const [tailwindDark, setTailwindDark] = useState(false);
 
+  // --- Widget 5: Mini Project Interactive Playground State ---
+  const [miniDark, setMiniDark] = useState(false);
+  const [miniBilling, setMiniBilling] = useState('monthly'); // 'monthly' or 'annual'
+  const [miniPlan, setMiniPlan] = useState('pro'); // 'starter', 'pro', 'enterprise'
+  const [miniUsage, setMiniUsage] = useState(65);
+  const [miniCodeTab, setMiniCodeTab] = useState('simple'); // 'simple', 'full', 'css'
+
   // --- Quiz States ---
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizChecked, setQuizChecked] = useState(false);
@@ -113,76 +120,86 @@ export default function ReactDay8({ activeTab, onNavigate }) {
       
       {/* ── 1. INLINE STYLING ───────────────────────────────────────────────── */}
       {activeTab === 'intro_react' && (
-        <Section key="intro_react" id="intro_react" eyebrow="Module 01 • Day 8" title="Inline Styling in React">
+        <Section key="intro_react" id="intro_react" eyebrow="Module 01 • Day 8" title="1. Inline Styling in React">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
             
-            {/* Header banner with contrast fix */}
-            <div style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', borderRadius: '16px', padding: '2rem', color: 'white', marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.75rem', color: 'white' }}>🎨 Styling Methods in React</h3>
-              <p style={{ fontSize: '1.05rem', opacity: 0.95, lineHeight: 1.7, color: 'white', margin: 0 }}>
-                React elements can be styled using multiple patterns: Inline Styles, traditional CSS files, Scoped CSS Modules, Styled Components libraries, and utility engines like Tailwind CSS.
+            {/* Header banner */}
+            <div style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', borderRadius: '16px', padding: '1.5rem', color: 'white', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '0.5rem', color: 'white' }}>🎨 What is Inline Styling in React?</h3>
+              <p style={{ fontSize: '0.95rem', opacity: 0.95, lineHeight: 1.6, color: 'white', margin: 0 }}>
+                In HTML, you wrote <code>style="color: red;"</code>. In React JSX, you pass a <strong>JavaScript Object</strong> inside double curly braces: <code>style=&#123;&#123; color: "red" &#125;&#125;</code>.
               </p>
             </div>
 
-            <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.8rem' }}>Inline Styling</h3>
-            <p>
-              In React JSX, inline styles are written directly inside the elements using **JavaScript objects** rather than style strings.
-            </p>
+            {/* The 2 Golden Rules */}
+            <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.8rem' }}>📌 The 2 Golden Rules:</h4>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#4f46e5', display: 'block', marginBottom: '4px' }}>1. Use camelCase for CSS names</strong>
+                <p style={{ fontSize: '0.88rem', color: '#64748b', margin: 0 }}>
+                  Instead of <code>background-color</code> ❌, write <code>backgroundColor</code> ✅.<br />
+                  Instead of <code>font-size</code> ❌, write <code>fontSize</code> ✅.
+                </p>
+              </div>
 
-            <div style={{ background: '#f8fafc', borderLeft: '4px solid #6366f1', padding: '1rem', borderRadius: '4px 12px 12px 4px', margin: '1.5rem 0', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <strong style={{ color: '#0f172a' }}>⚠️ Inline Styling Rules:</strong>
-              <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.9rem', color: '#475569' }}>
-                <li>Styles must be represented as a JavaScript <strong>object</strong>.</li>
-                <li>CSS properties must use <strong>camelCase</strong> keys (e.g. <code>backgroundColor</code> instead of <code>background-color</code>).</li>
-                <li>CSS values are written as strings (or numbers, which React converts to pixel units automatically).</li>
-              </ul>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <strong style={{ color: '#10b981', display: 'block', marginBottom: '4px' }}>2. Use double curly braces &#123;&#123; &#125;&#125;</strong>
+                <p style={{ fontSize: '0.88rem', color: '#64748b', margin: 0 }}>
+                  Outer <code>&#123; &#125;</code> is for JSX expressions.<br />
+                  Inner <code>&#123; &#125;</code> is the JavaScript style object.
+                </p>
+              </div>
             </div>
 
-            <CodeBlock title="InlineExample.jsx" code={`function InlineExample() {
-  const style = {
-    color: "white",
-    backgroundColor: "blue",
-    padding: "10px",
-    textAlign: "center"
-  };
+            <CodeBlock title="InlineExample.jsx" code={`// Simple Example 1: Direct inline style
+<h2 style={{ color: "blue", fontSize: "24px", textAlign: "center" }}>
+  Hello React!
+</h2>
 
-  return <h2 style={style}>Hello React Styling</h2>;
-}
+// Simple Example 2: Store in a variable object first
+const cardStyle = {
+  backgroundColor: "#4f46e5",
+  color: "white",
+  padding: "16px",
+  borderRadius: "8px"
+};
 
-// Or inline directly (using double curly braces):
-<h3 style={{ color: "red", fontSize: "20px" }}>Inline Style</h3>`} />
+function MyCard() {
+  return <div style={cardStyle}>Styled with React!</div>;
+}`} />
 
             {/* --- INTERACTIVE WIDGET: INLINE STYLE COMPILER --- */}
-            <h4 style={{ fontWeight: 800, color: '#0f172a', marginTop: '2.5rem', marginBottom: '1rem' }}>⚙️ Live Inline Style Compiler</h4>
-            <p>Modify the style state properties below and watch how React compiles the variables into a dynamic JSX inline style object.</p>
+            <h4 style={{ fontWeight: 800, color: '#0f172a', marginTop: '2rem', marginBottom: '0.8rem' }}>⚙️ Interactive Playground: Try It Yourself</h4>
+            <p style={{ fontSize: '0.9rem', color: '#64748b', margin: '0 0 1rem 0' }}>Adjust the controls below to see how the React inline style object changes:</p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '1.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '1.5rem', borderRadius: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '1.5rem', borderRadius: 16 }}>
               <div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '1rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '4px' }}>Text Color:</label>
-                    <input type="color" value={inlineColor} onChange={(e) => setInlineColor(e.target.value)} style={{ width: '100%', height: '36px', border: 'none', cursor: 'pointer' }} />
+                    <input type="color" value={inlineColor} onChange={(e) => setInlineColor(e.target.value)} style={{ width: '100%', height: '36px', border: 'none', cursor: 'pointer', borderRadius: '6px' }} />
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '4px' }}>Background Color:</label>
-                    <input type="color" value={inlineBg} onChange={(e) => setInlineBg(e.target.value)} style={{ width: '100%', height: '36px', border: 'none', cursor: 'pointer' }} />
+                    <input type="color" value={inlineBg} onChange={(e) => setInlineBg(e.target.value)} style={{ width: '100%', height: '36px', border: 'none', cursor: 'pointer', borderRadius: '6px' }} />
                   </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '1rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '4px' }}>Padding (px): {inlinePadding}px</label>
+                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '4px' }}>Padding: {inlinePadding}px</label>
                     <input type="range" min="10" max="40" value={inlinePadding} onChange={(e) => setInlinePadding(e.target.value)} style={{ width: '100%' }} />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '4px' }}>Border Radius (px): {inlineRadius}px</label>
+                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '4px' }}>Border Radius: {inlineRadius}px</label>
                     <input type="range" min="0" max="30" value={inlineRadius} onChange={(e) => setInlineRadius(e.target.value)} style={{ width: '100%' }} />
                   </div>
                 </div>
 
                 {/* Compiled Code block view */}
                 <div style={{ background: '#0f172a', padding: '10px 14px', borderRadius: 8, fontFamily: 'monospace', fontSize: '0.82rem', color: '#e1e4e8' }}>
-                  <span style={{ color: '#8892b0' }}>{'// Compiled JSX Code:'}</span>
+                  <span style={{ color: '#8892b0' }}>{'// React JSX output:'}</span>
                   <div style={{ marginTop: '4px' }}>
                     {`<div style={{`}
                     <div style={{ paddingLeft: '1rem', color: '#a5d6ff' }}>
@@ -191,13 +208,13 @@ export default function ReactDay8({ activeTab, onNavigate }) {
                       padding: <span style={{ color: '#ff7b72' }}>"{inlinePadding}px"</span>,<br />
                       borderRadius: <span style={{ color: '#ff7b72' }}>"{inlineRadius}px"</span>
                     </div>
-                    {`}}>Preview Card</div>`}
+                    {`}}>Hello World</div>`}
                   </div>
                 </div>
               </div>
 
               {/* Visual Preview */}
-              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <div style={{
                   color: inlineColor,
                   backgroundColor: inlineBg,
@@ -206,16 +223,17 @@ export default function ReactDay8({ activeTab, onNavigate }) {
                   textAlign: 'center',
                   fontWeight: 'bold',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  transition: 'all 0.15s ease'
+                  transition: 'all 0.15s ease',
+                  width: '80%'
                 }}>
-                  Preview Element
+                  Live Preview Card
                 </div>
               </div>
             </div>
 
-            <div className="card-actions" style={{ marginTop: '2.5rem' }}>
+            <div className="card-actions" style={{ marginTop: '2rem' }}>
               <button className="btn btn-primary" onClick={() => handleContinue('useState_hook')} style={{ backgroundColor: '#6366f1', borderColor: '#6366f1' }}>
-                Continue (+10 XP) <ArrowRight size={16} />
+                Next: CSS Files &amp; Modules <ArrowRight size={16} />
               </button>
             </div>
           </div>
@@ -224,55 +242,146 @@ export default function ReactDay8({ activeTab, onNavigate }) {
 
       {/* ── 2. CSS MODULES ─────────────────────────────────────────────────── */}
       {activeTab === 'useState_hook' && (
-        <Section key="useState_hook" id="useState_hook" eyebrow="Module 02 • Day 8" title="CSS Files vs CSS Modules">
+        <Section key="useState_hook" id="useState_hook" eyebrow="Module 02 • Day 8" title="2. CSS Files vs CSS Modules (Simplified)">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
             
-            <p>
-              Traditional CSS files import styles globally. If two components use the class name <code>.btn</code>, the stylesheet imported last will override the first one, causing UI style leakage bugs.
-            </p>
-            <p>
-              <strong>CSS Modules</strong> solve this by scoping classes locally to the component. Vite automatically parses filenames ending in <code>*.module.css</code> and compiles class keys into unique hashed strings.
-            </p>
+            {/* Header with simple concept */}
+            <div style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%)', borderRadius: '16px', padding: '1.75rem', color: 'white', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+                💡 SIMPLE EXPLANATION
+              </div>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, margin: '0 0 0.5rem 0', color: 'white' }}>
+                The Big Problem: Why Normal CSS Can Break Your App
+              </h3>
+              <p style={{ fontSize: '0.95rem', opacity: 0.95, lineHeight: 1.6, margin: 0, color: 'white' }}>
+                When you import a normal <code>.css</code> file, its classes are <strong>global</strong>. That means if two different components both have a class called <code>.title</code> or <code>.btn</code>, one will accidentally overwrite the other!
+              </p>
+            </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', margin: '2rem 0' }}>
-              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: 16, border: '1px solid #cbd5e1' }}>
-                <h4 style={{ margin: '0 0 0.5rem 0', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 4 }}><GlobeIcon size={16} /> Traditional CSS Files</h4>
-                <p style={{ fontSize: '0.85rem', color: '#64748b' }}>Styles are linked globally. Class conflicts occur easily if identical names are reused across different components.</p>
-                <CodeBlock title="Button.css" code={`.btn {
-  background-color: green;
+            {/* Real Life Analogy Box */}
+            <div style={{ background: '#f0fdf4', border: '1.5px solid #86efac', borderRadius: '14px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+              <strong style={{ color: '#166534', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                🏫 Real-Life Analogy: The Name Clash
+              </strong>
+              <p style={{ fontSize: '0.9rem', color: '#14532d', margin: 0, lineHeight: 1.6 }}>
+                Imagine two students in a school both named <strong>"Rahul"</strong>. If the principal announces: <em>"Rahul must wear a blue hat"</em>, both Rahuls get confused (Normal CSS).<br />
+                With <strong>CSS Modules</strong>, React attaches a unique ID: <em>"Rahul_Class10_A"</em> vs <em>"Rahul_Class5_B"</em>. Now their styles never interfere with each other!
+              </p>
+            </div>
+
+            {/* Side-by-Side Comparison */}
+            <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.8rem' }}>
+              🔍 Side-by-Side Comparison
+            </h4>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
+              
+              {/* Option 1: Normal CSS */}
+              <div style={{ background: '#fef2f2', padding: '1.25rem', borderRadius: 16, border: '1.5px solid #fecaca' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.5rem' }}>
+                  <span style={{ background: '#ef4444', color: 'white', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 'bold' }}>✕</span>
+                  <h4 style={{ margin: 0, fontWeight: 800, color: '#991b1b', fontSize: '1.05rem' }}>Normal CSS (Global 🌍)</h4>
+                </div>
+                <p style={{ fontSize: '0.85rem', color: '#7f1d1d', margin: '0 0 0.75rem 0' }}>
+                  ⚠️ Risk of name collision: styles leak everywhere in the application.
+                </p>
+
+                <CodeBlock title="Navbar.css" code={`/* 1. In CSS file: */
+.btn {
+  background: green;
   color: white;
+}
+
+/* 2. In Component: */
+import "./Navbar.css";
+
+function Navbar() {
+  return <button className="btn">Navbar</button>;
 }`} />
               </div>
 
-              <div style={{ background: '#eff6ff', padding: '1.25rem', borderRadius: 16, border: '1px solid #bfdbfe' }}>
-                <h4 style={{ margin: '0 0 0.5rem 0', fontWeight: 800, color: '#1e40af', display: 'flex', alignItems: 'center', gap: 4 }}><Lock size={16} /> Scoped CSS Modules</h4>
-                <p style={{ fontSize: '0.85rem', color: '#1e3a8a' }}>CSS is compiled locally. Vite resolves classes as keys on an imported styles object, generating unique hash identifiers.</p>
-                <CodeBlock title="Button.module.css" code={`.btn {
-  background-color: purple;
+              {/* Option 2: CSS Modules */}
+              <div style={{ background: '#eff6ff', padding: '1.25rem', borderRadius: 16, border: '1.5px solid #bfdbfe' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.5rem' }}>
+                  <span style={{ background: '#10b981', color: 'white', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 'bold' }}>✓</span>
+                  <h4 style={{ margin: 0, fontWeight: 800, color: '#1e40af', fontSize: '1.05rem' }}>CSS Modules (Private 🔒)</h4>
+                </div>
+                <p style={{ fontSize: '0.85rem', color: '#1e3a8a', margin: '0 0 0.75rem 0' }}>
+                  ✅ 100% Safe: Scoped only to this file by creating unique hashes.
+                </p>
+
+                <CodeBlock title="Navbar.module.css" code={`/* 1. Name must end with: .module.css */
+.btn {
+  background: purple;
   color: white;
+}
+
+/* 2. In Component: import as an object! */
+import styles from "./Navbar.module.css";
+
+function Navbar() {
+  return <button className={styles.btn}>Navbar</button>;
 }`} />
               </div>
             </div>
 
-            {/* --- INTERACTIVE WIDGET: SCOPING & LEAKS PLAYGROUND --- */}
-            <h4 style={{ fontWeight: 800, color: '#0f172a', marginTop: '2.5rem', marginBottom: '1rem' }}>🔒 Live Namespace Scoping Simulator</h4>
-            <p>Toggle the styling method below. Observe how global scoping leaks CSS overrides across components, while modular scoping isolates button styles by compiling classes into unique hashes.</p>
+            {/* The 3 Simple Steps to Use CSS Modules */}
+            <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginTop: '2rem', marginBottom: '0.8rem' }}>
+              🛠️ How to Use CSS Modules in 3 Easy Steps:
+            </h4>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '1.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '1.5rem', borderRadius: 16 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span style={{ background: '#6366f1', color: 'white', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>1</span>
+                <span style={{ fontSize: '0.9rem', color: '#334155' }}>
+                  <strong>Create file ending in <code>.module.css</code></strong> (e.g. <code>Header.module.css</code> instead of <code>Header.css</code>).
+                </span>
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span style={{ background: '#6366f1', color: 'white', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>2</span>
+                <span style={{ fontSize: '0.9rem', color: '#334155' }}>
+                  <strong>Import it as a JavaScript object:</strong> <code>import styles from "./Header.module.css";</code>
+                </span>
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span style={{ background: '#6366f1', color: 'white', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>3</span>
+                <span style={{ fontSize: '0.9rem', color: '#334155' }}>
+                  <strong>Apply class using dot notation:</strong> <code>&lt;button className=&#123;styles.btn&#125;&gt;</code>
+                </span>
+              </div>
+            </div>
+
+            {/* --- INTERACTIVE WIDGET --- */}
+            <h4 style={{ fontWeight: 800, color: '#0f172a', marginBottom: '0.8rem' }}>
+              🧪 Live Simulation: Watch Class Names in the Inspector
+            </h4>
+            <p style={{ fontSize: '0.9rem', color: '#64748b', margin: '0 0 1rem 0' }}>
+              Toggle between <strong>Global CSS</strong> and <strong>CSS Module</strong> below to see how React transforms the class name to prevent collisions:
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '1.5rem', borderRadius: 16 }}>
               <div>
-                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.85rem', color: '#475569', marginBottom: '8px' }}>Select CSS Compiler Mode:</label>
+                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.85rem', color: '#475569', marginBottom: '8px' }}>Select Styling Mode:</label>
                 <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-                  <button className={`btn ${moduleScoping === 'global' ? 'btn-primary' : 'btn-outline'}`} onClick={() => setModuleScoping('global')} style={moduleScoping === 'global' ? { background: '#ef4444', borderColor: '#ef4444' } : {}}>Global Style Sheet Leak</button>
-                  <button className={`btn ${moduleScoping === 'modular' ? 'btn-primary' : 'btn-outline'}`} onClick={() => setModuleScoping('modular')} style={moduleScoping === 'modular' ? { background: '#10b981', borderColor: '#10b981' } : {}}>Local CSS Modules Hash</button>
+                  <button className={`btn ${moduleScoping === 'global' ? 'btn-primary' : 'btn-outline'}`} onClick={() => setModuleScoping('global')} style={moduleScoping === 'global' ? { background: '#ef4444', borderColor: '#ef4444' } : {}}>Normal CSS (Global)</button>
+                  <button className={`btn ${moduleScoping === 'modular' ? 'btn-primary' : 'btn-outline'}`} onClick={() => setModuleScoping('modular')} style={moduleScoping === 'modular' ? { background: '#10b981', borderColor: '#10b981' } : {}}>CSS Module (Scoped)</button>
                 </div>
 
-                <div style={{ background: '#0f172a', padding: '10px 14px', borderRadius: 8, fontFamily: 'monospace', fontSize: '0.82rem', color: '#e1e4e8' }}>
-                  <span style={{ color: '#8892b0' }}>{'// Mapped HTML Class Attribute:'}</span>
-                  <div style={{ marginTop: '4px', color: '#a5d6ff' }}>
+                <div style={{ background: '#0f172a', padding: '12px 14px', borderRadius: 8, fontFamily: 'monospace', fontSize: '0.85rem', color: '#e1e4e8' }}>
+                  <span style={{ color: '#8892b0' }}>{'// What gets generated in HTML:'}</span>
+                  <div style={{ marginTop: '6px', color: '#a5d6ff' }}>
                     {moduleScoping === 'global' ? (
-                      `class="btn"   /* leaked! global overrides button color */`
+                      <div>
+                        &lt;button <span style={{ color: '#f87171' }}>class="btn"</span>&gt;<br />
+                        <span style={{ color: '#94a3b8', fontSize: '0.78rem' }}>/* ⚠️ Any other file with .btn can overwrite this! */</span>
+                      </div>
                     ) : (
-                      `class="Button_btn__a8b9c"   /* scoped hash prevents overrides */`
+                      <div>
+                        &lt;button <span style={{ color: '#4ade80' }}>class="Navbar_btn__9x2k"</span>&gt;<br />
+                        <span style={{ color: '#94a3b8', fontSize: '0.78rem' }}>/* ✅ Unique hash "__9x2k" makes it impossible to clash! */</span>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -280,25 +389,65 @@ export default function ReactDay8({ activeTab, onNavigate }) {
 
               {/* Outputs */}
               <div style={{ background: 'white', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: '0.78rem', color: '#94a3b8', display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Button visual output:</span>
+                <span style={{ fontSize: '0.8rem', color: '#94a3b8', display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Resulting Button Appearance:</span>
                 <button style={{
-                  padding: '8px 16px',
+                  padding: '10px 20px',
                   border: 'none',
-                  borderRadius: '6px',
+                  borderRadius: '8px',
                   fontWeight: 'bold',
                   cursor: 'pointer',
                   color: 'white',
-                  background: moduleScoping === 'global' ? '#10b981' : '#a855f7',
-                  transition: 'background 0.15s ease'
+                  background: moduleScoping === 'global' ? '#ef4444' : '#10b981',
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                  transition: 'background 0.2s ease'
                 }}>
-                  {moduleScoping === 'global' ? 'Green button (Leaked global)' : 'Purple button (Modular)'}
+                  {moduleScoping === 'global' ? 'Button with Global Style' : 'Button with Scoped Module'}
                 </button>
               </div>
             </div>
 
-            <div className="card-actions" style={{ marginTop: '2.5rem' }}>
+            {/* Quick Summary Table */}
+            <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginTop: '2rem', marginBottom: '0.8rem' }}>
+              📊 Quick Summary Cheat-Sheet:
+            </h4>
+
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem', background: 'white', borderRadius: '10px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                <thead>
+                  <tr style={{ background: '#f1f5f9', color: '#0f172a', textAlign: 'left' }}>
+                    <th style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0' }}>Feature</th>
+                    <th style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0' }}>Normal CSS</th>
+                    <th style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0' }}>CSS Modules</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0', fontWeight: 600 }}>File Name</td>
+                    <td style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0' }}><code>Button.css</code></td>
+                    <td style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0' }}><code>Button.module.css</code></td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0', fontWeight: 600 }}>How to Import</td>
+                    <td style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0' }}><code>import "./Button.css"</code></td>
+                    <td style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0' }}><code>import styles from "./Button.module.css"</code></td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0', fontWeight: 600 }}>Class Syntax</td>
+                    <td style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0' }}><code>className="btn"</code></td>
+                    <td style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0' }}><code>className=&#123;styles.btn&#125;</code></td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '10px 14px', fontWeight: 600 }}>Scope</td>
+                    <td style={{ padding: '10px 14px', color: '#ef4444' }}>Global (can cause bugs)</td>
+                    <td style={{ padding: '10px 14px', color: '#10b981', fontWeight: 600 }}>Private (100% safe)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="card-actions" style={{ marginTop: '2rem' }}>
               <button className="btn btn-primary" onClick={() => handleContinue('multiple_states')} style={{ backgroundColor: '#6366f1', borderColor: '#6366f1' }}>
-                Continue (+10 XP) <ArrowRight size={16} />
+                Next: Styled Components <ArrowRight size={16} />
               </button>
             </div>
           </div>
@@ -307,107 +456,84 @@ export default function ReactDay8({ activeTab, onNavigate }) {
 
       {/* ── 3. STYLED COMPONENTS ────────────────────────────────────────────── */}
       {activeTab === 'multiple_states' && (
-        <Section key="multiple_states" id="multiple_states" eyebrow="Module 03 • Day 8" title="Styled Components">
+        <Section key="multiple_states" id="multiple_states" eyebrow="Module 03 • Day 8" title="3. Styled Components">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
             
-            <p>
-              <strong>Styled Components</strong> is a popular library that allows writing plain CSS inside JavaScript using ES6 template literals. It creates styled React components directly.
-            </p>
+            <div style={{ background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)', borderRadius: '16px', padding: '1.5rem', color: 'white', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '0.5rem', color: 'white' }}>💅 What are Styled Components?</h3>
+              <p style={{ fontSize: '0.95rem', opacity: 0.95, lineHeight: 1.6, color: 'white', margin: 0 }}>
+                Styled Components is a library that allows you to create styled React components using backtick (<code>` `</code>) syntax and pass React props to change styles dynamically!
+              </p>
+            </div>
 
             <CodeBlock title="StyledButton.jsx" code={`import styled from "styled-components";
 
+// 1. Create a styled button component
 const Button = styled.button\`
-  background-color: \${props => props.primary ? "#4CAF50" : "#2196F3"};
+  background-color: \${props => props.primary ? "#10b981" : "#3b82f6"};
   color: white;
   padding: 10px 20px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-weight: bold;
   cursor: pointer;
-  margin: 10px;
+\`;
 
-  &:hover {
-    opacity: 0.8;
-  }
-\`;`} />
+// 2. Use it in JSX like any normal React component!
+function App() {
+  return (
+    <div>
+      <Button primary>Primary Button (Green)</Button>
+      <Button>Normal Button (Blue)</Button>
+    </div>
+  );
+}`} />
 
-            {/* --- INTERACTIVE WIDGET: STYLED RESOLVER --- */}
-            <h4 style={{ fontWeight: 800, color: '#0f172a', marginTop: '2.5rem', marginBottom: '1rem' }}>💅 Live Template Literal Resolver</h4>
-            <p>Toggle the primary prop flag below. Watch how the backtick template expression evaluates dynamically inside JavaScript to override styling attributes.</p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '1.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '1.5rem', borderRadius: 16 }}>
+            {/* --- INTERACTIVE WIDGET --- */}
+            <h4 style={{ fontWeight: 800, color: '#0f172a', marginTop: '2rem', marginBottom: '0.8rem' }}>💅 Interactive Props Resolver</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '1.5rem', borderRadius: 16 }}>
               <div>
                 <button 
-                  className={`btn ${styledPrimary ? 'btn-primary' : 'btn-outline'}`}
+                  className="btn btn-primary"
                   onClick={() => setStyledPrimary(prev => !prev)}
-                  style={{ width: '100%', background: styledPrimary ? '#6366f1' : 'transparent', borderColor: '#6366f1', color: styledPrimary ? 'white' : '#6366f1', marginBottom: '1rem' }}
+                  style={{ width: '100%', background: '#6366f1', borderColor: '#6366f1', marginBottom: '1rem' }}
                 >
-                  Toggle Component Prop: primary = {styledPrimary ? 'true' : 'false'}
+                  Click to Toggle Prop: primary = {styledPrimary ? 'true' : 'false'}
                 </button>
 
                 <div style={{ background: '#0f172a', padding: '10px 14px', borderRadius: 8, fontFamily: 'monospace', fontSize: '0.82rem', color: '#e1e4e8' }}>
                   {`background-color: `}
                   <span style={{ 
-                    background: styledPrimary ? '#10b981' : 'transparent', 
-                    color: styledPrimary ? 'white' : '#38bdf8',
-                    padding: '2px 4px',
+                    background: styledPrimary ? '#10b981' : '#3b82f6', 
+                    color: 'white',
+                    padding: '2px 6px',
                     borderRadius: 4
-                  }}>{`props.primary ? "#4CAF50" (Green)`}</span>
-                  {` : `}
-                  <span style={{ 
-                    background: !styledPrimary ? '#3b82f6' : 'transparent', 
-                    color: !styledPrimary ? 'white' : '#38bdf8',
-                    padding: '2px 4px',
-                    borderRadius: 4
-                  }}>{`"#2196F3" (Blue)`}</span>
+                  }}>
+                    {styledPrimary ? '"#10b981" (Green)' : '"#3b82f6" (Blue)'}
+                  </span>
                 </div>
               </div>
 
-              {/* Resolution output */}
               <div style={{ background: 'white', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                 <button style={{
-                  background: styledPrimary ? '#4CAF50' : '#2196F3',
+                  background: styledPrimary ? '#10b981' : '#3b82f6',
                   color: 'white',
-                  padding: '10px 20px',
+                  padding: '10px 24px',
                   border: 'none',
-                  borderRadius: '6px',
+                  borderRadius: '8px',
                   fontWeight: 'bold',
                   cursor: 'pointer',
-                  transition: 'all 0.15s ease'
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                  transition: 'all 0.2s ease'
                 }}>
-                  {styledPrimary ? 'Primary Button' : 'Normal Button'}
+                  {styledPrimary ? '<Button primary />' : '<Button />'}
                 </button>
               </div>
             </div>
 
-            {/* --- DASHBOARD PREVIEW --- */}
-            <h4 style={{ fontWeight: 800, color: '#0f172a', marginTop: '2.5rem', marginBottom: '1rem' }}>📊 Styled Components Dashboard Preview (Page 7)</h4>
-            <div style={{ background: '#e8e8e8', padding: '1.5rem', borderRadius: 16, border: '1px solid #cbd5e1', textAlign: 'center' }}>
-              <div style={{ background: '#282c34', color: 'white', padding: '1rem', borderRadius: '8px 8px 0 0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <h4 style={{ margin: 0, fontWeight: 800, fontSize: '1.1rem', color: 'white' }}>Styled Components Dashboard</h4>
-              </div>
-              <div style={{ padding: '1rem', background: '#f4f4f4', borderRadius: '0 0 8px 8px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
-                  <button style={{ background: '#4CAF50', color: 'white', padding: '6px 12px', border: 'none', borderRadius: 4, fontWeight: 'bold' }}>Primary Button</button>
-                  <button style={{ background: '#2196F3', color: 'white', padding: '6px 12px', border: 'none', borderRadius: 4, fontWeight: 'bold' }}>Normal Button</button>
-                </div>
-                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                  {[
-                    { title: "Users", val: "Total Users: 120" },
-                    { title: "Orders", val: "Total Orders: 45" },
-                    { title: "Revenue", val: "$4500" }
-                  ].map((card, idx) => (
-                    <div key={idx} style={{ background: 'white', padding: '12px 18px', border: '1px solid #ddd', borderRadius: 8, minWidth: '130px', textAlign: 'center' }}>
-                      <strong style={{ display: 'block', color: '#333', fontSize: '0.85rem' }}>{card.title}</strong>
-                      <span style={{ fontSize: '0.78rem', color: '#666' }}>{card.val}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="card-actions" style={{ marginTop: '2.5rem' }}>
+            <div className="card-actions" style={{ marginTop: '2rem' }}>
               <button className="btn btn-primary" onClick={() => handleContinue('object_state')} style={{ backgroundColor: '#6366f1', borderColor: '#6366f1' }}>
-                Continue (+10 XP) <ArrowRight size={16} />
+                Next: Tailwind CSS Setup <ArrowRight size={16} />
               </button>
             </div>
           </div>
@@ -416,46 +542,38 @@ const Button = styled.button\`
 
       {/* ── 4. TAILWIND CSS SETUP ──────────────────────────────────────────── */}
       {activeTab === 'object_state' && (
-        <Section key="object_state" id="object_state" eyebrow="Module 04 • Day 8" title="Tailwind CSS Setup">
+        <Section key="object_state" id="object_state" eyebrow="Module 04 • Day 8" title="4. Tailwind CSS Setup">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
             
-            <p>
-              Tailwind CSS is a utility-first CSS framework. It provides classes (like <code>flex</code>, <code>bg-blue-600</code>, <code>text-white</code>, <code>p-4</code>) to design interfaces quickly.
-            </p>
-
-            <h3 style={{ fontSize: '1.25rem', color: '#0f172a', fontWeight: 800, margin: '1.5rem 0 0.8rem 0' }}>Tailwind Installation in Vite:</h3>
-            <CodeBlock title="Shell / Terminal" code={`npm create vite@latest tailwind-dashboard
-cd tailwind-dashboard
-npm install
-
-# Install Tailwind and its dependencies
-npm install -D tailwindcss postcss autoprefixer
-
-# Initialize Tailwind configuration file
-npx tailwindcss init`} />
-
-            <h3 style={{ fontSize: '1.25rem', color: '#0f172a', fontWeight: 800, margin: '1.5rem 0 0.8rem 0' }}>Configure Tailwind:</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '1.5rem', margin: '1rem 0' }}>
-              <div>
-                <CodeBlock title="tailwind.config.js" code={`export default {
-  // Scans HTML and JS/JSX files for utility classes
-  content: ["./index.html", "./src/**/*.{js,jsx}"],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}`} />
-              </div>
-              <div>
-                <CodeBlock title="src/index.css" code={`@tailwind base;
-@tailwind components;
-@tailwind utilities;`} />
-              </div>
+            <div style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)', borderRadius: '16px', padding: '1.5rem', color: 'white', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '0.5rem', color: 'white' }}>⚡ What is Tailwind CSS?</h3>
+              <p style={{ fontSize: '0.95rem', opacity: 0.95, lineHeight: 1.6, color: 'white', margin: 0 }}>
+                Tailwind gives you ready-made helper classes so you never have to write custom CSS files. For example: <code>bg-blue-600</code>, <code>text-white</code>, <code>p-4</code>, <code>rounded-lg</code>.
+              </p>
             </div>
 
-            <div className="card-actions" style={{ marginTop: '2.5rem' }}>
+            <h4 style={{ fontSize: '1.1rem', color: '#0f172a', fontWeight: 800, margin: '1rem 0 0.5rem 0' }}>Step 1: Install in Terminal</h4>
+            <CodeBlock title="Terminal" code={`# 1. Install Tailwind and PostCSS
+npm install -D tailwindcss postcss autoprefixer
+
+# 2. Generate config file
+npx tailwindcss init`} />
+
+            <h4 style={{ fontSize: '1.1rem', color: '#0f172a', fontWeight: 800, margin: '1.5rem 0 0.5rem 0' }}>Step 2: Add Tailwind Directives</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+              <CodeBlock title="tailwind.config.js" code={`export default {
+  content: ["./index.html", "./src/**/*.{js,jsx}"],
+  theme: { extend: {} },
+  plugins: [],
+};`} />
+              <CodeBlock title="src/index.css" code={`@tailwind base;
+@tailwind components;
+@tailwind utilities;`} />
+            </div>
+
+            <div className="card-actions" style={{ marginTop: '2rem' }}>
               <button className="btn btn-primary" onClick={() => handleContinue('nested_state')} style={{ backgroundColor: '#6366f1', borderColor: '#6366f1' }}>
-                Continue (+10 XP) <ArrowRight size={16} />
+                Next: Tailwind Student Dashboard <ArrowRight size={16} />
               </button>
             </div>
           </div>
@@ -464,87 +582,82 @@ npx tailwindcss init`} />
 
       {/* ── 5. TAILWIND STUDENT DASHBOARD ───────────────────────────────────── */}
       {activeTab === 'nested_state' && (
-        <Section key="nested_state" id="nested_state" eyebrow="Module 05 • Day 8" title="Tailwind Student Dashboard">
+        <Section key="nested_state" id="nested_state" eyebrow="Module 05 • Day 8" title="5. Tailwind Student Dashboard">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
             
-            {/* Header banner with contrast fix */}
-            <div style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', borderRadius: '16px', padding: '2rem', color: 'white', marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.75rem', color: 'white' }}>💼 Tailwind Student Dashboard Project</h3>
-              <p style={{ fontSize: '1.05rem', opacity: 0.95, lineHeight: 1.7, color: 'white', margin: 0 }}>
-                This student dashboard simulates Tailwind utility-based layout grid designs, complete with responsive columns, spacing classes, and light/dark theme variables.
+            <div style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', borderRadius: '16px', padding: '1.5rem', color: 'white', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+                💻 PRACTICAL PROJECT
+              </div>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '0.5rem', color: 'white' }}>Student Dashboard with Dark/Light Theme</h3>
+              <p style={{ fontSize: '0.95rem', opacity: 0.95, lineHeight: 1.6, color: 'white', margin: 0 }}>
+                Here is how to build a responsive Student Dashboard with Profile and Statistics cards using <strong>Tailwind CSS utility classes</strong> and <strong>React State</strong>.
               </p>
             </div>
 
-            {/* --- INTERACTIVE WIDGET: TAILWIND DASHBOARD SIMULATOR --- */}
-            <h4 style={{ fontWeight: 800, color: '#0f172a', marginBottom: '1rem' }}>📱 Tailwind Theme Toggle Simulator</h4>
-            <p>Click "Toggle Theme". Notice how the classes prefix (e.g. <code>dark:bg-gray-900</code>) reacts to the top-level parent class, swapping color palettes instantly.</p>
-
-            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '1.5rem', borderRadius: 20 }}>
-              
-              {/* Simulator shell panel replicating Page 10 */}
+            {/* Interactive Live Demo */}
+            <h4 style={{ fontWeight: 800, color: '#0f172a', marginBottom: '0.8rem' }}>
+              🎮 Live Interactive Preview
+            </h4>
+            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '1.5rem', borderRadius: 20, marginBottom: '2rem' }}>
               <div style={{ 
-                background: tailwindDark ? '#111827' : '#f3f4f6', 
+                background: tailwindDark ? '#111827' : '#ffffff', 
                 color: tailwindDark ? '#f9fafb' : '#111827', 
                 borderRadius: '12px', 
-                border: '1px solid #d1d5db', 
+                border: tailwindDark ? '1px solid #374151' : '1px solid #e5e7eb', 
                 overflow: 'hidden',
                 transition: 'all 0.25s ease'
               }}>
                 
                 {/* Navbar */}
                 <div style={{ background: '#2563eb', padding: '1rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
-                  <h4 style={{ margin: 0, fontWeight: 800, fontSize: '1.1rem', color: 'white' }}>student Dashboard</h4>
+                  <h4 style={{ margin: 0, fontWeight: 800, fontSize: '1.1rem', color: 'white' }}>🎓 Student Dashboard</h4>
                   <button 
                     onClick={() => setTailwindDark(d => !d)}
-                    style={{ background: 'white', color: '#111827', border: 'none', padding: '6px 12px', borderRadius: 6, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
+                    style={{ background: 'white', color: '#111827', border: 'none', padding: '6px 14px', borderRadius: 8, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
                   >
-                    {tailwindDark ? <Sun size={14} /> : <Moon size={14} />}
-                    Toggle Theme
+                    {tailwindDark ? <Sun size={14} color="#f59e0b" /> : <Moon size={14} color="#2563eb" />}
+                    {tailwindDark ? 'Light Mode' : 'Dark Mode'}
                   </button>
                 </div>
 
                 {/* Grid Container */}
-                <div style={{ padding: '1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                <div style={{ padding: '1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
                   
                   {/* Profile Card */}
                   <div style={{ 
-                    background: tailwindDark ? '#e5e7eb' : 'white', 
-                    color: '#111827',
+                    background: tailwindDark ? '#1f2937' : '#f8fafc', 
+                    color: tailwindDark ? '#f9fafb' : '#111827', 
                     padding: '1.25rem', 
-                    borderRadius: 8, 
+                    borderRadius: 12, 
                     textAlign: 'center',
-                    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)'
+                    border: tailwindDark ? '1px solid #374151' : '1px solid #e2e8f0'
                   }}>
-                    <img 
-                      src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" 
-                      alt="Avatar"
-                      style={{ width: '80px', margin: '0 auto 10px auto', borderRadius: '50%' }}
-                    />
-                    <h5 style={{ margin: '0 0 2px 0', fontWeight: 800, color: '#1f2937' }}>John Doe</h5>
-                    <span style={{ fontSize: '0.8rem', color: '#6b7280' }}>B.Sc Computer Science</span>
+                    <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: '#6366f1', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px auto', fontWeight: 'bold', fontSize: '1.2rem' }}>
+                      JD
+                    </div>
+                    <h5 style={{ margin: '0 0 2px 0', fontWeight: 800 }}>John Doe</h5>
+                    <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Computer Science</span>
                   </div>
 
                   {/* Stat Cards */}
                   {[
-                    { title: "Total Students", value: "250" },
-                    { title: "Attendance", value: "85%" },
-                    { title: "Assignments", value: "12" },
-                    { title: "Pending Fees", value: "₹5000" },
-                    { title: "Exams", value: "3 Upcoming" }
+                    { title: "Total Attendance", value: "85%" },
+                    { title: "Completed Assignments", value: "12" },
+                    { title: "Upcoming Exams", value: "3" }
                   ].map((stat, idx) => (
                     <div 
                       key={idx} 
                       style={{ 
-                        background: tailwindDark ? '#1f2937' : 'white', 
-                        color: tailwindDark ? '#f9fafb' : '#1f2937', 
+                        background: tailwindDark ? '#1f2937' : '#f8fafc', 
+                        color: tailwindDark ? '#f9fafb' : '#111827', 
                         padding: '1.25rem', 
-                        borderRadius: 8,
-                        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.06)',
-                        border: tailwindDark ? '1px solid #374151' : '1px solid #e5e7eb'
+                        borderRadius: 12,
+                        border: tailwindDark ? '1px solid #374151' : '1px solid #e2e8f0'
                       }}
                     >
-                      <span style={{ fontSize: '0.8rem', color: tailwindDark ? '#9ca3af' : '#6b7280', display: 'block', fontWeight: 600 }}>{stat.title}</span>
-                      <strong style={{ display: 'block', fontSize: '1.6rem', marginTop: '6px' }}>{stat.value}</strong>
+                      <span style={{ fontSize: '0.8rem', color: '#94a3b8', display: 'block', fontWeight: 600 }}>{stat.title}</span>
+                      <strong style={{ display: 'block', fontSize: '1.6rem', marginTop: '6px', color: '#6366f1' }}>{stat.value}</strong>
                     </div>
                   ))}
 
@@ -553,7 +666,124 @@ npx tailwindcss init`} />
               </div>
             </div>
 
-            <div className="card-actions" style={{ marginTop: '2.5rem' }}>
+            {/* --- COMPLETE PROGRAM CODE --- */}
+            <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.8rem' }}>
+              📄 Complete Program Source Code
+            </h4>
+            <p style={{ fontSize: '0.9rem', color: '#64748b', margin: '0 0 0.75rem 0' }}>
+              Create a file named <code>StudentDashboard.jsx</code> in your React project and paste this code:
+            </p>
+
+            <CodeBlock title="src/StudentDashboard.jsx" code={`import React, { useState } from 'react';
+
+export default function StudentDashboard() {
+  // 1. State for Dark/Light Mode
+  const [isDark, setIsDark] = useState(false);
+
+  // 2. Student Statistics Data
+  const stats = [
+    { title: "Total Attendance", value: "85%" },
+    { title: "Completed Assignments", value: "12" },
+    { title: "Upcoming Exams", value: "3" }
+  ];
+
+  return (
+    <div className={isDark ? "bg-gray-900 text-white min-h-screen p-6" : "bg-gray-100 text-gray-900 min-h-screen p-6"}>
+      
+      {/* Container Card */}
+      <div className="max-w-4xl mx-auto rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-800">
+        
+        {/* Navbar */}
+        <div className="bg-blue-600 text-white px-6 py-4 flex justify-between items-center">
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            🎓 Student Dashboard
+          </h2>
+          <button
+            onClick={() => setIsDark(!isDark)}
+            className="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-gray-100 transition"
+          >
+            {isDark ? "☀️ Light Mode" : "🌙 Dark Mode"}
+          </button>
+        </div>
+
+        {/* Dashboard Grid (1 col on mobile, 4 cols on desktop) */}
+        <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+          
+          {/* Profile Card */}
+          <div className={isDark ? "bg-gray-800 p-6 rounded-xl text-center border border-gray-700" : "bg-white p-6 rounded-xl text-center shadow border border-gray-100"}>
+            <div className="w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto text-xl font-bold mb-3">
+              JD
+            </div>
+            <h3 className="font-bold text-lg">John Doe</h3>
+            <p className="text-gray-400 text-sm">Computer Science</p>
+          </div>
+
+          {/* Stats Cards */}
+          {stats.map((stat, index) => (
+            <div
+              key={index}
+              className={isDark ? "bg-gray-800 p-6 rounded-xl border border-gray-700" : "bg-white p-6 rounded-xl shadow border border-gray-100"}
+            >
+              <span className="text-sm text-gray-400 font-medium">{stat.title}</span>
+              <p className="text-3xl font-extrabold text-blue-500 mt-2">{stat.value}</p>
+            </div>
+          ))}
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+}`} />
+
+            {/* How to use in App.jsx */}
+            <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginTop: '2rem', marginBottom: '0.8rem' }}>
+              🚀 How to Render in <code>App.jsx</code>:
+            </h4>
+
+            <CodeBlock title="src/App.jsx" code={`import React from 'react';
+import StudentDashboard from './StudentDashboard';
+
+function App() {
+  return (
+    <div>
+      <StudentDashboard />
+    </div>
+  );
+}
+
+export default App;`} />
+
+            {/* Key Tailwind Classes Breakdown */}
+            <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginTop: '2rem', marginBottom: '0.8rem' }}>
+              🔑 Key Tailwind Classes Explained:
+            </h4>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <code style={{ color: '#4f46e5', fontWeight: 'bold' }}>grid-cols-1 md:grid-cols-4</code>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '4px 0 0 0' }}>
+                  1 column on mobile screens, 4 columns on tablets and desktops.
+                </p>
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <code style={{ color: '#10b981', fontWeight: 'bold' }}>rounded-2xl shadow-lg</code>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '4px 0 0 0' }}>
+                  Gives cards smooth rounded borders and a soft shadow.
+                </p>
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
+                <code style={{ color: '#ec4899', fontWeight: 'bold' }}>flex justify-between items-center</code>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '4px 0 0 0' }}>
+                  Places the title on the left and the theme button on the right.
+                </p>
+              </div>
+            </div>
+
+            <div className="card-actions" style={{ marginTop: '2rem' }}>
               <button className="btn btn-primary" onClick={() => handleContinue('mini_project')} style={{ backgroundColor: '#6366f1', borderColor: '#6366f1' }}>
                 Next: Mini Project: Themeable SaaS UI <ArrowRight size={16} />
               </button>
@@ -564,89 +794,534 @@ npx tailwindcss init`} />
 
       {/* ── 6. MINI PROJECT: THEMEABLE SAAS DASHBOARD & PRICING UI ─────────── */}
       {activeTab === 'mini_project' && (
-        <Section key="mini_project" id="mini_project" eyebrow="Hands-On Practice • Day 8" title="Mini Project: Themeable SaaS Dashboard & Pricing">
+        <Section key="mini_project" id="mini_project" eyebrow="Hands-On Practice • Day 8" title="Mini Project: Themeable SaaS UI (Made Simple!)">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
             
-            {/* Project Header Banner */}
+            {/* Friendly Header Banner */}
             <div style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', borderRadius: '16px', padding: '2rem', color: 'white', marginBottom: '2rem' }}>
-              <span style={{ background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.05em' }}>
-                🚀 DAY 8 CAPSTONE MINI PROJECT
-              </span>
-              <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginTop: '0.75rem', marginBottom: '0.5rem', color: 'white' }}>
-                Modern Themeable SaaS Analytics &amp; Pricing Hub
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.75rem' }}>
+                <Sparkles size={16} /> SIMPLE &amp; PRACTICAL MINI PROJECT
+              </div>
+              <h3 style={{ fontSize: '1.6rem', fontWeight: 800, margin: '0 0 0.5rem 0', color: 'white' }}>
+                Themeable SaaS UI &amp; Pricing Dashboard
               </h3>
-              <p style={{ fontSize: '1rem', opacity: 0.95, lineHeight: 1.7, margin: 0, color: 'white' }}>
-                In this mini project, you will build a state-of-the-art SaaS application interface combining all four React styling paradigms: <strong>Inline dynamic style calculations</strong>, <strong>modular CSS component scoping</strong>, <strong>styled props theme resolution</strong>, and <strong>responsive Tailwind-style dark/light theme switching</strong>.
+              <p style={{ fontSize: '1.05rem', opacity: 0.95, lineHeight: 1.6, margin: 0, color: 'white' }}>
+                Don't worry if styling felt complicated earlier! In this project, we combine everything into <strong>3 easy concepts</strong>: 
+                <strong> 1. Dark/Light Theme</strong>, <strong>2. Dynamic Progress Bars</strong>, and <strong>3. Clickable Pricing Cards</strong>.
               </p>
             </div>
 
-            {/* Styling Paradigms Architecture */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
-                <strong style={{ color: '#4f46e5', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', marginBottom: '6px' }}>
-                  <Palette size={16} /> 1. Inline Dynamic CSS
-                </strong>
-                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Dynamically computes meter widths and health indicators: <code>style=&#123;&#123; width: `&#36;&#123;usage&#125;%` &#125;&#125;</code>.</p>
-              </div>
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
-                <strong style={{ color: '#0ea5e9', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', marginBottom: '6px' }}>
-                  <Layers size={16} /> 2. CSS Modules
-                </strong>
-                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Encapsulates card containers and badge layouts with scoped, hashed class names to prevent style collisions.</p>
-              </div>
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
-                <strong style={{ color: '#ec4899', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', marginBottom: '6px' }}>
-                  <Sparkles size={16} /> 3. Styled Props
-                </strong>
-                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Renders highlighted 'Most Popular' plan ribbons and custom accent colors driven by React props.</p>
-              </div>
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem' }}>
-                <strong style={{ color: '#f59e0b', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', marginBottom: '6px' }}>
-                  <Sun size={16} /> 4. Dark / Light Theme
-                </strong>
-                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Flips background palettes, borders, and typography seamlessly using React state tokens.</p>
-              </div>
+            {/* ── INTERACTIVE LIVE PLAYGROUND ── */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginBottom: '1rem' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                🎮 Try the Live Interactive Demo
+              </h3>
+              <span style={{ fontSize: '0.85rem', color: '#6366f1', background: '#eff6ff', padding: '4px 10px', borderRadius: '8px', fontWeight: 600 }}>
+                Click below to see React styles change live! 👇
+              </span>
             </div>
 
-            {/* Step-by-Step Implementation */}
-            <h4 style={{ fontSize: '1.2rem', color: '#0f172a', fontWeight: 800, marginBottom: '1.2rem' }}>
-              🛠️ Step-by-Step Implementation Guide
-            </h4>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2.5rem' }}>
+            {/* Interactive Widget Box */}
+            <div style={{
+              background: miniDark ? '#0f172a' : '#f8fafc',
+              color: miniDark ? '#f8fafc' : '#0f172a',
+              border: miniDark ? '2px solid #334155' : '2px solid #e2e8f0',
+              borderRadius: '20px',
+              padding: '1.75rem',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+              transition: 'all 0.3s ease',
+              marginBottom: '2.5rem'
+            }}>
               
-              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5' }}>
-                <strong style={{ display: 'block', marginBottom: '0.4rem', color: '#0f172a', fontSize: '1rem' }}>
-                  Step 1: Create Component Files
-                </strong>
-                <p style={{ fontSize: '0.9rem', color: '#475569', margin: 0 }}>
-                  Create two files: <code>src/SaaSDashboard.jsx</code> and <code>src/Dashboard.module.css</code> inside your React project.
-                </p>
+              {/* Top Controls Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: miniDark ? '1px solid #334155' : '1px solid #e2e8f0', paddingBottom: '1.25rem', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                <div>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#6366f1' }}>
+                    SaaS Dashboard Demo
+                  </span>
+                  <h4 style={{ margin: '2px 0 0 0', fontSize: '1.3rem', fontWeight: 800, color: miniDark ? '#ffffff' : '#0f172a' }}>
+                    ⚡ CloudFlow Analytics
+                  </h4>
+                </div>
+
+                {/* Theme Toggle Button */}
+                <button
+                  onClick={() => setMiniDark(!miniDark)}
+                  style={{
+                    background: miniDark ? '#1e293b' : '#ffffff',
+                    color: miniDark ? '#f8fafc' : '#0f172a',
+                    border: miniDark ? '1px solid #475569' : '1px solid #cbd5e1',
+                    borderRadius: '12px',
+                    padding: '8px 16px',
+                    fontSize: '0.88rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+                  }}
+                >
+                  {miniDark ? <Sun size={16} color="#fbbf24" /> : <Moon size={16} color="#6366f1" />}
+                  {miniDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                </button>
               </div>
 
-              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5' }}>
-                <strong style={{ display: 'block', marginBottom: '0.4rem', color: '#0f172a', fontSize: '1rem' }}>
-                  Step 2: Full Source Code for <code>src/Dashboard.module.css</code>
-                </strong>
-                <p style={{ fontSize: '0.9rem', color: '#475569', marginBottom: '0.8rem' }}>
-                  CSS Modules stylesheet for encapsulated typography, badges, and layout grids:
+              {/* Part 1: Dynamic Progress Bar (Inline Style Demo) */}
+              <div style={{
+                background: miniDark ? '#1e293b' : '#ffffff',
+                border: miniDark ? '1px solid #334155' : '1px solid #e2e8f0',
+                borderRadius: '14px',
+                padding: '1.25rem',
+                marginBottom: '1.5rem'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '0.75rem' }}>
+                  <div>
+                    <strong style={{ fontSize: '0.95rem', color: miniDark ? '#f8fafc' : '#0f172a', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Cpu size={16} color="#6366f1" /> Live Server CPU Load: 
+                      <span style={{ color: miniUsage > 80 ? '#ef4444' : miniUsage > 60 ? '#f59e0b' : '#10b981' }}> {miniUsage}%</span>
+                    </strong>
+                    <span style={{ fontSize: '0.78rem', color: miniDark ? '#94a3b8' : '#64748b' }}>
+                      Uses dynamic inline styling: <code>style=&#123;&#123; width: '{miniUsage}%' &#125;&#125;</code>
+                    </span>
+                  </div>
+
+                  {/* Slider to adjust */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '0.78rem', fontWeight: 600, color: miniDark ? '#94a3b8' : '#64748b' }}>Drag to change:</span>
+                    <input 
+                      type="range" 
+                      min="10" 
+                      max="100" 
+                      value={miniUsage} 
+                      onChange={(e) => setMiniUsage(Number(e.target.value))}
+                      style={{ cursor: 'pointer', width: '120px' }}
+                    />
+                  </div>
+                </div>
+
+                {/* Meter Track & Dynamic Bar */}
+                <div style={{ width: '100%', height: '12px', background: miniDark ? '#334155' : '#e2e8f0', borderRadius: '999px', overflow: 'hidden' }}>
+                  <div style={{
+                    width: `${miniUsage}%`,
+                    height: '100%',
+                    background: miniUsage > 80 ? '#ef4444' : miniUsage > 60 ? '#f59e0b' : '#10b981',
+                    borderRadius: '999px',
+                    transition: 'width 0.3s ease, background 0.3s ease'
+                  }} />
+                </div>
+              </div>
+
+              {/* Part 2: Pricing Switcher */}
+              <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                <div style={{
+                  display: 'inline-flex',
+                  background: miniDark ? '#1e293b' : '#e2e8f0',
+                  padding: '4px',
+                  borderRadius: '12px',
+                  gap: '4px'
+                }}>
+                  <button
+                    onClick={() => setMiniBilling('monthly')}
+                    style={{
+                      background: miniBilling === 'monthly' ? '#6366f1' : 'transparent',
+                      color: miniBilling === 'monthly' ? '#ffffff' : (miniDark ? '#94a3b8' : '#475569'),
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '6px 14px',
+                      fontWeight: 700,
+                      fontSize: '0.85rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    onClick={() => setMiniBilling('annual')}
+                    style={{
+                      background: miniBilling === 'annual' ? '#6366f1' : 'transparent',
+                      color: miniBilling === 'annual' ? '#ffffff' : (miniDark ? '#94a3b8' : '#475569'),
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '6px 14px',
+                      fontWeight: 700,
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    Annual <span style={{ background: '#10b981', color: 'white', fontSize: '0.65rem', padding: '1px 6px', borderRadius: '4px' }}>SAVE 20%</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Part 3: Pricing Cards Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                {[
+                  { id: 'starter', name: 'Starter', monthly: 19, annual: 15, features: ['5 Projects', 'Community Support'] },
+                  { id: 'pro', name: 'Pro Plan', monthly: 49, annual: 39, features: ['Unlimited Projects', 'Priority Support', 'Custom Domain'], popular: true },
+                  { id: 'enterprise', name: 'Enterprise', monthly: 99, annual: 79, features: ['Dedicated Server', '24/7 SLA', 'Custom Security'] }
+                ].map((plan) => {
+                  const isSelected = miniPlan === plan.id;
+                  const price = miniBilling === 'annual' ? plan.annual : plan.monthly;
+
+                  return (
+                    <div
+                      key={plan.id}
+                      onClick={() => setMiniPlan(plan.id)}
+                      style={{
+                        background: miniDark ? '#1e293b' : '#ffffff',
+                        borderRadius: '16px',
+                        padding: '1.25rem',
+                        border: isSelected 
+                          ? '2.5px solid #6366f1' 
+                          : plan.popular 
+                            ? '2px solid #818cf8' 
+                            : (miniDark ? '1px solid #334155' : '1px solid #e2e8f0'),
+                        position: 'relative',
+                        cursor: 'pointer',
+                        transform: isSelected ? 'scale(1.03)' : 'scale(1)',
+                        boxShadow: isSelected ? '0 10px 20px rgba(99, 102, 241, 0.2)' : 'none',
+                        transition: 'all 0.2s ease',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between'
+                      }}
+                    >
+                      {/* Most Popular Badge */}
+                      {plan.popular && (
+                        <span style={{
+                          position: 'absolute',
+                          top: '-10px',
+                          right: '15px',
+                          background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+                          color: '#ffffff',
+                          fontSize: '0.68rem',
+                          fontWeight: 800,
+                          padding: '2px 8px',
+                          borderRadius: '10px'
+                        }}>
+                          POPULAR
+                        </span>
+                      )}
+
+                      <div>
+                        <h5 style={{ margin: '0 0 6px 0', fontSize: '1.1rem', fontWeight: 800, color: miniDark ? '#ffffff' : '#0f172a' }}>
+                          {plan.name}
+                        </h5>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', margin: '0.5rem 0' }}>
+                          <span style={{ fontSize: '1.8rem', fontWeight: 800, color: '#6366f1' }}>&#36;{price}</span>
+                          <span style={{ fontSize: '0.8rem', color: miniDark ? '#94a3b8' : '#64748b' }}>/month</span>
+                        </div>
+                        <ul style={{ listStyle: 'none', padding: 0, margin: '1rem 0', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.82rem' }}>
+                          {plan.features.map((f, i) => (
+                            <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: miniDark ? '#cbd5e1' : '#475569' }}>
+                              <Check size={14} color="#10b981" /> {f}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <button
+                        style={{
+                          width: '100%',
+                          background: isSelected ? '#6366f1' : 'transparent',
+                          color: isSelected ? '#ffffff' : (miniDark ? '#cbd5e1' : '#475569'),
+                          border: isSelected ? 'none' : (miniDark ? '1px solid #475569' : '1px solid #cbd5e1'),
+                          borderRadius: '8px',
+                          padding: '8px',
+                          fontSize: '0.85rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          marginTop: '0.5rem'
+                        }}
+                      >
+                        {isSelected ? '✓ Selected' : 'Choose Plan'}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+
+            </div>
+
+            {/* ── THE 3 SIMPLE CONCEPTS YOU NEED TO KNOW ── */}
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0f172a', marginBottom: '1rem' }}>
+              🧠 The 3 Simple Rules Behind This Project
+            </h3>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+              
+              {/* Rule 1 */}
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#6366f1', fontWeight: 800, marginBottom: '0.5rem' }}>
+                  <Sun size={18} /> 1. Dark/Light Theme Toggle
+                </div>
+                <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 0.75rem 0' }}>
+                  Just store a boolean state and pick your colors with ternary operator:
                 </p>
-                <CodeBlock title="src/Dashboard.module.css" code={`/* Scoped CSS Module tokens */
-.gridContainer {
+                <div style={{ background: '#0f172a', color: '#e2e8f0', padding: '10px 12px', borderRadius: '8px', fontSize: '0.8rem', fontFamily: 'monospace' }}>
+                  const [isDark, setIsDark] = useState(false);<br /><br />
+                  const bg = isDark ? '#111827' : '#ffffff';<br />
+                  const text = isDark ? '#ffffff' : '#111827';
+                </div>
+              </div>
+
+              {/* Rule 2 */}
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', fontWeight: 800, marginBottom: '0.5rem' }}>
+                  <TrendingUp size={18} /> 2. Dynamic Progress Bar
+                </div>
+                <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 0.75rem 0' }}>
+                  Set the bar width directly from a percentage variable inside JSX:
+                </p>
+                <div style={{ background: '#0f172a', color: '#e2e8f0', padding: '10px 12px', borderRadius: '8px', fontSize: '0.8rem', fontFamily: 'monospace' }}>
+                  {`// Width dynamically changes with 'usage':`}
+                  <br />
+                  {`<div style={{ width: \`\${usage}%\` }} />`}
+                </div>
+              </div>
+
+              {/* Rule 3 */}
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ec4899', fontWeight: 800, marginBottom: '0.5rem' }}>
+                  <CheckCircle size={18} /> 3. Selected Plan Highlight
+                </div>
+                <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 0.75rem 0' }}>
+                  When a card is clicked, check if its ID matches the selected state:
+                </p>
+                <div style={{ background: '#0f172a', color: '#e2e8f0', padding: '10px 12px', borderRadius: '8px', fontSize: '0.8rem', fontFamily: 'monospace' }}>
+                  const isSelected = selected === plan.id;<br /><br />
+                  border: isSelected ? '2px solid blue' : '1px solid gray'
+                </div>
+              </div>
+
+            </div>
+
+            {/* ── CODE TABS: EASY TO COPY & LEARN ── */}
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.8rem' }}>
+              💻 Choose Your Code View
+            </h3>
+            
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '1rem', flexWrap: 'wrap' }}>
+              <button
+                className={`btn ${miniCodeTab === 'simple' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setMiniCodeTab('simple')}
+                style={miniCodeTab === 'simple' ? { background: '#6366f1', borderColor: '#6366f1' } : {}}
+              >
+                ⚡ 30-Second Quick Start (Easiest)
+              </button>
+              <button
+                className={`btn ${miniCodeTab === 'full' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setMiniCodeTab('full')}
+                style={miniCodeTab === 'full' ? { background: '#6366f1', borderColor: '#6366f1' } : {}}
+              >
+                📦 Full SaaSDashboard.jsx
+              </button>
+              <button
+                className={`btn ${miniCodeTab === 'css' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setMiniCodeTab('css')}
+                style={miniCodeTab === 'css' ? { background: '#6366f1', borderColor: '#6366f1' } : {}}
+              >
+                🎨 Dashboard.module.css
+              </button>
+            </div>
+
+            {/* Tab 1: 30-Second Super Simple Example */}
+            {miniCodeTab === 'simple' && (
+              <div style={{ animation: 'fadeIn 0.2s ease' }}>
+                <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '0.5rem' }}>
+                  Here is the simplest ~30-line version showing all 3 styling concepts without extra clutter:
+                </p>
+                <CodeBlock title="SimpleThemeApp.jsx" code={`import React, { useState } from 'react';
+
+export default function SimpleThemeApp() {
+  const [isDark, setIsDark] = useState(false);
+  const [usage, setUsage] = useState(65);
+  const [plan, setPlan] = useState('pro');
+
+  return (
+    <div style={{
+      backgroundColor: isDark ? '#1e293b' : '#f8fafc',
+      color: isDark ? '#ffffff' : '#1e293b',
+      padding: '20px',
+      borderRadius: '12px',
+      fontFamily: 'sans-serif'
+    }}>
+      {/* 1. Theme Toggle */}
+      <button onClick={() => setIsDark(!isDark)}>
+        Toggle to {isDark ? 'Light' : 'Dark'} Mode
+      </button>
+
+      {/* 2. Dynamic Progress Bar */}
+      <h4 style={{ marginTop: '20px' }}>CPU Load: {usage}%</h4>
+      <div style={{ width: '100%', height: '10px', background: '#ccc', borderRadius: '5px' }}>
+        <div style={{
+          width: \`\${usage}%\`,
+          height: '100%',
+          backgroundColor: usage > 80 ? 'red' : 'green',
+          borderRadius: '5px'
+        }} />
+      </div>
+
+      {/* 3. Clickable Plan Card */}
+      <div 
+        onClick={() => setPlan('pro')}
+        style={{
+          marginTop: '20px',
+          padding: '15px',
+          borderRadius: '8px',
+          background: isDark ? '#334155' : '#ffffff',
+          border: plan === 'pro' ? '2px solid #6366f1' : '1px solid #ccc',
+          cursor: 'pointer'
+        }}
+      >
+        <strong>Pro Plan ($49/mo)</strong>
+        <p>{plan === 'pro' ? '✓ Currently Selected' : 'Click to Select'}</p>
+      </div>
+    </div>
+  );
+}`} />
+              </div>
+            )}
+
+            {/* Tab 2: Full Complete Component */}
+            {miniCodeTab === 'full' && (
+              <div style={{ animation: 'fadeIn 0.2s ease' }}>
+                <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '0.5rem' }}>
+                  The complete production-ready SaaS Dashboard component:
+                </p>
+                <CodeBlock title="src/SaaSDashboard.jsx" code={`import React, { useState } from 'react';
+
+export default function SaaSDashboard() {
+  // 1. Theme State (Dark / Light)
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // 2. Billing Period State (Monthly vs Annual)
+  const [isAnnual, setIsAnnual] = useState(false);
+
+  // 3. Selected Plan Tier
+  const [selectedPlan, setSelectedPlan] = useState('pro');
+
+  // 4. Resource Usage
+  const [cpuUsage, setCpuUsage] = useState(68);
+
+  const plans = [
+    { id: 'starter', name: 'Starter', monthly: 19, annual: 15, features: ['5 Projects', 'Community Support'] },
+    { id: 'pro', name: 'Pro Plan', monthly: 49, annual: 39, features: ['Unlimited Projects', 'Priority Support'], popular: true },
+    { id: 'enterprise', name: 'Enterprise', monthly: 99, annual: 79, features: ['Dedicated Server', '24/7 SLA'] }
+  ];
+
+  return (
+    <div style={{
+      maxWidth: '850px',
+      margin: '0 auto',
+      backgroundColor: isDarkMode ? '#0f172a' : '#f8fafc',
+      color: isDarkMode ? '#f8fafc' : '#0f172a',
+      padding: '2rem',
+      borderRadius: '16px',
+      fontFamily: 'system-ui, sans-serif',
+      transition: 'all 0.3s ease'
+    }}>
+      {/* Header & Theme Toggle */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <h2 style={{ margin: 0 }}>⚡ Cloud Analytics</h2>
+        <button 
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          style={{ padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
+        >
+          {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+        </button>
+      </div>
+
+      {/* Dynamic Progress Bar */}
+      <div style={{ background: isDarkMode ? '#1e293b' : '#ffffff', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontWeight: 600 }}>
+          <span>Server CPU Utilization</span>
+          <span style={{ color: cpuUsage > 80 ? '#ef4444' : '#10b981' }}>{cpuUsage}%</span>
+        </div>
+        <div style={{ width: '100%', height: '10px', background: isDarkMode ? '#334155' : '#e2e8f0', borderRadius: '10px' }}>
+          <div style={{
+            width: \`\${cpuUsage}%\`,
+            height: '100%',
+            backgroundColor: cpuUsage > 80 ? '#ef4444' : '#10b981',
+            borderRadius: '10px',
+            transition: 'width 0.4s ease'
+          }} />
+        </div>
+      </div>
+
+      {/* Billing Switcher */}
+      <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+        <button 
+          onClick={() => setIsAnnual(false)} 
+          style={{ padding: '6px 12px', background: !isAnnual ? '#6366f1' : 'transparent', color: !isAnnual ? '#fff' : 'inherit', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+        >
+          Monthly
+        </button>
+        <button 
+          onClick={() => setIsAnnual(true)} 
+          style={{ padding: '6px 12px', background: isAnnual ? '#6366f1' : 'transparent', color: isAnnual ? '#fff' : 'inherit', border: 'none', borderRadius: '6px', cursor: 'pointer', marginLeft: '6px' }}
+        >
+          Annual (Save 20%)
+        </button>
+      </div>
+
+      {/* Pricing Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+        {plans.map((p) => {
+          const isSelected = selectedPlan === p.id;
+          const price = isAnnual ? p.annual : p.monthly;
+          return (
+            <div 
+              key={p.id}
+              onClick={() => setSelectedPlan(p.id)}
+              style={{
+                background: isDarkMode ? '#1e293b' : '#ffffff',
+                padding: '1.5rem',
+                borderRadius: '12px',
+                border: isSelected ? '2px solid #6366f1' : '1px solid #cbd5e1',
+                cursor: 'pointer'
+              }}
+            >
+              <h3 style={{ margin: '0 0 6px 0' }}>{p.name}</h3>
+              <div style={{ fontSize: '1.6rem', fontWeight: 'bold', color: '#6366f1' }}>\${price}/mo</div>
+              <ul style={{ paddingLeft: '1.2rem', margin: '1rem 0' }}>
+                {p.features.map((f, i) => <li key={i}>{f}</li>)}
+              </ul>
+              <button style={{ width: '100%', padding: '8px', borderRadius: '6px', background: isSelected ? '#6366f1' : '#e2e8f0', color: isSelected ? '#fff' : '#000', border: 'none', fontWeight: 600 }}>
+                {isSelected ? '✓ Selected' : 'Choose'}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}`} />
+              </div>
+            )}
+
+            {/* Tab 3: CSS Modules */}
+            {miniCodeTab === 'css' && (
+              <div style={{ animation: 'fadeIn 0.2s ease' }}>
+                <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '0.5rem' }}>
+                  Optional CSS Modules stylesheet if you want scoped classes:
+                </p>
+                <CodeBlock title="src/Dashboard.module.css" code={`/* Scoped classes for cards and badges */
+.cardContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.25rem;
-  margin-top: 1.5rem;
 }
 
 .planCard {
-  border-radius: 16px;
-  padding: 1.75rem;
+  border-radius: 12px;
+  padding: 1.5rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  cursor: pointer;
 }
 
 .planCard:hover {
@@ -654,446 +1329,17 @@ npx tailwindcss init`} />
 }
 
 .popularBadge {
-  position: absolute;
-  top: -12px;
-  right: 20px;
   background: linear-gradient(135deg, #6366f1, #a855f7);
-  color: #ffffff;
+  color: white;
   font-size: 0.75rem;
-  font-weight: 800;
-  padding: 4px 12px;
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
-}
-
-.meterTrack {
-  width: 100%;
-  height: 8px;
-  background-color: rgba(148, 163, 184, 0.2);
-  border-radius: 9999px;
-  overflow: hidden;
-  margin-top: 8px;
-}
-
-.meterFill {
-  height: 100%;
-  border-radius: 9999px;
-  transition: width 0.4s ease;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 10px;
 }`} />
               </div>
+            )}
 
-              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5' }}>
-                <strong style={{ display: 'block', marginBottom: '0.4rem', color: '#0f172a', fontSize: '1rem' }}>
-                  Step 3: Full Source Code for <code>src/SaaSDashboard.jsx</code>
-                </strong>
-                <p style={{ fontSize: '0.9rem', color: '#475569', marginBottom: '0.8rem' }}>
-                  Copy and paste the complete, standalone React component code below:
-                </p>
-
-                <CodeBlock title="src/SaaSDashboard.jsx" code={`import React, { useState } from 'react';
-
-export default function SaaSDashboard() {
-  // 1. Theme State (Dark / Light Mode)
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // 2. Billing Period State (Monthly vs Annual with 20% discount)
-  const [isAnnual, setIsAnnual] = useState(false);
-
-  // 3. Selected Plan Tier State
-  const [selectedPlan, setSelectedPlan] = useState('pro');
-
-  // 4. Resource Usage Metrics State (Inline style binding demonstration)
-  const [metrics, setMetrics] = useState({
-    apiUsage: 68,     // 68%
-    storageUsage: 45, // 45%
-    bandwidth: 82     // 82%
-  });
-
-  // Dynamic Theme Colors Dictionary
-  const theme = {
-    bg: isDarkMode ? '#0f172a' : '#f8fafc',
-    cardBg: isDarkMode ? '#1e293b' : '#ffffff',
-    textPrimary: isDarkMode ? '#f8fafc' : '#0f172a',
-    textSecondary: isDarkMode ? '#94a3b8' : '#64748b',
-    border: isDarkMode ? '#334155' : '#e2e8f0',
-    primary: '#4f46e5',
-    accent: '#06b6d4'
-  };
-
-  // SaaS Pricing Tiers
-  const pricingPlans = [
-    {
-      id: 'starter',
-      name: 'Starter Developer',
-      monthlyPrice: 19,
-      annualPrice: 15,
-      features: ['5 Projects', '10,000 API Calls', 'Community Support', 'Basic Analytics'],
-      popular: false
-    },
-    {
-      id: 'pro',
-      name: 'Pro Team',
-      monthlyPrice: 49,
-      annualPrice: 39,
-      features: ['Unlimited Projects', '250,000 API Calls', 'Priority Support', 'Advanced Analytics', 'Custom Domains'],
-      popular: true
-    },
-    {
-      id: 'enterprise',
-      name: 'Enterprise Cloud',
-      monthlyPrice: 129,
-      annualPrice: 99,
-      features: ['Dedicated Cluster', 'Unlimited API Calls', '24/7 SLA Guarantee', 'Custom SSO & Security', 'Audit Logs'],
-      popular: false
-    }
-  ];
-
-  return (
-    <div style={{
-      maxWidth: '960px',
-      margin: '0 auto',
-      backgroundColor: theme.bg,
-      color: theme.textPrimary,
-      padding: '2rem',
-      borderRadius: '20px',
-      border: \`1px solid \${theme.border}\`,
-      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05)',
-      fontFamily: 'system-ui, -apple-system, sans-serif',
-      transition: 'background-color 0.3s ease, color 0.3s ease'
-    }}>
-      
-      {/* 1. Header Bar with Theme Switcher */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingBottom: '1.5rem',
-        borderBottom: \`1px solid \${theme.border}\`,
-        marginBottom: '2rem',
-        flexWrap: 'wrap',
-        gap: '1rem'
-      }}>
-        <div>
-          <span style={{
-            background: 'linear-gradient(135deg, #4f46e5, #06b6d4)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            fontWeight: 800,
-            fontSize: '0.85rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em'
-          }}>
-            CLOUD ANALYTICS ENGINE
-          </span>
-          <h2 style={{ margin: '4px 0 0 0', fontSize: '1.6rem', fontWeight: 800 }}>
-            AlphaCloud Infrastructure
-          </h2>
-        </div>
-
-        {/* Theme Toggle Button */}
-        <button
-          onClick={() => setIsDarkMode(!isDarkMode)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            backgroundColor: theme.cardBg,
-            color: theme.textPrimary,
-            border: \`1px solid \${theme.border}\`,
-            borderRadius: '12px',
-            padding: '8px 16px',
-            fontSize: '0.85rem',
-            fontWeight: 700,
-            cursor: 'pointer',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.04)'
-          }}
-        >
-          {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-        </button>
-      </div>
-
-      {/* 2. Live Resource Meters (Inline Style Calculations) */}
-      <div style={{ marginBottom: '2.5rem' }}>
-        <h3 style={{ fontSize: '1.15rem', fontWeight: 800, marginBottom: '1rem' }}>
-          📊 Live Resource Utilization (Dynamic Inline Styles)
-        </h3>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: '1rem'
-        }}>
-          {/* API Calls Meter */}
-          <div style={{
-            backgroundColor: theme.cardBg,
-            border: \`1px solid \${theme.border}\`,
-            borderRadius: '14px',
-            padding: '1.25rem'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700 }}>
-              <span style={{ color: theme.textSecondary }}>API Throughput</span>
-              <span style={{ color: '#4f46e5' }}>{metrics.apiUsage}%</span>
-            </div>
-            {/* Dynamic width and color calculated via inline style */}
-            <div style={{ width: '100%', height: '8px', backgroundColor: isDarkMode ? '#334155' : '#e2e8f0', borderRadius: '20px', marginTop: '8px', overflow: 'hidden' }}>
-              <div style={{
-                width: \`\${metrics.apiUsage}%\`,
-                height: '100%',
-                backgroundColor: metrics.apiUsage > 80 ? '#ef4444' : '#4f46e5',
-                borderRadius: '20px',
-                transition: 'width 0.5s ease'
-              }} />
-            </div>
-          </div>
-
-          {/* Storage Meter */}
-          <div style={{
-            backgroundColor: theme.cardBg,
-            border: \`1px solid \${theme.border}\`,
-            borderRadius: '14px',
-            padding: '1.25rem'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700 }}>
-              <span style={{ color: theme.textSecondary }}>Database Storage</span>
-              <span style={{ color: '#06b6d4' }}>{metrics.storageUsage}%</span>
-            </div>
-            <div style={{ width: '100%', height: '8px', backgroundColor: isDarkMode ? '#334155' : '#e2e8f0', borderRadius: '20px', marginTop: '8px', overflow: 'hidden' }}>
-              <div style={{
-                width: \`\${metrics.storageUsage}%\`,
-                height: '100%',
-                backgroundColor: '#06b6d4',
-                borderRadius: '20px',
-                transition: 'width 0.5s ease'
-              }} />
-            </div>
-          </div>
-
-          {/* Bandwidth Meter */}
-          <div style={{
-            backgroundColor: theme.cardBg,
-            border: \`1px solid \${theme.border}\`,
-            borderRadius: '14px',
-            padding: '1.25rem'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700 }}>
-              <span style={{ color: theme.textSecondary }}>Edge Bandwidth</span>
-              <span style={{ color: metrics.bandwidth > 80 ? '#f59e0b' : '#10b981' }}>{metrics.bandwidth}%</span>
-            </div>
-            <div style={{ width: '100%', height: '8px', backgroundColor: isDarkMode ? '#334155' : '#e2e8f0', borderRadius: '20px', marginTop: '8px', overflow: 'hidden' }}>
-              <div style={{
-                width: \`\${metrics.bandwidth}%\`,
-                height: '100%',
-                backgroundColor: metrics.bandwidth > 80 ? '#f59e0b' : '#10b981',
-                borderRadius: '20px',
-                transition: 'width 0.5s ease'
-              }} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 3. Pricing Section (Styled Props & Theme resolution) */}
-      <div>
-        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <h3 style={{ fontSize: '1.3rem', fontWeight: 800, margin: '0 0 8px 0' }}>
-            Flexible Scale-as-you-Grow Plans
-          </h3>
-          <p style={{ color: theme.textSecondary, fontSize: '0.9rem', margin: '0 0 1.25rem 0' }}>
-            Choose the subscription tier tailored for your team
-          </p>
-
-          {/* Billing Switcher (Monthly vs Annual) */}
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            backgroundColor: isDarkMode ? '#1e293b' : '#f1f5f9',
-            padding: '4px',
-            borderRadius: '12px',
-            border: \`1px solid \${theme.border}\`,
-            gap: '4px'
-          }}>
-            <button
-              onClick={() => setIsAnnual(false)}
-              style={{
-                backgroundColor: !isAnnual ? '#4f46e5' : 'transparent',
-                color: !isAnnual ? '#ffffff' : theme.textSecondary,
-                border: 'none',
-                padding: '6px 14px',
-                borderRadius: '8px',
-                fontWeight: 700,
-                fontSize: '0.82rem',
-                cursor: 'pointer'
-              }}
-            >
-              Monthly Billing
-            </button>
-            <button
-              onClick={() => setIsAnnual(true)}
-              style={{
-                backgroundColor: isAnnual ? '#4f46e5' : 'transparent',
-                color: isAnnual ? '#ffffff' : theme.textSecondary,
-                border: 'none',
-                padding: '6px 14px',
-                borderRadius: '8px',
-                fontWeight: 700,
-                fontSize: '0.82rem',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}
-            >
-              Annual Billing <span style={{ background: '#22c55e', color: 'white', fontSize: '0.65rem', padding: '1px 5px', borderRadius: '4px' }}>SAVE 20%</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Pricing Cards Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-          gap: '1.5rem'
-        }}>
-          {pricingPlans.map((plan) => {
-            const isSelected = selectedPlan === plan.id;
-            const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
-
-            return (
-              <div
-                key={plan.id}
-                onClick={() => setSelectedPlan(plan.id)}
-                style={{
-                  backgroundColor: theme.cardBg,
-                  borderRadius: '16px',
-                  padding: '1.75rem',
-                  border: plan.popular 
-                    ? '2px solid #6366f1' 
-                    : isSelected 
-                      ? \`2px solid \${theme.accent}\` 
-                      : \`1px solid \${theme.border}\`,
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  boxShadow: plan.popular 
-                    ? '0 10px 25px -5px rgba(99, 102, 241, 0.25)' 
-                    : 'none',
-                  cursor: 'pointer',
-                  transform: isSelected ? 'scale(1.02)' : 'scale(1)',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                {/* Popular Ribbon */}
-                {plan.popular && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '-12px',
-                    right: '20px',
-                    background: 'linear-gradient(135deg, #6366f1, #06b6d4)',
-                    color: 'white',
-                    fontSize: '0.72rem',
-                    fontWeight: 800,
-                    padding: '3px 10px',
-                    borderRadius: '20px',
-                    letterSpacing: '0.04em'
-                  }}>
-                    MOST POPULAR
-                  </span>
-                )}
-
-                <div>
-                  <h4 style={{ margin: '0 0 6px 0', fontSize: '1.15rem', fontWeight: 800 }}>{plan.name}</h4>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', margin: '1rem 0' }}>
-                    <span style={{ fontSize: '2rem', fontWeight: 800 }}>&#36;{price}</span>
-                    <span style={{ color: theme.textSecondary, fontSize: '0.85rem' }}>/ month</span>
-                  </div>
-
-                  <ul style={{ listStyle: 'none', padding: 0, margin: '1.5rem 0', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.88rem' }}>
-                    {plan.features.map((feat, idx) => (
-                      <li key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ color: '#22c55e', fontWeight: 800 }}>✓</span>
-                        <span style={{ color: theme.textSecondary }}>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <button
-                  style={{
-                    width: '100%',
-                    backgroundColor: isSelected || plan.popular ? '#4f46e5' : 'transparent',
-                    color: isSelected || plan.popular ? '#ffffff' : theme.textPrimary,
-                    border: isSelected || plan.popular ? 'none' : \`1px solid \${theme.border}\`,
-                    borderRadius: '10px',
-                    padding: '10px',
-                    fontWeight: 700,
-                    fontSize: '0.9rem',
-                    cursor: 'pointer',
-                    marginTop: '1rem'
-                  }}
-                >
-                  {isSelected ? '✓ Current Selection' : 'Select Plan'}
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-    </div>
-  );
-}`} />
-              </div>
-
-              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5' }}>
-                <strong style={{ display: 'block', marginBottom: '0.4rem', color: '#0f172a', fontSize: '1rem' }}>
-                  Step 4: Mount Component in <code>src/App.jsx</code>
-                </strong>
-                <p style={{ fontSize: '0.9rem', color: '#475569', marginBottom: '0.8rem' }}>
-                  Import and render the SaaS Dashboard component in your root application:
-                </p>
-                <CodeBlock title="src/App.jsx" code={`import React from 'react';
-import SaaSDashboard from './SaaSDashboard';
-
-function App() {
-  return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0f172a', padding: '2rem' }}>
-      <SaaSDashboard />
-    </div>
-  );
-}
-
-export default App;`} />
-              </div>
-
-            </div>
-
-            {/* Code Explanation Breakdown Table */}
-            <div style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', padding: '1.5rem', borderRadius: '16px', border: '1px solid #bbf7d0', marginBottom: '2.5rem' }}>
-              <h4 style={{ margin: '0 0 12px 0', color: '#15803d', fontSize: '1.15rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                💡 Key React Styling Concepts Mastered:
-              </h4>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
-                  <strong style={{ color: '#15803d' }}>1. Dynamic Inline Computed Styles (<code>width: `&#36;&#123;metrics.apiUsage&#125;%`</code>):</strong><br />
-                  Allows components to calculate metric bar widths and change bar colors dynamically at runtime based on threshold numbers.
-                </div>
-                <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
-                  <strong style={{ color: '#15803d' }}>2. CSS Modules Scoping (<code>styles.popularBadge</code>):</strong><br />
-                  Encapsulates badge animations and button selectors so that styles never bleed or overwrite global application stylesheets.
-                </div>
-                <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
-                  <strong style={{ color: '#15803d' }}>3. Dynamic Theme Tokens Object (<code>theme.bg</code> &amp; <code>theme.cardBg</code>):</strong><br />
-                  Switches the entire user interface from Light to Dark mode using centralized React state variables without reloading the page.
-                </div>
-                <div style={{ background: '#ffffff', padding: '10px 14px', borderRadius: '8px', border: '1px solid #86efac', fontSize: '0.88rem' }}>
-                  <strong style={{ color: '#15803d' }}>4. Conditional Class and Border Highlights:</strong><br />
-                  Elevates selected cards using smooth scale transformations and prominent accent borders driven by the <code>selectedPlan</code> state.
-                </div>
-              </div>
-            </div>
-
+            {/* Next step button */}
             <div className="card-actions" style={{ marginTop: '2.5rem' }}>
               <button className="btn btn-primary" onClick={() => handleContinue('quiz')} style={{ backgroundColor: '#6366f1', borderColor: '#6366f1' }}>
                 Next: Check Your Knowledge (Quiz) <ArrowRight size={16} />
