@@ -82,14 +82,7 @@ export default function TallyCourseDay({ dayId, activeTab: propActiveTab, onNavi
     setReflectionChecks(prev => ({ ...prev, [idx]: !prev[idx] }));
   };
 
-  const tabs = [
-    { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={16} /> },
-    { id: 'practical', label: 'Tally Practical', icon: <Play size={16} /> },
-    { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={16} /> },
-    { id: 'assignment', label: 'Assignment', icon: <FileText size={16} /> },
-    { id: 'quiz', label: 'Quick Quiz', icon: <HelpCircle size={16} /> },
-    { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={16} /> }
-  ];
+
 
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', width: '100%', paddingBottom: '5rem' }}>
@@ -100,37 +93,6 @@ export default function TallyCourseDay({ dayId, activeTab: propActiveTab, onNavi
           📅 {dayId.replace('day', 'Day ')} of 5
         </span>
         <h1 style={{ fontSize: '1.8rem', margin: 0, fontWeight: 800 }}>{dayData.title}</h1>
-      </div>
-
-      {/* Tab Navigation */}
-      <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.6rem', marginBottom: '2rem', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-        {tabs.map(tab => {
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => handleTabChange(tab.id)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                background: isActive ? '#059669' : 'transparent',
-                color: isActive ? 'white' : '#475569',
-                border: 'none',
-                padding: '0.6rem 1.2rem',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontWeight: 700,
-                fontSize: '0.88rem',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.15s'
-              }}
-            >
-              {tab.icon}
-              {tab.label}
-            </button>
-          );
-        })}
       </div>
 
       {/* Main Content Area */}
