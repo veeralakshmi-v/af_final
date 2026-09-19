@@ -4,7 +4,7 @@ import {
   Code, CheckCircle, LayoutGrid, Layers, MonitorPlay, MousePointerClick,
   Video, Edit3, Palette, Layout, Brush, FileCode2, Target, Type as TypeIcon,
   Wand2, FastForward, Move3d, Clapperboard, Smartphone, Database, Table, Columns, List, Terminal, ShieldAlert, PenTool, Settings, PieChart, Link, Activity, Store,
-  Briefcase, Map, Zap, Brain, Bot, Cpu, GitBranch, Rocket, Eye, Sliders, Filter, Trophy, Shield, FileSpreadsheet, Music, RefreshCw, Sparkles, Hash, Globe, Wifi, AlertTriangle, AlertCircle, Award, Send, Home, Compass, User, Lock, ShoppingCart, Folder, Server, Trash2, Plus, LogIn, LogOut, UserPlus, Users, UserCheck, BarChart2, GitMerge, Radio, Key, Copy, CheckSquare
+  Briefcase, Map, Zap, Brain, Bot, Cpu, GitBranch, Rocket, Eye, Sliders, Filter, Trophy, Shield, FileSpreadsheet, Music, RefreshCw, Sparkles, Hash, Globe, Wifi, AlertTriangle, AlertCircle, Award, Send, Home, Compass, User, Lock, ShoppingCart, Folder, Server, Trash2, Plus, LogIn, LogOut, UserPlus, Users, UserCheck, BarChart2, GitMerge, Radio, Key, Copy, CheckSquare, Play
 } from 'lucide-react';
 
 
