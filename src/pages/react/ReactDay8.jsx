@@ -477,12 +477,8 @@ function Navbar() {
             </div>
 
             <h4 style={{ fontSize: '1.1rem', color: '#0f172a', fontWeight: 800, margin: '1rem 0 0.5rem 0' }}>Step 1: Install in Terminal</h4>
-            <CodeBlock title="Terminal" code={`# For React (JavaScript / TypeScript v6+):
-npm install styled-components
-
-# For TypeScript (v5 or older, with type definitions):
-npm install styled-components
-npm install -D @types/styled-components`} />
+            <CodeBlock title="Terminal" code={`# Install styled-components library
+npm install styled-components`} />
 
             <h4 style={{ fontSize: '1.1rem', color: '#0f172a', fontWeight: 800, margin: '1.5rem 0 0.5rem 0' }}>Step 2: Create & Use in Component</h4>
             <CodeBlock title="StyledButton.jsx" code={`import styled from "styled-components";
