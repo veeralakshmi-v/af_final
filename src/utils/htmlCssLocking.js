@@ -237,17 +237,18 @@ export const TALLY_ASSIGNMENTS_CONFIG = {
       'Submit the ledger mapping table showing Ledger Name and Assigned Parent Group.'
     ],
     nextModuleId: 'tally_prime_module4',
-    nextModuleTitle: 'Day 4 - Voucher Types & Chart of Accounts'
+    nextModuleTitle: 'Day 4 - Accounting Reports & Financial Statements'
   },
   tally_prime_module4: {
-    dayTitle: 'Day 4 - Voucher Types & Chart of Accounts',
-    assignmentTitle: 'Day 4 Practical Assignment: 6 Core Voucher Types & Entry Workflow',
+    dayTitle: 'Day 4 - Accounting Reports & Financial Statements',
+    assignmentTitle: 'Day 4 Assignment: Analyse a Company\'s Basic Financial Reports',
     tasks: [
-      'Master the 6 core voucher shortcuts: F4 (Contra), F5 (Payment), F6 (Receipt), F7 (Journal), F8 (Sales), F9 (Purchase).',
-      'Record 10 sample business transactions determining the correct voucher type for each.',
-      'Draft 10 Purchase and 10 Sales entries using Educational Mode dates (1st, 2nd, 31st).',
-      'Toggle Double Entry Mode (Dr/Cr) using Ctrl+H (Change Mode).',
-      'Audit the recorded transactions in Day Book and Chart of Accounts.'
+      'Inspect and audit transactions in the Day Book using F2 / Alt+F2 date range filters.',
+      'Generate the Trial Balance from Display More Reports and verify arithmetical balance (Total Debits = Total Credits).',
+      'Analyze the Profit & Loss Account to evaluate Gross Profit margin % and Net Profit margin %.',
+      'Examine the Balance Sheet to verify the fundamental accounting equation (Capital + Liabilities = Assets).',
+      'Generate individual Ledger Reports under Account Books for Customer and Bank accounts.',
+      'Complete the AI Activity: Give an AI-generated explanation of a sample financial report.'
     ],
     nextModuleId: 'tally_prime_project1',
     nextModuleTitle: 'Mini Project: Small Trading Business'
@@ -274,6 +275,91 @@ export const TALLY_ASSIGNMENTS_CONFIG = {
       'Record non-cash depreciation and drawings entries in Journal (F7) and Payment (F5).',
       'Execute the 20 mixed practical transactions covering full accounting cycles.',
       'Submit your final Balance Sheet and comprehensive learning reflection for staff evaluation.'
+    ],
+    nextModuleId: 'tally_prime_module6',
+    nextModuleTitle: 'Day 6 — Inventory Basics: Stock Groups & Items'
+  },
+  tally_prime_module6: {
+    dayTitle: 'Day 6 — Inventory Basics: Stock Groups & Items',
+    assignmentTitle: 'Day 6 Assignment: Inventory Basics & Master Creation Setup',
+    tasks: [
+      'Create Simple Units (Pcs, Box, Strip, Kg, Bottle) and Compound Units (1 Box = 10 Strips).',
+      'Create hierarchical Stock Groups and parallel Stock Categories.',
+      'Configure 10 Stock Items with opening quantities, base units, and purchase rates.',
+      'Complete the AI Task: Classify products into appropriate stock groups.',
+      'Verify the inventory balances and valuation in the Stock Summary report.'
+    ],
+    nextModuleId: 'tally_prime_module7',
+    nextModuleTitle: 'Day 7 — Godown & Batch Management'
+  },
+  tally_prime_module7: {
+    dayTitle: 'Day 7 — Godown & Batch Management',
+    assignmentTitle: 'Day 7 Assignment: Create a Multi-Location Inventory System',
+    tasks: [
+      'Enable Godowns, Batches, and Expiry Dates in Company Features (F11).',
+      'Set up a multi-location network (Central Warehouse, Town Retail Shop, Cold Storage).',
+      'Configure batch-tracked medicines with Manufacturing and Expiry dates.',
+      'Record inter-godown transfers using the Stock Journal Voucher (Alt + F7).',
+      'Complete AI Activity: Identify possible stock-management issues & vulnerabilities.'
+    ],
+    nextModuleId: 'tally_prime_module8',
+    nextModuleTitle: 'Day 8 — Inventory Transactions'
+  },
+  tally_prime_module8: {
+    dayTitle: 'Day 8 — Inventory Transactions',
+    assignmentTitle: 'Day 8 Assignment: Complete 20 Inventory Transactions',
+    tasks: [
+      'Master Item Invoice Mode (Ctrl + H) for Purchases (F9) and Sales (F8).',
+      'Record 8 Purchase invoices allocating stock to designated godowns and batches.',
+      'Record 8 Sales invoices with automatic stock deduction and profit calculation.',
+      'Record Purchase/Sales Returns with Debit Note (Alt+F5) and Credit Note (Alt+F6).',
+      'Audit stock movements in the Stock Summary and Movement Analysis reports.'
+    ],
+    nextModuleId: 'tally_prime_module9',
+    nextModuleTitle: 'Day 9 — Inventory Analysis & Stock Summary'
+  },
+  tally_prime_module9: {
+    dayTitle: 'Day 9 — Inventory Analysis & Stock Summary',
+    assignmentTitle: 'Day 9 Assignment: Identify 5 Key Inventory Insights',
+    tasks: [
+      'Navigate and customize the Stock Summary report using F12 configuration.',
+      'Analyze Closing Stock valuation across Average Cost, FIFO, and Last Purchase methods.',
+      'Categorize stock into Fast-Moving, Slow-Moving, and Dead-Stock lines.',
+      'Complete AI Activity: Give a stock report to AI and ask for business insights.',
+      'Submit 5 structured inventory insights covering velocity, reorder levels, and profit margins.'
+    ],
+    nextModuleId: 'tally_prime_project2',
+    nextModuleTitle: 'Day 10 — 🟦 Mini Project: Medical Store Inventory'
+  },
+  tally_prime_project2: {
+    dayTitle: 'Day 10 — 🟦 Mini Project: Medical Store Inventory',
+    assignmentTitle: 'Mini Project: Health Medical Store Complete Inventory System Submission',
+    tasks: [
+      'Set up the complete pharmaceutical company "Health Medical Store" in Tally Prime.',
+      'Configure 3 specialized storage godowns (Central AC Godown, Cold Storage, Counter Shelf).',
+      'Setup 8 medicine stock items with strict batch numbers, manufacturing, and expiry tracking.',
+      'Record the complete 10-transaction lifecycle: purchases, cold-chain transfers, and counter sales.',
+      'Complete AI Challenge: Analyze stock and identify Low-Stock items, Slow-Moving items, and Expiry risks.'
+    ],
+    nextModuleId: null,
+    nextModuleTitle: null
+  },
+  // Aliases for alternate module references
+  tally_prime_module16: {
+    dayTitle: 'Day 6 — Inventory Basics: Stock Groups & Items',
+    assignmentTitle: 'Day 6 Assignment: Inventory Basics & Master Creation Setup',
+    tasks: [
+      'Create Simple Units and Compound Units in Tally Prime.',
+      'Configure 10 Stock Items with opening quantities and rates.'
+    ],
+    nextModuleId: 'tally_prime_module7',
+    nextModuleTitle: 'Day 7 — Godown & Batch Management'
+  },
+  tally_prime_project4: {
+    dayTitle: 'Day 10 — 🟦 Mini Project: Medical Store Inventory',
+    assignmentTitle: 'Mini Project: Health Medical Store Complete Inventory System Submission',
+    tasks: [
+      'Set up the complete pharmaceutical company "Health Medical Store" in Tally Prime.'
     ],
     nextModuleId: null,
     nextModuleTitle: null

@@ -701,7 +701,7 @@ export const tallyCourseData = [
   },
   {
     id: 'tally_prime_module4',
-    title: 'Day 4 - Voucher Types & Chart of Accounts',
+    title: 'Day 4 - Accounting Reports & Financial Statements',
     items: [
       { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
       { id: 'practical', label: 'Tally Practical', icon: <Sliders size={18} /> },
@@ -729,6 +729,66 @@ export const tallyCourseData = [
     items: [
       { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
       { id: 'practical', label: 'Tally Practical', icon: <CheckCircle size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module6',
+    title: 'Day 6 — Inventory Basics: Stock Groups & Items',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Layers size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module7',
+    title: 'Day 7 — Godown & Batch Management',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Layers size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module8',
+    title: 'Day 8 — Inventory Transactions',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <ShoppingCart size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module9',
+    title: 'Day 9 — Inventory Analysis & Stock Summary',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Sliders size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_project2',
+    title: 'Day 10 — 🟦 Mini Project: Medical Store Inventory',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Trophy size={18} /> },
       { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
       { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
       { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },

@@ -25,12 +25,27 @@ export default function TallyCourseDay({
   session 
 }) {
   const effectiveDayId = 
-    dayId === 'tally_prime_module1' ? 'day1' :
-    dayId === 'tally_prime_module2' ? 'day2' :
-    dayId === 'tally_prime_module3' ? 'day3' :
-    dayId === 'tally_prime_module4' ? 'day4' :
-    dayId === 'tally_prime_project1' ? 'tally_project1' :
-    dayId === 'tally_prime_module5' ? 'day5' :
+    dayId === 'tally_prime_module1' || dayId === 'tally_module1' || dayId === 'day1' ? 'day1' :
+    dayId === 'tally_prime_module2' || dayId === 'tally_module2' || dayId === 'day2' ? 'day2' :
+    dayId === 'tally_prime_module3' || dayId === 'tally_module3' || dayId === 'day3' ? 'day3' :
+    dayId === 'tally_prime_module4' || dayId === 'tally_module4' || dayId === 'day4' ? 'day4' :
+    dayId === 'tally_prime_project1' || dayId === 'tally_project1' ? 'tally_project1' :
+    dayId === 'tally_prime_module5' || dayId === 'tally_module5' || dayId === 'day5' ? 'day5' :
+    dayId === 'tally_prime_module6' || dayId === 'tally_module6' || dayId === 'day6' ? 'day6' :
+    dayId === 'tally_prime_module7' || dayId === 'tally_module7' || dayId === 'day7' ? 'day7' :
+    dayId === 'tally_prime_module8' || dayId === 'tally_module8' || dayId === 'day8' ? 'day8' :
+    dayId === 'tally_prime_module9' || dayId === 'tally_module9' || dayId === 'day9' ? 'day9' :
+    dayId === 'tally_prime_project2' || dayId === 'tally_project2' || dayId === 'tally_prime_module10' || dayId === 'day10' ? 'day10' :
+    dayId === 'tally_prime_module11' || dayId === 'tally_module11' || dayId === 'day11' ? 'day11' :
+    dayId === 'tally_prime_module12' || dayId === 'tally_module12' || dayId === 'day12' ? 'day12' :
+    dayId === 'tally_prime_module13' || dayId === 'tally_module13' || dayId === 'day13' ? 'day13' :
+    dayId === 'tally_prime_module14' || dayId === 'tally_module14' || dayId === 'day14' ? 'day14' :
+    dayId === 'tally_prime_project3' || dayId === 'tally_project3' || dayId === 'tally_prime_module15' || dayId === 'day15' ? 'day15' :
+    dayId === 'tally_prime_module16' || dayId === 'tally_module16' || dayId === 'day16' ? 'day16' :
+    dayId === 'tally_prime_module17' || dayId === 'tally_module17' || dayId === 'day17' ? 'day17' :
+    dayId === 'tally_prime_module18' || dayId === 'tally_module18' || dayId === 'day18' ? 'day18' :
+    dayId === 'tally_prime_module19' || dayId === 'tally_module19' || dayId === 'day19' ? 'day19' :
+    dayId === 'tally_prime_project4' || dayId === 'tally_project4' || dayId === 'tally_prime_module20' || dayId === 'day20' ? 'day20' :
     (dayId || 'day1');
 
   const currentModuleId = activeModuleId || (
@@ -40,6 +55,21 @@ export default function TallyCourseDay({
     effectiveDayId === 'day4' ? 'tally_prime_module4' :
     effectiveDayId === 'tally_project1' ? 'tally_prime_project1' :
     effectiveDayId === 'day5' ? 'tally_prime_module5' :
+    effectiveDayId === 'day6' ? 'tally_prime_module6' :
+    effectiveDayId === 'day7' ? 'tally_prime_module7' :
+    effectiveDayId === 'day8' ? 'tally_prime_module8' :
+    effectiveDayId === 'day9' ? 'tally_prime_module9' :
+    effectiveDayId === 'day10' ? 'tally_prime_project2' :
+    effectiveDayId === 'day11' ? 'tally_prime_module11' :
+    effectiveDayId === 'day12' ? 'tally_prime_module12' :
+    effectiveDayId === 'day13' ? 'tally_prime_module13' :
+    effectiveDayId === 'day14' ? 'tally_prime_module14' :
+    effectiveDayId === 'day15' ? 'tally_prime_project3' :
+    effectiveDayId === 'day16' ? 'tally_prime_module16' :
+    effectiveDayId === 'day17' ? 'tally_prime_module17' :
+    effectiveDayId === 'day18' ? 'tally_prime_module18' :
+    effectiveDayId === 'day19' ? 'tally_prime_module19' :
+    effectiveDayId === 'day20' ? 'tally_prime_project4' :
     'tally_prime_module1'
   );
 

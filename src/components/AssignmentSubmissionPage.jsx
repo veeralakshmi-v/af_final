@@ -10,8 +10,102 @@ import {
   saveAssignmentValidation 
 } from '../utils/htmlCssLocking';
 
+function getCourseContext(courseKey = 'html_css') {
+  const key = (courseKey || '').toLowerCase();
+
+  if (key.includes('tally')) {
+    return {
+      trackTitle: 'Tally Prime ERP & Accounting Track',
+      urlLabel: 'Tally Backup, Google Drive Folder, or Screenshot Link (Optional)',
+      urlPlaceholder: 'https://drive.google.com/drive/folders/... or Cloud Backup Link',
+      notesLabel: 'Voucher Entries, Report Balances & Practical Steps (Optional)',
+      notesPlaceholder: 'Enter voucher types used (F4–F9), Trial Balance totals, ledger balances, or practical steps...',
+      feedbackPlaceholder: 'Describe your learning experience, what Tally accounting & inventory concepts you practiced (e.g., ledgers, vouchers, godowns, reports), challenges faced, and how you solved them (at least 100 characters)...',
+      feedbackRule: 'detailing key accounting takeaways, voucher entries, reports audited, and workflow challenges.',
+      defaultReflection: 'Self-reflection: Successfully configured accounting masters, recorded multi-voucher entries, and audited financial reports in Tally Prime.'
+    };
+  }
+
+  if (key.includes('sql')) {
+    return {
+      trackTitle: 'SQL & Database Engineering Track',
+      urlLabel: 'SQL Script Link, DB Fiddle, or GitHub URL (Optional)',
+      urlPlaceholder: 'https://github.com/username/sql-queries or https://db-fiddle.com/...',
+      notesLabel: 'SQL Queries & Execution Output (Optional)',
+      notesPlaceholder: 'Paste your CREATE, SELECT, JOIN, or GROUP BY queries and query output...',
+      feedbackPlaceholder: 'Describe your learning experience, what SQL query concepts, joins, or aggregations you wrote, query errors faced, and how you optimized them (at least 100 characters)...',
+      feedbackRule: 'detailing key query takeaways, database schemas designed, and query optimization challenges.',
+      defaultReflection: 'Self-reflection: Formulated structured SQL queries, relational joins, and aggregate functions with optimized execution plans.'
+    };
+  }
+
+  if (key.includes('powerbi') || key.includes('da_')) {
+    return {
+      trackTitle: 'Data Analytics & Power BI Track',
+      urlLabel: 'Power BI Dashboard Link, Drive Link, or GitHub Repository (Optional)',
+      urlPlaceholder: 'https://app.powerbi.com/groups/... or https://drive.google.com/...',
+      notesLabel: 'DAX Measures, Data Model Notes & KPI Summary (Optional)',
+      notesPlaceholder: 'Document DAX formulas, relationship cardinalities, or key analytical findings...',
+      feedbackPlaceholder: 'Describe your learning experience, what DAX measures, visualizations, and data transformations you built, analytical challenges faced, and how you solved them (at least 100 characters)...',
+      feedbackRule: 'detailing key analytical insights, dashboard layout decisions, and data modeling challenges.',
+      defaultReflection: 'Self-reflection: Built data models, calculated DAX measures, and created interactive BI visual reports.'
+    };
+  }
+
+  if (key.includes('python') || key.includes('django') || key.includes('numpy') || key.includes('pandas') || key.includes('stats') || key.includes('seaborn') || key.includes('matplotlib')) {
+    return {
+      trackTitle: 'Python & Data Science Track',
+      urlLabel: 'GitHub Repository or Google Colab Notebook URL (Optional)',
+      urlPlaceholder: 'https://github.com/username/python-project or https://colab.research.google.com/...',
+      notesLabel: 'Python Code Snippet or Analysis Notes (Optional)',
+      notesPlaceholder: 'Paste Python functions, data analysis outputs, or architectural structure...',
+      feedbackPlaceholder: 'Describe your learning experience, what Python/data science logic you implemented, runtime/debugging challenges faced, and how you solved them (at least 100 characters)...',
+      feedbackRule: 'detailing key programming concepts, data manipulations, and debugging steps.',
+      defaultReflection: 'Self-reflection: Implemented clean algorithmic logic, data structures, and resolved runtime exceptions.'
+    };
+  }
+
+  if (key.includes('react') || key.includes('js') || key.includes('javascript')) {
+    return {
+      trackTitle: 'JavaScript & React Frontend Track',
+      urlLabel: 'Project Deployment or GitHub Repository URL (Optional)',
+      urlPlaceholder: 'https://github.com/username/react-app or https://myproject.vercel.app',
+      notesLabel: 'Component Code Snippet or Architecture Notes (Optional)',
+      notesPlaceholder: 'Paste component JSX, state management logic, or hook implementation...',
+      feedbackPlaceholder: 'Describe your learning experience, what React/JS concepts, hooks, or components you built, state/rendering challenges faced, and how you solved them (at least 100 characters)...',
+      feedbackRule: 'detailing component hierarchy, hooks used, and state management challenges.',
+      defaultReflection: 'Self-reflection: Built modular components, managed state transitions, and created responsive interactive layouts.'
+    };
+  }
+
+  if (key.includes('agentic') || key.includes('generative_ai')) {
+    return {
+      trackTitle: 'Generative & Agentic AI Track',
+      urlLabel: 'Flowise / n8n Workflow Export, Demo Link, or GitHub URL (Optional)',
+      urlPlaceholder: 'https://github.com/username/ai-agent or Workflow JSON link',
+      notesLabel: 'Prompt Architecture, Agent Logic & Tool Config (Optional)',
+      notesPlaceholder: 'Paste agent system prompts, tool schemas, or RAG vector search parameters...',
+      feedbackPlaceholder: 'Describe your learning experience, what AI agent architecture, vector nodes, or autonomous loops you configured, challenges faced, and how you solved them (at least 100 characters)...',
+      feedbackRule: 'detailing agent workflows, LLM prompt design, and autonomous tool integration.',
+      defaultReflection: 'Self-reflection: Designed autonomous agent loops, prompt templates, and integrated external tool chains.'
+    };
+  }
+
+  return {
+    trackTitle: 'Web Development Learning Track',
+    urlLabel: 'Project Deployment or GitHub Repository URL (Optional)',
+    urlPlaceholder: 'https://github.com/username/html-day1-portfolio or https://myproject.vercel.app',
+    notesLabel: 'Submission Code Snippet or Notes (Optional)',
+    notesPlaceholder: 'Paste HTML/CSS code snippet or summarize implemented structure...',
+    feedbackPlaceholder: 'Describe your learning experience, what HTML/CSS concepts you implemented, challenges faced during coding, and how you solved them (at least 100 characters)...',
+    feedbackRule: 'detailing key takeaways, challenges, and code logic.',
+    defaultReflection: 'Self-reflection: Understanding semantic structure, CSS box-sizing, and responsive flexbox alignment helped build a clean application.'
+  };
+}
+
 export default function AssignmentSubmissionPage({ courseKey = 'html_css', moduleId, onNavigate, session }) {
   const config = getModuleConfig(courseKey, moduleId);
+  const courseCtx = getCourseContext(courseKey);
 
   const [validations, setValidations] = useState(getAssignmentValidations());
   const currentRecord = validations[moduleId] || {};
@@ -110,9 +204,9 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
   const handleStaffApproval = (newStatus) => {
     const updatedRecord = {
       ...currentRecord,
-      submissionUrl: submissionUrl.trim() || currentRecord.submissionUrl || 'https://github.com/student/assignment',
+      submissionUrl: submissionUrl.trim() || currentRecord.submissionUrl || 'https://drive.google.com/assignment',
       submissionNotes: submissionNotes.trim() || currentRecord.submissionNotes || 'Completed practical tasks.',
-      studentFeedback: studentFeedback.trim() || currentRecord.studentFeedback || 'Self-reflection: Understanding semantic structure, CSS box-sizing, and responsive flexbox alignment helped build a clean application.',
+      studentFeedback: studentFeedback.trim() || currentRecord.studentFeedback || courseCtx.defaultReflection,
       staffFeedback: staffFeedbackInput.trim(),
       status: newStatus,
       validatedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
@@ -138,7 +232,7 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
               <span style={{ background: '#38bdf8', color: '#0f172a', fontWeight: 800, fontSize: '0.75rem', padding: '3px 10px', borderRadius: 20, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                 {config.dayTitle}
               </span>
-              <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>HTML &amp; CSS Learning Track</span>
+              <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>{courseCtx.trackTitle}</span>
             </div>
             <h2 style={{ fontSize: '1.8rem', fontWeight: 800, margin: 0, color: '#f8fafc' }}>
               {config.assignmentTitle}
@@ -208,7 +302,7 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
             </div>
             <div style={{ fontSize: '0.85rem', color: currentStatus === 'approved' ? '#15803d' : currentStatus === 'pending' ? '#1d4ed8' : currentStatus === 'rejected' ? '#b91c1c' : '#c2410c', marginTop: 3 }}>
               {currentStatus === 'approved' && `Validated by ${currentRecord.validatedBy || 'Staff'} on ${currentRecord.validatedAt || 'Today'}. You can freely access ${config.nextModuleTitle || 'Next Day'}.`}
-              {currentStatus === 'pending' && `Submitted on ${currentRecord.submittedAt || 'Today'}. Staff is reviewing your feedback and code to unlock ${config.nextModuleTitle || 'Next Day'}.`}
+              {currentStatus === 'pending' && `Submitted on ${currentRecord.submittedAt || 'Today'}. Staff is reviewing your feedback to unlock ${config.nextModuleTitle || 'Next Day'}.`}
               {currentStatus === 'rejected' && 'Please review the staff feedback comments below and resubmit your assignment.'}
               {currentStatus === 'not_submitted' && `Students must submit feedback (>= 100 chars) and get staff validation to proceed to ${config.nextModuleTitle || 'Next Day'}.`}
             </div>
@@ -247,11 +341,11 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
           <div style={{ fontSize: '0.86rem', color: '#475569', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
               <span style={{ background: '#ea580c', color: 'white', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800, flexShrink: 0 }}>1</span>
-              <span><strong>Student Feedback:</strong> Must contain at least <strong>100 characters</strong> detailing key takeaways, challenges, and code logic.</span>
+              <span><strong>Student Feedback:</strong> Must contain at least <strong>100 characters</strong> {courseCtx.feedbackRule}</span>
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
               <span style={{ background: '#ea580c', color: 'white', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800, flexShrink: 0 }}>2</span>
-              <span><strong>Staff Evaluation:</strong> Staff must evaluate student feedback &amp; code before <strong>{config.nextModuleTitle || 'Next Day'}</strong> is unlocked.</span>
+              <span><strong>Staff Evaluation:</strong> Staff must evaluate student feedback &amp; submission before <strong>{config.nextModuleTitle || 'Next Day'}</strong> is unlocked.</span>
             </div>
           </div>
         </div>
@@ -275,13 +369,13 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
           {/* Submission Link */}
           <div style={{ marginBottom: '1.25rem' }}>
             <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#1e293b', marginBottom: 6 }}>
-              Project Deployment or GitHub Repository URL (Optional)
+              {courseCtx.urlLabel}
             </label>
             <input 
               type="url"
               value={submissionUrl}
               onChange={(e) => setSubmissionUrl(e.target.value)}
-              placeholder="https://github.com/username/html-day1-portfolio or https://myproject.vercel.app"
+              placeholder={courseCtx.urlPlaceholder}
               style={{ width: '100%', padding: '0.65rem 0.9rem', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.9rem', outline: 'none' }}
             />
           </div>
@@ -289,13 +383,13 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
           {/* Submission Code / Notes */}
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#1e293b', marginBottom: 6 }}>
-              Submission Code Snippet or Notes (Optional)
+              {courseCtx.notesLabel}
             </label>
             <textarea 
               rows={4}
               value={submissionNotes}
               onChange={(e) => setSubmissionNotes(e.target.value)}
-              placeholder="Paste HTML/CSS code snippet or summarize implemented structure..."
+              placeholder={courseCtx.notesPlaceholder}
               style={{ width: '100%', padding: '0.75rem 0.9rem', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.88rem', fontFamily: 'monospace', outline: 'none' }}
             />
           </div>
@@ -330,7 +424,7 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
                 setStudentFeedback(e.target.value);
                 if (showError && e.target.value.trim().length >= MIN_CHARS) setShowError(false);
               }}
-              placeholder="Describe your learning experience, what HTML/CSS concepts you implemented, challenges faced during coding, and how you solved them (at least 100 characters)..."
+              placeholder={courseCtx.feedbackPlaceholder}
               style={{ 
                 width: '100%', 
                 padding: '0.75rem 0.9rem', 
