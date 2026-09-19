@@ -5,7 +5,8 @@ import {
   Copy, FileText, Plus, AlertTriangle, BookOpenCheck, Zap,
   GitBranch, RefreshCw, Server, Wifi, WifiOff, ChevronLeft,
   ChevronRight, Search, Edit, Trash2, Eye, Send, Download,
-  Activity, Globe, ChevronDown, Check, X, Loader, AlertCircle, Info
+  Activity, Globe, ChevronDown, Check, X, Loader, AlertCircle, Info,
+  Hash, Shield
 } from 'lucide-react';
 import { CodeBlock } from '../../utils/codeHighlight';
 
