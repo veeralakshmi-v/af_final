@@ -188,11 +188,11 @@ export default function ReactDay9({ activeTab, onNavigate }) {
                   The "Do This After the Screen Paints" Hook
                 </h3>
               </div>
-              <p style={{ color: 'rgba(255,255,255,0.92)', margin: 0, fontSize: '1.02rem', lineHeight: 1.7 }}>
-                Normally, a React component’s main job is just <strong>drawing HTML onto the screen</strong>.
-                Whenever your component needs to do something <em>outside</em> of just rendering (like fetching data from a server, setting a timer, or updating the page title), that is called a <strong>Side Effect</strong>.
-                <br /><br />
-                <strong><code>useEffect</code></strong> is React’s dedicated hook to run those side effects <strong>after</strong> the component has finished rendering.
+              <p style={{ color: 'rgba(255,255,255,0.95)', margin: '0 0 0.8rem', fontSize: '1.02rem', lineHeight: 1.7 }}>
+                In simple words, <strong><code>useEffect</code></strong> is a tool that tells React to run extra code <em>after</em> your component shows up on the screen.
+              </p>
+              <p style={{ color: 'rgba(255,255,255,0.9)', margin: 0, fontSize: '0.96rem', lineHeight: 1.7 }}>
+                Think of it as a way to handle <strong>"side effects"</strong>—tasks that need to happen outside of simply drawing the HTML on the screen, like fetching data from the internet, starting a timer, or changing the page title.
               </p>
             </div>
 
@@ -316,28 +316,94 @@ useEffect(() => {
   };
 }, [/* 3. DEPENDENCY ARRAY: Controls WHEN this effect should run */]);`} />
 
-            {/* The 3 Golden Rules Summary */}
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: '2rem 0 0.8rem' }}>The 3 Dependency Array Rules</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
-              <div style={{ background: '#fffbeb', border: '1.5px solid #fde68a', borderRadius: 12, padding: '1.2rem' }}>
-                <span style={{ background: '#f59e0b', color: 'white', fontSize: '0.72rem', fontWeight: 800, padding: '2px 8px', borderRadius: 4 }}>RULE 1</span>
-                <code style={{ display: 'block', margin: '8px 0 4px', fontWeight: 700, color: '#92400e', fontSize: '0.85rem' }}>useEffect(fn)</code>
-                <strong style={{ color: '#b45309', display: 'block', fontSize: '0.95rem', marginBottom: 4 }}>No Dependency Array</strong>
-                <p style={{ fontSize: '0.82rem', color: '#78350f', margin: 0 }}>Runs on mount AND after <strong>EVERY single re-render</strong>.</p>
+            {/* The 3 Ways to Control It (The Dependency Array) */}
+            <div style={{ marginTop: '2.5rem', marginBottom: '2rem' }}>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.6rem' }}>
+                The 3 Ways to Control It (The Dependency Array)
+              </h3>
+              <p style={{ fontSize: '0.98rem', color: '#475569', lineHeight: 1.7, margin: '0 0 1.2rem 0' }}>
+                <strong><code>useEffect</code></strong> takes a function as its first argument, and an optional <strong>array <code>[]</code></strong> as its second argument. This array controls <em>when</em> the code runs.
+              </p>
+
+              {/* Dependency Array Comparison Table */}
+              <div style={{ overflowX: 'auto', marginBottom: '1.5rem' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem', background: 'white', border: '1px solid #e2e8f0', borderRadius: 12, overflow: 'hidden' }}>
+                  <thead>
+                    <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0', textAlign: 'left' }}>
+                      <th style={{ padding: '12px 16px', color: '#0f172a', fontWeight: 800, width: '32%' }}>Syntax Example</th>
+                      <th style={{ padding: '12px 16px', color: '#0f172a', fontWeight: 800, width: '38%' }}>When does it run?</th>
+                      <th style={{ padding: '12px 16px', color: '#0f172a', fontWeight: 800, width: '30%' }}>Common Use Case</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '14px 16px' }}>
+                        <strong style={{ display: 'block', color: '#b45309', marginBottom: 4 }}>No Array at all</strong>
+                        <code style={{ background: '#fffbeb', color: '#92400e', padding: '3px 6px', borderRadius: 6, fontSize: '0.82rem', fontWeight: 600 }}>
+                          useEffect(() =&gt; &#123; ... &#125;)
+                        </code>
+                      </td>
+                      <td style={{ padding: '14px 16px', color: '#334155' }}>
+                        <strong>Every single time</strong> the component updates or re-renders.
+                      </td>
+                      <td style={{ padding: '14px 16px', color: '#64748b' }}>
+                        General logging, animations, or tracking changes.
+                      </td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '14px 16px' }}>
+                        <strong style={{ display: 'block', color: '#15803d', marginBottom: 4 }}>Empty Array []</strong>
+                        <code style={{ background: '#f0fdf4', color: '#166534', padding: '3px 6px', borderRadius: 6, fontSize: '0.82rem', fontWeight: 600 }}>
+                          useEffect(() =&gt; &#123; ... &#125;, [])
+                        </code>
+                      </td>
+                      <td style={{ padding: '14px 16px', color: '#334155' }}>
+                        <strong>Only once</strong>, right when the component first shows up on the screen (mounts).
+                      </td>
+                      <td style={{ padding: '14px 16px', color: '#64748b' }}>
+                        Fetching API data on page load, setting up subscriptions or timers.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: '14px 16px' }}>
+                        <strong style={{ display: 'block', color: '#1d4ed8', marginBottom: 4 }}>With Dependencies [prop, state]</strong>
+                        <code style={{ background: '#eff6ff', color: '#1e40af', padding: '3px 6px', borderRadius: 6, fontSize: '0.82rem', fontWeight: 600 }}>
+                          useEffect(() =&gt; &#123; ... &#125;, [count])
+                        </code>
+                      </td>
+                      <td style={{ padding: '14px 16px', color: '#334155' }}>
+                        On <strong>mount AND whenever</strong> the specified dependencies change.
+                      </td>
+                      <td style={{ padding: '14px 16px', color: '#64748b' }}>
+                        Auto-saving input text, re-fetching data when a filter or dropdown changes.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
 
-              <div style={{ background: '#f0fdf4', border: '1.5px solid #bbf7d0', borderRadius: 12, padding: '1.2rem' }}>
-                <span style={{ background: '#10b981', color: 'white', fontSize: '0.72rem', fontWeight: 800, padding: '2px 8px', borderRadius: 4 }}>RULE 2 (Most Common)</span>
-                <code style={{ display: 'block', margin: '8px 0 4px', fontWeight: 700, color: '#166534', fontSize: '0.85rem' }}>useEffect(fn, [])</code>
-                <strong style={{ color: '#15803d', display: 'block', fontSize: '0.95rem', marginBottom: 4 }}>Empty Array []</strong>
-                <p style={{ fontSize: '0.82rem', color: '#14532d', margin: 0 }}>Runs <strong>ONLY ONCE</strong> when component first mounts.</p>
-              </div>
+              {/* The 3 Golden Rules Summary Cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+                <div style={{ background: '#fffbeb', border: '1.5px solid #fde68a', borderRadius: 12, padding: '1.2rem' }}>
+                  <span style={{ background: '#f59e0b', color: 'white', fontSize: '0.72rem', fontWeight: 800, padding: '2px 8px', borderRadius: 4 }}>RULE 1</span>
+                  <code style={{ display: 'block', margin: '8px 0 4px', fontWeight: 700, color: '#92400e', fontSize: '0.85rem' }}>useEffect(fn)</code>
+                  <strong style={{ color: '#b45309', display: 'block', fontSize: '0.95rem', marginBottom: 4 }}>No Dependency Array</strong>
+                  <p style={{ fontSize: '0.82rem', color: '#78350f', margin: 0 }}>Runs on mount AND after <strong>EVERY single re-render</strong>.</p>
+                </div>
 
-              <div style={{ background: '#eff6ff', border: '1.5px solid #bfdbfe', borderRadius: 12, padding: '1.2rem' }}>
-                <span style={{ background: '#3b82f6', color: 'white', fontSize: '0.72rem', fontWeight: 800, padding: '2px 8px', borderRadius: 4 }}>RULE 3</span>
-                <code style={{ display: 'block', margin: '8px 0 4px', fontWeight: 700, color: '#1e40af', fontSize: '0.85rem' }}>useEffect(fn, [prop/state])</code>
-                <strong style={{ color: '#1d4ed8', display: 'block', fontSize: '0.95rem', marginBottom: 4 }}>With Dependencies</strong>
-                <p style={{ fontSize: '0.82rem', color: '#1e3a8a', margin: 0 }}>Runs on mount + whenever <strong>watched variable changes</strong>.</p>
+                <div style={{ background: '#f0fdf4', border: '1.5px solid #bbf7d0', borderRadius: 12, padding: '1.2rem' }}>
+                  <span style={{ background: '#10b981', color: 'white', fontSize: '0.72rem', fontWeight: 800, padding: '2px 8px', borderRadius: 4 }}>RULE 2 (Most Common)</span>
+                  <code style={{ display: 'block', margin: '8px 0 4px', fontWeight: 700, color: '#166534', fontSize: '0.85rem' }}>useEffect(fn, [])</code>
+                  <strong style={{ color: '#15803d', display: 'block', fontSize: '0.95rem', marginBottom: 4 }}>Empty Array []</strong>
+                  <p style={{ fontSize: '0.82rem', color: '#14532d', margin: 0 }}>Runs <strong>ONLY ONCE</strong> when component first mounts.</p>
+                </div>
+
+                <div style={{ background: '#eff6ff', border: '1.5px solid #bfdbfe', borderRadius: 12, padding: '1.2rem' }}>
+                  <span style={{ background: '#3b82f6', color: 'white', fontSize: '0.72rem', fontWeight: 800, padding: '2px 8px', borderRadius: 4 }}>RULE 3</span>
+                  <code style={{ display: 'block', margin: '8px 0 4px', fontWeight: 700, color: '#1e40af', fontSize: '0.85rem' }}>useEffect(fn, [prop/state])</code>
+                  <strong style={{ color: '#1d4ed8', display: 'block', fontSize: '0.95rem', marginBottom: 4 }}>With Dependencies</strong>
+                  <p style={{ fontSize: '0.82rem', color: '#1e3a8a', margin: 0 }}>Runs on mount + whenever <strong>watched variable changes</strong>.</p>
+                </div>
               </div>
             </div>
 
