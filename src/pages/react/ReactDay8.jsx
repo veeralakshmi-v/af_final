@@ -462,10 +462,29 @@ function Navbar() {
             <div style={{ background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)', borderRadius: '16px', padding: '1.5rem', color: 'white', marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '0.5rem', color: 'white' }}>💅 What are Styled Components?</h3>
               <p style={{ fontSize: '0.95rem', opacity: 0.95, lineHeight: 1.6, color: 'white', margin: 0 }}>
-                Styled Components is a library that allows you to create styled React components using backtick (<code>` `</code>) syntax and pass React props to change styles dynamically!
+                Styled Components is an external library that allows you to create styled React components using tagged template literals (<code>` `</code>) and pass React props to change styles dynamically!
               </p>
             </div>
 
+            {/* Installation Callout */}
+            <div style={{ background: '#fdf2f8', border: '1.5px solid #f472b6', borderRadius: '14px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+              <strong style={{ color: '#9d174d', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                📦 Do We Need to Install Anything?
+              </strong>
+              <p style={{ fontSize: '0.9rem', color: '#831843', margin: 0, lineHeight: 1.6 }}>
+                <strong>Yes!</strong> Styled Components is an external package and does not come built-in with React. You must install it in your project using terminal commands before importing it.
+              </p>
+            </div>
+
+            <h4 style={{ fontSize: '1.1rem', color: '#0f172a', fontWeight: 800, margin: '1rem 0 0.5rem 0' }}>Step 1: Install in Terminal</h4>
+            <CodeBlock title="Terminal" code={`# For React (JavaScript / TypeScript v6+):
+npm install styled-components
+
+# For TypeScript (v5 or older, with type definitions):
+npm install styled-components
+npm install -D @types/styled-components`} />
+
+            <h4 style={{ fontSize: '1.1rem', color: '#0f172a', fontWeight: 800, margin: '1.5rem 0 0.5rem 0' }}>Step 2: Create & Use in Component</h4>
             <CodeBlock title="StyledButton.jsx" code={`import styled from "styled-components";
 
 // 1. Create a styled button component
