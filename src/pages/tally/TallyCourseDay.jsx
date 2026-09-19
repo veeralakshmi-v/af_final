@@ -83,12 +83,12 @@ export default function TallyCourseDay({ dayId, activeTab: propActiveTab, onNavi
   };
 
   const tabs = [
-    { id: 'overview', label: '📖 Overview & Concept', icon: <BookOpen size={16} /> },
-    { id: 'practical', label: '💻 Tally Practical', icon: <Play size={16} /> },
-    { id: 'ai_activity', label: '🤖 AI Activity', icon: <Bot size={16} /> },
-    { id: 'assignment', label: '📝 Assignment', icon: <FileText size={16} /> },
-    { id: 'quiz', label: '✍️ Quick Quiz', icon: <HelpCircle size={16} /> },
-    { id: 'reflection', label: '🎯 Self Check', icon: <CheckCircle size={16} /> }
+    { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={16} /> },
+    { id: 'practical', label: 'Tally Practical', icon: <Play size={16} /> },
+    { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={16} /> },
+    { id: 'assignment', label: 'Assignment', icon: <FileText size={16} /> },
+    { id: 'quiz', label: 'Quick Quiz', icon: <HelpCircle size={16} /> },
+    { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={16} /> }
   ];
 
   return (
