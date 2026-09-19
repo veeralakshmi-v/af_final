@@ -82,18 +82,33 @@ Please explain:
     quiz: [
       {
         q: "What is the shortcut key to save any page instantly in Tally Prime?",
-        opts: ["Ctrl+S", "Ctrl+A", "Alt+C", "F11"],
-        ans: 1
+        opts: ["Ctrl + S", "Ctrl + A", "Alt + C", "F11"],
+        ans: 1,
+        exp: "Ctrl + A is the universal shortcut in Tally Prime to instantly accept and save any company profile, ledger, or voucher entry."
       },
       {
         q: "Under Golden Rules, what is the rule for Real Accounts (like Cash or Furniture)?",
         opts: ["Debit the receiver, Credit the giver", "Debit what comes in, Credit what goes out", "Debit all expenses, Credit all incomes", "Debit increase, Credit decrease"],
-        ans: 1
+        ans: 1,
+        exp: "Real accounts deal with tangible assets: you Debit what comes into the business and Credit what goes out."
       },
       {
         q: "Which state must be selected during company creation for businesses operating in Theni?",
         opts: ["Kerala", "Karnataka", "Tamil Nadu", "Delhi"],
-        ans: 2
+        ans: 2,
+        exp: "Selecting Tamil Nadu is critical because Tally automatically configures local SGST and CGST tax calculation rules."
+      },
+      {
+        q: "Which dates are permitted for recording practice transactions in Tally Prime Educational Mode?",
+        opts: ["Any day of the month", "1st, 2nd, and 31st of any month", "Only the 1st of every month", "Mondays and Fridays only"],
+        ans: 1,
+        exp: "Tally Prime's free Educational Mode allows entering transactions on the 1st, 2nd, and 31st of any valid calendar month."
+      },
+      {
+        q: "According to Modern Rules of Accounting, what happens when an Asset (like Bank Balance) increases?",
+        opts: ["It is Credited", "It is Debited", "It is entered in Journal F7 only", "It has no effect"],
+        ans: 1,
+        exp: "Under Modern Rules (Accounting Equation), increases in Assets and Expenses are always Debited (+), while decreases are Credited (-)."
       }
     ],
     reflection: [
@@ -165,18 +180,33 @@ Which pre-defined Tally group folders should I put them under?"
     quiz: [
       {
         q: "How many pre-defined groups are available in Tally Prime by default?",
-        opts: ["15", "28", "13", "30"],
-        ans: 1
+        opts: ["15", "28 (15 Primary & 13 Sub-Groups)", "13", "30"],
+        ans: 1,
+        exp: "Tally Prime provides 28 pre-defined groups out-of-the-box, consisting of 15 Primary Groups and 13 Sub-Groups."
       },
       {
         q: "Under which folder (group) should a savings bank account ledger go?",
         opts: ["Capital Account", "Bank Accounts (under Current Assets)", "Fixed Assets", "Indirect Expenses"],
-        ans: 1
+        ans: 1,
+        exp: "Bank Accounts is a pre-defined sub-group that belongs to the Primary Group 'Current Assets'."
       },
       {
         q: "What is the shortcut key to delete a group in the Alteration screen?",
-        opts: ["Alt+C", "Alt+D", "Ctrl+D", "Delete"],
-        ans: 1
+        opts: ["Alt + C", "Alt + D", "Ctrl + D", "Delete"],
+        ans: 1,
+        exp: "Pressing Alt + D in any Alteration screen in Tally Prime triggers the Delete confirmation dialog."
+      },
+      {
+        q: "Can pre-defined default system groups (such as 'Sundry Debtors' or 'Fixed Assets') be deleted in Tally Prime?",
+        opts: ["Yes, anytime by pressing Alt + D", "No, pre-defined system groups are permanent and cannot be deleted", "Only if there are no ledgers created", "Only by administrator password"],
+        ans: 1,
+        exp: "Tally prevents deleting pre-defined system groups to maintain financial statement report integrity."
+      },
+      {
+        q: "Which of the following is a Primary Group that affects the Profit & Loss statement rather than the Balance Sheet?",
+        opts: ["Current Liabilities", "Fixed Assets", "Indirect Expenses", "Loans (Liability)"],
+        ans: 2,
+        exp: "Indirect Expenses (such as Rent, Salaries, Electricity) is a primary group that feeds directly into the Profit & Loss statement."
       }
     ],
     reflection: [
@@ -255,19 +285,34 @@ Copy and paste this prompt into your AI Assistant:
 20. Depreciation on Office Computers`,
     quiz: [
       {
-        q: "Which ledger is already created by default in Tally Prime?",
-        opts: ["Rent A/c", "Cash A/c", "SBI Bank A/c", "Sales A/c"],
-        ans: 1
+        q: "Which two ledgers are already created by default in every new company in Tally Prime?",
+        opts: ["Rent A/c and Cash A/c", "Cash A/c and Profit & Loss A/c", "SBI Bank A/c and Sales A/c", "Capital A/c and GST A/c"],
+        ans: 1,
+        exp: "Tally creates Cash A/c (under Cash-in-hand) and Profit & Loss A/c (under Primary) automatically upon company creation."
       },
       {
-        q: "Under which folder (group) does HDFC Bank Overdraft go?",
-        opts: ["Bank Accounts", "Bank OD A/c (Loans Liability)", "Fixed Assets", "Direct Expenses"],
-        ans: 1
+        q: "Under which folder (group) does a customer (client who buys on credit) ledger go?",
+        opts: ["Sundry Creditors", "Sundry Debtors (Current Assets)", "Fixed Assets", "Direct Expenses"],
+        ans: 1,
+        exp: "Customers who owe money for credit sales are classified as Sundry Debtors (Current Assets)."
+      },
+      {
+        q: "Under which folder (group) does a supplier (vendor who sells to you on credit) ledger go?",
+        opts: ["Sundry Creditors (Current Liabilities)", "Sundry Debtors (Current Assets)", "Direct Incomes", "Investments"],
+        ans: 0,
+        exp: "Suppliers to whom the business owes payment for credit purchases are classified under Sundry Creditors (Current Liabilities)."
       },
       {
         q: "What key shortcut deletes a ledger from the Alteration screen?",
-        opts: ["Ctrl+D", "Alt+D", "Delete", "F7"],
-        ans: 1
+        opts: ["Ctrl + D", "Alt + D", "Delete", "F7"],
+        ans: 1,
+        exp: "Pressing Alt + D in the Ledger Alteration screen prompts to permanently delete the ledger (if no vouchers use it)."
+      },
+      {
+        q: "Where can you view the complete hierarchical tree of all created groups and ledgers in Tally Prime?",
+        opts: ["Gateway of Tally -> Vouchers", "Gateway of Tally -> Chart of Accounts -> Ledgers", "Alt + K -> Masters", "Display -> Day Book"],
+        ans: 1,
+        exp: "The Chart of Accounts presents a complete structured tree view of all groups and their nested ledgers."
       }
     ],
     reflection: [
@@ -345,17 +390,32 @@ Create a list of 10 purchase transactions (F9) and 10 sales transactions (F8) us
       {
         q: "Which voucher type is used to record depreciation on machinery?",
         opts: ["Contra (F4)", "Payment (F5)", "Journal (F7)", "Receipt (F6)"],
-        ans: 2
+        ans: 2,
+        exp: "F7 (Journal) records non-cash adjustments, depreciation, and credit purchases of fixed assets where cash/bank is not directly involved."
       },
       {
         q: "What is the pathway to view the Chart of Accounts in Tally Prime?",
-        opts: ["Gateway of Tally -> Vouchers", "Gateway of Tally -> Chart of Accounts", "Gateway of Tally -> Alter", "Alt+K -> Chart"],
-        ans: 1
+        opts: ["Gateway of Tally -> Vouchers", "Gateway of Tally -> Chart of Accounts", "Gateway of Tally -> Alter", "Alt + K -> Chart"],
+        ans: 1,
+        exp: "From Gateway of Tally, select Chart of Accounts to navigate through your tree of Groups, Ledgers, and Voucher Types."
       },
       {
         q: "Which voucher type is used when transferring money from cash box to bank account?",
         opts: ["Receipt (F6)", "Journal (F7)", "Contra (F4)", "Payment (F5)"],
-        ans: 2
+        ans: 2,
+        exp: "F4 (Contra) is specifically reserved for internal fund movements: Cash to Bank, Bank to Cash, and Bank to Bank."
+      },
+      {
+        q: "Which shortcut key is pressed inside a voucher to switch between Double Entry mode (Dr/Cr) and Single Entry mode?",
+        opts: ["Ctrl + H (Change Mode)", "Alt + C", "F12 (Configure)", "Ctrl + A"],
+        ans: 0,
+        exp: "Ctrl + H (Change Mode) allows switching between 'Double Entry' mode with Dr/Cr columns and 'Single Entry' mode."
+      },
+      {
+        q: "What is the text description note written at the bottom of a voucher entry called?",
+        opts: ["Ledger Summary", "Narration", "Invoice Memo", "Audit Trail"],
+        ans: 1,
+        exp: "The Narration field at the bottom of the voucher explains the business context and reference details of the transaction."
       }
     ],
     reflection: [
@@ -426,17 +486,32 @@ Present the transactions as a challenge, wait for my voucher choices (F4, F5, F6
       {
         q: "Which voucher type is selected to record 'Ramesh started business with cash capital ₹200,000'?",
         opts: ["Receipt (F6)", "Payment (F5)", "Journal (F7)", "Contra (F4)"],
-        ans: 0
+        ans: 0,
+        exp: "When the owner introduces capital, cash flows into the business. You Credit Ramesh Capital A/c and Debit Cash A/c in F6 (Receipt)."
       },
       {
         q: "Under which folder (group) should Murugan (Customer) ledger be classified?",
-        opts: ["Sundry Creditors", "Sundry Debtors", "Loans (Liability)", "Current Liabilities"],
-        ans: 1
+        opts: ["Sundry Creditors", "Sundry Debtors (Current Assets)", "Loans (Liability)", "Current Liabilities"],
+        ans: 1,
+        exp: "Customers who purchase goods from you on credit are classified as Sundry Debtors under Current Assets."
       },
       {
-        q: "What is the total check deposit voucher code if you transfer cash between bank accounts?",
+        q: "What is the voucher type selected if you transfer cash surplus between two bank accounts?",
         opts: ["Payment (F5)", "Contra (F4)", "Receipt (F6)", "Journal (F7)"],
-        ans: 1
+        ans: 1,
+        exp: "Any movement between Cash and Bank or between two Bank accounts is strictly recorded in F4 (Contra)."
+      },
+      {
+        q: "If you purchase an office printer for ₹12,000 on credit from Murugan Systems, which voucher type must you use?",
+        opts: ["F9 (Purchase Voucher)", "F7 (Journal Voucher)", "F5 (Payment Voucher)", "F4 (Contra Voucher)"],
+        ans: 1,
+        exp: "F9 (Purchase) is exclusively for inventory goods meant for resale. Purchasing fixed assets on credit is recorded in F7 (Journal)."
+      },
+      {
+        q: "In an accurate Trial Balance report generated in Tally, what must always be true regarding the totals?",
+        opts: ["Debit total must be greater than Credit total", "Credit total must be double the Debit total", "Total Debit balance must exactly equal Total Credit balance", "Net Profit must be zero"],
+        ans: 2,
+        exp: "Under the double-entry accounting system, every debit has an equal credit, so total debits and credits in the Trial Balance must balance."
       }
     ],
     reflection: [
@@ -527,14 +602,34 @@ Present the transactions one-by-one, wait for my response, and then grade my cho
 Submit a table showing: Transaction No., Voucher Type, Debit Ledger, Credit Ledger, and Amount.`,
     quiz: [
       {
-        q: "Which voucher type is used for moving money from HDFC bank to SBI bank?",
-        opts: ["Contra (F4)", "Payment (F5)", "Journal (F7)", "Receipt (F6)"],
-        ans: 0
+        q: "Which voucher shortcut is used to record a Purchase Return when returning damaged goods back to a supplier?",
+        opts: ["Alt + F5 (Debit Note)", "Alt + F6 (Credit Note)", "F9 (Purchase)", "F7 (Journal)"],
+        ans: 0,
+        exp: "Alt + F5 (Debit Note) is used to record purchase returns to suppliers, debiting the supplier's account to reduce payable dues."
       },
       {
-        q: "Which voucher is used to record drawings (withdrawing cash for personal use)?",
+        q: "Which voucher shortcut is used to record a Sales Return when a customer returns goods to your store?",
+        opts: ["Alt + F6 (Credit Note)", "Alt + F5 (Debit Note)", "F8 (Sales)", "F5 (Payment)"],
+        ans: 0,
+        exp: "Alt + F6 (Credit Note) is used to record sales returns from customers, crediting the customer's account to reduce their receivable balance."
+      },
+      {
+        q: "Which voucher type is used for moving money directly from an HDFC bank to an SBI bank account?",
+        opts: ["Contra (F4)", "Payment (F5)", "Journal (F7)", "Receipt (F6)"],
+        ans: 0,
+        exp: "Bank-to-Bank transfers are internal cash-flow adjustments recorded using F4 (Contra), debiting the receiving bank and crediting the giving bank."
+      },
+      {
+        q: "Which voucher is used to record drawings (withdrawing cash for personal household use)?",
         opts: ["Receipt (F6)", "Payment (F5)", "Contra (F4)", "Journal (F7)"],
-        ans: 1
+        ans: 1,
+        exp: "Owner drawings represent a cash outflow from the business, recorded in F5 (Payment) by debiting Drawings A/c and crediting Cash/Bank."
+      },
+      {
+        q: "What is the accounting entry to record annual depreciation of ₹5,000 on office computers?",
+        opts: ["Debit Depreciation A/c ₹5,000 | Credit Computer A/c ₹5,000 (in F7 Journal)", "Debit Cash A/c ₹5,000 | Credit Depreciation A/c ₹5,000 (in F6 Receipt)", "Debit Computer A/c ₹5,000 | Credit Bank A/c ₹5,000 (in F5 Payment)", "Debit Profit A/c ₹5,000 | Credit Cash A/c ₹5,000 (in F4 Contra)"],
+        ans: 0,
+        exp: "Depreciation is a non-cash expense: Debit Depreciation Expense (Nominal) and Credit Computer Asset (Real) in F7 Journal."
       }
     ],
     reflection: [

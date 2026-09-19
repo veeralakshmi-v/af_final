@@ -786,6 +786,7 @@ function App() {
                     activeModuleId={activeNode.moduleId}
                     onNavigate={handleNavClick}
                     openAITutor={openAITutor}
+                    session={session}
                     onSubmitTask={() => setShowTaskModal(true)}
                   />
                 )}

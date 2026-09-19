@@ -199,6 +199,87 @@ export const HTML_CSS_ASSIGNMENTS_CONFIG = {
   }
 };
 
+export const TALLY_ASSIGNMENTS_CONFIG = {
+  tally_prime_module1: {
+    dayTitle: 'Day 1 - Accounting Foundations & Setup',
+    assignmentTitle: 'Day 1 Practical Assignment: Double Entry System & Tally Company Setup',
+    tasks: [
+      'Install Tally Prime in free Educational Mode on your computer.',
+      'Create a company named "Alpha Fly Computer Education" with State set to Tamil Nadu.',
+      'Classify the 3 Golden Rules: Personal (Debit receiver, Credit giver), Real (Debit in, Credit out), Nominal (Debit expenses, Credit incomes).',
+      'Explain Modern Rules of Accounting for Assets, Liabilities, Capital, Expenses, and Incomes.',
+      'Document the shortcut key (Ctrl+A) used to save company profiles and forms in Tally.'
+    ],
+    nextModuleId: 'tally_prime_module2',
+    nextModuleTitle: 'Day 2 - Pre-defined & Custom Groups'
+  },
+  tally_prime_module2: {
+    dayTitle: 'Day 2 - Pre-defined & Custom Groups',
+    assignmentTitle: 'Day 2 Practical Assignment: 28 Pre-defined Groups & Custom Sub-Groups',
+    tasks: [
+      'Identify the 15 Primary Groups (Fixed Assets, Current Assets, Capital, etc.) in Tally Prime.',
+      'Identify the 13 Sub-Groups (Bank Accounts, Cash-in-hand, Sundry Debtors, Sundry Creditors, etc.).',
+      'Create a custom group "Local Customers" under Sundry Debtors from Gateway of Tally -> Create -> Group.',
+      'Practice altering a group name and deleting a test group using Alt+D.',
+      'Submit your explanation of why groups act as organizational folders in Tally.'
+    ],
+    nextModuleId: 'tally_prime_module3',
+    nextModuleTitle: 'Day 3 - Ledgers Creation & Classification'
+  },
+  tally_prime_module3: {
+    dayTitle: 'Day 3 - Ledgers Creation & Classification',
+    assignmentTitle: 'Day 3 Practical Assignment: 20 Ledgers Creation & Group Classification',
+    tasks: [
+      'Identify the 2 pre-defined default ledgers in Tally (Cash A/c and Profit & Loss A/c).',
+      'Create and classify 20 distinct business ledgers under their correct parent groups.',
+      'Set opening balances for Cash and Bank accounts in the Ledger Alteration screen.',
+      'Verify the created accounts in Gateway of Tally -> Chart of Accounts -> Ledgers.',
+      'Submit the ledger mapping table showing Ledger Name and Assigned Parent Group.'
+    ],
+    nextModuleId: 'tally_prime_module4',
+    nextModuleTitle: 'Day 4 - Voucher Types & Chart of Accounts'
+  },
+  tally_prime_module4: {
+    dayTitle: 'Day 4 - Voucher Types & Chart of Accounts',
+    assignmentTitle: 'Day 4 Practical Assignment: 6 Core Voucher Types & Entry Workflow',
+    tasks: [
+      'Master the 6 core voucher shortcuts: F4 (Contra), F5 (Payment), F6 (Receipt), F7 (Journal), F8 (Sales), F9 (Purchase).',
+      'Record 10 sample business transactions determining the correct voucher type for each.',
+      'Draft 10 Purchase and 10 Sales entries using Educational Mode dates (1st, 2nd, 31st).',
+      'Toggle Double Entry Mode (Dr/Cr) using Ctrl+H (Change Mode).',
+      'Audit the recorded transactions in Day Book and Chart of Accounts.'
+    ],
+    nextModuleId: 'tally_prime_project1',
+    nextModuleTitle: 'Mini Project: Small Trading Business'
+  },
+  tally_prime_project1: {
+    dayTitle: 'Mini Project: Small Trading Business',
+    assignmentTitle: 'Mini Project: Complete Startup Trading Business Accounting Cycle',
+    tasks: [
+      'Create the complete company file for "Alpha Fly Traders" in Tally Prime with Tamil Nadu state settings.',
+      'Set up regional customer groups, supplier ledgers, capital, bank, and expense accounts.',
+      'Record all 10 startup transactions (Capital introduction, bank deposit, inventory purchases, credit/cash sales, rent).',
+      'Generate and audit the Trial Balance and Profit & Loss reports.',
+      'Submit the verified Trial Balance total debits and credits with detailed transaction breakdown.'
+    ],
+    nextModuleId: 'tally_prime_module5',
+    nextModuleTitle: 'Day 5 - Complete Accounting Practice'
+  },
+  tally_prime_module5: {
+    dayTitle: 'Day 5 - Complete Accounting Practice',
+    assignmentTitle: 'Day 5 Capstone Assignment: 20 Advanced Mixed Transactions & Year-End Adjustments',
+    tasks: [
+      'Record Purchase & Sales Returns using Debit Note (Alt+F5) and Credit Note (Alt+F6).',
+      'Record internal Bank-to-Bank and Petty Cash transfers using Contra (F4).',
+      'Record non-cash depreciation and drawings entries in Journal (F7) and Payment (F5).',
+      'Execute the 20 mixed practical transactions covering full accounting cycles.',
+      'Submit your final Balance Sheet and comprehensive learning reflection for staff evaluation.'
+    ],
+    nextModuleId: null,
+    nextModuleTitle: null
+  }
+};
+
 const STORAGE_KEY = 'html_css_assignment_validations_v1';
 
 export function getAssignmentValidations() {
@@ -254,6 +335,9 @@ export function getCourseModuleOrder(courseKey, targetModuleId) {
 export function getModuleConfig(courseKey, moduleId) {
   if (courseKey === 'html_css' && HTML_CSS_ASSIGNMENTS_CONFIG[moduleId]) {
     return HTML_CSS_ASSIGNMENTS_CONFIG[moduleId];
+  }
+  if ((courseKey === 'tally_prime' || courseKey === 'tally') && TALLY_ASSIGNMENTS_CONFIG[moduleId]) {
+    return TALLY_ASSIGNMENTS_CONFIG[moduleId];
   }
   const courseModules = COURSE_DATA_MAP[courseKey] || [];
   const modObj = courseModules.find(m => m.id === moduleId);
