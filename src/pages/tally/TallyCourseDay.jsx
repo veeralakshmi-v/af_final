@@ -7,8 +7,27 @@ import {
 } from 'lucide-react';
 import { tallyDaysData } from './tallyCourseData';
 
-export default function TallyCourseDay({ dayId, onNavigate, openAITutor, onSubmitTask }) {
-  const dayData = tallyDaysData[dayId] || tallyDaysData['day1'];
+export default function TallyCourseDay({ dayId, activeTab: propActiveTab, onNavigate, openAITutor, onSubmitTask, activeModuleId }) {
+  const effectiveDayId = 
+    dayId === 'tally_prime_module1' ? 'day1' :
+    dayId === 'tally_prime_module2' ? 'day2' :
+    dayId === 'tally_prime_module3' ? 'day3' :
+    dayId === 'tally_prime_module4' ? 'day4' :
+    dayId === 'tally_prime_project1' ? 'tally_project1' :
+    dayId === 'tally_prime_module5' ? 'day5' :
+    (dayId || 'day1');
+
+  const currentModuleId = activeModuleId || (
+    effectiveDayId === 'day1' ? 'tally_prime_module1' :
+    effectiveDayId === 'day2' ? 'tally_prime_module2' :
+    effectiveDayId === 'day3' ? 'tally_prime_module3' :
+    effectiveDayId === 'day4' ? 'tally_prime_module4' :
+    effectiveDayId === 'tally_project1' ? 'tally_prime_project1' :
+    effectiveDayId === 'day5' ? 'tally_prime_module5' :
+    'tally_prime_module1'
+  );
+
+  const dayData = tallyDaysData[effectiveDayId] || tallyDaysData['day1'];
 
   const renderSectionIcon = (iconName, color) => {
     switch (iconName) {
@@ -21,22 +40,32 @@ export default function TallyCourseDay({ dayId, onNavigate, openAITutor, onSubmi
     }
   };
   
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState(propActiveTab || 'overview');
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [reflectionChecks, setReflectionChecks] = useState({});
 
-  // Reset page states when dayId changes
+  // Sync tab with external prop
   useEffect(() => {
-    setActiveTab('overview');
+    if (propActiveTab) {
+      setActiveTab(propActiveTab);
+    }
+  }, [propActiveTab]);
+
+  // Reset page states when effectiveDayId changes
+  useEffect(() => {
+    setActiveTab(propActiveTab || 'overview');
     setQuizAnswers({});
     setQuizSubmitted(false);
     setReflectionChecks({});
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [dayId]);
+  }, [effectiveDayId]);
 
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
+    if (onNavigate && currentModuleId) {
+      onNavigate(currentModuleId, tabId);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -487,19 +516,34 @@ export default function TallyCourseDay({ dayId, onNavigate, openAITutor, onSubmi
               
               {/* Next day calculation flow */}
               {(() => {
-                const dayNum = parseInt(dayId.replace('day', ''));
-                // tally_project1 navigates to day5
-                if (dayId === 'tally_project1') {
+                if (effectiveDayId === 'day1') {
                   return (
-                    <button className="btn btn-primary" onClick={() => onNavigate('tally_prime_module1', 'day5')} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      Proceed to Day 5 <ArrowRight size={16} />
+                    <button className="btn btn-primary" onClick={() => onNavigate('tally_prime_module2', 'overview')} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      Proceed to Day 2 <ArrowRight size={16} />
                     </button>
                   );
-                } else if (!isNaN(dayNum) && dayNum < 5) {
-                  const nextDayId = dayNum === 4 ? 'tally_project1' : `day${dayNum + 1}`;
+                } else if (effectiveDayId === 'day2') {
                   return (
-                    <button className="btn btn-primary" onClick={() => onNavigate('tally_prime_module1', nextDayId)} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      {dayNum === 4 ? 'Proceed to Mini Project' : `Proceed to Day ${dayNum + 1}`} <ArrowRight size={16} />
+                    <button className="btn btn-primary" onClick={() => onNavigate('tally_prime_module3', 'overview')} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      Proceed to Day 3 <ArrowRight size={16} />
+                    </button>
+                  );
+                } else if (effectiveDayId === 'day3') {
+                  return (
+                    <button className="btn btn-primary" onClick={() => onNavigate('tally_prime_module4', 'overview')} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      Proceed to Day 4 <ArrowRight size={16} />
+                    </button>
+                  );
+                } else if (effectiveDayId === 'day4') {
+                  return (
+                    <button className="btn btn-primary" onClick={() => onNavigate('tally_prime_project1', 'overview')} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      Proceed to Mini Project <ArrowRight size={16} />
+                    </button>
+                  );
+                } else if (effectiveDayId === 'tally_project1') {
+                  return (
+                    <button className="btn btn-primary" onClick={() => onNavigate('tally_prime_module5', 'overview')} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      Proceed to Day 5 <ArrowRight size={16} />
                     </button>
                   );
                 } else {

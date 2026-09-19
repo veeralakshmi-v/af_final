@@ -773,7 +773,17 @@ function App() {
                 {/* Tally Prime Course Rendering */}
                 {activeNode.moduleId.startsWith('tally_') && (
                   <TallyCourseDay
-                    dayId={activeNode.tabId}
+                    dayId={
+                      activeNode.moduleId === 'tally_prime_module1' || activeNode.moduleId === 'tally_module1' ? 'day1' :
+                      activeNode.moduleId === 'tally_prime_module2' || activeNode.moduleId === 'tally_module2' ? 'day2' :
+                      activeNode.moduleId === 'tally_prime_module3' || activeNode.moduleId === 'tally_module3' ? 'day3' :
+                      activeNode.moduleId === 'tally_prime_module4' || activeNode.moduleId === 'tally_module4' ? 'day4' :
+                      activeNode.moduleId === 'tally_prime_project1' || activeNode.moduleId === 'tally_project1' ? 'tally_project1' :
+                      activeNode.moduleId === 'tally_prime_module5' || activeNode.moduleId === 'tally_module5' ? 'day5' :
+                      activeNode.tabId || 'day1'
+                    }
+                    activeTab={activeNode.tabId}
+                    activeModuleId={activeNode.moduleId}
                     onNavigate={handleNavClick}
                     openAITutor={openAITutor}
                     onSubmitTask={() => setShowTaskModal(true)}
@@ -1093,7 +1103,9 @@ function App() {
               Submit Topic Assignment
             </h3>
             <p style={{ fontSize: '0.88rem', color: '#64748b', margin: '0 0 1.5rem 0', lineHeight: 1.4, fontFamily: 'system-ui' }}>
-              Submit your code repository link, event host URL, or a text explanation of your solution.
+              {activeCourse === 'tally_prime' || activeNode?.moduleId?.startsWith('tally_')
+                ? 'Submit your assignment link (Google Drive / cloud backup / screenshot) or type your journal entries and answers below.'
+                : 'Submit your code repository link, event host URL, or a text explanation of your solution.'}
             </p>
 
             <form onSubmit={(e) => {
@@ -1102,11 +1114,15 @@ function App() {
             }}>
               <div style={{ marginBottom: '1.25rem' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginBottom: '0.5rem', fontFamily: 'system-ui' }}>
-                  Submission URL (GitHub, Netlify, Vercel, CodePen, etc.)
+                  {activeCourse === 'tally_prime' || activeNode?.moduleId?.startsWith('tally_')
+                    ? 'Submission URL (Google Drive, Cloud Link, or Screenshots — Optional)'
+                    : 'Submission URL (GitHub, Netlify, Vercel, CodePen, etc.)'}
                 </label>
                 <input
                   type="url"
-                  placeholder="https://github.com/your-username/project-repo"
+                  placeholder={activeCourse === 'tally_prime' || activeNode?.moduleId?.startsWith('tally_')
+                    ? 'https://drive.google.com/... (optional if answering below)'
+                    : 'https://github.com/your-username/project-repo'}
                   value={taskSubmitUrl}
                   onChange={(e) => setTaskSubmitUrl(e.target.value)}
                   style={{
@@ -1126,10 +1142,14 @@ function App() {
 
               <div style={{ marginBottom: '1.5rem' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginBottom: '0.5rem', fontFamily: 'system-ui' }}>
-                  Submission Details / Code Snippets / Notes
+                  {activeCourse === 'tally_prime' || activeNode?.moduleId?.startsWith('tally_')
+                    ? 'Journal Entries / Ledger Details / Answer Text'
+                    : 'Submission Details / Code Snippets / Notes'}
                 </label>
                 <textarea
-                  placeholder="Describe your implementation details, paste short scripts, or provide answer text..."
+                  placeholder={activeCourse === 'tally_prime' || activeNode?.moduleId?.startsWith('tally_')
+                    ? 'Type your journal entries, ledger groups, voucher steps, or answer text...'
+                    : 'Describe your implementation details, paste short scripts, or provide answer text...'}
                   rows={4}
                   value={taskSubmitNotes}
                   onChange={(e) => setTaskSubmitNotes(e.target.value)}

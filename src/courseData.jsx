@@ -665,15 +665,74 @@ export const agenticAiCourseData = [
 export const tallyCourseData = [
   {
     id: 'tally_prime_module1',
-    title: 'Module 1 - Accounting & Tally Foundations',
+    title: 'Day 1 - Accounting Foundations & Setup',
     items: [
-      { id: 'day1', label: 'Day 1: Accounting Foundations & Tally Prime Setup', icon: <BookOpen size={18} /> },
-      { id: 'day2', label: 'Day 2: Pre-defined & Custom Groups in Tally Prime', icon: <Layers size={18} /> },
-      { id: 'day3', label: 'Day 3: Ledgers Creation & Classification', icon: <FileText size={18} /> },
-      { id: 'day4', label: 'Day 4: Voucher Types & Chart of Accounts', icon: <Sliders size={18} /> },
-      { id: 'tally_project1', label: 'Mini Project: Small Trading Business', icon: <Trophy size={18} /> },
-      { id: 'day5', label: 'Day 5: Complete Accounting Practice', icon: <CheckCircle size={18} /> },
-      { id: 'assignment', label: '📝 Module Assignment & Staff Review', icon: <PenTool size={18} /> }
+      { id: 'overview', label: '📖 Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: '💻 Tally Practical', icon: <Play size={18} /> },
+      { id: 'ai_activity', label: '🤖 AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: '📝 Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: '✍️ Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: '🎯 Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module2',
+    title: 'Day 2 - Pre-defined & Custom Groups',
+    items: [
+      { id: 'overview', label: '📖 Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: '💻 Tally Practical', icon: <Layers size={18} /> },
+      { id: 'ai_activity', label: '🤖 AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: '📝 Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: '✍️ Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: '🎯 Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module3',
+    title: 'Day 3 - Ledgers Creation & Classification',
+    items: [
+      { id: 'overview', label: '📖 Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: '💻 Tally Practical', icon: <FileText size={18} /> },
+      { id: 'ai_activity', label: '🤖 AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: '📝 Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: '✍️ Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: '🎯 Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module4',
+    title: 'Day 4 - Voucher Types & Chart of Accounts',
+    items: [
+      { id: 'overview', label: '📖 Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: '💻 Tally Practical', icon: <Sliders size={18} /> },
+      { id: 'ai_activity', label: '🤖 AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: '📝 Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: '✍️ Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: '🎯 Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_project1',
+    title: 'Mini Project: Small Trading Business',
+    items: [
+      { id: 'overview', label: '📖 Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: '💻 Tally Practical', icon: <Trophy size={18} /> },
+      { id: 'ai_activity', label: '🤖 AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: '📝 Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: '✍️ Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: '🎯 Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module5',
+    title: 'Day 5 - Complete Accounting Practice',
+    items: [
+      { id: 'overview', label: '📖 Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: '💻 Tally Practical', icon: <CheckCircle size={18} /> },
+      { id: 'ai_activity', label: '🤖 AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: '📝 Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: '✍️ Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: '🎯 Self Check', icon: <CheckCircle size={18} /> },
     ]
   }
 ];
