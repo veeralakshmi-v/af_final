@@ -557,33 +557,214 @@ function App() {
 
       {/* ── 4. TAILWIND CSS SETUP ──────────────────────────────────────────── */}
       {activeTab === 'object_state' && (
-        <Section key="object_state" id="object_state" eyebrow="Module 04 • Day 8" title="4. Tailwind CSS Setup">
+        <Section key="object_state" id="object_state" eyebrow="Module 04 • Day 8" title="4. Tailwind CSS Setup with Vite">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
             
-            <div style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)', borderRadius: '16px', padding: '1.5rem', color: 'white', marginBottom: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '0.5rem', color: 'white' }}>⚡ What is Tailwind CSS?</h3>
+            {/* Header Banner */}
+            <div style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)', borderRadius: '16px', padding: '1.5rem', color: 'white', marginBottom: '2rem' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+                ⚡ OFFICIAL VITE SETUP
+              </div>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '0.5rem', color: 'white' }}>Setting Up Tailwind CSS in a Vite + React Project</h3>
               <p style={{ fontSize: '0.95rem', opacity: 0.95, lineHeight: 1.6, color: 'white', margin: 0 }}>
-                Tailwind gives you ready-made helper classes so you never have to write custom CSS files. For example: <code>bg-blue-600</code>, <code>text-white</code>, <code>p-4</code>, <code>rounded-lg</code>.
+                Tailwind CSS allows you to style elements directly in your JSX using utility classes without writing custom stylesheets. Follow these <strong>4 simple steps</strong> to configure Tailwind with the official Vite plugin:
               </p>
             </div>
 
-            <h4 style={{ fontSize: '1.1rem', color: '#0f172a', fontWeight: 800, margin: '1rem 0 0.5rem 0' }}>Step 1: Install in Terminal</h4>
-            <CodeBlock title="Terminal" code={`# 1. Install Tailwind and PostCSS
-npm install -D tailwindcss postcss autoprefixer
+            {/* Step-by-Step Cards (Matching Official Tailwind Vite Documentation) */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', marginBottom: '2rem' }}>
+              
+              {/* [01] Create your project */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '1.5rem',
+                background: '#ffffff',
+                border: '1px solid #e2e8f0',
+                borderRadius: '16px',
+                padding: '1.5rem',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                alignItems: 'center'
+              }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.5rem' }}>
+                    <span style={{
+                      fontFamily: 'monospace',
+                      fontSize: '0.9rem',
+                      fontWeight: 800,
+                      color: '#0891b2',
+                      background: 'rgba(8, 145, 178, 0.1)',
+                      border: '1px solid rgba(8, 145, 178, 0.25)',
+                      padding: '2px 8px',
+                      borderRadius: '8px'
+                    }}>
+                      [ 01 ]
+                    </span>
+                    <h4 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>
+                      Create your project
+                    </h4>
+                  </div>
+                  <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0, lineHeight: 1.6 }}>
+                    Start by creating a new Vite project if you don't have one set up already. The most common approach is to use <strong>Create Vite</strong>.
+                  </p>
+                </div>
+                <div>
+                  <CodeBlock title="Terminal" code={`npm create vite@latest my-project
+cd my-project`} />
+                </div>
+              </div>
 
-# 2. Generate config file
-npx tailwindcss init`} />
+              {/* [02] Install Tailwind CSS */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '1.5rem',
+                background: '#ffffff',
+                border: '1px solid #e2e8f0',
+                borderRadius: '16px',
+                padding: '1.5rem',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                alignItems: 'center'
+              }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.5rem' }}>
+                    <span style={{
+                      fontFamily: 'monospace',
+                      fontSize: '0.9rem',
+                      fontWeight: 800,
+                      color: '#0891b2',
+                      background: 'rgba(8, 145, 178, 0.1)',
+                      border: '1px solid rgba(8, 145, 178, 0.25)',
+                      padding: '2px 8px',
+                      borderRadius: '8px'
+                    }}>
+                      [ 02 ]
+                    </span>
+                    <h4 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>
+                      Install Tailwind CSS
+                    </h4>
+                  </div>
+                  <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0, lineHeight: 1.6 }}>
+                    Install <code style={{ color: '#0f172a', fontWeight: 700 }}>tailwindcss</code> and <code style={{ color: '#0f172a', fontWeight: 700 }}>@tailwindcss/vite</code> via npm into your project dependencies.
+                  </p>
+                </div>
+                <div>
+                  <CodeBlock title="Terminal" code={`npm install tailwindcss @tailwindcss/vite`} />
+                </div>
+              </div>
 
-            <h4 style={{ fontSize: '1.1rem', color: '#0f172a', fontWeight: 800, margin: '1.5rem 0 0.5rem 0' }}>Step 2: Add Tailwind Directives</h4>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
-              <CodeBlock title="tailwind.config.js" code={`export default {
-  content: ["./index.html", "./src/**/*.{js,jsx}"],
-  theme: { extend: {} },
-  plugins: [],
-};`} />
-              <CodeBlock title="src/index.css" code={`@tailwind base;
-@tailwind components;
-@tailwind utilities;`} />
+              {/* [03] Configure the Vite plugin */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '1.5rem',
+                background: '#ffffff',
+                border: '1px solid #e2e8f0',
+                borderRadius: '16px',
+                padding: '1.5rem',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                alignItems: 'center'
+              }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.5rem' }}>
+                    <span style={{
+                      fontFamily: 'monospace',
+                      fontSize: '0.9rem',
+                      fontWeight: 800,
+                      color: '#0891b2',
+                      background: 'rgba(8, 145, 178, 0.1)',
+                      border: '1px solid rgba(8, 145, 178, 0.25)',
+                      padding: '2px 8px',
+                      borderRadius: '8px'
+                    }}>
+                      [ 03 ]
+                    </span>
+                    <h4 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>
+                      Configure the Vite plugin
+                    </h4>
+                  </div>
+                  <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0, lineHeight: 1.6 }}>
+                    Add the <code style={{ color: '#0f172a', fontWeight: 700 }}>@tailwindcss/vite</code> plugin to your Vite configuration file (<code style={{ color: '#0f172a', fontWeight: 700 }}>vite.config.js</code> or <code style={{ color: '#0f172a', fontWeight: 700 }}>vite.config.ts</code>).
+                  </p>
+                </div>
+                <div>
+                  <CodeBlock title="vite.config.js" code={`import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+  ],
+})`} />
+                </div>
+              </div>
+
+              {/* [04] Import Tailwind CSS */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '1.5rem',
+                background: '#ffffff',
+                border: '1px solid #e2e8f0',
+                borderRadius: '16px',
+                padding: '1.5rem',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                alignItems: 'center'
+              }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.5rem' }}>
+                    <span style={{
+                      fontFamily: 'monospace',
+                      fontSize: '0.9rem',
+                      fontWeight: 800,
+                      color: '#0891b2',
+                      background: 'rgba(8, 145, 178, 0.1)',
+                      border: '1px solid rgba(8, 145, 178, 0.25)',
+                      padding: '2px 8px',
+                      borderRadius: '8px'
+                    }}>
+                      [ 04 ]
+                    </span>
+                    <h4 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>
+                      Import Tailwind CSS
+                    </h4>
+                  </div>
+                  <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0, lineHeight: 1.6 }}>
+                    Add the single <code style={{ color: '#0f172a', fontWeight: 700 }}>@import "tailwindcss";</code> directive at the top of your main stylesheet (<code style={{ color: '#0f172a', fontWeight: 700 }}>src/index.css</code>).
+                  </p>
+                </div>
+                <div>
+                  <CodeBlock title="src/index.css" code={`@import "tailwindcss";`} />
+                </div>
+              </div>
+
+            </div>
+
+            {/* Ready to Use Component Example */}
+            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '1.5rem', marginTop: '1.5rem' }}>
+              <h4 style={{ fontSize: '1.1rem', color: '#0f172a', fontWeight: 800, marginBottom: '0.5rem' }}>
+                🎉 You're Ready! Example Usage in JSX
+              </h4>
+              <p style={{ fontSize: '0.88rem', color: '#64748b', margin: '0 0 1rem 0' }}>
+                Now you can use any Tailwind utility class directly inside your React components:
+              </p>
+              <CodeBlock title="src/App.jsx" code={`export default function App() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-100 p-6">
+      <div className="rounded-2xl bg-white p-8 shadow-xl text-center max-w-sm">
+        <h1 className="text-2xl font-bold text-slate-900 mb-2">
+          Tailwind + Vite Ready! 🚀
+        </h1>
+        <p className="text-slate-600 text-sm mb-6">
+          Styled effortlessly using zero custom CSS files.
+        </p>
+        <button className="w-full rounded-xl bg-indigo-600 px-4 py-2.5 font-semibold text-white shadow-md hover:bg-indigo-700 transition">
+          Get Started
+        </button>
+      </div>
+    </div>
+  );
+}`} />
             </div>
 
             <div className="card-actions" style={{ marginTop: '2rem' }}>
