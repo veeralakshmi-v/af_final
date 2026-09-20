@@ -803,7 +803,10 @@ function App() {
                       activeNode.moduleId === 'tally_prime_module26' || activeNode.moduleId === 'tally_module26' ? 'day26' :
                       activeNode.moduleId === 'tally_prime_module27' || activeNode.moduleId === 'tally_module27' ? 'day27' :
                       activeNode.moduleId === 'tally_prime_module28' || activeNode.moduleId === 'tally_module28' ? 'day28' :
-                      activeNode.tabId || 'day1'
+                      activeNode.moduleId === 'tally_prime_module29' || activeNode.moduleId === 'tally_module29' ? 'day29' :
+                      activeNode.moduleId === 'tally_prime_project6' || activeNode.moduleId === 'tally_project6' || activeNode.moduleId === 'tally_prime_module30' || activeNode.moduleId === 'tally_module30' ? 'day30' :
+                      activeNode.moduleId === 'tally_prime_final_project' || activeNode.moduleId === 'tally_final_project' || activeNode.moduleId === 'tally_prime_module31' || activeNode.moduleId === 'tally_module31' ? 'day31' :
+                      activeNode.moduleId || activeNode.tabId || 'day1'
                     }
                     activeTab={activeNode.tabId}
                     activeModuleId={activeNode.moduleId}

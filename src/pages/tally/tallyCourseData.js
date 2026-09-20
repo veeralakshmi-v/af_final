@@ -3941,7 +3941,7 @@ Please formulate a fully compliant Indian Salary Structure with:
     ]
   },
   day29: {
-    title: "Day 29 — Bank Reconciliation Statement (BRS) & AI Financial Analysis",
+    title: "Day 29 — BRS + AI Financial Analysis",
     objectives: [
       "Understand the mechanics of Bank Ledger configuration, Cheque Books, and e-Banking in Tally Prime.",
       "Record various bank transactions including Cheque deposits, NEFT/RTGS payments, Bank charges, and Interest.",
@@ -4250,7 +4250,7 @@ Please execute a rigorous AI CFO Audit & Business Advisory:
     ]
   },
   day31: {
-    title: "Day 31 — 🚀 Final Project 2: Multi-Industry Capstone & Final Assessment",
+    title: "🚀 Final Project 2 + Final Assessment",
     objectives: [
       "Select and independently manage an industry-specific enterprise accounting scenario in Tally Prime.",
       "Configure industry-tailored masters across Trading, Medical Store, Manufacturing, Service, or Retail business models.",
