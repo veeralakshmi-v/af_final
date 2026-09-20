@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  LayoutTemplate, Database, Code, ArrowRight, Sparkles, Bot, Terminal, Brain, 
-  UserPlus, Users, LogIn, LogOut, CheckCircle, BarChart3, Layers, GitBranch, 
+import {
+  LayoutTemplate, Database, Code, ArrowRight, Sparkles, Bot, Terminal, Brain,
+  UserPlus, Users, LogIn, LogOut, CheckCircle, BarChart3, Layers, GitBranch,
   Server, RefreshCw, Trash2, Key, Star, ShieldAlert, Award, Grid, HelpCircle,
   BookOpen, ExternalLink, Upload, Download, FileText, Lock, AlertTriangle, Menu, X,
   Search, ChevronLeft, ChevronRight, Copy
 } from 'lucide-react';
-import { 
-  getAssignmentValidations, 
-  saveAssignmentValidation, 
+import {
+  getAssignmentValidations,
+  saveAssignmentValidation,
   HTML_CSS_ASSIGNMENTS_CONFIG,
   isModuleLocked
 } from '../../utils/htmlCssLocking';
@@ -324,7 +324,7 @@ const subCourses = [
     bgColor: 'rgba(5, 150, 105, 0.08)',
     borderColor: '#059669',
     shadowColor: 'rgba(5,150,105,0.15)',
-    modulesCount: '5 Modules (41 Days)',
+    modulesCount: '5 Modules',
     enrolledKey: 'tally_prime'
   }
 ];
@@ -342,7 +342,7 @@ const formatSubmittedDate = (dateStr) => {
         minute: '2-digit'
       });
     }
-  } catch (e) {}
+  } catch (e) { }
   return dateStr;
 };
 
@@ -482,14 +482,14 @@ function calculateDetailedCourseProgress(student) {
     const moduleBreakdown = modules.map(m => {
       const items = m.items || [];
       let moduleCompleted = 0;
-      
+
       const itemBreakdown = items.map(item => {
         const fullKey = `${courseKey}:${m.id}:${item.id}`;
         const midKey = `${m.id}:${item.id}`;
-        const isDone = completedLessons.includes(fullKey) || 
-                       completedLessons.includes(midKey) || 
-                       completedLessons.includes(item.id) ||
-                       completedLessons.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
+        const isDone = completedLessons.includes(fullKey) ||
+          completedLessons.includes(midKey) ||
+          completedLessons.includes(item.id) ||
+          completedLessons.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
         if (isDone) moduleCompleted++;
         return {
           id: item.id,
@@ -529,10 +529,10 @@ function calculateDetailedCourseProgress(student) {
 // Calculate Course Completion Progress % based on Mark Completed topics
 function calculateStudentProgress(student) {
   if (!student) return { completedCount: 0, totalCount: 0, percentage: 0 };
-  
+
   const completedLessons = Array.isArray(student.completedLessons) ? student.completedLessons : [];
   const enrolledCourse = student.enrolledCourse || 'all';
-  
+
   let enrolledList = [];
   if (enrolledCourse === 'all') {
     const allKeys = [
@@ -563,7 +563,7 @@ function calculateStudentProgress(student) {
 
   const completedCount = allItems.filter(item => {
     return completedLessons.includes(item.id) ||
-           completedLessons.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
+      completedLessons.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
   }).length;
 
   const percentage = Math.min(100, Math.round((completedCount / totalItems) * 100));
@@ -589,7 +589,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-  
+
   const [students, setStudents] = useState([]);
   const [staff, setStaff] = useState([]);
   const [enrollRole, setEnrollRole] = useState('student'); // 'student' | 'staff'
@@ -611,7 +611,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     const rawCourse = (s.enrolledCourse || '').toLowerCase();
     const courseLabel = getCourseLabel(s.enrolledCourse).toLowerCase();
     const courseMatch = rawCourse.includes(query) || courseLabel.includes(query);
-    
+
     const { percentage, completedCount, totalCount } = calculateStudentProgress(s);
     const progressMatch = `${percentage}%`.includes(query) || `${completedCount}/${totalCount}`.includes(query);
 
@@ -669,7 +669,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   }).filter(Boolean);
 
   // 2) Topic Homework Submissions from Students Backend
-  const topicSubmissions = students.flatMap(s => 
+  const topicSubmissions = students.flatMap(s =>
     (s.tasks || []).map(t => ({
       ...t,
       isHtmlCss: false,
@@ -752,7 +752,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   const [gradingLoading, setGradingLoading] = useState(false);
   const [newStudentName, setNewStudentName] = useState('');
   const [assignedCourse, setAssignedCourse] = useState('html_css');
-  
+
   // Student course editing states
   const [editingStudent, setEditingStudent] = useState(null);
   const [editingCourses, setEditingCourses] = useState('');
@@ -792,7 +792,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   const [newStaffName, setNewStaffName] = useState('');
   const [newStaffUsername, setNewStaffUsername] = useState('');
   const [newStaffPassword, setNewStaffPassword] = useState('');
-  
+
   const [adminError, setAdminError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
@@ -1117,7 +1117,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
   return (
     <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', minHeight: '100vh', width: '100%', background: 'var(--bg-color)', position: 'relative' }}>
-      
+
       {/* 📱 MOBILE STICKY HEADER BAR */}
       {isMobile && (
         <header style={{
@@ -1199,10 +1199,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       )}
 
       {/* 🧭 LEFT SIDE NAVIGATION PANEL (DESKTOP + MOBILE DRAWER) */}
-      <aside style={{ 
-        width: isMobile ? '280px' : '260px', 
-        background: '#ffffff', 
-        borderRight: '1px solid var(--surface-border)', 
+      <aside style={{
+        width: isMobile ? '280px' : '260px',
+        background: '#ffffff',
+        borderRight: '1px solid var(--surface-border)',
         padding: '2.25rem 1.25rem',
         display: 'flex',
         flexDirection: 'column',
@@ -1240,10 +1240,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
           {/* Navigation Links */}
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <button 
+            <button
               onClick={() => { setActiveTab('overview'); if (isMobile) setIsMobileMenuOpen(false); }}
               style={{
-                display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
+                display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem',
                 fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
                 background: activeTab === 'overview' ? 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)' : 'transparent',
                 color: activeTab === 'overview' ? '#ffffff' : 'var(--text-secondary)',
@@ -1254,10 +1254,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               <Grid size={18} /> Overview
             </button>
 
-            <button 
+            <button
               onClick={() => { setActiveTab('courses'); if (isMobile) setIsMobileMenuOpen(false); }}
               style={{
-                display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
+                display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem',
                 fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
                 background: activeTab === 'courses' ? 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)' : 'transparent',
                 color: activeTab === 'courses' ? '#ffffff' : 'var(--text-secondary)',
@@ -1273,11 +1273,11 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               <>
                 <div style={{ height: '1px', background: 'var(--surface-border)', margin: '1rem 0' }} />
                 <span style={{ fontSize: '0.68rem', color: 'var(--text-tertiary)', fontWeight: 800, textTransform: 'uppercase', paddingLeft: '1rem', marginBottom: '0.4rem', display: 'block', letterSpacing: '0.5px' }}>Administration</span>
-                
-                <button 
+
+                <button
                   onClick={() => { setActiveTab('register'); if (isMobile) setIsMobileMenuOpen(false); }}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
+                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem',
                     fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
                     background: activeTab === 'register' ? 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)' : 'transparent',
                     color: activeTab === 'register' ? '#ffffff' : 'var(--text-secondary)',
@@ -1288,10 +1288,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   <UserPlus size={18} /> Enroll Student
                 </button>
 
-                <button 
+                <button
                   onClick={() => { setActiveTab('database'); if (isMobile) setIsMobileMenuOpen(false); }}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
+                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem',
                     fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
                     background: activeTab === 'database' ? 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)' : 'transparent',
                     color: activeTab === 'database' ? '#ffffff' : 'var(--text-secondary)',
@@ -1302,10 +1302,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   <Users size={18} /> Live Database
                 </button>
 
-                <button 
+                <button
                   onClick={() => { setActiveTab('grading'); fetchStudents(); if (isMobile) setIsMobileMenuOpen(false); }}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
+                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem',
                     fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
                     background: activeTab === 'grading' ? 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)' : 'transparent',
                     color: activeTab === 'grading' ? '#ffffff' : 'var(--text-secondary)',
@@ -1331,10 +1331,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   )}
                 </button>
 
-                <button 
+                <button
                   onClick={() => { setActiveTab('certificates'); fetchStudents(); if (isMobile) setIsMobileMenuOpen(false); }}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
+                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem',
                     fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
                     background: activeTab === 'certificates' ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : 'transparent',
                     color: activeTab === 'certificates' ? '#ffffff' : 'var(--text-secondary)',
@@ -1350,10 +1350,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             {session?.role !== 'student' && (
               <>
                 <div style={{ height: '1px', background: 'var(--surface-border)', margin: '1rem 0' }} />
-                <button 
+                <button
                   onClick={() => { setActiveTab('demos'); if (isMobile) setIsMobileMenuOpen(false); }}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem', 
+                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem',
                     fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
                     background: activeTab === 'demos' ? 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)' : 'transparent',
                     color: activeTab === 'demos' ? '#ffffff' : 'var(--text-secondary)',
@@ -1369,20 +1369,20 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         </div>
 
         {/* Footer Account Details */}
-        <div style={{ 
-          background: 'var(--bg-color)', 
-          border: '1px solid var(--surface-border)', 
-          borderRadius: '16px', 
-          padding: '0.88rem', 
-          display: 'flex', 
-          flexDirection: 'column', 
+        <div style={{
+          background: 'var(--bg-color)',
+          border: '1px solid var(--surface-border)',
+          borderRadius: '16px',
+          padding: '0.88rem',
+          display: 'flex',
+          flexDirection: 'column',
           gap: '8px'
         }}>
           <div>
             <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{session.name}</div>
             <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--accent-primary)', textTransform: 'uppercase' }}>{session.role} Portal</div>
           </div>
-          <button 
+          <button
             onClick={onLogout}
             style={{
               width: '100%', background: 'rgba(239, 68, 68, 0.05)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.15)',
@@ -1399,7 +1399,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
       {/* 🖥️ MAIN WORKSPACE CONTENT CONTAINER */}
       <main style={{ flex: 1, padding: isMobile ? '1.25rem 1rem' : '3rem 4rem', minHeight: '100vh', overflowY: 'auto', minWidth: 0 }}>
-        
+
         {/* Dynamic header title based on active tab */}
         <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center', gap: '1rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.5rem', marginBottom: '2.5rem' }}>
           <div>
@@ -1422,7 +1422,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               {activeTab === 'certificates' && 'Upload completion certificates for students. Students can download them from their dashboard.'}
             </p>
           </div>
-          
+
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {session?.role !== 'student' && (
               <button
@@ -1457,10 +1457,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         {activeTab === 'overview' && session.role === 'student' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             {/* Student Welcome & Enrolled Course Highlight Banner */}
-            <div style={{ 
-              background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)', 
-              borderRadius: '24px', 
-              padding: '2.5rem', 
+            <div style={{
+              background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
+              borderRadius: '24px',
+              padding: '2.5rem',
               color: '#ffffff',
               boxShadow: 'var(--shadow-md)',
               position: 'relative',
@@ -1491,7 +1491,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               const totalItems = enrolledList.flatMap(m => m.items || []).length || 1;
               const completedInThisCourse = enrolledList.flatMap(m => m.items || []).filter(item => {
                 return completedLessons.includes(item.id) ||
-                       completedLessons.some(c => c.endsWith(`:${item.id}`));
+                  completedLessons.some(c => c.endsWith(`:${item.id}`));
               }).length;
 
               const progressPercent = Math.min(100, Math.round((completedInThisCourse / totalItems) * 100));
@@ -1512,7 +1512,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     </div>
                     <div style={{ marginTop: '1.5rem', borderTop: '1px solid var(--surface-border)', paddingTop: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.88rem', fontFamily: 'system-ui' }}>
                       <span style={{ color: 'var(--text-secondary)' }}>Completed <strong>{completedInThisCourse}</strong> of <strong>{totalItems}</strong> steps</span>
-                      <button 
+                      <button
                         onClick={() => {
                           const firstCourse = enrolledCourse ? enrolledCourse.split(',')[0] : 'html_css';
                           onSelectCourse(firstCourse);
@@ -1535,7 +1535,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                         Access all modules, interactive code play areas, and homework guides in your enrolled program.
                       </p>
                     </div>
-                    <button 
+                    <button
                       onClick={() => setActiveTab('courses')}
                       style={{
                         width: '100%', border: '1px solid var(--surface-border)', background: 'var(--bg-color)', color: 'var(--text-primary)',
@@ -1595,9 +1595,9 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                             </td>
                             <td style={{ padding: '1rem' }}>
                               {task.taskUrl ? (
-                                <a 
-                                  href={task.taskUrl} 
-                                  target="_blank" 
+                                <a
+                                  href={task.taskUrl}
+                                  target="_blank"
                                   rel="noopener noreferrer"
                                   style={{
                                     color: '#3b82f6', textDecoration: 'none', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px'
@@ -1722,7 +1722,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         {/* 📊 TAB 1: WORKSPACE OVERVIEW VIEW (ADMIN/STAFF ONLY) */}
         {activeTab === 'overview' && session.role !== 'student' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            
+
             {/* Quick Stats Grid */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
               <div style={{ background: 'var(--surface-color)', border: '1px solid var(--surface-border)', borderRadius: '20px', padding: '1.5rem', boxShadow: 'var(--shadow-sm)' }}>
@@ -1768,7 +1768,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             <div style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '2rem', marginTop: '1rem' }}>
               <h3 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', fontWeight: 800, marginBottom: '1rem' }}>Quick Actions Shortcuts</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div 
+                <div
                   onClick={() => setActiveTab('courses')}
                   style={{ background: '#ffffff', border: '1px solid var(--surface-border)', borderRadius: '16px', padding: '1.25rem', cursor: 'pointer', transition: 'var(--transition)', boxShadow: 'var(--shadow-sm)' }}
                   onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent-primary)'}
@@ -1778,7 +1778,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: 0 }}>Launch bootcamps, check syllabi, or run coding play areas.</p>
                 </div>
                 {(session?.role === 'admin' || session?.role === 'staff') && (
-                  <div 
+                  <div
                     onClick={() => setActiveTab('register')}
                     style={{ background: '#ffffff', border: '1px solid var(--surface-border)', borderRadius: '16px', padding: '1.25rem', cursor: 'pointer', transition: 'var(--transition)', boxShadow: 'var(--shadow-sm)' }}
                     onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent-primary)'}
@@ -1797,7 +1797,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         {/* 📚 TAB 2: COURSE CATALOG VIEW */}
         {activeTab === 'courses' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
-            
+
             {/* Main Course Categories Selector Cards */}
             <div>
               <div style={{ borderLeft: '4px solid var(--accent-primary)', paddingLeft: '1rem', marginBottom: '1.5rem' }}>
@@ -1806,10 +1806,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
                 {mainCourses.map(course => {
                   const isActive = activeMainCourse === course.id;
-                  
+
                   const hasEnrolledSubCourse = subCourses.some(sub => {
-                    const belongs = Array.isArray(sub.mainCourseId) 
-                      ? sub.mainCourseId.includes(course.id) 
+                    const belongs = Array.isArray(sub.mainCourseId)
+                      ? sub.mainCourseId.includes(course.id)
                       : sub.mainCourseId === course.id;
                     const enrolledList = enrolledCourse ? enrolledCourse.split(',') : [];
                     return belongs && (enrolledCourse === 'all' || enrolledList.includes(sub.enrolledKey));
@@ -1858,16 +1858,16 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                       }}
                     >
                       <div>
-                        <div style={{ 
-                          background: isActive ? 'rgba(255, 255, 255, 0.18)' : course.bgLight, 
-                          width: '48px', 
-                          height: '48px', 
-                          borderRadius: '12px', 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'center', 
+                        <div style={{
+                          background: isActive ? 'rgba(255, 255, 255, 0.18)' : course.bgLight,
+                          width: '48px',
+                          height: '48px',
+                          borderRadius: '12px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
                           color: isActive ? '#ffffff' : course.color,
-                          marginBottom: '1rem' 
+                          marginBottom: '1rem'
                         }}>
                           {course.icon}
                         </div>
@@ -1932,14 +1932,14 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
                 {subCourses
                   .filter(sub => {
-                    return Array.isArray(sub.mainCourseId) 
-                      ? sub.mainCourseId.includes(activeMainCourse) 
+                    return Array.isArray(sub.mainCourseId)
+                      ? sub.mainCourseId.includes(activeMainCourse)
                       : sub.mainCourseId === activeMainCourse;
                   })
                   .map(sub => {
                     const enrolledList = enrolledCourse ? enrolledCourse.split(',') : [];
                     const isEnrolled = enrolledCourse === 'all' || enrolledList.includes(sub.enrolledKey);
-                    
+
                     return (
                       <div
                         key={sub.id}
@@ -1978,13 +1978,13 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                         }}
                       >
                         <div>
-                          <div style={{ 
-                            background: sub.bgColor, 
-                            width: '54px', 
-                            height: '54px', 
-                            borderRadius: '12px', 
-                            display: 'flex', 
-                            alignItems: 'center', 
+                          <div style={{
+                            background: sub.bgColor,
+                            width: '54px',
+                            height: '54px',
+                            borderRadius: '12px',
+                            display: 'flex',
+                            alignItems: 'center',
                             justifyContent: 'center',
                             marginBottom: '1.2rem',
                             color: sub.borderColor
@@ -1998,20 +1998,20 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                             {sub.desc}
                           </p>
                         </div>
-                        
-                        <div style={{ 
-                          display: 'flex', 
-                          justifyContent: 'space-between', 
-                          alignItems: 'center', 
-                          marginTop: '2rem', 
-                          borderTop: '1px solid var(--surface-border)', 
+
+                        <div style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          marginTop: '2rem',
+                          borderTop: '1px solid var(--surface-border)',
                           paddingTop: '1rem',
                           gap: '12px'
                         }}>
                           <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
                             {sub.modulesCount}
                           </span>
-                          
+
                           {isEnrolled ? (
                             <span style={{ fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', color: sub.borderColor, flexShrink: 0 }}>
                               Start Course <ArrowRight size={14} />
@@ -2034,7 +2034,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         {/* 👤 TAB 3: REGISTER NEW STUDENT/STAFF FORM VIEW */}
         {activeTab === 'register' && (session?.role === 'admin' || session?.role === 'staff') && (
           <div style={{ maxWidth: '600px', background: 'var(--surface-color)', border: '1px solid var(--surface-border)', borderRadius: '24px', padding: '2.5rem', boxShadow: 'var(--shadow-md)' }}>
-            
+
             {/* Toggle tabs for Admin role selection */}
             {session?.role === 'admin' && (
               <div style={{ display: 'flex', background: '#f1f5f9', padding: '0.3rem', borderRadius: '12px', marginBottom: '1.5rem' }}>
@@ -2070,10 +2070,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontWeight: 800, fontSize: '1.25rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
                   <UserPlus size={24} color="#3b82f6" /> Enroll New Student Record
                 </div>
-                
+
                 <div>
                   <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Student Full Name</label>
-                  <input 
+                  <input
                     value={newStudentName}
                     onChange={e => setNewStudentName(e.target.value)}
                     placeholder="Enter name..."
@@ -2083,34 +2083,34 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
                 <div>
                   <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Select Curriculums Pathways (Enroll in multiple)</label>
-                  <div style={{ 
-                    maxHeight: '220px', 
-                    overflowY: 'auto', 
-                    border: '1px solid var(--surface-border)', 
-                    borderRadius: '12px', 
+                  <div style={{
+                    maxHeight: '220px',
+                    overflowY: 'auto',
+                    border: '1px solid var(--surface-border)',
+                    borderRadius: '12px',
                     padding: '1rem',
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', 
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
                     gap: '0.75rem',
                     background: '#f8fafc'
                   }}>
                     {availableCourseOptions.map(course => {
                       const isChecked = (assignedCourse || '').split(',').includes(course.value);
                       return (
-                        <label 
-                          key={course.value} 
-                          style={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: '8px', 
+                        <label
+                          key={course.value}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
                             cursor: 'pointer',
                             fontSize: '0.9rem',
                             fontWeight: isChecked ? 700 : 500,
                             color: isChecked ? 'var(--accent-primary)' : 'var(--text-primary)'
                           }}
                         >
-                          <input 
-                            type="checkbox" 
+                          <input
+                            type="checkbox"
                             checked={isChecked}
                             onChange={() => {
                               const list = assignedCourse ? assignedCourse.split(',') : [];
@@ -2134,7 +2134,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
                 {adminError && <div style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #ef4444' }}>⚠️ {adminError}</div>}
                 {successMsg && <div style={{ color: '#10b981', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(16, 185, 129, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #10b981' }}>{successMsg}</div>}
-                
+
                 <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.8rem', borderRadius: '12px' }}>
                   Generate Student Access Code
                 </button>
@@ -2144,10 +2144,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontWeight: 800, fontSize: '1.25rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
                   <UserPlus size={24} color="#6366f1" /> Enroll New Staff Tutor
                 </div>
-                
+
                 <div>
                   <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Tutor Full Name</label>
-                  <input 
+                  <input
                     value={newStaffName}
                     onChange={e => setNewStaffName(e.target.value)}
                     placeholder="Enter tutor name..."
@@ -2157,7 +2157,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
                 <div>
                   <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Username ID</label>
-                  <input 
+                  <input
                     value={newStaffUsername}
                     onChange={e => setNewStaffUsername(e.target.value)}
                     placeholder="Enter login username ID..."
@@ -2167,7 +2167,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
                 <div>
                   <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Password Key</label>
-                  <input 
+                  <input
                     type="text"
                     value={newStaffPassword}
                     onChange={e => setNewStaffPassword(e.target.value)}
@@ -2178,7 +2178,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
                 {adminError && <div style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #ef4444' }}>⚠️ {adminError}</div>}
                 {successMsg && <div style={{ color: '#10b981', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(16, 185, 129, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #10b981' }}>{successMsg}</div>}
-                
+
                 <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' }}>
                   Create Staff Credentials
                 </button>
@@ -2191,7 +2191,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         {/* 🗄️ TAB 4: LIVE USER DATABASE VIEW */}
         {activeTab === 'database' && (session?.role === 'admin' || session?.role === 'staff') && (
           <div style={{ background: 'var(--surface-color)', border: '1px solid var(--surface-border)', borderRadius: '24px', padding: '2rem', boxShadow: 'var(--shadow-md)' }}>
-            
+
             {/* Toggle tabs for Admin database selection */}
             {session?.role === 'admin' && (
               <div style={{ display: 'flex', background: '#f1f5f9', padding: '0.3rem', borderRadius: '12px', marginBottom: '1.5rem' }}>
@@ -2224,18 +2224,18 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
             {dbTab === 'students' ? (
               <>
-                <div style={{ 
-                  display: 'flex', 
-                  flexDirection: isMobile ? 'column' : 'row', 
-                  alignItems: isMobile ? 'flex-start' : 'center', 
-                  justifyContent: 'space-between', 
-                  gap: '1rem', 
-                  marginBottom: '1.5rem', 
-                  borderBottom: '1px solid var(--surface-border)', 
-                  paddingBottom: '1rem' 
+                <div style={{
+                  display: 'flex',
+                  flexDirection: isMobile ? 'column' : 'row',
+                  alignItems: isMobile ? 'flex-start' : 'center',
+                  justifyContent: 'space-between',
+                  gap: '1rem',
+                  marginBottom: '1.5rem',
+                  borderBottom: '1px solid var(--surface-border)',
+                  paddingBottom: '1rem'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-primary)', fontWeight: 800, fontSize: '1.25rem' }}>
-                    <Users size={24} color="#10b981" /> 
+                    <Users size={24} color="#10b981" />
                     <span>Enrolled Student Credentials Directory</span>
                     <span style={{
                       background: 'rgba(16, 185, 129, 0.1)',
@@ -2250,11 +2250,11 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   </div>
 
                   {/* Search Bar */}
-                  <div style={{ 
-                    position: 'relative', 
-                    width: isMobile ? '100%' : '320px', 
-                    display: 'flex', 
-                    alignItems: 'center' 
+                  <div style={{
+                    position: 'relative',
+                    width: isMobile ? '100%' : '320px',
+                    display: 'flex',
+                    alignItems: 'center'
                   }}>
                     <Search size={18} style={{ position: 'absolute', left: '12px', color: '#94a3b8', pointerEvents: 'none' }} />
                     <input
@@ -2399,7 +2399,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                         {/* Individual Course Micro Pills */}
                                         <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '2px' }}>
                                           {detailed.slice(0, 3).map(c => (
-                                            <span 
+                                            <span
                                               key={c.courseKey}
                                               style={{
                                                 fontSize: '0.7rem',
@@ -2478,14 +2478,14 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                   )}
                                 </td>
                                 <td style={{ padding: '1rem 1.25rem', textAlign: 'center', whiteSpace: 'nowrap' }}>
-                                  <button 
+                                  <button
                                     onClick={() => handleOpenEditCoursesModal(s)}
                                     style={{ background: '#eff6ff', border: '1px solid #bfdbfe', color: '#2563eb', fontWeight: 800, cursor: 'pointer', fontSize: '0.8rem', padding: '0.35rem 0.75rem', borderRadius: '8px', marginRight: '6px' }}
                                   >
                                     Edit Tracks
                                   </button>
                                   {s.deviceId && (
-                                    <button 
+                                    <button
                                       onClick={() => handleResetDevice(s._id || s.id)}
                                       style={{ background: '#fffbe8', border: '1px solid #fde68a', color: '#d97706', fontWeight: 800, cursor: 'pointer', fontSize: '0.8rem', padding: '0.35rem 0.75rem', borderRadius: '8px', marginRight: '6px' }}
                                     >
@@ -2493,7 +2493,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                     </button>
                                   )}
                                   {session?.role === 'admin' && (
-                                    <button 
+                                    <button
                                       onClick={() => handleDeleteStudent(s._id || s.id)}
                                       style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#ef4444', fontWeight: 800, cursor: 'pointer', fontSize: '0.8rem', padding: '0.35rem 0.75rem', borderRadius: '8px' }}
                                     >
@@ -2646,14 +2646,14 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                 >
                                   <Copy size={12} /> Copy Link
                                 </button>
-                                <button 
+                                <button
                                   onClick={() => handleOpenEditCoursesModal(s)}
                                   style={{ background: '#eff6ff', border: '1px solid #bfdbfe', color: '#2563eb', fontWeight: 800, cursor: 'pointer', fontSize: '0.78rem', padding: '0.45rem 0.6rem', borderRadius: '8px' }}
                                 >
                                   Edit Tracks
                                 </button>
                                 {s.deviceId && (
-                                  <button 
+                                  <button
                                     onClick={() => handleResetDevice(s._id || s.id)}
                                     style={{ background: '#fffbe8', border: '1px solid #fde68a', color: '#d97706', fontWeight: 800, cursor: 'pointer', fontSize: '0.78rem', padding: '0.45rem 0.6rem', borderRadius: '8px' }}
                                   >
@@ -2661,7 +2661,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                   </button>
                                 )}
                                 {session?.role === 'admin' && (
-                                  <button 
+                                  <button
                                     onClick={() => handleDeleteStudent(s._id || s.id)}
                                     style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#ef4444', fontWeight: 800, cursor: 'pointer', fontSize: '0.78rem', padding: '0.45rem 0.6rem', borderRadius: '8px' }}
                                   >
@@ -2676,14 +2676,14 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     )}
 
                     {/* Pagination Controls */}
-                    <div style={{ 
-                      display: 'flex', 
+                    <div style={{
+                      display: 'flex',
                       flexDirection: isMobile ? 'column' : 'row',
-                      alignItems: 'center', 
-                      justifyContent: 'space-between', 
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
                       gap: '1rem',
-                      marginTop: '1.25rem', 
-                      paddingTop: '1rem', 
+                      marginTop: '1.25rem',
+                      paddingTop: '1rem',
                       borderTop: '1px solid var(--surface-border)',
                       fontSize: '0.85rem',
                       color: 'var(--text-secondary)'
@@ -2784,7 +2784,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-secondary)' }}>
                     <Users size={48} style={{ opacity: 0.3, marginBottom: '1rem' }} />
                     <p>
-                      {studentSearch 
+                      {studentSearch
                         ? `No students found matching "${studentSearch}". Try clearing your search.`
                         : 'No registered students found in database. Enroll new records above.'
                       }
@@ -2797,7 +2797,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontWeight: 800, fontSize: '1.25rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
                   <Users size={24} color="#6366f1" /> Active Staff Instructors Directory
                 </div>
-                
+
                 {staff.length > 0 ? (
                   <div style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid var(--surface-border)' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
@@ -2816,7 +2816,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                             <td style={{ padding: '1rem', fontFamily: 'monospace', fontWeight: 700 }}>{t.username}</td>
                             <td style={{ padding: '1rem', color: 'var(--text-secondary)' }}>{t.password}</td>
                             <td style={{ padding: '1rem', textAlign: 'center' }}>
-                              <button 
+                              <button
                                 onClick={() => handleDeleteStaff(t._id || t.id)}
                                 style={{ background: 'none', border: 'none', color: '#ef4444', fontWeight: 800, cursor: 'pointer', fontSize: '0.85rem' }}
                               >
@@ -2843,7 +2843,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         {/* 🟢 TAB 5: INDUCTION & DEMO CLASSES */}
         {activeTab === 'demos' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            
+
             <div
               onClick={() => onSelectCourse('induction')}
               style={{
@@ -3049,7 +3049,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         {/* 📝 TAB 6: UNIFIED REVIEW AND EVALUATION CENTER (STAFF/ADMIN ONLY) */}
         {activeTab === 'grading' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            
+
             {/* 📊 1) KPI Metrics Summary Bar */}
             {(() => {
               const approvedCount = allSubmissions.filter(s => s.status === 'Approved').length;
@@ -3588,7 +3588,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginBottom: '0.5rem', fontFamily: 'system-ui' }}>
                   Review Status
                 </label>
-                <select 
+                <select
                   value={gradingStatus}
                   onChange={(e) => setGradingStatus(e.target.value)}
                   style={{

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  ChevronRight, ChevronLeft, Menu, X, Star, Award, Users, TrendingUp, Shield, Zap, BookOpen, 
-  Target, CheckCircle, Play, Mail, Phone, LogIn, Key, ShieldAlert, Sparkles, 
+import {
+  ChevronRight, ChevronLeft, Menu, X, Star, Award, Users, TrendingUp, Shield, Zap, BookOpen,
+  Target, CheckCircle, Play, Mail, Phone, LogIn, Key, ShieldAlert, Sparkles,
   Database, Code, Bot, Brain, Terminal, Layers, ArrowRight, BarChart3, Clock, MessageCircle, Send,
   MapPin, GitBranch, Server
 } from 'lucide-react';
@@ -232,8 +232,8 @@ function FeaturesSection() {
                 background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px', padding: '2rem',
                 boxShadow: 'var(--shadow-sm)', transition: 'var(--transition)', display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'center'
               }}
-              onMouseEnter={e => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}
-              onMouseLeave={e => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}
+                onMouseEnter={e => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}
+                onMouseLeave={e => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}
               >
                 <div style={{
                   background: f.color, width: '64px', height: '64px', borderRadius: '50%',
@@ -265,178 +265,178 @@ function CourseCarouselSection() {
   }, []);
 
   const coursesCatalog = [
-    { 
-      title: 'Web Design (HTML, CSS & Bootstrap)', 
-      modules: '12 Modules', 
-      desc: 'Build responsive layouts using semantic structures, CSS Grid, Flexbox, and Bootstrap.', 
+    {
+      title: 'Web Design (HTML, CSS & Bootstrap)',
+      modules: '12 Modules',
+      desc: 'Build responsive layouts using semantic structures, CSS Grid, Flexbox, and Bootstrap.',
       icon: <Layers size={24} />,
       color: '#2563eb', bg: 'rgba(37, 99, 235, 0.08)', accent: '#3b82f6',
       topics: ['HTML5 Semantic Elements & Media Tags', 'CSS3 Selectors & Box Model Layouts', 'Flexbox & CSS Grid Alignment', 'Bootstrap Grid System & Utility Classes', 'Responsive Media Queries & Custom Portfolios']
     },
-    { 
-      title: 'AI-Powered SQL Course', 
-      modules: '9 Modules', 
-      desc: 'Master relational databases, write DDL/DML, and optimize statements with AI assistants.', 
+    {
+      title: 'AI-Powered SQL Course',
+      modules: '9 Modules',
+      desc: 'Master relational databases, write DDL/DML, and optimize statements with AI assistants.',
       icon: <Database size={24} />,
       color: '#059669', bg: 'rgba(5, 150, 105, 0.08)', accent: '#10b981',
       topics: ['Introduction to Relational DB & DDL Queries', 'DML Statements (Insert, Update, Delete)', 'SELECT Queries, WHERE Filters & ORDER BY', 'Relational Joins & Set Operations', 'Database Views, Subqueries & Indexes']
     },
-    { 
-      title: 'SQL for Data Analytics', 
-      modules: '8 Modules + Capstone', 
-      desc: 'Solve real-world sales and retail problems using SQL joins, aggregates, and window functions.', 
+    {
+      title: 'SQL for Data Analytics',
+      modules: '8 Modules + Capstone',
+      desc: 'Solve real-world sales and retail problems using SQL joins, aggregates, and window functions.',
       icon: <Database size={24} />,
       color: '#0284c7', bg: 'rgba(2, 132, 199, 0.08)', accent: '#0ea5e9',
       topics: ['Analytic SQL Functions & GROUP BY Queries', 'Advanced Window Functions (ROW_NUMBER, RANK)', 'Common Table Expressions (CTEs) & Subqueries', 'Data Normalization & Star Schema Design', 'Sales Performance Analytics Capstone']
     },
-    { 
-      title: 'Python Core & OOPs Course', 
-      modules: '13 Modules', 
-      desc: 'Master variables, loops, file streams, regex, and core object-oriented structures in Python.', 
+    {
+      title: 'Python Core & OOPs Course',
+      modules: '13 Modules',
+      desc: 'Master variables, loops, file streams, regex, and core object-oriented structures in Python.',
       icon: <Terminal size={24} />,
       color: '#d97706', bg: 'rgba(217, 119, 6, 0.08)', accent: '#f59e0b',
       topics: ['Python Syntax, Variables & Dynamic Typing', 'Control Flow Statements & Loop Loops', 'Functions, Return Values & Scope Limits', 'Object-Oriented Programming (Classes, Inheritance)', 'File Handling Operations & Regular Expressions']
     },
-    { 
-      title: 'Python for Data Analytics', 
-      modules: '8 Modules', 
-      desc: 'Master core programming constructs, files, regex, and data manipulation setups for analysts.', 
+    {
+      title: 'Python for Data Analytics',
+      modules: '8 Modules',
+      desc: 'Master core programming constructs, files, regex, and data manipulation setups for analysts.',
       icon: <Terminal size={24} />,
       color: '#b45309', bg: 'rgba(180, 83, 9, 0.08)', accent: '#d97706',
       topics: ['Introduction to Python for Data Analysis', 'Advanced List Comprehensions & Lambdas', 'Data Streams & Text Processing Pipelines', 'Exception Handling & Clean Code Rules', 'Data Extraction Case Studies']
     },
-    { 
-      title: 'JavaScript Programming Course', 
-      modules: '10 Modules', 
-      desc: 'Learn core scripting logic, variables, complex data types, and ES6+ features with modern tools.', 
+    {
+      title: 'JavaScript Programming Course',
+      modules: '10 Modules',
+      desc: 'Learn core scripting logic, variables, complex data types, and ES6+ features with modern tools.',
       icon: <Code size={24} />,
       color: '#ca8a04', bg: 'rgba(202, 138, 4, 0.08)', accent: '#eab308',
       topics: ['Variables (var, let, const) & Data Types', 'Conditional Logic & Loop Iterators', 'Functions, Parameters & Execution Scopes', 'DOM Manipulations & Event Listeners', 'ES6 Modules & Package Import/Exports']
     },
-    { 
-      title: 'Core JavaScript', 
-      modules: '1 Day (1 Module)', 
-      desc: 'Master JavaScript fundamentals, variable scopes, data types, and execution context.', 
+    {
+      title: 'Core JavaScript',
+      modules: '1 Day (1 Module)',
+      desc: 'Master JavaScript fundamentals, variable scopes, data types, and execution context.',
       icon: <Code size={24} />,
       color: '#854d0e', bg: 'rgba(133, 77, 14, 0.08)', accent: '#ca8a04',
       topics: ['Execution Context & Scope Chains', 'Functional Scope vs Block Scopes', 'DOM Dynamic Nodes Manipulation', 'ES6 Variables & Native Arrays Methods']
     },
-    { 
-      title: 'React JS Development', 
-      modules: '15 Modules', 
-      desc: 'Master component-driven architecture, declarative state models, DOM reconciliation, and Vite.', 
+    {
+      title: 'React JS Development',
+      modules: '15 Modules',
+      desc: 'Master component-driven architecture, declarative state models, DOM reconciliation, and Vite.',
       icon: <Layers size={24} />,
       color: '#0891b2', bg: 'rgba(8, 145, 178, 0.08)', accent: '#06b6d4',
       topics: ['React Component Trees & Props Structures', 'Declarative Local States & Event Handling', 'React Hooks (useState, useEffect, useRef)', 'Vite Bundler & Dynamic Import Splits', 'Single Page Application Routing Hooks']
     },
-    { 
-      title: 'Git & GitHub', 
-      modules: '2 Modules', 
-      desc: 'Master local Git version control histories, branch merging, conflicts, and remote pushes.', 
+    {
+      title: 'Git & GitHub',
+      modules: '2 Modules',
+      desc: 'Master local Git version control histories, branch merging, conflicts, and remote pushes.',
       icon: <GitBranch size={24} />,
       color: '#4f46e5', bg: 'rgba(79, 70, 229, 0.08)', accent: '#6366f1',
       topics: ['Git Repository Init & Local Commits', 'Staging Area, git diff & Working Directories', 'GitHub Remotes, Repository Push & Pulls', 'Branch Management, Merging & Conflicts Resolution']
     },
-    { 
-      title: 'JSON Essentials', 
-      modules: '1 Module', 
-      desc: 'Learn standard JSON schema specifications, serialization, parsing, and validations.', 
+    {
+      title: 'JSON Essentials',
+      modules: '1 Module',
+      desc: 'Learn standard JSON schema specifications, serialization, parsing, and validations.',
       icon: <Code size={24} />,
       color: '#be185d', bg: 'rgba(190, 24, 93, 0.08)', accent: '#ec4899',
       topics: ['JSON Schema Specifications & Syntaxes', 'JSON Serialization & De-serialization Maps', 'Client-Server JSON Data Transfer Schemas']
     },
-    { 
-      title: 'Django Framework', 
-      modules: '10 Modules', 
-      desc: 'Master Python backend servers, MVT model systems, ORM databases, and built-in Admin portal.', 
+    {
+      title: 'Django Framework',
+      modules: '10 Modules',
+      desc: 'Master Python backend servers, MVT model systems, ORM databases, and built-in Admin portal.',
       icon: <Server size={24} />,
       color: '#15803d', bg: 'rgba(21, 128, 61, 0.08)', accent: '#22c55e',
       topics: ['Django MVT (Model-View-Template) Pattern', 'Routing and URLs Mapping Parameters', 'Django ORM Models & SQLite Configurations', 'Built-in Admin Panel Dashboards Customization', 'Template Context Variables & Template Tags']
     },
-    { 
-      title: 'DevOps & Cloud Deploy', 
-      modules: '3 Modules', 
-      desc: 'Master continuous deployments, web servers config, lock configs, and cloud hosting.', 
+    {
+      title: 'DevOps & Cloud Deploy',
+      modules: '3 Modules',
+      desc: 'Master continuous deployments, web servers config, lock configs, and cloud hosting.',
       icon: <Server size={24} />,
       color: '#7c3aed', bg: 'rgba(124, 58, 237, 0.08)', accent: '#8b5cf6',
       topics: ['Local Hosting Servers Setup & Configurations', 'Server Configuration Locking Strategies', 'Vite App Bundles Production Deployment']
     },
-    { 
-      title: 'Summer SQL Crash Course', 
-      modules: '7 Modules', 
-      desc: 'Learn primary relational commands, simple select filters, group calculations, and database structures.', 
+    {
+      title: 'Summer SQL Crash Course',
+      modules: '7 Modules',
+      desc: 'Learn primary relational commands, simple select filters, group calculations, and database structures.',
       icon: <Database size={24} />,
       color: '#c2410c', bg: 'rgba(194, 65, 12, 0.08)', accent: '#f97316',
       topics: ['Relational Database Entities & Primary Keys', 'Relational Table Schema Configurations', 'Filtering Operators & Basic Join Queries', 'Aggregations & Math Analysis Operations']
     },
-    { 
-      title: 'Generative AI Masterclass', 
-      modules: '20 Days (4 Modules)', 
-      desc: 'Master prompt structuring, token contexts, API structures, context constraints, and ethics.', 
+    {
+      title: 'Generative AI Masterclass',
+      modules: '20 Days (4 Modules)',
+      desc: 'Master prompt structuring, token contexts, API structures, context constraints, and ethics.',
       icon: <Bot size={24} />,
       color: '#6d28d9', bg: 'rgba(109, 40, 217, 0.08)', accent: '#7c3aed',
       topics: ['Prompt Construction Systems & Engineering Rules', 'Tokenizer Systems & Word Token Map Visuals', 'In-Context Examples & Output Constraints', 'AI Ethics, Privacy & Safety Guidelines']
     },
-    { 
-      title: 'Agentic AI Engineering', 
-      modules: '40 Days (8 Modules)', 
-      desc: 'Master multi-agent systems, CrewAI schemas, Agno AI tools calling, and LangChain loops.', 
+    {
+      title: 'Agentic AI Engineering',
+      modules: '40 Days (8 Modules)',
+      desc: 'Master multi-agent systems, CrewAI schemas, Agno AI tools calling, and LangChain loops.',
       icon: <Brain size={24} />,
       color: '#4338ca', bg: 'rgba(67, 56, 202, 0.08)', accent: '#4f46e5',
       topics: ['Multi-Agent Collaborative Design Patterns', 'CrewAI Agent Roles & Tasks Definitions', 'Tool Calling Orchestrations & Custom APIs', 'Agentic Router Workflows & Loop Control']
     },
-    { 
-      title: 'Power BI Data Analytics', 
-      modules: '8 Days (8 Modules)', 
-      desc: 'Master data modeling, ETL Power Query pipelines, DAX metrics engineering, and dashboard reports.', 
+    {
+      title: 'Power BI Data Analytics',
+      modules: '8 Days (8 Modules)',
+      desc: 'Master data modeling, ETL Power Query pipelines, DAX metrics engineering, and dashboard reports.',
       icon: <BarChart3 size={24} />,
       color: '#a21caf', bg: 'rgba(162, 28, 175, 0.08)', accent: '#d946ef',
       topics: ['ETL Data Pipelines & Power Query Editors', 'Relational Data Modeling & Star Schemas', 'Calculated Columns vs Measures Calculations', 'DAX Syntax Rules & Math Formulations', 'Dynamic Visualizations & Report Dashboards']
     },
-    { 
-      title: 'Statistics for Data Analytics', 
-      modules: '17 Days', 
-      desc: 'Master descriptive & inferential stats, probability, hypothesis testing, and regressions.', 
+    {
+      title: 'Statistics for Data Analytics',
+      modules: '17 Days',
+      desc: 'Master descriptive & inferential stats, probability, hypothesis testing, and regressions.',
       icon: <BarChart3 size={24} />,
       color: '#0369a1', bg: 'rgba(3, 105, 161, 0.08)', accent: '#0284c7',
       topics: ['Descriptive Stats (Mean, Median, Mode)', 'Measures of Dispersion (Variance, StdDev)', 'Probability Theories & Central Limit Theorem', 'Hypothesis Testing Frameworks & P-Values', 'Confidence Intervals & Data Skewness Checks']
     },
-    { 
-      title: 'NumPy for Data Science', 
-      modules: '1 Day (Module 1)', 
-      desc: 'Master multi-dimensional array operations, scientific calculations, indexing, and masking.', 
+    {
+      title: 'NumPy for Data Science',
+      modules: '1 Day (Module 1)',
+      desc: 'Master multi-dimensional array operations, scientific calculations, indexing, and masking.',
       icon: <Code size={24} />,
       color: '#475569', bg: 'rgba(71, 85, 105, 0.08)', accent: '#64748b',
       topics: ['Vectorized Array Calculations & Memory Layouts', 'Array Slicing, Reshaping & Transformations', 'Boolean Masking Filters & Mathematical Operations']
     },
-    { 
-      title: 'Pandas for Data Science', 
-      modules: '6 Days (6 Modules)', 
-      desc: 'Master DataFrame operations, Series, data ingestion, filtering, grouping, and EDA in Pandas.', 
+    {
+      title: 'Pandas for Data Science',
+      modules: '6 Days (6 Modules)',
+      desc: 'Master DataFrame operations, Series, data ingestion, filtering, grouping, and EDA in Pandas.',
       icon: <Database size={24} />,
       color: '#1e3a8a', bg: 'rgba(30, 58, 138, 0.08)', accent: '#1e40af',
       topics: ['Pandas Series & DataFrames Data Ingestions', 'DataFrame Filtering, Slicing & Subsettings', 'Null Data Cleaning & Typings Replacements', 'Grouping Data & Advanced Aggregations Methods', 'Exploratory Data Analysis Case Studies']
     },
-    { 
-      title: 'Matplotlib for Data Science', 
-      modules: '5 Days (5 Modules)', 
-      desc: 'Master data visualization, line/bar/scatter charting styles, subplots, and annotations.', 
+    {
+      title: 'Matplotlib for Data Science',
+      modules: '5 Days (5 Modules)',
+      desc: 'Master data visualization, line/bar/scatter charting styles, subplots, and annotations.',
       icon: <BarChart3 size={24} />,
       color: '#e11d48', bg: 'rgba(225, 29, 72, 0.08)', accent: '#f43f5e',
       topics: ['Custom Line & Bar Charts Layouts Customization', 'Scatter Plotting & Data Distributions Mappings', 'Subplots Grids Configurations & Layout Padding', 'Dynamic Annotations & Legends Formatting']
     },
-    { 
-      title: 'Seaborn for Data Science', 
-      modules: '4 Days (4 Modules)', 
-      desc: 'Master professional statistical plots, categorical box/violin charts, and heatmaps.', 
+    {
+      title: 'Seaborn for Data Science',
+      modules: '4 Days (4 Modules)',
+      desc: 'Master professional statistical plots, categorical box/violin charts, and heatmaps.',
       icon: <Layers size={24} />,
       color: '#0f766e', bg: 'rgba(15, 118, 110, 0.08)', accent: '#14b8a6',
       topics: ['Statistical Grid Plots & Relationships Mappings', 'Categorical Box Plots & Violin Curves Charts', 'Correlation Matrix Heatmaps Color Customization', 'Clean Grid Themes & Color Palettes Configurations']
     },
-    { 
-      title: 'AI powered Tally', 
-      modules: '5 Modules (41 Days)', 
-      desc: 'Master double-entry accounting, GST, TDS, inventory audits, bank reconciliation, and AI-assisted financial checking.', 
+    {
+      title: 'AI powered Tally',
+      modules: '5 Modules',
+      desc: 'Master double-entry accounting, GST, TDS, inventory audits, bank reconciliation, and AI-assisted financial checking.',
       icon: <Database size={24} />,
       color: '#047857', bg: 'rgba(4, 120, 87, 0.08)', accent: '#10b981',
       topics: ['Double-Entry Ledger & Voucher Entries', 'Educational Mode Multi-currency Transactions', 'Statutory GST & TDS Return Fillings Diagnostics', 'Bank Reconciliations & Cost Center Budgets', 'AI-Powered Accounting Audits & Capstone Review']
@@ -459,7 +459,7 @@ function CourseCarouselSection() {
     }, 4000);
     return () => clearInterval(interval);
   }, [maxIndex, selectedCourse]);
-  
+
   const handlePrev = () => {
     setCurrentIndex(prev => Math.max(0, prev - 1));
   };
@@ -470,7 +470,7 @@ function CourseCarouselSection() {
   return (
     <section id="courses" style={{ padding: '5rem 2rem', background: '#f8fafc' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
-        
+
         <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
           <span style={{
             background: 'rgba(59, 130, 246, 0.08)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.15)',
@@ -487,7 +487,7 @@ function CourseCarouselSection() {
         {/* Carousel Container */}
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center', padding: '0 1rem' }}>
           {/* Left Arrow */}
-          <button 
+          <button
             onClick={handlePrev}
             disabled={currentIndex === 0}
             style={{
@@ -514,7 +514,7 @@ function CourseCarouselSection() {
                   padding: '0 12px',
                   boxSizing: 'border-box'
                 }}>
-                  <div 
+                  <div
                     onClick={() => setSelectedCourse(c)}
                     style={{
                       background: '#ffffff', border: '1px solid #e2e8f0', borderTop: `4px solid ${c.accent}`, borderRadius: '24px', padding: '2rem',
@@ -552,7 +552,7 @@ function CourseCarouselSection() {
           </div>
 
           {/* Right Arrow */}
-          <button 
+          <button
             onClick={handleNext}
             disabled={currentIndex === maxIndex}
             style={{
@@ -579,7 +579,7 @@ function CourseCarouselSection() {
               boxShadow: '0 20px 50px rgba(0,0,0,0.15)', maxHeight: '90vh', overflowY: 'auto', position: 'relative'
             }}>
               {/* Close Icon Button */}
-              <button 
+              <button
                 onClick={() => setSelectedCourse(null)}
                 style={{
                   position: 'absolute', top: '1.25rem', right: '1.25rem', background: 'none', border: 'none',
@@ -665,7 +665,7 @@ function TestimonialsSection() {
   return (
     <section id="testimonials" style={{ padding: '5rem 2rem', background: '#ffffff' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        
+
         <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
           <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
             What Our <span style={{ background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Students Say</span>
@@ -702,7 +702,7 @@ function ContactSection() {
   return (
     <section id="contact" style={{ padding: '5rem 2rem', background: '#f8fafc', position: 'relative' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        
+
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
             Ready to Start Your <span style={{ background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Learning Journey?</span>
@@ -713,12 +713,12 @@ function ContactSection() {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3.5rem' }}>
-          
+
           {/* Left Column: Form */}
           <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '24px', padding: '2.5rem', boxShadow: 'var(--shadow-sm)' }}>
             <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.4rem' }}>Send us a Message</h3>
             <p style={{ color: '#64748b', fontSize: '0.88rem', marginBottom: '2rem' }}>We'll get back to you within 24 hours</p>
-            
+
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
@@ -900,7 +900,7 @@ function CourseChatbot() {
         </button>
       ) : (
         <div style={{ width: '380px', height: '540px', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          
+
           {/* Header */}
           <div style={{ background: 'linear-gradient(135deg, #1e40af 0%, #4f46e5 100%)', padding: '1.25rem', color: '#ffffff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -1140,14 +1140,14 @@ export default function LandingPage({ onLoginSuccess }) {
 
   return (
     <div style={{ fontFamily: 'var(--font-family)', background: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      
+
       {/* ⏳ Countdown Banner */}
       <CountdownTimer />
 
       {/* 🧭 NAVIGATION BAR */}
       <header style={{ background: '#ffffff', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 90, boxShadow: 'var(--shadow-sm)', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', boxSizing: 'border-box' }}>
         <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxSizing: 'border-box' }}>
-          
+
           {/* Logo brand */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <img src="images/logo1.png" alt="Alpha Fly Logo" style={{ height: isMobile ? '48px' : '72px', width: 'auto' }} />
@@ -1175,11 +1175,11 @@ export default function LandingPage({ onLoginSuccess }) {
               <a href="#courses" style={{ textDecoration: 'none', color: '#475569', fontWeight: 600, fontSize: '0.95rem' }}>Courses</a>
               <a href="#why-choose" style={{ textDecoration: 'none', color: '#475569', fontWeight: 600, fontSize: '0.95rem' }}>Why Choose Us</a>
               <a href="#contact" style={{ textDecoration: 'none', color: '#475569', fontWeight: 600, fontSize: '0.95rem' }}>Contact</a>
-              
-              <button 
+
+              <button
                 onClick={() => setIsLoginModalOpen(true)}
                 style={{
-                  background: '#1e40af', color: '#ffffff', border: 'none', padding: '0.6rem 1.4rem', 
+                  background: '#1e40af', color: '#ffffff', border: 'none', padding: '0.6rem 1.4rem',
                   fontSize: '0.9rem', fontWeight: 800, borderRadius: '8px', cursor: 'pointer', transition: 'var(--transition)'
                 }}
                 onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1d4ed8'}
@@ -1205,34 +1205,34 @@ export default function LandingPage({ onLoginSuccess }) {
             gap: '1.2rem',
             boxSizing: 'border-box'
           }}>
-            <a 
-              href="#courses" 
+            <a
+              href="#courses"
               onClick={() => setIsMobileMenuOpen(false)}
               style={{ textDecoration: 'none', color: '#475569', fontWeight: 600, fontSize: '1rem' }}
             >
               Courses
             </a>
-            <a 
-              href="#why-choose" 
+            <a
+              href="#why-choose"
               onClick={() => setIsMobileMenuOpen(false)}
               style={{ textDecoration: 'none', color: '#475569', fontWeight: 600, fontSize: '1rem' }}
             >
               Why Choose Us
             </a>
-            <a 
-              href="#contact" 
+            <a
+              href="#contact"
               onClick={() => setIsMobileMenuOpen(false)}
               style={{ textDecoration: 'none', color: '#475569', fontWeight: 600, fontSize: '1rem' }}
             >
               Contact
             </a>
-            <button 
+            <button
               onClick={() => {
                 setIsMobileMenuOpen(false);
                 setIsLoginModalOpen(true);
               }}
               style={{
-                background: '#1e40af', color: '#ffffff', border: 'none', padding: '0.6rem 1.4rem', 
+                background: '#1e40af', color: '#ffffff', border: 'none', padding: '0.6rem 1.4rem',
                 fontSize: '0.95rem', fontWeight: 800, borderRadius: '8px', cursor: 'pointer', width: 'fit-content'
               }}
             >
@@ -1245,7 +1245,7 @@ export default function LandingPage({ onLoginSuccess }) {
       {/* 🚀 HERO BLUE SPACE BANNER & DEMO GALLERY */}
       <section style={{ background: '#1e40af', color: '#ffffff', padding: '4rem 2rem 5rem', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, opacity: 0.05, backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1' fill='%23ffffff'/%3E%3C/svg%3E\")" }} />
-        
+
         <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center', zIndex: 10, position: 'relative' }}>
           <h1 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '0.8rem', letterSpacing: '-0.02em', color: '#ffffff' }}>
             Next Generation Learning Space
@@ -1276,7 +1276,7 @@ export default function LandingPage({ onLoginSuccess }) {
       {/* 🏛️ FOOTER */}
       <footer style={{ background: '#f8fafc', borderTop: '1px solid #e2e8f0', padding: '4rem 2rem 2rem' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '3rem', marginBottom: '3rem' }}>
-          
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <img src="images/logo2.png" alt="Alpha Fly Logo" style={{ height: '72px', width: 'auto', alignSelf: 'flex-start' }} />
             <p style={{ fontSize: '0.88rem', color: '#64748b', lineHeight: 1.5, margin: 0 }}>
@@ -1323,7 +1323,7 @@ export default function LandingPage({ onLoginSuccess }) {
           position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(15, 23, 42, 0.6)',
           backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem'
         }}>
-          
+
           <div style={{
             background: 'var(--surface-color)',
             border: '1px solid var(--surface-border)',
@@ -1335,7 +1335,7 @@ export default function LandingPage({ onLoginSuccess }) {
             position: 'relative'
           }}>
             {/* Close Button */}
-            <button 
+            <button
               onClick={() => setIsLoginModalOpen(false)}
               style={{
                 position: 'absolute', top: '1.25rem', right: '1.25rem', border: 'none', background: 'none',
