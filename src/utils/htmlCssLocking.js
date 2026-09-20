@@ -341,6 +341,71 @@ export const TALLY_ASSIGNMENTS_CONFIG = {
       'Record the complete 10-transaction lifecycle: purchases, cold-chain transfers, and counter sales.',
       'Complete AI Challenge: Analyze stock and identify Low-Stock items, Slow-Moving items, and Expiry risks.'
     ],
+    nextModuleId: 'tally_prime_module11',
+    nextModuleTitle: 'Day 11 — Purchase & Sales Orders'
+  },
+  tally_prime_module11: {
+    dayTitle: 'Day 11 — Purchase & Sales Orders',
+    assignmentTitle: 'Day 11 Assignment: Purchase & Sales Order Processing & Reporting',
+    tasks: [
+      'Enable Purchase & Sales Order processing in Tally Prime (F11).',
+      'Record Purchase Orders (Ctrl+F9) with supplier terms and item specifications.',
+      'Record Sales Orders (Ctrl+F8) capturing customer commitments and delivery dates.',
+      'Complete AI Task: Convert a customer requirement email into a structured sales order.',
+      'Extract and audit Pending Orders backlog reports under Statement of Inventory.'
+    ],
+    nextModuleId: 'tally_prime_module12',
+    nextModuleTitle: 'Day 12 — Delivery & Receipt Notes'
+  },
+  tally_prime_module12: {
+    dayTitle: 'Day 12 — Delivery & Receipt Notes',
+    assignmentTitle: 'Day 12 Assignment: Complete 10 Order & Delivery Transactions',
+    tasks: [
+      'Record Receipt Notes (Alt+F9) with Tracking Numbers against Purchase Orders.',
+      'Record Delivery Notes (Alt+F8) with Tracking Numbers against Sales Orders.',
+      'Execute the complete 10-transaction order-to-delivery commercial lifecycle.',
+      'Handle partial dispatches, rejections, and verify pending backlog balance.',
+      'Link tracking numbers into final Purchase (F9) and Sales (F8) tax invoices.'
+    ],
+    nextModuleId: 'tally_prime_module13',
+    nextModuleTitle: 'Day 13 — Debit & Credit Notes'
+  },
+  tally_prime_module13: {
+    dayTitle: 'Day 13 — Debit & Credit Notes',
+    assignmentTitle: 'Day 13 Assignment: Debit & Credit Note Operations & Auditing',
+    tasks: [
+      'Record Purchase Returns to suppliers using Debit Notes (Alt+F5) in Item Invoice mode.',
+      'Record Sales Returns from customers using Credit Notes (Alt+F6) in Item Invoice mode.',
+      'Record accounting price difference adjustments and volume rebate credit notes.',
+      'Complete AI Task: Determine which note should be used for 6 commercial scenarios.',
+      'Verify updated customer/supplier ledger balances and inventory count.'
+    ],
+    nextModuleId: 'tally_prime_module14',
+    nextModuleTitle: 'Day 14 — Bill of Materials (BoM)'
+  },
+  tally_prime_module14: {
+    dayTitle: 'Day 14 — Bill of Materials (BoM)',
+    assignmentTitle: 'Day 14 Assignment: Bill of Materials Setup & Production Run Execution',
+    tasks: [
+      'Create Raw Material stock items and Finished Goods in Tally Prime.',
+      'Configure Bill of Materials (BoM) component recipes inside finished items.',
+      'Create and configure a dedicated Manufacturing Journal voucher type.',
+      'Complete AI Activity: Create a simple product manufacturing plan using AI.',
+      'Record batch production runs allocating technician wages and factory overheads.'
+    ],
+    nextModuleId: 'tally_prime_project3',
+    nextModuleTitle: 'Day 15 — 🟦 Mini Project 5: Manufacturing Business'
+  },
+  tally_prime_project3: {
+    dayTitle: 'Day 15 — 🟦 Mini Project 5: Manufacturing Business',
+    assignmentTitle: 'Mini Project 5: ABC Computer World Complete Submission',
+    tasks: [
+      'Set up the complete manufacturing enterprise "ABC Computer World" in Tally Prime.',
+      'Configure 3 Godowns: Raw Materials Store, Assembly Line, Finished Goods Showroom.',
+      'Configure multi-level BoM recipes for "ABC Pro Office PC" and "ABC Apex Gaming Beast".',
+      'Record component purchases, inter-godown transfers, and Manufacturing Journal runs.',
+      'Record commercial sales, returns, and execute AI material consumption audit.'
+    ],
     nextModuleId: null,
     nextModuleTitle: null
   },

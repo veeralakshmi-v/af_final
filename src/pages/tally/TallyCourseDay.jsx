@@ -46,6 +46,17 @@ export default function TallyCourseDay({
     dayId === 'tally_prime_module18' || dayId === 'tally_module18' || dayId === 'day18' ? 'day18' :
     dayId === 'tally_prime_module19' || dayId === 'tally_module19' || dayId === 'day19' ? 'day19' :
     dayId === 'tally_prime_project4' || dayId === 'tally_project4' || dayId === 'tally_prime_module20' || dayId === 'day20' ? 'day20' :
+    dayId === 'tally_prime_module21' || dayId === 'tally_module21' || dayId === 'day21' ? 'day21' :
+    dayId === 'tally_prime_module22' || dayId === 'tally_module22' || dayId === 'day22' ? 'day22' :
+    dayId === 'tally_prime_module23' || dayId === 'tally_module23' || dayId === 'day23' ? 'day23' :
+    dayId === 'tally_prime_module24' || dayId === 'tally_module24' || dayId === 'day24' ? 'day24' :
+    dayId === 'tally_prime_project5' || dayId === 'tally_project5' || dayId === 'tally_prime_module25' || dayId === 'day25' ? 'day25' :
+    dayId === 'tally_prime_module26' || dayId === 'tally_module26' || dayId === 'day26' ? 'day26' :
+    dayId === 'tally_prime_module27' || dayId === 'tally_module27' || dayId === 'day27' ? 'day27' :
+    dayId === 'tally_prime_module28' || dayId === 'tally_module28' || dayId === 'day28' ? 'day28' :
+    dayId === 'tally_prime_module29' || dayId === 'tally_module29' || dayId === 'day29' ? 'day29' :
+    dayId === 'tally_prime_project6' || dayId === 'tally_project6' || dayId === 'tally_prime_module30' || dayId === 'day30' ? 'day30' :
+    dayId === 'tally_prime_final_project' || dayId === 'tally_final_project' || dayId === 'tally_prime_module31' || dayId === 'day31' ? 'day31' :
     (dayId || 'day1');
 
   const currentModuleId = activeModuleId || (
@@ -70,6 +81,17 @@ export default function TallyCourseDay({
     effectiveDayId === 'day18' ? 'tally_prime_module18' :
     effectiveDayId === 'day19' ? 'tally_prime_module19' :
     effectiveDayId === 'day20' ? 'tally_prime_project4' :
+    effectiveDayId === 'day21' ? 'tally_prime_module21' :
+    effectiveDayId === 'day22' ? 'tally_prime_module22' :
+    effectiveDayId === 'day23' ? 'tally_prime_module23' :
+    effectiveDayId === 'day24' ? 'tally_prime_module24' :
+    effectiveDayId === 'day25' ? 'tally_prime_project5' :
+    effectiveDayId === 'day26' ? 'tally_prime_module26' :
+    effectiveDayId === 'day27' ? 'tally_prime_module27' :
+    effectiveDayId === 'day28' ? 'tally_prime_module28' :
+    effectiveDayId === 'day29' ? 'tally_prime_module29' :
+    effectiveDayId === 'day30' ? 'tally_prime_project6' :
+    effectiveDayId === 'day31' ? 'tally_prime_final_project' :
     'tally_prime_module1'
   );
 
@@ -340,9 +362,18 @@ export default function TallyCourseDay({
               <h3 style={{ margin: '0 0 0.8rem 0', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.1rem', fontWeight: 800 }}>
                 💼 Real-World Business Scenario
               </h3>
-              <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                {dayData.realWorldExample}
-              </p>
+              {typeof dayData.realWorldExample === 'object' && dayData.realWorldExample !== null ? (
+                <div style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.65 }}>
+                  {dayData.realWorldExample.business && <p style={{ margin: '0 0 0.4rem 0' }}><strong>Business:</strong> {dayData.realWorldExample.business}</p>}
+                  {dayData.realWorldExample.context && <p style={{ margin: '0 0 0.4rem 0' }}><strong>Context:</strong> {dayData.realWorldExample.context}</p>}
+                  {dayData.realWorldExample.scenario && <p style={{ margin: '0 0 0.4rem 0', whiteSpace: 'pre-wrap' }}><strong>Scenario:</strong> {dayData.realWorldExample.scenario}</p>}
+                  {dayData.realWorldExample.outcome && <p style={{ margin: 0 }}><strong>Outcome:</strong> {dayData.realWorldExample.outcome}</p>}
+                </div>
+              ) : (
+                <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                  {dayData.realWorldExample}
+                </p>
+              )}
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
@@ -372,13 +403,33 @@ export default function TallyCourseDay({
                 <Terminal size={20} color="#059669" /> Step-by-Step Tally Practice Walkthrough
               </h3>
               <div style={{ background: '#0f172a', color: '#e2e8f0', padding: '1.2rem', borderRadius: '10px', fontFamily: 'monospace', fontSize: '0.9rem', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
-                {dayData.demonstration}
+                {typeof dayData.demonstration === 'object' && dayData.demonstration !== null ? (
+                  <div>
+                    {dayData.demonstration.title && <div style={{ fontWeight: 'bold', color: '#38bdf8', marginBottom: '0.6rem' }}>{dayData.demonstration.title}</div>}
+                    {Array.isArray(dayData.demonstration.steps) ? (
+                      dayData.demonstration.steps.map((s, i) => <div key={i} style={{ marginBottom: '0.4rem' }}>{s}</div>)
+                    ) : (
+                      JSON.stringify(dayData.demonstration, null, 2)
+                    )}
+                  </div>
+                ) : (
+                  dayData.demonstration
+                )}
               </div>
             </div>
 
             <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '14px', padding: '1.5rem', marginBottom: '2rem' }}>
               <h4 style={{ margin: '0 0 0.5rem 0', color: '#166534', fontWeight: 800 }}>🎯 Today's Hands-on Goal</h4>
-              <p style={{ margin: 0, color: '#14532d', fontSize: '0.95rem', lineHeight: 1.6 }}>{dayData.handsOnTask}</p>
+              <p style={{ margin: 0, color: '#14532d', fontSize: '0.95rem', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                {typeof dayData.handsOnTask === 'object' && dayData.handsOnTask !== null ? (
+                  <div>
+                    {dayData.handsOnTask.title && <strong>{dayData.handsOnTask.title}: </strong>}
+                    {Array.isArray(dayData.handsOnTask.steps) ? dayData.handsOnTask.steps.join('\n') : JSON.stringify(dayData.handsOnTask)}
+                  </div>
+                ) : (
+                  dayData.handsOnTask
+                )}
+              </p>
             </div>
 
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
@@ -414,11 +465,18 @@ export default function TallyCourseDay({
                 📋 Copy-Paste Prompt Template:
               </strong>
               <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '1.2rem', borderRadius: '10px', color: '#334155', fontSize: '0.92rem', lineHeight: 1.7, whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
-                {dayData.aiActivity}
+                {typeof dayData.aiActivity === 'object' && dayData.aiActivity !== null ? (
+                  <div>
+                    {dayData.aiActivity.title && <div style={{ fontWeight: 'bold', color: '#2563eb', marginBottom: '0.6rem' }}>{dayData.aiActivity.title}</div>}
+                    <div style={{ whiteSpace: 'pre-wrap' }}>{dayData.aiActivity.prompt || JSON.stringify(dayData.aiActivity, null, 2)}</div>
+                  </div>
+                ) : (
+                  dayData.aiActivity
+                )}
               </div>
               {openAITutor && (
                 <button
-                  onClick={() => openAITutor(dayData.aiActivity)}
+                  onClick={() => openAITutor(typeof dayData.aiActivity === 'object' ? (dayData.aiActivity.prompt || JSON.stringify(dayData.aiActivity)) : dayData.aiActivity)}
                   className="btn btn-primary"
                   style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '6px', background: '#2563eb' }}
                 >

@@ -794,6 +794,258 @@ export const tallyCourseData = [
       { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
       { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
     ]
+  },
+  {
+    id: 'tally_prime_module11',
+    title: 'Day 11 — Purchase & Sales Orders',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <ShoppingCart size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module12',
+    title: 'Day 12 — Delivery & Receipt Notes',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Layers size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module13',
+    title: 'Day 13 — Debit & Credit Notes',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <RefreshCw size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module14',
+    title: 'Day 14 — Bill of Materials (BoM)',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Sliders size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_project3',
+    title: 'Day 15 — 🟦 Mini Project 5: Manufacturing Business',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Trophy size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module16',
+    title: 'Day 16 — Multi-Level Pricing',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Sliders size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module17',
+    title: 'Day 17 — Pricing Practical (Raju Traders)',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Store size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module18',
+    title: 'Day 18 — Cost Center & Categories',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <PieChart size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module19',
+    title: 'Day 19 — Cost Analysis & Reports',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Sliders size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_project4',
+    title: 'Day 20 — 🟦 Mini Project 6: Business Cost & Pricing',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Trophy size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module21',
+    title: 'Day 21 — GST Fundamentals',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Sliders size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module22',
+    title: 'Day 22 — GST Setup in Tally',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Settings size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module23',
+    title: 'Day 23 — GST Purchase & Sales',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <ShoppingCart size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module24',
+    title: 'Day 24 — GST Reports & Settlement',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <BarChart2 size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_project5',
+    title: 'Day 25 — 🟦 Mini Project 7: GST Trading Company',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Trophy size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module26',
+    title: 'Day 26 — Tax Deducted at Source (TDS)',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Sliders size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module27',
+    title: 'Day 27 — Tax Collected at Source (TCS)',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Percent size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module28',
+    title: 'Day 28 — Payroll & Statutory Compliance',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Users size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_module29',
+    title: 'Day 29 — BRS + AI Financial Analysis',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <BarChart2 size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_project6',
+    title: 'Day 30 — 🚀 Final Project 1: AI-Powered Business Accounting',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Rocket size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
+  },
+  {
+    id: 'tally_prime_final_project',
+    title: '🚀 Final Project 2 + Final Assessment',
+    items: [
+      { id: 'overview', label: 'Overview & Concept', icon: <BookOpen size={18} /> },
+      { id: 'practical', label: 'Tally Practical', icon: <Award size={18} /> },
+      { id: 'ai_activity', label: 'AI Activity', icon: <Bot size={18} /> },
+      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> },
+      { id: 'quiz', label: 'Quick Quiz', icon: <CheckCircle size={18} /> },
+      { id: 'reflection', label: 'Self Check', icon: <CheckCircle size={18} /> },
+    ]
   }
 ];
 

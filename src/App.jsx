@@ -795,6 +795,14 @@ function App() {
                       activeNode.moduleId === 'tally_prime_module18' || activeNode.moduleId === 'tally_module18' ? 'day18' :
                       activeNode.moduleId === 'tally_prime_module19' || activeNode.moduleId === 'tally_module19' ? 'day19' :
                       activeNode.moduleId === 'tally_prime_project4' || activeNode.moduleId === 'tally_project4' || activeNode.moduleId === 'tally_prime_module20' ? 'day20' :
+                      activeNode.moduleId === 'tally_prime_module21' || activeNode.moduleId === 'tally_module21' ? 'day21' :
+                      activeNode.moduleId === 'tally_prime_module22' || activeNode.moduleId === 'tally_module22' ? 'day22' :
+                      activeNode.moduleId === 'tally_prime_module23' || activeNode.moduleId === 'tally_module23' ? 'day23' :
+                      activeNode.moduleId === 'tally_prime_module24' || activeNode.moduleId === 'tally_module24' ? 'day24' :
+                      activeNode.moduleId === 'tally_prime_project5' || activeNode.moduleId === 'tally_project5' || activeNode.moduleId === 'tally_prime_module25' ? 'day25' :
+                      activeNode.moduleId === 'tally_prime_module26' || activeNode.moduleId === 'tally_module26' ? 'day26' :
+                      activeNode.moduleId === 'tally_prime_module27' || activeNode.moduleId === 'tally_module27' ? 'day27' :
+                      activeNode.moduleId === 'tally_prime_module28' || activeNode.moduleId === 'tally_module28' ? 'day28' :
                       activeNode.tabId || 'day1'
                     }
                     activeTab={activeNode.tabId}
