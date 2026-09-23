@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  BookOpen, Layers, Database, CheckCircle, Code, ArrowRight,
-  Copy, FileText, Plus, AlertTriangle, BookOpenCheck, X, Sliders, Play, RotateCcw, Award, Sparkles, Flame
+  Layers, Cpu, Activity, Sparkles, FileText, Sliders, CheckCircle,
+  ArrowRight, ArrowLeft, RefreshCw, AlertTriangle, Eye, Shield,
+  Terminal, Zap, Check, X, BookOpen, Clock, Timer, Search,
+  Play, Pause, RotateCcw, Copy, HelpCircle, HardDrive, Filter,
+  Maximize2, Database, Trash2, Plus, CornerDownRight, BarChart3
 } from 'lucide-react';
 import { CodeBlock } from '../../utils/codeHighlight';
 
@@ -17,625 +20,1526 @@ const Section = ({ eyebrow, title, children }) => (
   </motion.div>
 );
 
-// Memoized child component for useCallback demonstration
-const ChildComponent = React.memo(({ title, onClick, renderLogs }) => {
-  renderLogs(title);
+const StepCard = ({ stepNumber, title, desc, children }) => (
+  <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem', marginBottom: '1rem', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '0.75rem' }}>
+      <span style={{ background: '#6366f1', color: 'white', fontWeight: 800, fontSize: '0.85rem', width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {stepNumber}
+      </span>
+      <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: '#0f172a' }}>{title}</h4>
+    </div>
+    {desc && <p style={{ margin: '0 0 0.75rem', fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>{desc}</p>}
+    {children}
+  </div>
+);
+
+// Memoized student row for useCallback demonstration
+const MemoizedStudentRow = React.memo(({ student, onDelete, onGradeChange }) => {
   return (
-    <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 8, padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '6px 0' }}>
-      <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>{title}</span>
-      <button className="btn btn-outline" onClick={onClick} style={{ padding: '4px 10px', fontSize: '0.78rem' }}>Trigger Callback</button>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'white', border: '1px solid #e2e8f0', borderRadius: 8, marginBottom: 6, transition: 'all 0.15s' }}>
+      <div>
+        <strong style={{ fontSize: '0.9rem', color: '#0f172a' }}>{student.name}</strong>
+        <span style={{ display: 'block', fontSize: '0.78rem', color: '#64748b' }}>Course: {student.course} · Grade: <strong style={{ color: '#6366f1' }}>{student.grade}</strong> (Score: {student.score})</span>
+      </div>
+      <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+        <button
+          onClick={() => onGradeChange(student.id, Math.min(100, student.score + 5))}
+          style={{ background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0', borderRadius: 6, padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+        >
+          +5 Pts
+        </button>
+        <button
+          onClick={() => onDelete(student.id)}
+          style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 6, padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+        >
+          <Trash2 size={13} />
+        </button>
+      </div>
     </div>
   );
 });
-ChildComponent.displayName = 'ChildComponent';
+MemoizedStudentRow.displayName = 'MemoizedStudentRow';
+
+// Un-memoized child component for comparison
+const RegularChild = ({ title, count }) => {
+  return (
+    <div style={{ background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 8, padding: '8px 12px', fontSize: '0.8rem', color: '#9f1239', marginBottom: 6 }}>
+      ⚠️ <strong>{title}:</strong> Rendered on every parent tick! (Parent ticks: {count})
+    </div>
+  );
+};
+
+// Memoized child component for comparison
+const OptimizedChild = React.memo(({ title, onClick }) => {
+  return (
+    <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '8px 12px', fontSize: '0.8rem', color: '#166534', marginBottom: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <span>✅ <strong>{title}:</strong> Frozen! (0 extra renders)</span>
+      <button onClick={onClick} style={{ background: '#166534', color: 'white', border: 'none', borderRadius: 4, padding: '3px 8px', fontSize: '0.72rem', cursor: 'pointer', fontWeight: 700 }}>
+        Click Action
+      </button>
+    </div>
+  );
+});
+OptimizedChild.displayName = 'OptimizedChild';
 
 /* ─────────────────────────────── main component ──────────────────────── */
 export default function ReactDay12({ activeTab, onNavigate }) {
-  const go = (id) => { onNavigate('react_module12', id); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-
-  /* ── Section 1: useRef ── */
-  const inputRef = useRef(null);
-  const refCounter = useRef(0);
-  const [stateCounter, setStateCounter] = useState(0);
-  const focusInput = () => {
-    if (inputRef.current) inputRef.current.focus();
-  };
-  const incrementRef = () => {
-    refCounter.current += 1;
+  const go = (id) => {
+    onNavigate('react_module12', id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  /* ── Section 2: useMemo ── */
-  const [memoNumber, setMemoNumber] = useState(30);
-  const [memoState, setMemoState] = useState('');
-  const [useMemoEnabled, setUseMemoEnabled] = useState(true);
+  /* ──────────────────────────────────────────────────────────────────────────
+     1. useRef STATE & REFS
+  ────────────────────────────────────────────────────────────────────────── */
+  const domInputRef = useRef(null);
+  const intervalTimerRef = useRef(null);
+  const renderCounterRef = useRef(0);
+  const [refTimerSeconds, setRefTimerSeconds] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [stateCounterVal, setStateCounterVal] = useState(0);
+  const [dummyText, setDummyText] = useState('');
 
-  const calculateFactorial = (num) => {
-    // Artificial heavy computational stress loop
-    let i = 0;
-    while (i < 8000000) { i++; }
-    if (num <= 0) return 1;
-    return num * calculateFactorial(num - 1);
-  };
+  // Track component renders
+  renderCounterRef.current += 1;
 
-  const factorialResult = useMemo(() => {
-    if (useMemoEnabled) {
-      return calculateFactorial(Math.min(memoNumber, 35));
+  const handleFocusDomInput = () => {
+    if (domInputRef.current) {
+      domInputRef.current.focus();
+      domInputRef.current.style.borderColor = '#6366f1';
+      domInputRef.current.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.2)';
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [memoNumber, useMemoEnabled]);
-
-  const rawFactorialResult = useMemoEnabled ? factorialResult : calculateFactorial(Math.min(memoNumber, 35));
-
-  /* ── Section 3: useCallback ── */
-  const [parentCount, setParentCount] = useState(0);
-  const [callbackLogs, setCallbackLogs] = useState([]);
-
-  const logRender = (componentName) => {
-    // Pushes log showing component rendered
-    useEffect(() => {
-      setCallbackLogs(p => [...p, `Child rendered at ${new Date().toLocaleTimeString()}`].slice(-4));
-    });
   };
 
-  const handleStandardCallback = () => {
-    // Normal function rebuilds every render
+  const handleSelectDomText = () => {
+    if (domInputRef.current) {
+      domInputRef.current.select();
+    }
   };
 
-  const handleMemoizedCallback = useCallback(() => {
-    // Memoized callback function stays unchanged
+  const handleStartTimer = () => {
+    if (isTimerRunning) return;
+    setIsTimerRunning(true);
+    intervalTimerRef.current = setInterval(() => {
+      setRefTimerSeconds(prev => prev + 1);
+    }, 1000);
+  };
+
+  const handleStopTimer = () => {
+    clearInterval(intervalTimerRef.current);
+    intervalTimerRef.current = null;
+    setIsTimerRunning(false);
+  };
+
+  const handleResetTimer = () => {
+    handleStopTimer();
+    setRefTimerSeconds(0);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (intervalTimerRef.current) clearInterval(intervalTimerRef.current);
+    };
   }, []);
 
-  /* ── Section 4: Custom Hooks ── */
-  const [hookValue, setHookValue] = useState('Type to save...');
-  const [saveStatus, setSaveStatus] = useState('Saved to localStorage');
+  /* ──────────────────────────────────────────────────────────────────────────
+     2. useMemo STATE & BENCHMARK
+  ────────────────────────────────────────────────────────────────────────── */
+  const [memoNumber, setMemoNumber] = useState(30);
+  const [unrelatedInput, setUnrelatedInput] = useState('');
+  const [isMemoActive, setIsMemoActive] = useState(true);
+  const [lastCalcDuration, setLastCalcDuration] = useState(0);
+
+  // Expensive computation simulation
+  const calculateExpensiveFactorial = (num) => {
+    const start = performance.now();
+    let i = 0;
+    // Intentional computational workload
+    while (i < 9000000) { i++; }
+    let res = 1;
+    for (let k = 2; k <= Math.min(num, 30); k++) {
+      res = (res * k) % 1000000007;
+    }
+    const end = performance.now();
+    return { value: res, duration: (end - start).toFixed(2) };
+  };
+
+  // Memoized version
+  const memoizedFactorial = useMemo(() => {
+    const res = calculateExpensiveFactorial(memoNumber);
+    setLastCalcDuration(res.duration);
+    return res.value;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [memoNumber]);
+
+  // If useMemo is disabled, recalculate on every render
+  const currentFactorialOutput = isMemoActive
+    ? memoizedFactorial
+    : calculateExpensiveFactorial(memoNumber).value;
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     3. useCallback STATE & CHILD TRACER
+  ────────────────────────────────────────────────────────────────────────── */
+  const [parentTick, setParentTick] = useState(0);
+  const [childClicks, setChildClicks] = useState(0);
+  const [childRenderLog, setChildRenderLog] = useState([]);
+
+  const handleStandardAction = () => {
+    setChildClicks(c => c + 1);
+  };
+
+  const handleOptimizedAction = useCallback(() => {
+    setChildClicks(c => c + 1);
+  }, []);
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     4. CUSTOM HOOKS STATE & SIMULATOR
+  ────────────────────────────────────────────────────────────────────────── */
+  const [storedNotes, setStoredNotes] = useState('My React Notes: Master Advanced Hooks');
+  const [hookStorageKey, setHookStorageKey] = useState('react_course_notes');
+  const [storageStatus, setStorageStatus] = useState('Synced to localStorage');
+  const [windowDimensions, setWindowDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
+
+  // Debounce search simulation
+  const [rawSearchQuery, setRawSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [apiCallCount, setApiCallCount] = useState(0);
+
   useEffect(() => {
-    setSaveStatus('Saving...');
-    const id = setTimeout(() => setSaveStatus('Saved to localStorage (Simulated)'), 500);
-    return () => clearTimeout(id);
-  }, [hookValue]);
+    const timer = setTimeout(() => {
+      setDebouncedQuery(rawSearchQuery);
+      if (rawSearchQuery.trim()) {
+        setApiCallCount(c => c + 1);
+      }
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [rawSearchQuery]);
 
-  /* ── Capstone Task: Form Focus + Optimized List Component ── */
+  useEffect(() => {
+    const handleResize = () => setWindowDimensions({ width: window.innerWidth, height: window.innerHeight });
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     5. HOOK RECOMMENDER WIDGET
+  ────────────────────────────────────────────────────────────────────────── */
+  const [selectedScenario, setSelectedScenario] = useState('dom');
+  const hookRecommendations = {
+    'dom': {
+      hook: 'useRef()',
+      color: '#8b5cf6',
+      badge: 'DOM Access',
+      title: 'Targeting an HTML Input or Media Element',
+      desc: 'Use `useRef()` to store a direct reference to a DOM node for focus, scrolling, or audio/video control.',
+      code: `const inputRef = useRef(null);\n// In JSX: <input ref={inputRef} />\n// In handler: inputRef.current.focus();`
+    },
+    'calc': {
+      hook: 'useMemo()',
+      color: '#f59e0b',
+      badge: 'Cache Value',
+      title: 'Filtering or Sorting a 1,000+ Item Array',
+      desc: 'Use `useMemo()` to cache the resulting array so filtering doesn\'t rerun on unrelated parent state changes.',
+      code: `const filtered = useMemo(() => {\n  return items.filter(i => i.price <= maxPrice);\n}, [items, maxPrice]);`
+    },
+    'callback': {
+      hook: 'useCallback()',
+      color: '#0ea5e9',
+      badge: 'Cache Function',
+      title: 'Passing an Event Handler to a React.memo Child',
+      desc: 'Use `useCallback()` to prevent recreating function instances, avoiding unnecessary child re-renders.',
+      code: `const handleDelete = useCallback((id) => {\n  setItems(prev => prev.filter(i => i.id !== id));\n}, []);`
+    },
+    'custom': {
+      hook: 'Custom Hook (use...)',
+      color: '#10b981',
+      badge: 'Reusable Logic',
+      title: 'Sharing Fetch / Form Logic Across 5 Components',
+      desc: 'Extract your stateful logic into a custom hook (e.g. `useFetch` or `useForm`) to keep components clean and DRY.',
+      code: `function useFetch(url) {\n  const [data, setData] = useState(null);\n  // fetch logic here...\n  return { data, loading };\n}`
+    }
+  };
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     6. CAPSTONE TASK: OPTIMIZED LIST & FORM FOCUS
+  ────────────────────────────────────────────────────────────────────────── */
   const capstoneInputRef = useRef(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [studentScoreThreshold, setStudentScoreThreshold] = useState(60);
-  const [capstoneStudents, setCapstoneStudents] = useState([
-    { id: 1, name: 'Alice Johnson', score: 92 },
-    { id: 2, name: 'Bob Smith', score: 78 },
-    { id: 3, name: 'Carol White', score: 95 },
-    { id: 4, name: 'Dave Brown', score: 55 },
-    { id: 5, name: 'Eve Davis', score: 80 },
-    { id: 6, name: 'Frank Miller', score: 48 }
+  const [capstoneSearch, setCapstoneSearch] = useState('');
+  const [minScoreFilter, setMinScoreFilter] = useState(50);
+  const [sortField, setSortField] = useState('score');
+  const [studentsList, setStudentsList] = useState([
+    { id: 1, name: 'Alice Johnson', course: 'React 19', score: 95, grade: 'A' },
+    { id: 2, name: 'Bob Smith', course: 'Node.js', score: 82, grade: 'B' },
+    { id: 3, name: 'Carol White', course: 'React 19', score: 98, grade: 'A' },
+    { id: 4, name: 'David Miller', course: 'SQL Databases', score: 64, grade: 'C' },
+    { id: 5, name: 'Emma Davis', course: 'React 19', score: 88, grade: 'B' },
+    { id: 6, name: 'Frank Harris', course: 'Node.js', score: 45, grade: 'D' },
+    { id: 7, name: 'Grace Wilson', course: 'Fullstack Dev', score: 91, grade: 'A' }
   ]);
-  const [capstoneRenderLog, setCapstoneRenderLog] = useState([]);
+  const [newStudentName, setNewStudentName] = useState('');
+  const [newStudentCourse, setNewStudentCourse] = useState('React 19');
+  const [capstoneLog, setCapstoneLog] = useState([]);
 
-  // Focus action
-  const focusCapstoneInput = () => {
+  const addCapstoneLog = (msg) => {
+    setCapstoneLog(prev => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev].slice(0, 6));
+  };
+
+  // 1. useRef to focus input
+  const focusStudentInput = () => {
+    if (capstoneInputRef.current) {
+      capstoneInputRef.current.focus();
+      addCapstoneLog('🎯 useRef: Focused student input field');
+    }
+  };
+
+  // 2. useMemo to filter and sort list
+  const filteredAndSortedStudents = useMemo(() => {
+    addCapstoneLog('⚙️ useMemo: Re-filtered and sorted student dataset');
+    return studentsList
+      .filter(s =>
+        s.name.toLowerCase().includes(capstoneSearch.toLowerCase()) &&
+        s.score >= minScoreFilter
+      )
+      .sort((a, b) => {
+        if (sortField === 'score') return b.score - a.score;
+        if (sortField === 'name') return a.name.localeCompare(b.name);
+        return 0;
+      });
+  }, [studentsList, capstoneSearch, minScoreFilter, sortField]);
+
+  // 3. useCallback for delete action
+  const handleDeleteStudent = useCallback((id) => {
+    setStudentsList(prev => prev.filter(s => s.id !== id));
+    addCapstoneLog(`🗑️ useCallback: Deleted student record (id: ${id})`);
+  }, []);
+
+  // 4. useCallback for grade change
+  const handleGradeChange = useCallback((id, newScore) => {
+    setStudentsList(prev => prev.map(s => {
+      if (s.id === id) {
+        const grade = newScore >= 90 ? 'A' : newScore >= 80 ? 'B' : newScore >= 60 ? 'C' : 'D';
+        return { ...s, score: newScore, grade };
+      }
+      return s;
+    }));
+    addCapstoneLog(`✨ useCallback: Updated student score (id: ${id}, score: ${newScore})`);
+  }, []);
+
+  const handleAddStudent = (e) => {
+    e.preventDefault();
+    if (!newStudentName.trim()) return;
+    const newScore = Math.floor(Math.random() * 30) + 70;
+    const grade = newScore >= 90 ? 'A' : 'B';
+    const newStudent = {
+      id: Date.now(),
+      name: newStudentName,
+      course: newStudentCourse,
+      score: newScore,
+      grade
+    };
+    setStudentsList(prev => [newStudent, ...prev]);
+    setNewStudentName('');
+    addCapstoneLog(`➕ Added student "${newStudentName}"`);
+    // Re-focus input using ref!
     if (capstoneInputRef.current) capstoneInputRef.current.focus();
   };
 
-  // 1. useMemo for filtering students list (expensive computation simulation)
-  const filteredStudents = useMemo(() => {
-    setCapstoneRenderLog(p => [...p, '⚙️ Recalculated students list (useMemo)'].slice(-4));
-    return capstoneStudents.filter(s =>
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      s.score >= studentScoreThreshold
-    );
-  }, [capstoneStudents, searchTerm, studentScoreThreshold]);
+  /* ──────────────────────────────────────────────────────────────────────────
+     7. QUIZ QUESTIONS
+  ────────────────────────────────────────────────────────────────────────── */
+  const [quizAnswers, setQuizAnswers] = useState({});
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
 
-  // 2. useCallback to memoize student deletion action
-  const handleDeleteStudent = useCallback((id) => {
-    setCapstoneStudents(p => p.filter(s => s.id !== id));
-  }, []);
-
-  /* ── Quiz ── */
-  const [qAns, setQAns] = useState({});
-  const [qDone, setQDone] = useState(false);
   const questions = [
-    { k: 'q1', q: 'Which hook should you use to store a mutable value that does NOT trigger a re-render when changed?',
-      opts: ['useState', 'useRef', 'useMemo', 'useEffect'], ans: 1,
-      exp: 'useRef returns a mutable ref object whose .current property can be updated without triggering a component re-render.' },
-    { k: 'q2', q: 'What is the primary benefit of useMemo?',
+    {
+      k: 'q1',
+      q: 'Which of the following describes the behavior of `useRef` when its `.current` property changes?',
       opts: [
-        'To create references to DOM nodes',
-        'To optimize performance by caching the result of expensive calculations so they don\'t run on every render',
-        'To fetch data asynchronously',
-        'To prevent callback functions from being re-created'
-      ], ans: 1,
-      exp: 'useMemo caches (memoizes) the return value of a computation. It only re-calculates when one of its dependencies changes.' },
-    { k: 'q3', q: 'How does useCallback differ from useMemo?',
+        'It triggers an immediate component re-render like useState',
+        'It updates the value synchronously without triggering a component re-render',
+        'It clears the browser localStorage cache',
+        'It forces all child components to unmount'
+      ],
+      ans: 1,
+      exp: '`useRef` returns a mutable object whose `.current` property can be modified at any time without causing React to re-render the component.'
+    },
+    {
+      k: 'q2',
+      q: 'What is the primary purpose of the `useMemo` hook?',
       opts: [
-        'useCallback returns a memoized callback function; useMemo returns a memoized value',
-        'useCallback does not take a dependency array',
-        'useCallback is used for DOM queries',
-        'There is no difference — they are completely identical'
-      ], ans: 0,
-      exp: 'useCallback(fn, deps) is shorthand for useMemo(() => fn, deps). It caches the function definition itself to prevent unnecessary recreation.' },
-    { k: 'q4', q: 'What is a custom hook in React?',
+        'To hold a direct pointer to an HTML input or video tag',
+        'To memoize (cache) the result of an expensive calculation and only recalculate when specific dependencies change',
+        'To automatically debounce asynchronous fetch requests',
+        'To replace Redux in global state management'
+      ],
+      ans: 1,
+      exp: '`useMemo` caches the return value of a computation. On re-renders, if the dependency array has not changed, it returns the cached result without running the expensive function again.'
+    },
+    {
+      k: 'q3',
+      q: 'How does `useCallback(fn, deps)` relate to `useMemo`?',
       opts: [
-        'A hook imported from a third-party styling library like Tailwind',
-        'A custom JavaScript function whose name starts with "use" and that can call other React hooks',
-        'A hook that can only be written in class components',
-        'A hook that doesn\'t trigger component re-renders'
-      ], ans: 1,
-      exp: 'Custom hooks are normal JavaScript functions that start with the prefix "use" (e.g. useFetch) and encapsulate reusable stateful hook logic.' }
+        'They are unrelated and do completely opposite things',
+        '`useCallback(fn, deps)` is equivalent to `useMemo(() => fn, deps)` — it memoizes the function definition itself rather than its result',
+        '`useCallback` can only be used inside custom hooks, whereas `useMemo` cannot',
+        '`useCallback` runs synchronously before the DOM updates'
+      ],
+      ans: 1,
+      exp: '`useCallback(fn, deps)` is shorthand for `useMemo(() => fn, deps)`. It ensures that the function reference remains identical between renders unless its dependencies change.'
+    },
+    {
+      k: 'q4',
+      q: 'Why does passing an inline callback `<Child onClick={() => doSomething()} />` to a `React.memo(Child)` component cause it to re-render every time?',
+      opts: [
+        'Because React.memo is broken in modern React',
+        'Because in JavaScript, a new function object is created in memory on every render (`() => {} !== () => {}`), so the `onClick` prop looks changed to shallow comparison',
+        'Because functions cannot be passed as props in React',
+        'Because inline arrows are converted to strings'
+      ],
+      ans: 1,
+      exp: 'Every time a parent component renders, any inline function is re-created with a brand new memory reference. `React.memo` sees the new reference and re-renders the child. `useCallback` fixes this.'
+    },
+    {
+      k: 'q5',
+      q: 'What are the two official Rules of Hooks in React?',
+      opts: [
+        '1. Only call hooks inside loops. 2. Never use useState and useEffect together.',
+        '1. Only call hooks at the top level (not inside loops, conditions, or nested functions). 2. Only call hooks from React function components or Custom Hooks.',
+        '1. Hooks must always be prefixed with "get". 2. Hooks only work on desktop browsers.',
+        '1. All hooks must return an array. 2. Never pass dependencies to useEffect.'
+      ],
+      ans: 1,
+      exp: 'React relies on the call order of hooks to maintain state between renders. Calling hooks conditionally or inside loops breaks the call order.'
+    },
+    {
+      k: 'q6',
+      q: 'What is a Custom Hook in React?',
+      opts: [
+        'A hook built into the browser JavaScript engine',
+        'A JavaScript function whose name starts with "use" that can call other built-in React hooks to encapsulate reusable stateful logic',
+        'A special CSS class for styling React components',
+        'A hook that can only be written in TypeScript'
+      ],
+      ans: 1,
+      exp: 'A Custom Hook is a reusable JavaScript function starting with "use" (e.g. `useFetch`, `useLocalStorage`) that combines built-in hooks to share logic between multiple components.'
+    }
   ];
-  const score = questions.filter(q => qAns[q.k] === q.ans).length;
+
+  const quizScore = questions.filter(q => quizAnswers[q.k] === q.ans).length;
 
   return (
     <AnimatePresence mode="wait">
 
-      {/* ── 1. useRef HOOK ──────────────────────────────────────────────── */}
+      {/* ──────────────────────────────────────────────────────────────────
+          TAB 1: useRef HOOK
+      ────────────────────────────────────────────────────────────────── */}
       {activeTab === 'intro_react' && (
-        <Section key="s1" eyebrow="Module 01 • Day 12" title="The useRef Hook">
+        <Section key="s1" eyebrow="Module 01 • Day 12" title="The useRef Hook: DOM Access & Persistent State">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
 
-            <div style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', borderRadius: 16, padding: '2rem', marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'white', marginBottom: '0.75rem' }}>📦 What is useRef?</h3>
-              <p style={{ color: 'white', opacity: 0.95, margin: 0, lineHeight: 1.7 }}>
-                The <code>useRef</code> hook does two main things: (1) Reference DOM elements directly (like focusing input elements or scrolling), and (2) Keep mutable values that persist across renders <strong>without triggering a re-render</strong> when they change.
+            {/* Hero Banner */}
+            <div style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', borderRadius: 16, padding: '2rem', marginBottom: '2rem', color: 'white' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '0.75rem' }}>
+                <Layers size={28} color="#c7d2fe" />
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0 }}>Beginner's Guide to useRef</h3>
+              </div>
+              <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.7, opacity: 0.95 }}>
+                Think of <strong><code>useRef</code></strong> as a "secret pocket" attached to your component. It holds a mutable value in its <code>.current</code> property that <strong>persists across renders without triggering a re-render when changed</strong>. It is also your primary tool for directly accessing DOM elements (focusing inputs, measuring heights, controlling video/audio).
               </p>
             </div>
 
-            <CodeBlock title="useRef examples" code={`import { useRef, useState } from "react";
+            {/* Beginner Step-by-Step Guide */}
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '1rem' }}>
+              🛠️ Step-by-Step Guide to Using useRef
+            </h3>
 
-function FocusInput() {
+            <StepCard
+              stepNumber="1"
+              title="Declare a Ref using useRef()"
+              desc="Import useRef from 'react' and initialize it with an initial value (usually null for DOM elements or 0 for counters)."
+            >
+              <CodeBlock title="Step 1: Declaration" code={`import { useRef } from "react";
+
+function MyComponent() {
+  // 1. For DOM nodes: initialize with null
   const inputRef = useRef(null);
 
-  const handleClick = () => {
-    // Focus the input element directly using DOM reference
+  // 2. For persistent values: initialize with initial data
+  const renderCountRef = useRef(0);
+}`} />
+            </StepCard>
+
+            <StepCard
+              stepNumber="2"
+              title="Attach the Ref to a JSX Element (for DOM Access)"
+              desc="Pass your ref variable to the `ref` attribute of any HTML element."
+            >
+              <CodeBlock title="Step 2: Attaching to DOM" code={`function SearchBar() {
+  const inputRef = useRef(null);
+
+  return (
+    <div>
+      {/* React will assign the actual DOM node to inputRef.current */}
+      <input ref={inputRef} type="text" placeholder="Search courses..." />
+    </div>
+  );
+}`} />
+            </StepCard>
+
+            <StepCard
+              stepNumber="3"
+              title="Access & Manipulate the DOM via `.current`"
+              desc="Inside event handlers or useEffect, interact with the element using native DOM methods (focus, select, scrollIntoView)."
+            >
+              <CodeBlock title="Step 3: Triggering DOM actions" code={`function SearchBar() {
+  const inputRef = useRef(null);
+
+  const handleFocus = () => {
+    // Focus the input element directly
+    inputRef.current.focus();
+  };
+
+  const handleClear = () => {
+    inputRef.current.value = "";
     inputRef.current.focus();
   };
 
   return (
     <div>
       <input ref={inputRef} type="text" />
-      <button onClick={handleClick}>Focus Input</button>
+      <button onClick={handleFocus}>Focus</button>
+      <button onClick={handleClear}>Clear</button>
     </div>
   );
-}
-
-// ── Storing persistent values without rendering ──
-function RenderCounter() {
-  const renderCount = useRef(0);
-  renderCount.current += 1; // updates count, does NOT cause render!
 }`} />
+            </StepCard>
 
-            <h4 style={{ fontWeight: 800, color: '#0f172a', marginTop: '2rem', marginBottom: '0.75rem' }}>🧪 Live useRef Lab</h4>
-            <p>Compare how updating <strong>Ref count</strong> (mutable ref) differs from updating <strong>State count</strong> (triggers component refresh):</p>
+            <StepCard
+              stepNumber="4"
+              title="Store Mutable Values (Timer IDs, Previous State, Render Counters)"
+              desc="Update `.current` whenever you want to store state without forcing the component to redraw."
+            >
+              <CodeBlock title="Step 4: Storing Timer IDs without Re-renders" code={`function StopWatch() {
+  const [seconds, setSeconds] = useState(0);
+  // Store the timer ID so we can clear it later without re-rendering
+  const timerRef = useRef(null);
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '1.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 16, padding: '1.5rem' }}>
-              <div>
-                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-                  <button className="btn btn-primary" onClick={incrementRef} style={{ flex: 1, background: '#6366f1', borderColor: '#6366f1' }}>
-                    Increment Ref count
-                  </button>
-                  <button className="btn btn-outline" onClick={() => setStateCounter(c => c + 1)} style={{ flex: 1 }}>
-                    Increment State: {stateCounter}
-                  </button>
-                </div>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <input ref={inputRef} className="form-control" placeholder="Input element to focus..." style={{ flex: 1 }} />
-                  <button className="btn btn-outline" onClick={focusInput} style={{ borderColor: '#6366f1', color: '#6366f1' }}>Focus Input</button>
-                </div>
-              </div>
-              <div style={{ background: '#0f172a', borderRadius: 12, padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <span style={{ color: '#8892b0', fontSize: '0.75rem', display: 'block', marginBottom: 6 }}>Counters Inspector:</span>
-                <div style={{ color: 'white', fontFamily: 'monospace', fontSize: '0.88rem' }}>
-                  refCounter.current = <span style={{ color: '#86efac', fontWeight: 'bold' }}>{refCounter.current}</span>
-                  <br />
-                  stateCounter = <span style={{ color: '#38bdf8', fontWeight: 'bold' }}>{stateCounter}</span>
-                </div>
-                <span style={{ fontSize: '0.72rem', color: '#64748b', marginTop: 8, fontStyle: 'italic' }}>
-                  * Notice how updating the Ref count does not update the screen until you trigger a state update.
-                </span>
-              </div>
-            </div>
+  const startTimer = () => {
+    if (timerRef.current) return;
+    timerRef.current = setInterval(() => {
+      setSeconds(prev => prev + 1);
+    }, 1000);
+  };
 
-            <div className="card-actions" style={{ marginTop: '2rem' }}>
-              <button className="btn btn-primary" onClick={() => go('useState_hook')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
-                Continue (+10 XP) <ArrowRight size={16} />
-              </button>
-            </div>
-          </div>
-        </Section>
-      )}
+  const stopTimer = () => {
+    clearInterval(timerRef.current);
+    timerRef.current = null;
+  };
 
-      {/* ── 2. useMemo HOOK ─────────────────────────────────────────────── */}
-      {activeTab === 'useState_hook' && (
-        <Section key="s2" eyebrow="Module 02 • Day 12" title="The useMemo Hook">
-          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
-
-            <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: '1.5rem' }}>
-              <strong style={{ color: '#166534' }}>💡 Performance Optimization</strong>
-              <p style={{ margin: '4px 0 0', color: '#14532d', fontSize: '0.9rem' }}>
-                <code>useMemo</code> caches (memoizes) the return value of an expensive calculation. It prevents running computational overheads on every component refresh unless its dependencies change.
-              </p>
-            </div>
-
-            <CodeBlock title="useMemo syntax" code={`import { useMemo, useState } from "react";
-
-function Calculator({ numbers }) {
-  const [query, setQuery] = useState("");
-
-  // Caches calculation results — only re-runs when "numbers" array changes
-  const computedSum = useMemo(() => {
-    console.log("Computing expensive sum...");
-    return numbers.reduce((sum, val) => sum + val, 0);
-  }, [numbers]); // <-- only recalculates when numbers change
-
-  return <div>Sum: {computedSum}</div>;
+  return (
+    <div>
+      <h2>Elapsed: {seconds}s</h2>
+      <button onClick={startTimer}>Start</button>
+      <button onClick={stopTimer}>Stop</button>
+    </div>
+  );
 }`} />
+            </StepCard>
 
-            <h4 style={{ fontWeight: 800, color: '#0f172a', marginTop: '2rem', marginBottom: '0.75rem' }}>⚡ Performance Memoization Simulator</h4>
-            <p>Toggle useMemo to compare calculation delay speeds when typing unrelated states:</p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '1.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 16, padding: '1.5rem' }}>
-              <div>
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={{ fontSize: '0.82rem', fontWeight: 700, color: '#475569', display: 'block', marginBottom: 4 }}>Factorial parameter (triggers computational lag):</label>
-                  <input className="form-control" type="number" min={5} max={35} value={memoNumber} onChange={e => setMemoNumber(Math.min(35, Math.max(1, +e.target.value)))} />
-                </div>
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={{ fontSize: '0.82rem', fontWeight: 700, color: '#475569', display: 'block', marginBottom: 4 }}>Unrelated typing state (normally causes re-evaluation lag):</label>
-                  <input className="form-control" placeholder="Type here..." value={memoState} onChange={e => setMemoState(e.target.value)} />
-                </div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.85rem', fontWeight: 700, color: '#0f172a', cursor: 'pointer' }}>
-                  <input type="checkbox" checked={useMemoEnabled} onChange={e => setUseMemoEnabled(e.target.checked)} />
-                  Enable useMemo Optimization
-                </label>
-              </div>
-              <div style={{ background: '#0f172a', borderRadius: 12, padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <span style={{ color: '#8892b0', fontSize: '0.75rem', display: 'block', marginBottom: 4 }}>Computation Output:</span>
-                <span style={{ color: 'white', fontFamily: 'monospace', fontSize: '0.85rem', wordBreak: 'break-all' }}>
-                  Result: <strong style={{ color: '#fbbf24' }}>{rawFactorialResult?.toLocaleString() || 'Calculating...'}</strong>
-                </span>
-                <div style={{ borderTop: '1px solid #1e293b', marginTop: 10, paddingTop: 10, fontSize: '0.72rem', color: '#94a3b8' }}>
-                  Optimization: <strong style={{ color: useMemoEnabled ? '#10b981' : '#ef4444' }}>{useMemoEnabled ? 'MEMOIZED (Fast)' : 'UNOPTIMIZED (Slow)'}</strong>
-                  <br />
-                  <span style={{ color: '#64748b' }}>* Typing with unoptimized useMemo introduces loops lag on every stroke.</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="card-actions" style={{ marginTop: '2rem' }}>
-              <button className="btn btn-primary" onClick={() => go('multiple_states')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
-                Continue (+10 XP) <ArrowRight size={16} />
-              </button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ── 3. useCallback HOOK ─────────────────────────────────────────── */}
-      {activeTab === 'multiple_states' && (
-        <Section key="s3" eyebrow="Module 03 • Day 12" title="The useCallback Hook">
-          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
-
-            <p><code>useCallback</code> caches the <strong>function definition itself</strong> between renders. It is used alongside <code>React.memo</code> to prevent child components from re-rendering when parent callbacks re-create.</p>
-
-            <CodeBlock title="useCallback usage pattern" code={`import { useCallback, useState } from "react";
-
-// Child element wrapped in React.memo (renders only if props change)
-const ListItem = React.memo(({ item, onDelete }) => {
-  console.log("ListItem Rendered:", item.name);
-  return <button onClick={() => onDelete(item.id)}>Delete</button>;
-});
-
-function Container() {
-  const [items, setItems] = useState([]);
-  const [toggle, setToggle] = useState(false);
-
-  // useCallback keeps the reference to this function identical
-  // so the onDelete prop passed to child items doesn't trigger re-renders
-  const handleDelete = useCallback((id) => {
-    setItems(prev => prev.filter(item => item.id !== id));
-  }, []); // <-- empty array = function reference never changes
-}`} />
-
-            <h4 style={{ fontWeight: 800, color: '#0f172a', marginTop: '2rem', marginBottom: '0.75rem' }}>⏱ Child Re-render Tracer</h4>
-            <p>Toggle parent states and observe child render updates. In a standard setup, children refresh on all parent updates.</p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '1.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 16, padding: '1.5rem' }}>
-              <div>
-                <button className="btn btn-primary" onClick={() => setParentCount(c => c + 1)} style={{ width: '100%', marginBottom: '1rem', background: '#6366f1', borderColor: '#6366f1' }}>
-                  Force Parent Re-render (Count: {parentCount})
-                </button>
-                <div style={{ background: '#f1f5f9', borderRadius: 8, padding: 8 }}>
-                  <span style={{ fontSize: '0.76rem', fontWeight: 'bold', color: '#64748b', display: 'block', marginBottom: 4 }}>Child Component:</span>
-                  <ChildComponent title="Memoized Child" onClick={parentCount % 2 === 0 ? handleMemoizedCallback : handleStandardCallback} renderLogs={logRender} />
-                </div>
-              </div>
-              <div style={{ background: '#0f172a', borderRadius: 12, padding: '1rem' }}>
-                <span style={{ color: '#8892b0', fontSize: '0.75rem', display: 'block', marginBottom: 6 }}>Render Logs:</span>
-                {callbackLogs.map((l, i) => (
-                  <div key={i} style={{ fontFamily: 'monospace', fontSize: '0.74rem', color: '#86efac', padding: '2px 0' }}>{l}</div>
-                ))}
-              </div>
-            </div>
-
-            <div className="card-actions" style={{ marginTop: '2rem' }}>
-              <button className="btn btn-primary" onClick={() => go('object_state')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
-                Continue (+10 XP) <ArrowRight size={16} />
-              </button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ── 4. CUSTOM HOOKS ─────────────────────────────────────────────── */}
-      {activeTab === 'object_state' && (
-        <Section key="s4" eyebrow="Module 04 • Day 12" title="Custom Hooks">
-          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
-
-            <p>Custom hooks are JavaScript functions that start with <code>"use"</code>. They allow you to extract stateful component logic into reusable functions, keeping components clean and focused.</p>
-
-            <CodeBlock title="custom hook implementation" code={`import { useState, useEffect } from "react";
-
-// ── Custom hook for synchronizing state to localStorage ──
-function useLocalStorage(key, initialValue) {
-  const [state, setState] = useState(() => {
-    const saved = localStorage.getItem(key);
-    return saved ? JSON.parse(saved) : initialValue;
-  });
-
-  useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(state));
-  }, [key, state]);
-
-  return [state, setState];
-}
-
-// ── In consumer component ──
-function UserProfile() {
-  const [theme, setTheme] = useLocalStorage("theme", "light");
-  // Works exactly like useState but auto-saves to LocalStorage!
-}`} />
-
-            <h4 style={{ fontWeight: 800, color: '#0f172a', marginTop: '2rem', marginBottom: '0.75rem' }}>📦 Custom Hook Simulator</h4>
-            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 16, padding: '1.5rem', display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '1.5rem' }}>
-              <div>
-                <label style={{ fontSize: '0.82rem', fontWeight: 700, color: '#475569', display: 'block', marginBottom: 4 }}>Sync key values input:</label>
-                <input className="form-control" value={hookValue} onChange={e => setHookValue(e.target.value)} />
-              </div>
-              <div style={{ background: '#0f172a', borderRadius: 12, padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <span style={{ color: '#8892b0', fontSize: '0.75rem', display: 'block', marginBottom: 4 }}>Localstorage Sync engine:</span>
-                <span style={{ color: '#86efac', fontFamily: 'monospace', fontSize: '0.82rem' }}>{saveStatus}</span>
-                <div style={{ marginTop: 8, color: '#94a3b8', fontSize: '0.76rem', fontFamily: 'monospace' }}>
-                  key: "custom_input"<br />
-                  val: "{hookValue}"
-                </div>
-              </div>
-            </div>
-
-            <div className="card-actions" style={{ marginTop: '2rem' }}>
-              <button className="btn btn-primary" onClick={() => go('nested_state')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
-                Continue (+10 XP) <ArrowRight size={16} />
-              </button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ── 5. HOOK CHEAT SHEET ─────────────────────────────────────────── */}
-      {activeTab === 'nested_state' && (
-        <Section key="s5" eyebrow="Module 05 • Day 12" title="When to use which hook">
-          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
-
+            {/* Comparison Table: useRef vs useState vs Regular JS Variable */}
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginTop: '2rem', marginBottom: '1rem' }}>
+              ⚖️ Side-by-Side Comparison: useRef vs useState vs Variable
+            </h3>
             <div style={{ overflowX: 'auto', marginBottom: '2rem' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
                 <thead>
-                  <tr style={{ background: '#f1f5f9' }}>
-                    {['Hook', 'Primary Purpose', 'Common Use Case', 'Performance Impact'].map(h => (
-                      <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '1px solid #cbd5e1' }}>{h}</th>
-                    ))}
+                  <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0', textAlign: 'left' }}>
+                    <th style={{ padding: '10px 14px', color: '#0f172a' }}>Feature</th>
+                    <th style={{ padding: '10px 14px', color: '#6366f1' }}>useRef</th>
+                    <th style={{ padding: '10px 14px', color: '#10b981' }}>useState</th>
+                    <th style={{ padding: '10px 14px', color: '#ef4444' }}>Plain let / const Variable</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[
-                    { name: 'useState', purpose: 'Track component state values', use: 'Form inputs, toggle modals, data lists', impact: 'Triggers re-render on change', color: '#6366f1' },
-                    { name: 'useEffect', purpose: 'Run side-effects dynamically', use: 'API data fetches, starting intervals', impact: 'Runs asynchronously after render', color: '#10b981' },
-                    { name: 'useRef', purpose: 'DOM queries or persist variables', use: 'Focusing inputs, tracking render count', impact: 'Zero re-renders on value updates', color: '#8b5cf6' },
-                    { name: 'useMemo', purpose: 'Memoize calculation outputs', use: 'Filtering lists, sorting computations', impact: 'Caches results to speed renders', color: '#f59e0b' },
-                    { name: 'useCallback', purpose: 'Memoize function references', use: 'Passing callbacks to memoized children', impact: 'Prevents parent recreation loops', color: '#0ea5e9' }
+                    { f: 'Triggers Re-render on change?', ref: '❌ No (Silent update)', state: '✅ Yes (Updates UI)', var: '❌ No' },
+                    { f: 'Persists value across renders?', ref: '✅ Yes (Stored in ref.current)', state: '✅ Yes (Stored in state)', var: '❌ No (Resets to initial on every render!)' },
+                    { f: 'Mutable or Immutable?', ref: 'Mutable (ref.current = x)', state: 'Immutable (use setState)', var: 'Mutable (let x = y)' },
+                    { f: 'Primary Use Case', ref: 'DOM focus, timer IDs, prev state', ref2: true, state: 'UI-driven data, inputs, lists', var: 'Temporary calculations inside render' }
                   ].map((row, i) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '10px 14px', fontWeight: 800, fontFamily: 'monospace', color: row.color }}>{row.name}</td>
-                      <td style={{ padding: '10px 14px' }}>{row.purpose}</td>
-                      <td style={{ padding: '10px 14px', color: '#475569' }}>{row.use}</td>
-                      <td style={{ padding: '10px 14px', fontWeight: 600 }}>{row.impact}</td>
+                    <tr key={i} style={{ borderBottom: '1px solid #e2e8f0', background: i % 2 === 0 ? 'white' : '#fcfcfd' }}>
+                      <td style={{ padding: '10px 14px', fontWeight: 700, color: '#1e293b' }}>{row.f}</td>
+                      <td style={{ padding: '10px 14px', color: '#4338ca', fontWeight: 600 }}>{row.ref}</td>
+                      <td style={{ padding: '10px 14px', color: '#15803d', fontWeight: 600 }}>{row.state}</td>
+                      <td style={{ padding: '10px 14px', color: '#991b1b' }}>{row.var}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
 
-            <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => go('state_lifting')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
-                Go to Capstone Task <ArrowRight size={16} />
+            {/* Interactive useRef Live Lab */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 16, padding: '1.5rem', marginBottom: '2rem' }}>
+              <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 6px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Eye size={18} color="#6366f1" /> Interactive useRef Live Lab
+              </h4>
+              <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0 0 1.25rem' }}>
+                Test both DOM targeting and silent timer persistence live.
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '1.5rem' }}>
+                
+                {/* DOM Focus Controls */}
+                <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#6366f1', textTransform: 'uppercase' }}>1. DOM Node Focus Controller</span>
+                  <div style={{ display: 'flex', gap: 8, margin: '8px 0 12px' }}>
+                    <input
+                      ref={domInputRef}
+                      type="text"
+                      placeholder="Target input element..."
+                      value={dummyText}
+                      onChange={(e) => setDummyText(e.target.value)}
+                      style={{ flex: 1, padding: '8px 12px', border: '2px solid #cbd5e1', borderRadius: 8, fontSize: '0.85rem', outline: 'none' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button onClick={handleFocusDomInput} style={{ background: '#6366f1', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
+                      domInputRef.current.focus()
+                    </button>
+                    <button onClick={handleSelectDomText} style={{ background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
+                      Select All Text
+                    </button>
+                  </div>
+
+                  {/* Timer Control with Ref */}
+                  <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid #f1f5f9' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#10b981', textTransform: 'uppercase' }}>2. Persistent Interval Timer (using timerRef)</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '8px 0' }}>
+                      <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', fontFamily: 'monospace' }}>
+                        {refTimerSeconds}s
+                      </div>
+                      <span style={{ fontSize: '0.75rem', background: isTimerRunning ? '#dcfce7' : '#fee2e2', color: isTimerRunning ? '#166534' : '#991b1b', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
+                        {isTimerRunning ? 'Running' : 'Stopped'}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <button onClick={handleStartTimer} disabled={isTimerRunning} style={{ background: '#10b981', color: 'white', border: 'none', borderRadius: 6, padding: '5px 12px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}>
+                        Start
+                      </button>
+                      <button onClick={handleStopTimer} disabled={!isTimerRunning} style={{ background: '#f59e0b', color: 'white', border: 'none', borderRadius: 6, padding: '5px 12px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}>
+                        Pause
+                      </button>
+                      <button onClick={handleResetTimer} style={{ background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', borderRadius: 6, padding: '5px 12px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}>
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Live Inspector Panel */}
+                <div style={{ background: '#0f172a', borderRadius: 12, padding: '1.25rem', color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <span style={{ color: '#8892b0', fontSize: '0.75rem', display: 'block', marginBottom: 6 }}>Component Ref & State Tracker:</span>
+                  <div style={{ background: '#1e293b', borderRadius: 8, padding: 10, fontFamily: 'monospace', fontSize: '0.82rem', lineHeight: 1.8 }}>
+                    <div>renderCountRef.current: <span style={{ color: '#86efac', fontWeight: 800 }}>{renderCounterRef.current}</span></div>
+                    <div>stateCounter: <span style={{ color: '#38bdf8', fontWeight: 800 }}>{stateCounterVal}</span></div>
+                    <div>timerRef.current: <span style={{ color: '#fbbf24' }}>{intervalTimerRef.current ? `IntervalID(${intervalTimerRef.current})` : 'null'}</span></div>
+                  </div>
+                  <button
+                    onClick={() => setStateCounterVal(c => c + 1)}
+                    style={{ marginTop: 12, background: '#38bdf8', color: '#0f172a', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer' }}
+                  >
+                    Trigger State Re-render (+1)
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Continue Button */}
+            <div className="card-actions" style={{ marginTop: '2rem' }}>
+              <button className="btn btn-primary" onClick={() => go('useState_hook')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
+                Next: useMemo Cache (+10 XP) <ArrowRight size={16} />
               </button>
             </div>
           </div>
         </Section>
       )}
 
-      {/* ── 6. CAPSTONE TASK: OPTIMIZED COMPONENT & FORM FOCUS ─────────── */}
-      {activeTab === 'state_lifting' && (
-        <Section key="s6" eyebrow="Capstone Task • Day 12" title="Form Focus & Optimized List Component">
+      {/* ──────────────────────────────────────────────────────────────────
+          TAB 2: useMemo HOOK (EXPENSIVE VALUE MEMOIZATION)
+      ────────────────────────────────────────────────────────────────── */}
+      {activeTab === 'useState_hook' && (
+        <Section key="s2" eyebrow="Module 02 • Day 12" title="The useMemo Hook: Caching Expensive Computations">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
 
-            <div style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', borderRadius: 14, padding: '1.5rem', marginBottom: '2rem' }}>
-              <h3 style={{ fontWeight: 800, color: 'white', margin: '0 0 0.4rem', fontSize: '1.2rem' }}>🎓 Form Focus & Optimized Component</h3>
-              <p style={{ color: 'white', opacity: 0.9, margin: 0, fontSize: '0.9rem', lineHeight: 1.6 }}>
-                Combining useRef DOM focus controls, useMemo array filtering optimizations, and useCallback actions to prevent child updates.
+            {/* Hero Banner */}
+            <div style={{ background: 'linear-gradient(135deg,#059669,#0d9488)', borderRadius: 16, padding: '2rem', marginBottom: '2rem', color: 'white' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '0.75rem' }}>
+                <Cpu size={28} color="#a7f3d0" />
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0 }}>Smart Value Memoization</h3>
+              </div>
+              <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.7, opacity: 0.95 }}>
+                In React, every time a component's state updates, the entire function runs from top to bottom. If you have an expensive computation (sorting 10,000 items, calculating statistics, or complex transformations), running it on every keystroke causes perceptible UI lag. <strong><code>useMemo</code> caches (memoizes) the return value</strong> and only recalculates when its specified dependencies change.
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '1.5rem' }}>
-              <div>
-                {/* Search Form */}
-                <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.25rem', marginBottom: '1rem' }}>
-                  <h5 style={{ margin: '0 0 10px', fontWeight: 800, color: '#0f172a' }}>Filter Controls</h5>
-                  <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
-                    <div style={{ position: 'relative', flex: 1 }}>
-                      <input ref={capstoneInputRef} className="form-control" placeholder="Search students by name..." value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)} style={{ fontSize: '0.88rem' }} />
-                    </div>
-                    <button className="btn btn-outline" onClick={focusCapstoneInput} style={{ borderColor: '#6366f1', color: '#6366f1', fontSize: '0.8rem', fontWeight: 700 }}>
-                      Focus Input
-                    </button>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569', display: 'block', marginBottom: 4 }}>Minimum Score Threshold: {studentScoreThreshold}</label>
-                    <input type="range" min={0} max={100} value={studentScoreThreshold} onChange={e => setStudentScoreThreshold(+e.target.value)} style={{ width: '100%' }} />
-                  </div>
-                </div>
+            {/* Step-by-Step Implementation Guide */}
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '1rem' }}>
+              📋 Step-by-Step useMemo Implementation Guide
+            </h3>
 
-                {/* Students list */}
-                <div style={{ border: '1px solid #cbd5e1', borderRadius: 12, overflow: 'hidden' }}>
-                  <div style={{ background: '#f8fafc', borderBottom: '1px solid #cbd5e1', padding: '10px 14px', fontWeight: 700, color: '#0f172a', fontSize: '0.88rem' }}>
-                    Student Records ({filteredStudents.length} matches)
-                  </div>
-                  <div style={{ padding: '0.5rem' }}>
-                    {filteredStudents.length === 0 ? (
-                      <div style={{ textAlign: 'center', padding: '1.5rem', color: '#94a3b8', fontSize: '0.88rem' }}>No student records found</div>
-                    ) : filteredStudents.map(s => (
-                      <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', borderBottom: '1px solid #f1f5f9' }}>
-                        <div>
-                          <strong style={{ fontSize: '0.88rem', color: '#0f172a' }}>{s.name}</strong>
-                          <span style={{ display: 'block', fontSize: '0.78rem', color: '#64748b' }}>Score: {s.score}/100</span>
-                        </div>
-                        <button className="btn btn-outline" onClick={() => handleDeleteStudent(s.id)}
-                          style={{ borderColor: '#ef4444', color: '#ef4444', padding: '4px 8px', fontSize: '0.76rem' }}>
-                          Delete
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+            <StepCard
+              stepNumber="1"
+              title="Identify the Expensive Calculation"
+              desc="Locate complex data filtering, sorting, or mathematical algorithms inside your component body."
+            >
+              <CodeBlock title="Unoptimized (Slow) Code" code={`function ProductList({ products, filterText }) {
+  // ⚠️ Runs on EVERY re-render, even when unrelated states (like dark mode) toggle!
+  const filteredProducts = products.filter(p => 
+    p.title.toLowerCase().includes(filterText.toLowerCase())
+  );
+
+  return <ul>{filteredProducts.map(p => <li key={p.id}>{p.title}</li>)}</ul>;
+}`} />
+            </StepCard>
+
+            <StepCard
+              stepNumber="2"
+              title="Wrap in useMemo with a Dependency Array"
+              desc="Pass a calculation function as the 1st argument, and an array of dependencies as the 2nd argument."
+            >
+              <CodeBlock title="Optimized with useMemo" code={`import { useMemo } from "react";
+
+function ProductList({ products, filterText }) {
+  // ✅ Only recalculates when 'products' array or 'filterText' string changes!
+  const filteredProducts = useMemo(() => {
+    console.log("Filtering products list...");
+    return products.filter(p => 
+      p.title.toLowerCase().includes(filterText.toLowerCase())
+    );
+  }, [products, filterText]); // <-- Dependencies
+
+  return <ul>{filteredProducts.map(p => <li key={p.id}>{p.title}</li>)}</ul>;
+}`} />
+            </StepCard>
+
+            <StepCard
+              stepNumber="3"
+              title="When NOT to use useMemo"
+              desc="useMemo has a memory and comparison cost. Avoid wrapping trivial calculations (e.g. 2 + 2 or simple string concatenations)."
+            >
+              <CodeBlock title="Avoid Overusing useMemo" code={`// ❌ Bad: Trivial operations don't need useMemo (overhead is worse than the calc!)
+const fullName = useMemo(() => firstName + " " + lastName, [firstName, lastName]);
+
+// ✅ Good: Simple calculations should be plain variables
+const fullName = firstName + " " + lastName;`} />
+            </StepCard>
+
+            {/* Interactive Benchmark Simulator */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 16, padding: '1.5rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: 10 }}>
+                <div>
+                  <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                    ⚡ Real-Time useMemo Benchmark Simulator
+                  </h4>
+                  <span style={{ fontSize: '0.82rem', color: '#64748b' }}>Type into the unrelated input below to observe how unmemoized calculations freeze UI typing speed</span>
                 </div>
+                <button
+                  onClick={() => setIsMemoActive(v => !v)}
+                  style={{
+                    background: isMemoActive ? '#10b981' : '#ef4444',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: 6,
+                    padding: '6px 14px',
+                    fontSize: '0.8rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6
+                  }}
+                >
+                  {isMemoActive ? '✅ useMemo: ENABLED (Fast)' : '❌ useMemo: DISABLED (Laggy)'}
+                </button>
               </div>
 
-              {/* Render tracer logger */}
-              <div style={{ background: '#0f172a', borderRadius: 12, padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
-                <span style={{ color: '#8892b0', fontSize: '0.75rem', display: 'block', marginBottom: 8, fontWeight: 'bold' }}>Optimization logs:</span>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
-                  {capstoneRenderLog.map((log, i) => (
-                    <div key={i} style={{ fontFamily: 'monospace', fontSize: '0.8rem', color: '#86efac', padding: '3px 0', borderBottom: '1px solid #1e293b' }}>
-                      {log}
-                    </div>
-                  ))}
-                  {capstoneStudents.length === 0 && (
-                    <div style={{ color: '#fbbf24', fontSize: '0.8rem', fontStyle: 'italic', marginTop: 10 }}>All students deleted. Click reset below to load initial data.</div>
-                  )}
+              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '1.5rem' }}>
+                <div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={{ fontSize: '0.82rem', fontWeight: 700, color: '#475569', display: 'block', marginBottom: 4 }}>
+                      Calculation Parameter N (1-30):
+                    </label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={30}
+                      value={memoNumber}
+                      onChange={(e) => setMemoNumber(Math.min(30, Math.max(1, +e.target.value)))}
+                      style={{ width: '100%', padding: '6px 10px', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '0.82rem', fontWeight: 700, color: '#475569', display: 'block', marginBottom: 4 }}>
+                      Unrelated Typing Input (Type rapidly to test lag):
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Type letters rapidly..."
+                      value={unrelatedInput}
+                      onChange={(e) => setUnrelatedInput(e.target.value)}
+                      style={{ width: '100%', padding: '8px 12px', border: '2px solid #6366f1', borderRadius: 6, fontSize: '0.85rem', outline: 'none' }}
+                    />
+                    <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block', marginTop: 4 }}>
+                      {isMemoActive
+                        ? '🚀 Fluid typing! useMemo returned the cached result with 0ms recalculation.'
+                        : '🐢 Laggy typing! The heavy loop executes on every single keystroke.'}
+                    </span>
+                  </div>
                 </div>
-                <button className="btn btn-outline" onClick={() => setCapstoneStudents([...INITIAL_STUDENTS.slice(0, 6)])}
-                  style={{ width: '100%', marginTop: 'auto', borderColor: '#475569', color: '#94a3b8', fontSize: '0.8rem' }}>
-                  Reset Students list
-                </button>
+
+                <div style={{ background: '#0f172a', borderRadius: 12, padding: '1.25rem', color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <span style={{ color: '#8892b0', fontSize: '0.75rem', display: 'block', marginBottom: 4 }}>Benchmark Telemetry:</span>
+                  <div style={{ background: '#1e293b', borderRadius: 8, padding: 10, fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                    <div>Calculated Hash: <span style={{ color: '#fbbf24', fontWeight: 800 }}>{currentFactorialOutput}</span></div>
+                    <div>Execution Cost: <span style={{ color: isMemoActive ? '#86efac' : '#f87171', fontWeight: 800 }}>{isMemoActive ? '0.00ms (Cached)' : `${lastCalcDuration}ms (Lag)`}</span></div>
+                    <div>Mode: <span style={{ color: isMemoActive ? '#10b981' : '#ef4444' }}>{isMemoActive ? 'Memoized' : 'Raw Recomputation'}</span></div>
+                  </div>
+                </div>
               </div>
             </div>
 
+            {/* Continue Button */}
             <div className="card-actions" style={{ marginTop: '2rem' }}>
-              <button className="btn btn-primary" onClick={() => go('quiz')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
-                Go to Quiz <ArrowRight size={16} />
+              <button className="btn btn-primary" onClick={() => go('multiple_states')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
+                Next: useCallback Actions (+10 XP) <ArrowRight size={16} />
               </button>
             </div>
           </div>
         </Section>
       )}
 
-      {/* ── QUIZ ─────────────────────────────────────────────────────────── */}
-      {activeTab === 'quiz' && (
-        <Section key="quiz" eyebrow="Knowledge Check" title="Day 12 Quiz — Advanced Hooks">
+      {/* ──────────────────────────────────────────────────────────────────
+          TAB 3: useCallback HOOK (FUNCTION MEMOIZATION)
+      ────────────────────────────────────────────────────────────────── */}
+      {activeTab === 'multiple_states' && (
+        <Section key="s3" eyebrow="Module 03 • Day 12" title="The useCallback Hook: Memoizing Callback Functions">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+
+            {/* Hero Banner */}
+            <div style={{ background: 'linear-gradient(135deg,#0284c7,#2563eb)', borderRadius: 16, padding: '2rem', marginBottom: '2rem', color: 'white' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '0.75rem' }}>
+                <Activity size={28} color="#bae6fd" />
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0 }}>Function Reference Stability</h3>
+              </div>
+              <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.7, opacity: 0.95 }}>
+                In JavaScript, functions are objects: <code>{`(() => {}) !== (() => {})`}</code>. Every time a parent component renders, any function declared inside it is recreated with a brand new memory reference. When you pass that function as a prop to a <strong><code>React.memo</code></strong> child component, the child thinks the prop changed and re-renders unnecessarily. <strong><code>useCallback</code> solves this by locking the function reference in memory</strong>.
+              </p>
+            </div>
+
+            {/* Step-by-Step Guide */}
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '1rem' }}>
+              🧠 Step-by-Step useCallback Workflow
+            </h3>
+
+            <StepCard
+              stepNumber="1"
+              title="Understand the Problem with Inline Callbacks"
+              desc="When passing inline callbacks to child components wrapped in React.memo, the child will still re-render because props fail shallow equality check."
+            >
+              <CodeBlock title="Parent Re-creates Functions" code={`// Child wrapped in React.memo
+const ChildButton = React.memo(({ onClick, label }) => {
+  console.log("ChildButton Rendered!");
+  return <button onClick={onClick}>{label}</button>;
+});
+
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  // ⚠️ This function gets a NEW memory address every time count updates!
+  // This causes ChildButton to re-render even though its label didn't change.
+  const handleClick = () => {
+    console.log("Button clicked");
+  };
+
+  return <ChildButton onClick={handleClick} label="Submit" />;
+}`} />
+            </StepCard>
+
+            <StepCard
+              stepNumber="2"
+              title="Wrap the Callback in useCallback()"
+              desc="useCallback preserves the exact same function pointer between renders."
+            >
+              <CodeBlock title="Preserving Function Reference with useCallback" code={`import { useCallback, useState } from "react";
+
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  // ✅ Function reference stays identical across renders!
+  const handleClick = useCallback(() => {
+    console.log("Button clicked");
+  }, []); // <-- Empty array = function pointer never changes
+
+  return <ChildButton onClick={handleClick} label="Submit" />;
+}`} />
+            </StepCard>
+
+            <StepCard
+              stepNumber="3"
+              title="useCallback vs useMemo Formula"
+              desc="Remember: useCallback memoizes the function itself, while useMemo memoizes the returned result."
+            >
+              <CodeBlock title="The Golden Rule of Equivalence" code={`// These two lines are 100% equivalent under the hood:
+const handleSave = useCallback(fn, [deps]);
+const handleSave = useMemo(() => fn, [deps]);`} />
+            </StepCard>
+
+            {/* Interactive Child Re-render Visualizer */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 16, padding: '1.5rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <div>
+                  <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                    🔬 Child Component Re-render Lab
+                  </h4>
+                  <span style={{ fontSize: '0.82rem', color: '#64748b' }}>Click parent counter to see the difference between regular and memoized children</span>
+                </div>
+                <button
+                  onClick={() => setParentTick(c => c + 1)}
+                  style={{ background: '#2563eb', color: 'white', border: 'none', borderRadius: 6, padding: '6px 14px', fontSize: '0.82rem', fontWeight: 800, cursor: 'pointer' }}
+                >
+                  Increment Parent State (Tick #{parentTick})
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#dc2626', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>
+                    Without useCallback (Standard)
+                  </span>
+                  <RegularChild title="Un-memoized Child" count={parentTick} />
+                  <p style={{ fontSize: '0.78rem', color: '#64748b', margin: 0 }}>
+                    * This child re-renders on every parent tick because its callback prop is recreated in memory.
+                  </p>
+                </div>
+
+                <div>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#16a34a', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>
+                    With useCallback + React.memo
+                  </span>
+                  <OptimizedChild title="Memoized Child" onClick={handleOptimizedAction} />
+                  <p style={{ fontSize: '0.78rem', color: '#64748b', margin: 0 }}>
+                    * This child stays frozen! Its props have identical memory pointers, avoiding waste repaints. Click count: {childClicks}.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Continue Button */}
+            <div className="card-actions" style={{ marginTop: '2rem' }}>
+              <button className="btn btn-primary" onClick={() => go('object_state')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
+                Next: Custom Hooks (+10 XP) <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ──────────────────────────────────────────────────────────────────
+          TAB 4: CUSTOM HOOKS (REUSABLE LOGIC)
+      ────────────────────────────────────────────────────────────────── */}
+      {activeTab === 'object_state' && (
+        <Section key="s4" eyebrow="Module 04 • Day 12" title="Custom Hooks: Extracting Reusable Component Logic">
+          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
+
+            {/* Hero Banner */}
+            <div style={{ background: 'linear-gradient(135deg,#7c3aed,#9333ea)', borderRadius: 16, padding: '2rem', marginBottom: '2rem', color: 'white' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '0.75rem' }}>
+                <Sparkles size={28} color="#e9d5ff" />
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0 }}>The Power of Custom Hooks</h3>
+              </div>
+              <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.7, opacity: 0.95 }}>
+                A <strong>Custom Hook</strong> is a regular JavaScript function whose name starts with <strong><code>"use"</code></strong> that calls other React hooks (like <code>useState</code>, <code>useEffect</code>). It lets you extract component logic (API fetching, localStorage synchronization, form state, media queries) into clean, shareable, testable modules.
+              </p>
+            </div>
+
+            {/* 3 Real-World Custom Hook Examples */}
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '1rem' }}>
+              📦 3 Essential Real-World Custom Hooks
+            </h3>
+
+            <StepCard
+              stepNumber="1"
+              title="useLocalStorage — Persistent State Hook"
+              desc="Works just like useState, but automatically synchronizes every state update to browser localStorage."
+            >
+              <CodeBlock title="src/hooks/useLocalStorage.js" code={`import { useState, useEffect } from "react";
+
+export function useLocalStorage(key, initialValue) {
+  // 1. Read existing value from localStorage on mount
+  const [value, setValue] = useState(() => {
+    try {
+      const saved = localStorage.getItem(key);
+      return saved ? JSON.parse(saved) : initialValue;
+    } catch {
+      return initialValue;
+    }
+  });
+
+  // 2. Automatically save to localStorage whenever value changes
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(value));
+  }, [key, value]);
+
+  return [value, setValue];
+}
+
+// ── Usage in any component ──
+function Settings() {
+  const [theme, setTheme] = useLocalStorage("app_theme", "dark");
+  return <button onClick={() => setTheme("light")}>{theme}</button>;
+}`} />
+            </StepCard>
+
+            <StepCard
+              stepNumber="2"
+              title="useDebounce — Search & Input Debouncing Hook"
+              desc="Delays updating a state value until the user stops typing for N milliseconds, saving hundreds of unnecessary API requests."
+            >
+              <CodeBlock title="src/hooks/useDebounce.js" code={`import { useState, useEffect } from "react";
+
+export function useDebounce(value, delay = 500) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    // Clean up timer if value changes before delay expires
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+}`} />
+            </StepCard>
+
+            <StepCard
+              stepNumber="3"
+              title="useFetch — Declarative API Data Fetcher"
+              desc="Encapsulates data, loading spinner flags, and error handling into a single line of code."
+            >
+              <CodeBlock title="src/hooks/useFetch.js" code={`import { useState, useEffect } from "react";
+
+export function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(url)
+      .then(res => res.json())
+      .then(setData)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, [url]);
+
+  return { data, loading, error };
+}`} />
+            </StepCard>
+
+            {/* Interactive Custom Hook Playground */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 16, padding: '1.5rem', marginBottom: '2rem' }}>
+              <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 6px' }}>
+                🪝 Live Custom Hook Playground: useDebounce & useLocalStorage
+              </h4>
+              <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0 0 1.25rem' }}>
+                Type in the search box to see <code>useDebounce</code> buffer keystrokes and reduce API call volume.
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+                
+                {/* useDebounce Live Tester */}
+                <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#7c3aed', textTransform: 'uppercase' }}>1. useDebounce Demo</span>
+                  <input
+                    type="text"
+                    placeholder="Type search terms quickly..."
+                    value={rawSearchQuery}
+                    onChange={(e) => setRawSearchQuery(e.target.value)}
+                    style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem', margin: '8px 0', outline: 'none' }}
+                  />
+                  <div style={{ fontSize: '0.8rem', color: '#334155', lineHeight: 1.6 }}>
+                    <div>Raw Input Value: <code>"{rawSearchQuery}"</code></div>
+                    <div>Debounced Value (400ms): <strong style={{ color: '#7c3aed' }}>"{debouncedQuery}"</strong></div>
+                    <div>Simulated API Calls Fired: <strong style={{ color: '#16a34a' }}>{apiCallCount}</strong></div>
+                  </div>
+                </div>
+
+                {/* useLocalStorage Live Tester */}
+                <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0284c7', textTransform: 'uppercase' }}>2. useLocalStorage Demo</span>
+                  <input
+                    type="text"
+                    value={storedNotes}
+                    onChange={(e) => setStoredNotes(e.target.value)}
+                    style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem', margin: '8px 0', outline: 'none' }}
+                  />
+                  <div style={{ fontSize: '0.8rem', color: '#334155' }}>
+                    <div>Storage Key: <code>"{hookStorageKey}"</code></div>
+                    <div>Value in LocalStorage: <strong style={{ color: '#0284c7' }}>"{storedNotes}"</strong></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Continue Button */}
+            <div className="card-actions" style={{ marginTop: '2rem' }}>
+              <button className="btn btn-primary" onClick={() => go('nested_state')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
+                Next: Hook Decision Matrix (+10 XP) <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ──────────────────────────────────────────────────────────────────
+          TAB 5: HOOK CHEAT SHEET & DECISION MATRIX
+      ────────────────────────────────────────────────────────────────── */}
+      {activeTab === 'nested_state' && (
+        <Section key="s5" eyebrow="Module 05 • Day 12" title="React Hooks Master Cheat Sheet & Decision Matrix">
+          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
+
+            {/* Overview Banner */}
+            <div style={{ background: 'linear-gradient(135deg,#0f172a,#1e293b)', borderRadius: 16, padding: '2rem', marginBottom: '2rem', color: 'white' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '0.75rem' }}>
+                <FileText size={28} color="#94a3b8" />
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0 }}>Hooks Decision Matrix</h3>
+              </div>
+              <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.7, opacity: 0.95 }}>
+                Not sure which hook to use? Use this quick reference guide and interactive decision tool to pick the exact right tool for the job every time.
+              </p>
+            </div>
+
+            {/* Master Summary Table */}
+            <div style={{ overflowX: 'auto', marginBottom: '2rem' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
+                <thead>
+                  <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0', textAlign: 'left' }}>
+                    <th style={{ padding: '10px 14px', color: '#0f172a' }}>Hook</th>
+                    <th style={{ padding: '10px 14px', color: '#0f172a' }}>Return Value</th>
+                    <th style={{ padding: '10px 14px', color: '#0f172a' }}>Causes Re-render?</th>
+                    <th style={{ padding: '10px 14px', color: '#0f172a' }}>Primary Use Case</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { hook: 'useState(init)', ret: '[state, setState]', render: '✅ Yes', use: 'Interactive values (inputs, toggles, data arrays)', color: '#6366f1' },
+                    { hook: 'useEffect(fn, deps)', ret: 'void (or cleanup fn)', render: '❌ No (runs after)', use: 'Data fetching, subscriptions, DOM mutations', color: '#10b981' },
+                    { hook: 'useRef(init)', ret: '{ current: value }', render: '❌ Never', use: 'DOM references, timer IDs, previous values', color: '#8b5cf6' },
+                    { hook: 'useMemo(fn, deps)', ret: 'Memoized value', render: '❌ No', use: 'Expensive array filters, complex math outputs', color: '#f59e0b' },
+                    { hook: 'useCallback(fn, deps)', ret: 'Memoized function', render: '❌ No', use: 'Passing stable handlers to React.memo children', color: '#0ea5e9' },
+                    { hook: 'useContext(Context)', ret: 'Current Context value', render: '✅ Yes (if context updates)', use: 'Global theme, user authentication state', color: '#ec4899' }
+                  ].map((row, i) => (
+                    <tr key={i} style={{ borderBottom: '1px solid #e2e8f0', background: i % 2 === 0 ? 'white' : '#fcfcfd' }}>
+                      <td style={{ padding: '10px 14px', fontWeight: 800, fontFamily: 'monospace', color: row.color }}>{row.hook}</td>
+                      <td style={{ padding: '10px 14px', fontFamily: 'monospace', fontSize: '0.8rem', color: '#475569' }}>{row.ret}</td>
+                      <td style={{ padding: '10px 14px', fontWeight: 700 }}>{row.render}</td>
+                      <td style={{ padding: '10px 14px', color: '#334155' }}>{row.use}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Interactive "Which Hook Should I Use?" Recommender Widget */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 16, padding: '1.5rem', marginBottom: '2rem' }}>
+              <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <HelpCircle size={18} color="#6366f1" /> Interactive Hook Recommendation Tool
+              </h4>
+              <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0 0 1rem' }}>
+                Select your engineering scenario below to see the recommended hook and code pattern:
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: '1.25rem' }}>
+                {[
+                  { id: 'dom', label: '1. Focus Input / DOM Access' },
+                  { id: 'calc', label: '2. Filter Heavy Dataset' },
+                  { id: 'callback', label: '3. Pass Handler to Memo Child' },
+                  { id: 'custom', label: '4. Reusable Fetch / Sync Logic' }
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => setSelectedScenario(item.id)}
+                    style={{
+                      background: selectedScenario === item.id ? '#6366f1' : 'white',
+                      color: selectedScenario === item.id ? 'white' : '#334155',
+                      border: '1px solid #cbd5e1',
+                      borderRadius: 8,
+                      padding: '10px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      transition: 'all 0.15s'
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Recommendation Card */}
+              <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <h4 style={{ margin: 0, color: '#0f172a', fontWeight: 800 }}>
+                    Recommended: <span style={{ color: hookRecommendations[selectedScenario].color }}>{hookRecommendations[selectedScenario].hook}</span>
+                  </h4>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, background: '#f1f5f9', color: '#475569', padding: '3px 8px', borderRadius: 4 }}>
+                    {hookRecommendations[selectedScenario].badge}
+                  </span>
+                </div>
+                <p style={{ margin: '0 0 10px', fontSize: '0.88rem', color: '#475569' }}>
+                  {hookRecommendations[selectedScenario].desc}
+                </p>
+                <CodeBlock title="Recommended Boilerplate" code={hookRecommendations[selectedScenario].code} />
+              </div>
+            </div>
+
+            {/* Continue Button */}
+            <div className="card-actions" style={{ marginTop: '2rem' }}>
+              <button className="btn btn-primary" onClick={() => go('state_lifting')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
+                Next: Capstone Task (+10 XP) <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ──────────────────────────────────────────────────────────────────
+          TAB 6: CAPSTONE TASK: OPTIMIZED LIST & FORM FOCUS
+      ────────────────────────────────────────────────────────────────── */}
+      {activeTab === 'state_lifting' && (
+        <Section key="s6" eyebrow="Capstone Project • Day 12" title="Form Focus & High-Performance Student Portal">
+          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
+
+            {/* Project Banner */}
+            <div style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', borderRadius: 16, padding: '1.75rem', marginBottom: '2rem', color: 'white' }}>
+              <h3 style={{ margin: '0 0 6px', fontSize: '1.3rem', fontWeight: 800 }}>🎓 Capstone Project: High-Performance Student Portal</h3>
+              <p style={{ margin: 0, fontSize: '0.92rem', lineHeight: 1.6, opacity: 0.95 }}>
+                A production-ready student roster combining <strong>useRef</strong> (auto-focus and manual DOM control), <strong>useMemo</strong> (multi-parameter filtering and sorting), and <strong>useCallback</strong> (memoized child action handlers with zero waste renders).
+              </p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 0.7fr', gap: '1.5rem', marginBottom: '2rem' }}>
+              
+              {/* Left Column: Form & Student List */}
+              <div>
+                {/* Form to Add Student */}
+                <form onSubmit={handleAddStudent} style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.25rem', marginBottom: '1.25rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                    <h5 style={{ margin: 0, fontWeight: 800, color: '#0f172a' }}>Add Student Record</h5>
+                    <button type="button" onClick={focusStudentInput} style={{ background: 'white', border: '1px solid #cbd5e1', borderRadius: 6, padding: '4px 10px', fontSize: '0.75rem', fontWeight: 700, color: '#6366f1', cursor: 'pointer' }}>
+                      Focus Input (useRef)
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+                    <input
+                      ref={capstoneInputRef}
+                      type="text"
+                      placeholder="Student Full Name..."
+                      value={newStudentName}
+                      onChange={(e) => setNewStudentName(e.target.value)}
+                      style={{ flex: 1, padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem', outline: 'none' }}
+                    />
+                    <select
+                      value={newStudentCourse}
+                      onChange={(e) => setNewStudentCourse(e.target.value)}
+                      style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem', outline: 'none', background: 'white' }}
+                    >
+                      <option>React 19</option>
+                      <option>Node.js</option>
+                      <option>SQL Databases</option>
+                      <option>Fullstack Dev</option>
+                    </select>
+                    <button type="submit" style={{ background: '#6366f1', color: 'white', border: 'none', borderRadius: 6, padding: '8px 14px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer' }}>
+                      Add
+                    </button>
+                  </div>
+                </form>
+
+                {/* Filter and Sort Toolbar */}
+                <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1rem', marginBottom: '1rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', gap: 8, alignItems: 'center' }}>
+                    <input
+                      type="text"
+                      placeholder="Search students (useMemo)..."
+                      value={capstoneSearch}
+                      onChange={(e) => setCapstoneSearch(e.target.value)}
+                      style={{ padding: '6px 10px', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.8rem', outline: 'none' }}
+                    />
+                    <div>
+                      <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b', display: 'block' }}>Min Score: {minScoreFilter}</label>
+                      <input type="range" min={0} max={100} value={minScoreFilter} onChange={(e) => setMinScoreFilter(+e.target.value)} style={{ width: '100%' }} />
+                    </div>
+                    <select
+                      value={sortField}
+                      onChange={(e) => setSortField(e.target.value)}
+                      style={{ padding: '6px 8px', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.8rem', outline: 'none', background: 'white' }}
+                    >
+                      <option value="score">Sort by Score</option>
+                      <option value="name">Sort by Name</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Student Records List */}
+                <div style={{ border: '1px solid #cbd5e1', borderRadius: 12, overflow: 'hidden' }}>
+                  <div style={{ background: '#f8fafc', borderBottom: '1px solid #cbd5e1', padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <strong style={{ fontSize: '0.85rem', color: '#0f172a' }}>Active Student Records ({filteredAndSortedStudents.length} matches)</strong>
+                    <span style={{ fontSize: '0.72rem', color: '#6366f1', fontWeight: 800 }}>Optimized with React.memo</span>
+                  </div>
+                  <div style={{ padding: '8px' }}>
+                    {filteredAndSortedStudents.length === 0 ? (
+                      <div style={{ textAlign: 'center', padding: '1.5rem', color: '#94a3b8', fontSize: '0.85rem' }}>No matching students found</div>
+                    ) : (
+                      filteredAndSortedStudents.map(student => (
+                        <MemoizedStudentRow
+                          key={student.id}
+                          student={student}
+                          onDelete={handleDeleteStudent}
+                          onGradeChange={handleGradeChange}
+                        />
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Performance Analytics & Action Log */}
+              <div style={{ background: '#0f172a', borderRadius: 12, padding: '1.25rem', color: 'white', display: 'flex', flexDirection: 'column' }}>
+                <span style={{ color: '#8892b0', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>
+                  Optimization Activity Log:
+                </span>
+                <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 380, marginBottom: 12 }}>
+                  {capstoneLog.length === 0 ? (
+                    <span style={{ color: '#64748b', fontSize: '0.8rem', fontStyle: 'italic' }}>Interact with the controls on the left to see hook triggers...</span>
+                  ) : (
+                    capstoneLog.map((log, i) => (
+                      <div key={i} style={{ fontFamily: 'monospace', fontSize: '0.75rem', color: log.includes('useRef') ? '#c4b5fd' : log.includes('useMemo') ? '#fde047' : '#86efac', padding: '3px 0', borderBottom: '1px solid #1e293b' }}>
+                        {log}
+                      </div>
+                    ))
+                  )}
+                </div>
+                <button
+                  onClick={() => setStudentsList([
+                    { id: 1, name: 'Alice Johnson', course: 'React 19', score: 95, grade: 'A' },
+                    { id: 2, name: 'Bob Smith', course: 'Node.js', score: 82, grade: 'B' },
+                    { id: 3, name: 'Carol White', course: 'React 19', score: 98, grade: 'A' },
+                    { id: 4, name: 'David Miller', course: 'SQL Databases', score: 64, grade: 'C' }
+                  ])}
+                  style={{ background: '#1e293b', color: '#94a3b8', border: '1px solid #334155', borderRadius: 6, padding: '6px 12px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+                >
+                  Reset Student Dataset
+                </button>
+              </div>
+
+            </div>
+
+            {/* Continue Button */}
+            <div className="card-actions" style={{ marginTop: '2rem' }}>
+              <button className="btn btn-primary" onClick={() => go('quiz')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
+                Go to Knowledge Check Quiz (+10 XP) <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ──────────────────────────────────────────────────────────────────
+          TAB 7: QUIZ
+      ────────────────────────────────────────────────────────────────── */}
+      {activeTab === 'quiz' && (
+        <Section key="quiz" eyebrow="Knowledge Check" title="Day 12 Quiz — Advanced React Hooks Masterclass">
+          <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
+            
+            <p style={{ margin: '0 0 1.5rem', fontSize: '0.92rem', color: '#475569' }}>
+              Test your mastery of <code>useRef</code>, <code>useMemo</code>, <code>useCallback</code>, custom hooks, and React performance optimization.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               {questions.map((item, qi) => (
                 <div key={item.k} style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: 12, border: '1px solid #cbd5e1' }}>
-                  <p style={{ fontWeight: 700, color: '#1e293b', margin: '0 0 0.8rem' }}>{qi + 1}. {item.q}</p>
+                  <p style={{ fontWeight: 700, color: '#0f172a', margin: '0 0 0.8rem', fontSize: '0.95rem' }}>
+                    {qi + 1}. {item.q}
+                  </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     {item.opts.map((opt, oi) => {
-                      const selected = qAns[item.k] === oi;
+                      const selected = quizAnswers[item.k] === oi;
                       const correct = oi === item.ans;
                       let bg = 'white', border = '1px solid #cbd5e1';
-                      if (qDone) {
+                      if (quizSubmitted) {
                         if (correct) { bg = '#dcfce7'; border = '1.5px solid #10b981'; }
                         else if (selected) { bg = '#fee2e2'; border = '1.5px solid #ef4444'; }
-                      } else if (selected) { bg = '#e0f2fe'; border = '1.5px solid #0ea5e9'; }
+                      } else if (selected) {
+                        bg = '#e0f2fe'; border = '1.5px solid #0ea5e9';
+                      }
+
                       return (
-                        <button key={oi} disabled={qDone} onClick={() => setQAns(p => ({ ...p, [item.k]: oi }))}
-                          style={{ background: bg, border, padding: '0.6rem 1rem', borderRadius: 8, cursor: qDone ? 'default' : 'pointer', textAlign: 'left', fontSize: '0.88rem', transition: 'all 0.15s' }}>
+                        <button
+                          key={oi}
+                          disabled={quizSubmitted}
+                          onClick={() => setQuizAnswers(prev => ({ ...prev, [item.k]: oi }))}
+                          style={{
+                            background: bg,
+                            border,
+                            padding: '0.65rem 1rem',
+                            borderRadius: 8,
+                            cursor: quizSubmitted ? 'default' : 'pointer',
+                            textAlign: 'left',
+                            fontSize: '0.88rem',
+                            transition: 'all 0.15s'
+                          }}
+                        >
                           {opt}
                         </button>
                       );
                     })}
                   </div>
-                  {qDone && (
-                    <div style={{ marginTop: '0.75rem', fontSize: '0.82rem', color: '#475569', fontStyle: 'italic', background: 'white', padding: '8px 12px', borderRadius: 6, borderLeft: '3px solid #6366f1' }}>
+
+                  {quizSubmitted && (
+                    <div style={{ marginTop: '0.75rem', fontSize: '0.82rem', color: '#334155', background: 'white', padding: '8px 12px', borderRadius: 6, borderLeft: '3px solid #6366f1' }}>
                       <strong>Explanation:</strong> {item.exp}
                     </div>
                   )}
                 </div>
               ))}
+
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginTop: '0.5rem' }}>
-                {!qDone ? (
-                  <button className="btn btn-primary" onClick={() => setQDone(true)}
-                    disabled={Object.keys(qAns).length < questions.length}
-                    style={{ background: '#6366f1', borderColor: '#6366f1', minWidth: 150 }}>
-                    Submit Answers
+                {!quizSubmitted ? (
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setQuizSubmitted(true)}
+                    disabled={Object.keys(quizAnswers).length < questions.length}
+                    style={{ background: '#6366f1', borderColor: '#6366f1', minWidth: 160 }}
+                  >
+                    Submit Quiz Answers
                   </button>
                 ) : (
                   <>
-                    <button className="btn btn-outline" onClick={() => { setQAns({}); setQDone(false); }} style={{ minWidth: 150 }}>Retry Quiz</button>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: score === questions.length ? '#10b981' : '#f59e0b' }}>
-                      Score: {score} / {questions.length} ({Math.round(score / questions.length * 100)}%)
+                    <button
+                      className="btn btn-outline"
+                      onClick={() => { setQuizAnswers({}); setQuizSubmitted(false); }}
+                      style={{ minWidth: 150 }}
+                    >
+                      Retry Quiz
+                    </button>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: quizScore === questions.length ? '#10b981' : '#f59e0b' }}>
+                      Score: {quizScore} / {questions.length} ({Math.round(quizScore / questions.length * 100)}%)
                     </div>
                   </>
                 )}
               </div>
             </div>
+
+            {/* Continue Button */}
             <div className="card-actions" style={{ marginTop: '2rem' }}>
               <button className="btn btn-primary" onClick={() => go('assignment')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
-                Continue to Assignment <ArrowRight size={16} />
+                Continue to Hands-on Assignments <ArrowRight size={16} />
               </button>
             </div>
           </div>
         </Section>
       )}
 
-      {/* ── ASSIGNMENT ───────────────────────────────────────────────────── */}
+      {/* ──────────────────────────────────────────────────────────────────
+          TAB 8: ASSIGNMENT
+      ────────────────────────────────────────────────────────────────── */}
       {activeTab === 'assignment' && (
-        <Section key="asgn" eyebrow="Homework" title="Day 12 Assignment">
+        <Section key="asgn" eyebrow="Homework & Practice" title="Day 12 Guided Assignments">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
-            <div style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', borderRadius: 16, padding: '1.5rem', marginBottom: '2rem' }}>
-              <h3 style={{ fontWeight: 800, fontSize: '1.4rem', color: 'white', marginBottom: '0.5rem' }}>🎓 Day 12 Complete!</h3>
-              <p style={{ color: 'white', opacity: 0.9, margin: 0, lineHeight: 1.6 }}>
-                You've completed Advanced Hooks optimization patterns including: useRef references, useMemo values caching, useCallback method bindings, and custom hooks.
+
+            {/* Completion Banner */}
+            <div style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', borderRadius: 16, padding: '1.75rem', marginBottom: '2rem', color: 'white' }}>
+              <h3 style={{ margin: '0 0 6px', fontSize: '1.3rem', fontWeight: 800 }}>🎉 Day 12 Advanced Hooks Complete!</h3>
+              <p style={{ margin: 0, fontSize: '0.92rem', lineHeight: 1.6, opacity: 0.95 }}>
+                Master React performance optimization and custom hooks by completing these 3 hands-on step-by-step challenges.
               </p>
             </div>
 
-            {[
-              { num: 1, icon: '🔍', title: 'Focus on field load', desc: 'Create a component that automatically focuses the first input field on load, and contains an "Add Item" button that focuses the input field again after submission.', hint: 'Use `useRef` and trigger `.focus()` in a useEffect on mount.' },
-              { num: 2, icon: '💾', title: 'Custom useFetch Hook', desc: 'Create a custom hook called useFetch that accepts a URL, fetches data, handles loading and error states, and returns all three values.', hint: 'Use useState and useEffect inside a function that starts with use.' },
-              { num: 3, icon: '⚙️', title: 'Optimized Sort list', desc: 'Build a component that sorts a list of 1000 items. Implement useMemo to only perform the sort when the sort criteria changes, preventing lags.', hint: 'Dependency array should be: [items, sortCriteria].' },
-            ].map(task => (
-              <div key={task.num} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 16, padding: '1.5rem', marginBottom: '1rem' }}>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <div style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: 'white', borderRadius: 12, width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', flexShrink: 0 }}>{task.icon}</div>
-                  <div style={{ flex: 1 }}>
-                    <h4 style={{ fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem' }}>Task {task.num}: {task.title}</h4>
-                    <p style={{ fontSize: '0.92rem', color: '#475569', margin: '0 0 0.75rem' }}>{task.desc}</p>
-                    <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '8px 12px', fontSize: '0.83rem', color: '#1d4ed8' }}>
-                      💡 Hint: {task.hint}
-                    </div>
+            {/* Task 1 */}
+            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 14, padding: '1.5rem', marginBottom: '1.25rem', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                <div style={{ background: '#e0e7ff', color: '#4338ca', width: 44, height: 44, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1.2rem', flexShrink: 0 }}>
+                  1
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ margin: '0 0 4px', color: '#0f172a', fontWeight: 800 }}>
+                    Task 1: Auto-Focus & Previous State Tracker with useRef
+                  </h4>
+                  <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 0.75rem' }}>
+                    Create a form component that automatically focuses the input on initial mount. Also, use a second <code>useRef</code> to store and display the <strong>previous value</strong> of the input state whenever the user types.
+                  </p>
+                  <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#1d4ed8' }}>
+                    💡 <strong>Step Hint:</strong> Update <code>prevRef.current = value</code> inside a <code>useEffect</code> so it captures the previous render's value!
                   </div>
                 </div>
               </div>
-            ))}
-
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.5rem', marginTop: '2rem', textAlign: 'center' }}>
-              <BookOpenCheck size={36} color="#6366f1" style={{ marginBottom: '0.5rem' }} />
-              <h5 style={{ fontWeight: 800, color: '#0f172a', margin: '0 0 0.25rem' }}>Complete Assignments</h5>
-              <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Save all updates. Run and push codes to your personal repo to complete this module.</p>
             </div>
+
+            {/* Task 2 */}
+            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 14, padding: '1.5rem', marginBottom: '1.25rem', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                <div style={{ background: '#dcfce7', color: '#15803d', width: 44, height: 44, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1.2rem', flexShrink: 0 }}>
+                  2
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ margin: '0 0 4px', color: '#0f172a', fontWeight: 800 }}>
+                    Task 2: Build a Custom useToggle & useFetch Hook
+                  </h4>
+                  <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 0.75rem' }}>
+                    Build two reusable custom hooks in your project: (1) <code>useToggle(initialValue = false)</code> returning <code>[state, toggleFn]</code>, and (2) <code>useFetch(url)</code> returning <code>{"{ data, loading, error }"}</code>. Use them in a modal dialog component.
+                  </p>
+                  <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#166534' }}>
+                    💡 <strong>Step Hint:</strong> <code>const toggle = useCallback(() =&gt; setState(v =&gt; !v), []);</code> inside useToggle.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Task 3 */}
+            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 14, padding: '1.5rem', marginBottom: '1.25rem', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                <div style={{ background: '#fef3c7', color: '#b45309', width: 44, height: 44, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1.2rem', flexShrink: 0 }}>
+                  3
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ margin: '0 0 4px', color: '#0f172a', fontWeight: 800 }}>
+                    Task 3: High-Performance List with useMemo, useCallback & React.memo
+                  </h4>
+                  <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 0.75rem' }}>
+                    Render a list of 500 items. Implement <code>useMemo</code> to filter by price range and search term. Wrap each item component in <code>React.memo</code>, and pass a memoized <code>useCallback</code> delete handler so deleting an item does not re-render unaffected items.
+                  </p>
+                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#92400e' }}>
+                    💡 <strong>Step Hint:</strong> Wrap row component with <code>React.memo(RowComponent)</code> and verify 0 extra renders.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Submission Footer */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.5rem', marginTop: '2rem', textAlign: 'center' }}>
+              <CheckCircle size={36} color="#10b981" style={{ marginBottom: '0.5rem' }} />
+              <h5 style={{ fontWeight: 800, color: '#0f172a', margin: '0 0 0.25rem' }}>Ready for Deployment</h5>
+              <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>
+                Commit your updated files to GitHub and deploy to Vercel to publish your interactive course platform!
+              </p>
+            </div>
+
           </div>
         </Section>
       )}
