@@ -1618,20 +1618,8 @@ export const reactCourseData = [
     ]
   },
   {
-    id: 'react_module13',
-    title: 'Day 13 - State Management',
-    items: [
-      { id: 'intro_react', label: 'State Lifting Sibling Sync', icon: <Sliders size={18} /> },
-      { id: 'useState_hook', label: 'Context API (useContext)', icon: <Layout size={18} /> },
-      { id: 'multiple_states', label: 'Global State & Redux', icon: <Database size={18} /> },
-      { id: 'object_state', label: 'Capstone: Theme Switcher', icon: <Palette size={18} /> },
-      { id: 'quiz', label: 'Quiz', icon: <CheckCircle size={18} /> },
-      { id: 'assignment', label: 'Assignment', icon: <FileText size={18} /> }
-    ]
-  },
-  {
     id: 'react_module14',
-    title: 'Day 14 - Capstone Projects',
+    title: 'React Capstone Projects',
     items: [
       { id: 'intro_react', label: 'Project Folder structure', icon: <Folder size={18} /> },
       { id: 'useState_hook', label: 'LMS Capstone Projects', icon: <Layers size={18} /> },
@@ -1641,7 +1629,7 @@ export const reactCourseData = [
   },
   {
     id: 'react_module15',
-    title: 'Day 15 - Completion & Deployment',
+    title: 'Project Deployment',
     items: [
       { id: 'intro_react', label: 'Build & Production config', icon: <Globe size={18} /> },
       { id: 'useState_hook', label: 'Hosting Providers', icon: <Server size={18} /> },

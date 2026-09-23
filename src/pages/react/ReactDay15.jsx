@@ -97,7 +97,7 @@ export default function ReactDay15({ activeTab, onNavigate }) {
 
       {/* ── 1. PROJECT COMPLETION & PRE-FLIGHT ───────────────────────────── */}
       {activeTab === 'intro_react' && (
-        <Section key="s1" eyebrow="Module 01 • Day 15" title="Build & Production Prep">
+        <Section key="s1" eyebrow="Production Prep" title="Build & Production Prep">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
 
             <div style={{ background: 'linear-gradient(135deg,#0ea5e9,#6366f1)', borderRadius: 16, padding: '2rem', marginBottom: '2rem' }}>
@@ -152,7 +152,7 @@ useEffect(() => {
 
       {/* ── 2. DEPLOYMENT METHODS ────────────────────────────────────────── */}
       {activeTab === 'useState_hook' && (
-        <Section key="s2" eyebrow="Module 02 • Day 15" title="Hosting Providers">
+        <Section key="s2" eyebrow="Cloud Providers" title="Hosting Providers">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
@@ -193,7 +193,7 @@ useEffect(() => {
 
       {/* ── 3. CAPSTONE TASK: INTERACTIVE CONSOLE DEPLOYMENT SIMULATION ──── */}
       {activeTab === 'multiple_states' && (
-        <Section key="s3" eyebrow="Capstone Task • Day 15" title="Interactive Deployment Pipeline">
+        <Section key="s3" eyebrow="Deployment Pipeline" title="Interactive Deployment Pipeline">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
 
             <div style={{ background: 'linear-gradient(135deg,#0ea5e9,#6366f1)', borderRadius: 14, padding: '1.5rem', marginBottom: '2rem' }}>
@@ -267,7 +267,7 @@ useEffect(() => {
 
       {/* ── QUIZ ─────────────────────────────────────────────────────────── */}
       {activeTab === 'quiz' && (
-        <Section key="quiz" eyebrow="Knowledge Check" title="Day 15 Quiz — Project Deployment">
+        <Section key="quiz" eyebrow="Knowledge Check" title="Deployment Quiz — Project Deployment">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
               {questions.map((item, qi) => (

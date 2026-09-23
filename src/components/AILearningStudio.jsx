@@ -241,9 +241,8 @@ const getFallbackContent = (topicId, courseId) => {
       '10': { name: 'API Integrations & Axios', tool: 'REST client simulator', prompt: 'Execute Axios CRUD posts.' },
       '11': { name: 'React Router Routing', tool: 'Client Router emulator', prompt: 'Configure page route paths.' },
       '12': { name: 'Hooks Optimization', tool: 'useMemo & useCallback', prompt: 'Prevent redundant component rendering recalculations.' },
-      '13': { name: 'State Management (Context)', tool: 'Context Provider wrapper', prompt: 'Manage global themes color state.' },
-      '14': { name: 'Project Architecture Layout', tool: 'Webpack / Rolldown modules', prompt: 'Structure feature folder hierarchies.' },
-      '15': { name: 'Build & Production Deploy', tool: 'Vercel CLI / Netlify', prompt: 'Deploy React static builds.' }
+      '14': { name: 'React Capstone Projects', tool: 'Vite & Architecture', prompt: 'Structure feature folder hierarchies.' },
+      '15': { name: 'React Project Deployment', tool: 'Vercel CLI / Netlify', prompt: 'Deploy React static builds.' }
     };
     
     const info = reactTopics[dayNum] || { name: `React Topic Day ${dayNum}`, tool: 'Copilot', prompt: 'Explain React component patterns.' };

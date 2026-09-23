@@ -220,7 +220,7 @@ export default function DashboardApp() {
 
       {/* ── 1. PROJECT ARCHITECTURE ─────────────────────────────────────── */}
       {activeTab === 'intro_react' && (
-        <Section key="s1" eyebrow="Module 01 • Day 14" title="React Project Architecture">
+        <Section key="s1" eyebrow="Capstone Project" title="React Project Architecture">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
 
             <div style={{ background: 'linear-gradient(135deg,#0ea5e9,#6366f1)', borderRadius: 16, padding: '2rem', marginBottom: '2rem' }}>
@@ -318,7 +318,7 @@ export default function DashboardApp() {
 
       {/* ── 2. MINI PROJECTS VIEWPORT ───────────────────────────────────── */}
       {activeTab === 'useState_hook' && (
-        <Section key="s2" eyebrow="Module 02 • Day 14" title="Interactive Mini Projects">
+        <Section key="s2" eyebrow="Project Sandbox" title="Interactive Mini Projects">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
 
             <p style={{ marginBottom: '1.5rem' }}>Select a mini project to interact with its live preview dashboard and read its clean React source code:</p>
@@ -393,7 +393,7 @@ export default function DashboardApp() {
 
       {/* ── QUIZ ─────────────────────────────────────────────────────────── */}
       {activeTab === 'quiz' && (
-        <Section key="quiz" eyebrow="Knowledge Check" title="Day 14 Quiz — Project Architecture">
+        <Section key="quiz" eyebrow="Knowledge Check" title="Capstone Quiz — Project Architecture">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
               {questions.map((item, qi) => (
@@ -451,10 +451,10 @@ export default function DashboardApp() {
 
       {/* ── ASSIGNMENT ───────────────────────────────────────────────────── */}
       {activeTab === 'assignment' && (
-        <Section key="asgn" eyebrow="Homework" title="Day 14 Assignment">
+        <Section key="asgn" eyebrow="Homework" title="Capstone Projects Assignment">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
             <div style={{ background: 'linear-gradient(135deg,#0ea5e9,#6366f1)', borderRadius: 16, padding: '1.5rem', marginBottom: '2rem' }}>
-              <h3 style={{ fontWeight: 800, fontSize: '1.4rem', color: 'white', marginBottom: '0.5rem' }}>🎓 Day 14 Complete!</h3>
+              <h3 style={{ fontWeight: 800, fontSize: '1.4rem', color: 'white', marginBottom: '0.5rem' }}>🎓 React Capstone Projects!</h3>
               <p style={{ color: 'white', opacity: 0.9, margin: 0, lineHeight: 1.6 }}>
                 You've completed Project Architecture structures and inspected implementation scopes for the four mini projects.
               </p>
