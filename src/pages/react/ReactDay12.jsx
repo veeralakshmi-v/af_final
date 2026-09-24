@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Layers, Cpu, Activity, Sparkles, FileText, Sliders, CheckCircle,
   ArrowRight, ArrowLeft, RefreshCw, Eye, Check, X, BookOpen,
-  HelpCircle, Trash2, Plus, CornerDownRight, Play, Info
+  HelpCircle, Trash2, Plus, CornerDownRight, Play, Pause, RotateCcw,
+  Zap, Shield, HardDrive, Terminal
 } from 'lucide-react';
 import { CodeBlock } from '../../utils/codeHighlight';
 
@@ -20,8 +21,7 @@ const Section = ({ eyebrow, title, children }) => (
 
 const ConceptCard = ({ what, why, where }) => (
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-    {/* What is it */}
-    <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem', borderTop: '4px solid #6366f1' }}>
+    <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem', borderTop: '4px solid #6366f1', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: '0.5rem' }}>
         <span style={{ fontSize: '1.2rem' }}>📌</span>
         <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>What is it?</h4>
@@ -29,8 +29,7 @@ const ConceptCard = ({ what, why, where }) => (
       <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>{what}</p>
     </div>
 
-    {/* Why do we need it */}
-    <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem', borderTop: '4px solid #10b981' }}>
+    <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem', borderTop: '4px solid #10b981', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: '0.5rem' }}>
         <span style={{ fontSize: '1.2rem' }}>❓</span>
         <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>Why do we need it?</h4>
@@ -38,8 +37,7 @@ const ConceptCard = ({ what, why, where }) => (
       <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>{why}</p>
     </div>
 
-    {/* Where is it used */}
-    <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem', borderTop: '4px solid #f59e0b' }}>
+    <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem', borderTop: '4px solid #f59e0b', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: '0.5rem' }}>
         <span style={{ fontSize: '1.2rem' }}>🎯</span>
         <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>Where is it used?</h4>
@@ -49,21 +47,49 @@ const ConceptCard = ({ what, why, where }) => (
   </div>
 );
 
-// Child component wrapped in React.memo for useCallback tab
-const MemoizedTodoRow = React.memo(({ todo, onDelete }) => {
+// Child components for useCallback Tab
+const UnoptimizedChild = ({ count }) => {
+  const renderTracker = useRef(0);
+  renderTracker.current += 1;
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'white', border: '1px solid #e2e8f0', borderRadius: 8, marginBottom: 6 }}>
-      <span style={{ fontSize: '0.9rem', color: '#0f172a', fontWeight: 600 }}>{todo.text}</span>
-      <button
-        onClick={() => onDelete(todo.id)}
-        style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: 6, padding: '4px 10px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
-      >
-        Delete
-      </button>
+    <div style={{ background: '#fee2e2', border: '1px solid #fecaca', borderRadius: 8, padding: '10px 14px', marginBottom: 8 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <strong style={{ color: '#991b1b', fontSize: '0.88rem' }}>⚠️ Without useCallback (Standard)</strong>
+        <span style={{ background: '#ef4444', color: 'white', fontSize: '0.72rem', padding: '2px 8px', borderRadius: 4, fontWeight: 800 }}>
+          Render Count: {renderTracker.current}
+        </span>
+      </div>
+      <p style={{ margin: '4px 0 0', fontSize: '0.78rem', color: '#7f1d1d' }}>
+        This child re-renders on every parent state update because its callback prop is a new object in memory.
+      </p>
+    </div>
+  );
+};
+
+const OptimizedChild = React.memo(({ onClick, label }) => {
+  const renderTracker = useRef(0);
+  renderTracker.current += 1;
+  return (
+    <div style={{ background: '#dcfce7', border: '1px solid #bbf7d0', borderRadius: 8, padding: '10px 14px', marginBottom: 8 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <strong style={{ color: '#166534', fontSize: '0.88rem' }}>✅ With useCallback + React.memo</strong>
+        <span style={{ background: '#16a34a', color: 'white', fontSize: '0.72rem', padding: '2px 8px', borderRadius: 4, fontWeight: 800 }}>
+          Render Count: {renderTracker.current} (Frozen!)
+        </span>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6 }}>
+        <span style={{ fontSize: '0.78rem', color: '#14532d' }}>0 wasted re-renders when parent ticks.</span>
+        <button
+          onClick={onClick}
+          style={{ background: '#166534', color: 'white', border: 'none', borderRadius: 4, padding: '4px 10px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+        >
+          {label}
+        </button>
+      </div>
     </div>
   );
 });
-MemoizedTodoRow.displayName = 'MemoizedTodoRow';
+OptimizedChild.displayName = 'OptimizedChild';
 
 /* ─────────────────────────────── Main Component ─────────────────────────────── */
 export default function ReactDay12({ activeTab = 'intro_react', onNavigate }) {
@@ -72,160 +98,276 @@ export default function ReactDay12({ activeTab = 'intro_react', onNavigate }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  /* ──────────────── 1. useRef Live State ──────────────── */
-  const inputDomRef = useRef(null);
-  const [typedValue, setTypedValue] = useState('');
-  const timerIdRef = useRef(null);
-  const [liveSeconds, setLiveSeconds] = useState(0);
-  const [isTimerActive, setIsTimerActive] = useState(false);
-  const renderCounterRef = useRef(0);
-  renderCounterRef.current += 1;
+  /* ──────────────── 1. useRef Live Interactive State ──────────────── */
+  const domInputRef = useRef(null);
+  const [typedMessage, setTypedMessage] = useState('');
+  const timerIntervalRef = useRef(null);
+  const [timerSeconds, setTimerSeconds] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [refFeedback, setRefFeedback] = useState('');
+  const renderCountRef = useRef(0);
+  renderCountRef.current += 1;
 
-  const handleFocusClick = () => {
-    if (inputDomRef.current) {
-      inputDomRef.current.focus();
-      inputDomRef.current.style.borderColor = '#6366f1';
+  const handleFocusInput = () => {
+    if (domInputRef.current) {
+      domInputRef.current.focus();
+      domInputRef.current.style.borderColor = '#6366f1';
+      domInputRef.current.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.25)';
+      setRefFeedback('🎯 inputRef.current.focus() executed successfully!');
+      setTimeout(() => setRefFeedback(''), 3000);
     }
   };
 
-  const handleStartTimer = () => {
-    if (timerIdRef.current) return;
-    setIsTimerActive(true);
-    timerIdRef.current = setInterval(() => {
-      setLiveSeconds((s) => s + 1);
+  const handleSelectAll = () => {
+    if (domInputRef.current) {
+      domInputRef.current.select();
+      setRefFeedback('📝 inputRef.current.select() highlighted all text!');
+      setTimeout(() => setRefFeedback(''), 3000);
+    }
+  };
+
+  const handleStartStopwatch = () => {
+    if (timerIntervalRef.current) return;
+    setIsTimerRunning(true);
+    timerIntervalRef.current = setInterval(() => {
+      setTimerSeconds((prev) => prev + 1);
     }, 1000);
   };
 
-  const handleStopTimer = () => {
-    if (timerIdRef.current) {
-      clearInterval(timerIdRef.current);
-      timerIdRef.current = null;
-      setIsTimerActive(false);
+  const handlePauseStopwatch = () => {
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
+      setIsTimerRunning(false);
     }
+  };
+
+  const handleResetStopwatch = () => {
+    handlePauseStopwatch();
+    setTimerSeconds(0);
   };
 
   useEffect(() => {
     return () => {
-      if (timerIdRef.current) clearInterval(timerIdRef.current);
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     };
   }, []);
 
-  /* ──────────────── 2. useMemo Live State ──────────────── */
+  /* ──────────────── 2. useMemo Live Interactive State ──────────────── */
+  const [calcNumber, setCalcNumber] = useState(25);
   const [searchWord, setSearchWord] = useState('');
-  const [themeMode, setThemeMode] = useState('light');
-  const sampleItems = useMemo(() => ['React 19', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Redux Toolkit', 'Node.js', 'Express', 'PostgreSQL', 'GraphQL', 'Docker'], []);
+  const [unrelatedCounter, setUnrelatedCounter] = useState(0);
+  const [memoCalculationRuns, setMemoCalculationRuns] = useState(0);
 
-  const filteredItems = useMemo(() => {
-    return sampleItems.filter((item) =>
-      item.toLowerCase().includes(searchWord.toLowerCase())
+  // Expensive calculation simulator with useMemo
+  const heavyCalculatedValue = useMemo(() => {
+    setMemoCalculationRuns((r) => r + 1);
+    let total = 0;
+    for (let i = 0; i < calcNumber * 100000; i++) {
+      total += (i % 7);
+    }
+    return total;
+  }, [calcNumber]);
+
+  const courseList = useMemo(() => [
+    'React 19 Essentials',
+    'Advanced Hooks Masterclass',
+    'Next.js 15 App Router',
+    'TypeScript for Frontend',
+    'Tailwind CSS & Framer Motion',
+    'Node.js REST APIs',
+    'PostgreSQL Database Architecture',
+    'Docker & Cloud Deployments'
+  ], []);
+
+  const filteredCourseList = useMemo(() => {
+    return courseList.filter((c) =>
+      c.toLowerCase().includes(searchWord.toLowerCase())
     );
-  }, [sampleItems, searchWord]);
+  }, [courseList, searchWord]);
 
-  /* ──────────────── 3. useCallback Live State ──────────────── */
-  const [todos, setTodos] = useState([
-    { id: 1, text: 'Learn useRef Hook' },
-    { id: 2, text: 'Master useMemo for Performance' },
-    { id: 3, text: 'Build Custom Hooks' }
+  /* ──────────────── 3. useCallback Live Interactive State ──────────────── */
+  const [parentTick, setParentTick] = useState(0);
+  const [childClickCount, setChildClickCount] = useState(0);
+  const [todoItems, setTodoItems] = useState([
+    { id: 1, text: 'Master useRef DOM focus' },
+    { id: 2, text: 'Optimize with useMemo' },
+    { id: 3, text: 'Freeze handlers with useCallback' }
   ]);
-  const [parentCount, setParentCount] = useState(0);
+
+  const handleChildClick = useCallback(() => {
+    setChildClickCount((c) => c + 1);
+  }, []);
 
   const handleDeleteTodo = useCallback((id) => {
-    setTodos((prev) => prev.filter((t) => t.id !== id));
+    setTodoItems((prev) => prev.filter((item) => item.id !== id));
   }, []);
 
-  /* ──────────────── 4. Custom Hooks Live State ──────────────── */
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [savedUser, setSavedUser] = useState('John Doe');
+  /* ──────────────── 4. Custom Hooks Live Interactive State ──────────────── */
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [storageUser, setStorageUser] = useState(() => {
+    try {
+      return localStorage.getItem('demo_student_name') || 'Kowsalya';
+    } catch {
+      return 'Kowsalya';
+    }
+  });
 
-  /* ──────────────── 5. Hook Recommender ──────────────── */
-  const [chosenTask, setChosenTask] = useState('dom');
-  const recommendations = {
-    dom: { hook: 'useRef()', reason: 'Direct DOM manipulation like focusing an input, playing video, or storing timer interval IDs without re-rendering.' },
-    calc: { hook: 'useMemo()', reason: 'Caching the computed result of an expensive calculation or filtering a large array so it only re-computes when dependencies change.' },
-    handler: { hook: 'useCallback()', reason: 'Freezing a function definition so passing it to a React.memo child does not trigger unnecessary child re-renders.' },
-    reuse: { hook: 'Custom Hook (use...)', reason: 'Extracting repeated stateful logic (fetching, form validation, localStorage) into a reusable function.' }
+  const handleUpdateStorageUser = (val) => {
+    setStorageUser(val);
+    try {
+      localStorage.setItem('demo_student_name', val);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  /* ──────────────── 6. Capstone Live State ──────────────── */
-  const capstoneNameRef = useRef(null);
+  /* ──────────────── 5. Hook Recommender State ──────────────── */
+  const [selectedTask, setSelectedTask] = useState('dom');
+  const taskRecommendations = {
+    dom: {
+      hook: 'useRef()',
+      color: '#8b5cf6',
+      badge: 'DOM / Silent Ref',
+      desc: 'Use useRef to store direct HTML element references (focus, scrolling, audio/video) or silent timer IDs without triggering re-renders.',
+      code: `const inputRef = useRef(null);\n// In JSX: <input ref={inputRef} />\n// In handler: inputRef.current.focus();`
+    },
+    calc: {
+      hook: 'useMemo()',
+      color: '#10b981',
+      badge: 'Cache Computed Value',
+      desc: 'Use useMemo to cache the result of heavy computations or 1,000+ item array filters so they do not recalculate on unrelated state changes.',
+      code: `const filtered = useMemo(() => {\n  return list.filter(item => item.price <= maxPrice);\n}, [list, maxPrice]);`
+    },
+    handler: {
+      hook: 'useCallback()',
+      color: '#0ea5e9',
+      badge: 'Freeze Function Reference',
+      desc: 'Use useCallback to freeze function definitions in memory when passing them as props to React.memo child components to prevent wasted re-renders.',
+      code: `const handleDelete = useCallback((id) => {\n  setItems(prev => prev.filter(i => i.id !== id));\n}, []);`
+    },
+    reuse: {
+      hook: 'Custom Hook (use...)',
+      color: '#f59e0b',
+      badge: 'Reusable Logic',
+      desc: 'Extract your repeated state and effect logic (e.g. useFetch, useToggle, useLocalStorage) into a dedicated reusable function starting with "use".',
+      code: `function useToggle(init = false) {\n  const [val, setVal] = useState(init);\n  const toggle = useCallback(() => setVal(v => !v), []);\n  return [val, toggle];\n}`
+    }
+  };
+
+  /* ──────────────── 6. Capstone Live Interactive State ──────────────── */
+  const capstoneInputRef = useRef(null);
   const [capstoneQuery, setCapstoneQuery] = useState('');
-  const [newStudent, setNewStudent] = useState('');
-  const [capstoneList, setCapstoneList] = useState([
+  const [minScore, setMinScore] = useState(50);
+  const [newStudentName, setNewStudentName] = useState('');
+  const [newStudentCourse, setNewStudentCourse] = useState('React 19');
+  const [studentList, setStudentList] = useState([
     { id: 1, name: 'Alice Johnson', course: 'React 19', score: 95 },
     { id: 2, name: 'Bob Smith', course: 'Node.js', score: 82 },
-    { id: 3, name: 'Carol White', course: 'React 19', score: 98 }
+    { id: 3, name: 'Carol White', course: 'React 19', score: 98 },
+    { id: 4, name: 'David Miller', course: 'SQL Databases', score: 64 }
   ]);
+  const [capstoneLog, setCapstoneLog] = useState(['Portal ready. Interact with controls below.']);
 
-  const filteredCapstone = useMemo(() => {
-    return capstoneList.filter((s) =>
-      s.name.toLowerCase().includes(capstoneQuery.toLowerCase())
-    );
-  }, [capstoneList, capstoneQuery]);
+  const addLog = (msg) => {
+    setCapstoneLog((prev) => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev].slice(0, 5));
+  };
 
-  const handleCapstoneDelete = useCallback((id) => {
-    setCapstoneList((prev) => prev.filter((s) => s.id !== id));
+  // 1. useRef auto-focus on load
+  useEffect(() => {
+    if (capstoneInputRef.current) capstoneInputRef.current.focus();
   }, []);
 
-  const handleAddStudent = (e) => {
+  // 2. useMemo filter & sort
+  const filteredStudents = useMemo(() => {
+    addLog(`⚡ useMemo: Filtered ${studentList.length} students by query "${capstoneQuery}" & score >= ${minScore}`);
+    return studentList
+      .filter((s) => s.name.toLowerCase().includes(capstoneQuery.toLowerCase()) && s.score >= minScore)
+      .sort((a, b) => b.score - a.score);
+  }, [studentList, capstoneQuery, minScore]);
+
+  // 3. useCallback delete
+  const handleDeleteStudent = useCallback((id) => {
+    setStudentList((prev) => prev.filter((s) => s.id !== id));
+    addLog(`🗑️ useCallback: Deleted student record (ID: ${id}) with 0 extra renders`);
+  }, []);
+
+  // 4. useCallback score boost
+  const handleScoreBoost = useCallback((id) => {
+    setStudentList((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, score: Math.min(100, s.score + 5) } : s))
+    );
+    addLog(`✨ useCallback: Boosted score for student (ID: ${id})`);
+  }, []);
+
+  const handleAddStudentSubmit = (e) => {
     e.preventDefault();
-    if (!newStudent.trim()) return;
-    setCapstoneList((prev) => [{ id: Date.now(), name: newStudent, course: 'React 19', score: 90 }, ...prev]);
-    setNewStudent('');
-    if (capstoneNameRef.current) capstoneNameRef.current.focus();
+    if (!newStudentName.trim()) return;
+    const score = Math.floor(Math.random() * 25) + 75;
+    const newRecord = {
+      id: Date.now(),
+      name: newStudentName,
+      course: newStudentCourse,
+      score
+    };
+    setStudentList((prev) => [newRecord, ...prev]);
+    setNewStudentName('');
+    addLog(`➕ Added student "${newStudentName}"`);
+    if (capstoneInputRef.current) capstoneInputRef.current.focus();
   };
 
   /* ──────────────── 7. Quiz State ──────────────── */
   const [quizAnswers, setQuizAnswers] = useState({});
-  const [quizDone, setQuizDone] = useState(false);
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
 
   const quizQuestions = [
     {
       id: 'q1',
-      question: 'What happens when you update a value stored inside `useRef.current`?',
+      question: 'What is the primary difference between `useRef` and `useState`?',
       options: [
-        'The component immediately re-renders like useState',
-        'The value updates silently without triggering any re-render',
-        'All state variables are reset to default',
-        'It causes an infinite rendering loop'
+        'useRef triggers an immediate re-render when .current changes, whereas useState does not',
+        'useRef updates mutable values silently WITHOUT triggering a re-render, whereas useState triggers a UI re-render',
+        'useRef only works with numbers, whereas useState works with strings',
+        'useRef is deprecated in modern React'
       ],
       answer: 1,
-      explanation: 'useRef holds a mutable object. Modifying `.current` never triggers a React component re-render.'
+      explanation: 'useRef returns a mutable object whose .current property can be updated without causing React to re-render the component.'
     },
     {
       id: 'q2',
-      question: 'What is the main purpose of `useMemo`?',
+      question: 'When should you use `useMemo`?',
       options: [
-        'To focus an HTML input field',
-        'To cache (memoize) the return value of an expensive calculation',
-        'To fetch data from a backend server',
-        'To replace Redux in global state'
+        'To cache the result of an expensive calculation or heavy array filter so it only re-computes when dependencies change',
+        'To target an HTML input element directly',
+        'To save passwords in the browser cookies',
+        'To replace all state variables in your app'
       ],
-      answer: 1,
-      explanation: 'useMemo caches the calculated result value and only recalculates when its specified dependencies change.'
+      answer: 0,
+      explanation: 'useMemo memoizes the computed return value of a function and re-runs it ONLY when values in its dependency array change.'
     },
     {
       id: 'q3',
-      question: 'Why do we pair `useCallback` with `React.memo`?',
+      question: 'Why does passing an inline callback `<Child onClick={() => doSomething()} />` to `React.memo(Child)` re-render the child?',
       options: [
-        'To prevent child components from re-rendering when passing callback functions as props',
-        'To convert classes into functional components',
-        'To automatically refresh the web page',
-        'To make CSS animations faster'
+        'Because React.memo is broken',
+        'Because in JavaScript, every render creates a brand new function object in memory (() => {} !== () => {}), making props look changed',
+        'Because functions cannot be passed as props in React',
+        'Because JSX cannot compile arrow functions'
       ],
-      answer: 0,
-      explanation: 'Every parent render creates new function instances. useCallback preserves the function reference so React.memo child components see identical props.'
+      answer: 1,
+      explanation: 'In JavaScript, functions are objects. On every parent render, a new function instance with a new memory address is created. useCallback preserves the function pointer.'
     },
     {
       id: 'q4',
-      question: 'What is the naming rule for a Custom Hook in React?',
+      question: 'What rule must all Custom Hooks follow in React?',
       options: [
-        'It must start with uppercase letter (e.g. FetchData)',
-        'It must start with the lowercase prefix "use" (e.g. useFetch, useToggle)',
-        'It must end with "Hook"',
-        'It can have any name with no rules'
+        'They must end with "Hook"',
+        'They must start with the prefix "use" (e.g. useFetch, useToggle) and can call other built-in React hooks',
+        'They can only be used inside loops',
+        'They must be written in TypeScript'
       ],
       answer: 1,
-      explanation: 'Custom hooks must start with "use" so React and linter tools can enforce the official Rules of Hooks.'
+      explanation: 'Custom Hooks must start with "use" so React and ESLint can enforce the official Rules of Hooks.'
     }
   ];
 
@@ -246,14 +388,13 @@ export default function ReactDay12({ activeTab = 'intro_react', onNavigate }) {
         <Section key="t1" eyebrow="Topic 01 • Day 12" title="useRef Hook (DOM Access & Silent Values)">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
 
-            {/* Concept Overview: What, Why, Where */}
             <ConceptCard
-              what="useRef is a hook that gives you a mutable container (ref.current). It allows you to access DOM nodes directly or keep values that persist across renders without causing a re-render."
-              why="useState re-renders the whole component on every update. useRef allows silent updates (e.g., timer IDs, render counters) and direct DOM actions (e.g., input.focus())."
-              where="1. Auto-focusing an input box on page load. 2. Storing interval/timer IDs (setInterval). 3. Tracking how many times a component rendered."
+              what="useRef is a hook that gives you a mutable container (ref.current). It holds references to DOM elements (like inputs, buttons, video) or keeps values across renders without triggering a re-render."
+              why="useState forces the whole component to re-draw whenever it updates. useRef allows silent updates (e.g., timer IDs, previous values, render counts) and direct DOM manipulation (e.g., input.focus())."
+              where="1. Auto-focusing an input on page load. 2. Storing setInterval/setTimeout IDs without re-rendering. 3. Tracking component render counts."
             />
 
-            {/* Full Beginner Program */}
+            {/* Complete Beginner Program */}
             <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>
                 💻 Complete Program: Input Focus & Timer with useRef
@@ -281,7 +422,7 @@ export default function UseRefDemo() {
 
   const handleManualFocus = () => {
     inputRef.current.focus();
-    inputRef.current.style.borderColor = "#6366f1";
+    inputRef.current.select(); // Highlight text
   };
 
   const handleStartTimer = () => {
@@ -297,7 +438,7 @@ export default function UseRefDemo() {
   };
 
   return (
-    <div>
+    <div style={{ padding: 20 }}>
       {/* DOM Focus Section */}
       <input
         ref={inputRef}
@@ -305,13 +446,16 @@ export default function UseRefDemo() {
         placeholder="Type name here..."
         value={name}
         onChange={(e) => setName(e.target.value)}
+        style={{ padding: 8, marginRight: 8 }}
       />
-      <button onClick={handleManualFocus}>Focus Input</button>
+      <button onClick={handleManualFocus} style={{ padding: 8 }}>
+        Focus & Select
+      </button>
 
       {/* Timer Section */}
-      <div>
-        <p>Timer: {seconds}s</p>
-        <button onClick={handleStartTimer}>Start</button>
+      <div style={{ marginTop: 16 }}>
+        <p>Timer: <b>{seconds}s</b></p>
+        <button onClick={handleStartTimer} style={{ marginRight: 8 }}>Start</button>
         <button onClick={handleStopTimer}>Stop</button>
       </div>
     </div>
@@ -320,38 +464,87 @@ export default function UseRefDemo() {
               />
             </div>
 
-            {/* Interactive Live Demo */}
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.25rem', marginBottom: '1.5rem' }}>
-              <h4 style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
-                🔬 Live Interactive Demo
-              </h4>
+            {/* Live Interactive Demo */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 14, padding: '1.5rem', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Eye size={18} color="#6366f1" /> Live Interactive Demo
+                </h4>
+                <span style={{ fontSize: '0.78rem', background: '#e0e7ff', color: '#4338ca', padding: '3px 10px', borderRadius: 20, fontWeight: 800 }}>
+                  Total Component Renders: {renderCountRef.current}
+                </span>
+              </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', alignItems: 'center' }}>
-                <div>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748b', display: 'block', marginBottom: 4 }}>1. DOM Input Focus</label>
-                  <div style={{ display: 'flex', gap: 8 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                {/* 1. DOM Input Focus Tester */}
+                <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, padding: '1.25rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#6366f1', textTransform: 'uppercase' }}>
+                    1. DOM Element Targeting
+                  </span>
+                  <div style={{ margin: '8px 0 10px' }}>
                     <input
-                      ref={inputDomRef}
+                      ref={domInputRef}
                       type="text"
-                      placeholder="Click Focus button..."
-                      value={typedValue}
-                      onChange={(e) => setTypedValue(e.target.value)}
-                      style={{ flex: 1, padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                      placeholder="Target input element..."
+                      value={typedMessage}
+                      onChange={(e) => setTypedMessage(e.target.value)}
+                      style={{ width: '100%', padding: '8px 12px', border: '2px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem', outline: 'none' }}
                     />
-                    <button onClick={handleFocusClick} style={{ background: '#6366f1', color: 'white', border: 'none', borderRadius: 6, padding: '8px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
-                      Focus
+                  </div>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button
+                      onClick={handleFocusClick}
+                      style={{ background: '#6366f1', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      Focus Input (useRef)
+                    </button>
+                    <button
+                      onClick={handleSelectAll}
+                      style={{ background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      Select All
                     </button>
                   </div>
+                  {refFeedback && (
+                    <div style={{ marginTop: 8, fontSize: '0.8rem', color: '#16a34a', fontWeight: 700 }}>
+                      {refFeedback}
+                    </div>
+                  )}
                 </div>
 
-                <div>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748b', display: 'block', marginBottom: 4 }}>2. Persistent Timer ({liveSeconds}s)</label>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <button onClick={handleStartTimer} disabled={isTimerActive} style={{ background: '#10b981', color: 'white', border: 'none', borderRadius: 6, padding: '8px 14px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
-                      Start Timer
+                {/* 2. Persistent Stopwatch Tester */}
+                <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, padding: '1.25rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#10b981', textTransform: 'uppercase' }}>
+                    2. Silent Interval Timer (timerIntervalRef)
+                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '8px 0 10px' }}>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0f172a', fontFamily: 'monospace' }}>
+                      {timerSeconds}s
+                    </div>
+                    <span style={{ fontSize: '0.75rem', background: isTimerRunning ? '#dcfce7' : '#fee2e2', color: isTimerRunning ? '#166534' : '#991b1b', padding: '2px 8px', borderRadius: 4, fontWeight: 800 }}>
+                      {isTimerRunning ? 'Running' : 'Paused'}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button
+                      onClick={handleStartStopwatch}
+                      disabled={isTimerRunning}
+                      style={{ background: '#10b981', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: isTimerRunning ? 'not-allowed' : 'pointer', opacity: isTimerRunning ? 0.6 : 1 }}
+                    >
+                      Start
                     </button>
-                    <button onClick={handleStopTimer} disabled={!isTimerActive} style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: 6, padding: '8px 14px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
-                      Stop Timer
+                    <button
+                      onClick={handlePauseStopwatch}
+                      disabled={!isTimerRunning}
+                      style={{ background: '#f59e0b', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: !isTimerRunning ? 'not-allowed' : 'pointer', opacity: !isTimerRunning ? 0.6 : 1 }}
+                    >
+                      Pause
+                    </button>
+                    <button
+                      onClick={handleResetStopwatch}
+                      style={{ background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      Reset
                     </button>
                   </div>
                 </div>
@@ -376,14 +569,13 @@ export default function UseRefDemo() {
         <Section key="t2" eyebrow="Topic 02 • Day 12" title="useMemo Hook (Caching Calculated Values)">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
 
-            {/* Concept Overview: What, Why, Where */}
             <ConceptCard
-              what="useMemo is a hook that caches (remembers) the calculated result of an expensive function. It only re-calculates when one of its dependencies changes."
-              why="In React, every state change re-runs the entire component body. If you have heavy filtering, sorting, or math, the page lags. useMemo skips recalculation when inputs haven't changed."
-              where="1. Filtering or sorting lists with hundreds of items. 2. Heavy mathematical computations. 3. Transforming large datasets before rendering."
+              what="useMemo is a hook that caches (remembers) the calculated result of a function. It only re-calculates when one of its dependencies changes."
+              why="In React, every state update runs the whole component again. If you filter 1,000 items or do heavy math on every keystroke, the UI freezes. useMemo skips recalculation when inputs are identical."
+              where="1. Filtering or sorting lists with 100+ items. 2. Heavy mathematical calculations. 3. Transforming complex datasets before rendering."
             />
 
-            {/* Full Beginner Program */}
+            {/* Complete Beginner Program */}
             <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>
                 💻 Complete Program: Filtered List with useMemo
@@ -392,25 +584,26 @@ export default function UseRefDemo() {
                 title="UseMemoDemo.jsx"
                 code={`import React, { useState, useMemo } from "react";
 
-const COURSES = ["React Fundamentals", "Advanced Hooks", "Next.js 15", "Node.js API", "SQL Databases"];
+const COURSES = ["React 19", "Advanced Hooks", "Next.js", "TypeScript", "Node.js", "SQL Databases"];
 
 export default function UseMemoDemo() {
   const [search, setSearch] = useState("");
-  const [darkTheme, setDarkTheme] = useState(false);
+  const [unrelatedCount, setUnrelatedCount] = useState(0);
 
-  // ✅ useMemo ONLY filters when "search" changes.
-  // Toggling "darkTheme" will NOT re-run this filter!
+  // ✅ useMemo: ONLY re-runs the filter when "search" changes.
+  // Clicking "Increment Counter" will NOT re-filter the array!
   const filteredCourses = useMemo(() => {
-    console.log("Filtering courses list...");
+    console.log("⚡ [useMemo] Filtering courses list...");
     return COURSES.filter((c) =>
       c.toLowerCase().includes(search.toLowerCase())
     );
   }, [search]); // <-- Dependency array
 
   return (
-    <div style={{ background: darkTheme ? "#1e293b" : "#fff", color: darkTheme ? "#fff" : "#000", padding: 20 }}>
-      <button onClick={() => setDarkTheme((prev) => !prev)}>
-        Toggle Theme
+    <div style={{ padding: 20 }}>
+      {/* Unrelated state change */}
+      <button onClick={() => setUnrelatedCount((c) => c + 1)}>
+        Unrelated Counter: {unrelatedCount} (Filter skipped!)
       </button>
 
       <input
@@ -421,10 +614,9 @@ export default function UseMemoDemo() {
         style={{ display: "block", margin: "12px 0", padding: 8 }}
       />
 
+      <p>Results: {filteredCourses.length} matches</p>
       <ul>
-        {filteredCourses.map((course, idx) => (
-          <li key={idx}>{course}</li>
-        ))}
+        {filteredCourses.map((c, i) => <li key={i}>{c}</li>)}
       </ul>
     </div>
   );
@@ -432,30 +624,63 @@ export default function UseMemoDemo() {
               />
             </div>
 
-            {/* Interactive Live Demo */}
-            <div style={{ background: themeMode === 'dark' ? '#0f172a' : '#f8fafc', color: themeMode === 'dark' ? 'white' : '#0f172a', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.25rem', marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>
-                  🔬 Live Interactive Demo
-                </h4>
-                <button
-                  onClick={() => setThemeMode(m => m === 'light' ? 'dark' : 'light')}
-                  style={{ background: '#6366f1', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.78rem', cursor: 'pointer', fontWeight: 700 }}
-                >
-                  Toggle Theme ({themeMode})
-                </button>
-              </div>
+            {/* Live Interactive Demo */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 14, padding: '1.5rem', marginBottom: '1.5rem' }}>
+              <h4 style={{ margin: '0 0 1rem', fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Eye size={18} color="#10b981" /> Live Interactive Demo
+              </h4>
 
-              <input
-                type="text"
-                placeholder="Search tech stack (e.g. React)..."
-                value={searchWord}
-                onChange={(e) => setSearchWord(e.target.value)}
-                style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem', marginBottom: 10 }}
-              />
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                {/* Search Filter with useMemo */}
+                <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, padding: '1.25rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#10b981', textTransform: 'uppercase' }}>
+                    1. Search Filter (Cached with useMemo)
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Search courses (e.g. React)..."
+                    value={searchWord}
+                    onChange={(e) => setSearchWord(e.target.value)}
+                    style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem', margin: '8px 0 10px', outline: 'none' }}
+                  />
+                  <div style={{ fontSize: '0.85rem', color: '#334155' }}>
+                    <strong>{filteredCourseList.length} matches:</strong>
+                    <ul style={{ margin: '6px 0 0', paddingLeft: 18, maxHeight: 110, overflowY: 'auto' }}>
+                      {filteredCourseList.map((item, idx) => (
+                        <li key={idx} style={{ fontSize: '0.82rem' }}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
 
-              <div style={{ fontSize: '0.85rem' }}>
-                Found <b>{filteredItems.length}</b> matches: {filteredItems.join(', ')}
+                {/* Heavy Calculation & Unrelated State Tester */}
+                <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, padding: '1.25rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#6366f1', textTransform: 'uppercase' }}>
+                    2. Calculation Memoization Tracker
+                  </span>
+                  <div style={{ margin: '8px 0', fontSize: '0.85rem', color: '#334155' }}>
+                    <div>Heavy Hash Output: <strong style={{ color: '#6366f1' }}>{heavyCalculatedValue}</strong></div>
+                    <div>Times Calculation Actually Ran: <strong style={{ color: '#10b981' }}>{memoCalculationRuns} times</strong></div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
+                    <button
+                      onClick={() => setUnrelatedCounter((c) => c + 1)}
+                      style={{ background: '#6366f1', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      Increment Unrelated State ({unrelatedCounter})
+                    </button>
+                    <button
+                      onClick={() => setCalcNumber((n) => n + 5)}
+                      style={{ background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', borderRadius: 6, padding: '6px 12px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      Change Number (+5)
+                    </button>
+                  </div>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block', marginTop: 8 }}>
+                    💡 Notice: Clicking "Increment Unrelated State" re-renders the component but <b>skips recalculation</b> (count stays frozen)!
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -477,14 +702,13 @@ export default function UseMemoDemo() {
         <Section key="t3" eyebrow="Topic 03 • Day 12" title="useCallback Hook (Freezing Function Definitions)">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
 
-            {/* Concept Overview: What, Why, Where */}
             <ConceptCard
-              what="useCallback is a hook that caches (remembers) a function definition between renders so it doesn't get recreated in memory every time."
-              why="In JavaScript, () => {} !== () => {}. Every time a parent renders, new functions are created. Passing them to React.memo child components causes unnecessary child re-renders."
-              where="1. Passing delete/update handlers to list items wrapped in React.memo. 2. Passing callback functions into useEffect dependency arrays."
+              what="useCallback is a hook that caches (remembers) a function definition across renders so it keeps the exact same memory address."
+              why="In JavaScript, () => {} !== () => {}. Every parent render creates new function pointers. Passing inline functions to React.memo child components causes those children to re-render needlessly. useCallback prevents this."
+              where="1. Passing delete/update handlers to memoized list rows. 2. Passing stable functions into useEffect dependency arrays."
             />
 
-            {/* Full Beginner Program */}
+            {/* Complete Beginner Program */}
             <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>
                 💻 Complete Program: Todo List with useCallback & React.memo
@@ -518,7 +742,7 @@ export default function UseCallbackDemo() {
   }, []); // <-- Empty array: Never recreated
 
   return (
-    <div>
+    <div style={{ padding: 20 }}>
       <button onClick={() => setCounter((c) => c + 1)}>
         Parent Counter: {counter} (Child will NOT re-render)
       </button>
@@ -532,23 +756,45 @@ export default function UseCallbackDemo() {
               />
             </div>
 
-            {/* Interactive Live Demo */}
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.25rem', marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
-                  🔬 Live Interactive Demo
+            {/* Live Interactive Demo */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 14, padding: '1.5rem', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Eye size={18} color="#0284c7" /> Live Interactive Demo
                 </h4>
                 <button
-                  onClick={() => setParentCount((c) => c + 1)}
-                  style={{ background: '#2563eb', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.78rem', cursor: 'pointer', fontWeight: 700 }}
+                  onClick={() => setParentTick((c) => c + 1)}
+                  style={{ background: '#0284c7', color: 'white', border: 'none', borderRadius: 6, padding: '6px 14px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
                 >
-                  Re-render Parent (Count: {parentCount})
+                  Trigger Parent Re-render (Tick: {parentTick})
                 </button>
               </div>
 
-              <div>
-                {todos.map((todo) => (
-                  <MemoizedTodoRow key={todo.id} todo={todo} onDelete={handleDeleteTodo} />
+              {/* Side-by-side comparison */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+                <div>
+                  <UnoptimizedChild count={parentTick} />
+                </div>
+                <div>
+                  <OptimizedChild onClick={handleChildClick} label={`Action Clicks: ${childClickCount}`} />
+                </div>
+              </div>
+
+              {/* Memoized Todo List */}
+              <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, padding: '1.25rem' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>
+                  Interactive Memoized Todo Roster ({todoItems.length} items)
+                </span>
+                {todoItems.map((todo) => (
+                  <div key={todo.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', borderBottom: '1px solid #f1f5f9' }}>
+                    <span style={{ fontSize: '0.88rem', color: '#334155' }}>{todo.text}</span>
+                    <button
+                      onClick={() => handleDeleteTodo(todo.id)}
+                      style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: 4, padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -571,14 +817,13 @@ export default function UseCallbackDemo() {
         <Section key="t4" eyebrow="Topic 04 • Day 12" title="Custom Hooks (Reusable Stateful Logic)">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
 
-            {/* Concept Overview: What, Why, Where */}
             <ConceptCard
-              what="A Custom Hook is a JavaScript function whose name starts with 'use' (e.g. useToggle, useFetch) that can call other React hooks inside it."
-              why="Instead of copy-pasting the same useState and useEffect code across 5 different components, you extract the logic into a single reusable custom hook."
-              where="1. useToggle for modals and dropdowns. 2. useLocalStorage for saving data to the browser. 3. useFetch for calling backend APIs."
+              what="A Custom Hook is a regular JavaScript function starting with 'use' (e.g. useToggle, useLocalStorage) that calls other built-in React hooks to encapsulate reusable logic."
+              why="Instead of re-writing the same useState and useEffect logic in 10 different components, custom hooks let you package it into a single clean function."
+              where="1. useToggle for modals, dialogs, and accordions. 2. useLocalStorage for browser persistence. 3. useFetch for API data loading."
             />
 
-            {/* Full Beginner Program */}
+            {/* Complete Beginner Program */}
             <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>
                 💻 Complete Program: useToggle and useLocalStorage Custom Hooks
@@ -618,9 +863,9 @@ export default function CustomHooksDemo() {
   const [name, setName] = useLocalStorage("username_key", "John Doe");
 
   return (
-    <div>
+    <div style={{ padding: 20 }}>
       <input value={name} onChange={(e) => setName(e.target.value)} />
-      <button onClick={toggleModal}>
+      <button onClick={toggleModal} style={{ marginLeft: 8 }}>
         {isModalOpen ? "Close Modal" : "Open Modal"}
       </button>
 
@@ -635,33 +880,50 @@ export default function CustomHooksDemo() {
               />
             </div>
 
-            {/* Interactive Live Demo */}
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.25rem', marginBottom: '1.5rem' }}>
-              <h4 style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
-                🔬 Live Interactive Demo
+            {/* Live Interactive Demo */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 14, padding: '1.5rem', marginBottom: '1.5rem' }}>
+              <h4 style={{ margin: '0 0 1rem', fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Eye size={18} color="#7c3aed" /> Live Interactive Demo
               </h4>
 
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12 }}>
-                <input
-                  type="text"
-                  value={savedUser}
-                  onChange={(e) => setSavedUser(e.target.value)}
-                  placeholder="Enter user name..."
-                  style={{ padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
-                />
-                <button
-                  onClick={() => setIsModalOpen(v => !v)}
-                  style={{ background: '#7c3aed', color: 'white', border: 'none', borderRadius: 6, padding: '8px 14px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
-                >
-                  {isModalOpen ? 'Hide Dialog' : 'Show Dialog (useToggle)'}
-                </button>
-              </div>
-
-              {isModalOpen && (
-                <div style={{ background: '#ede9fe', border: '1px solid #ddd6fe', borderRadius: 8, padding: '12px', fontSize: '0.85rem', color: '#5b21b6' }}>
-                  🎉 Welcome back, <strong>{savedUser}</strong>! This dialog is powered by clean custom hook logic.
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                {/* useLocalStorage Demo */}
+                <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, padding: '1.25rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#7c3aed', textTransform: 'uppercase' }}>
+                    1. useLocalStorage Hook Simulator
+                  </span>
+                  <input
+                    type="text"
+                    value={storageUser}
+                    onChange={(e) => handleUpdateStorageUser(e.target.value)}
+                    placeholder="Enter name to save..."
+                    style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem', margin: '8px 0 10px', outline: 'none' }}
+                  />
+                  <div style={{ fontSize: '0.8rem', color: '#475569' }}>
+                    Stored in localStorage: <strong style={{ color: '#7c3aed' }}>"{storageUser}"</strong>
+                  </div>
                 </div>
-              )}
+
+                {/* useToggle Demo */}
+                <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, padding: '1.25rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#10b981', textTransform: 'uppercase' }}>
+                    2. useToggle Hook Simulator
+                  </span>
+                  <div style={{ margin: '8px 0 10px' }}>
+                    <button
+                      onClick={() => setIsAlertOpen((v) => !v)}
+                      style={{ background: '#7c3aed', color: 'white', border: 'none', borderRadius: 6, padding: '8px 14px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      {isAlertOpen ? 'Close Notification' : 'Toggle Notification Alert'}
+                    </button>
+                  </div>
+                  {isAlertOpen && (
+                    <div style={{ background: '#ede9fe', border: '1px solid #ddd6fe', borderRadius: 6, padding: '10px 12px', fontSize: '0.82rem', color: '#5b21b6' }}>
+                      🎉 Hello <strong>{storageUser}</strong>! This notification state is managed by <code>useToggle</code>.
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Navigation Button */}
@@ -682,14 +944,14 @@ export default function CustomHooksDemo() {
         <Section key="t5" eyebrow="Topic 05 • Day 12" title="React Hooks Cheat Sheet & Selection Guide">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
 
-            {/* Quick Comparison Table */}
+            {/* Comparison Table */}
             <div style={{ overflowX: 'auto', marginBottom: '1.5rem' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
                 <thead>
                   <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0', textAlign: 'left' }}>
                     <th style={{ padding: '10px 14px', color: '#0f172a' }}>Hook</th>
-                    <th style={{ padding: '10px 14px', color: '#0f172a' }}>What it returns</th>
-                    <th style={{ padding: '10px 14px', color: '#0f172a' }}>Re-renders Component?</th>
+                    <th style={{ padding: '10px 14px', color: '#0f172a' }}>Return Value</th>
+                    <th style={{ padding: '10px 14px', color: '#0f172a' }}>Triggers Re-render?</th>
                     <th style={{ padding: '10px 14px', color: '#0f172a' }}>Primary Use Case</th>
                   </tr>
                 </thead>
@@ -699,7 +961,7 @@ export default function CustomHooksDemo() {
                     { name: 'useRef(init)', ret: '{ current: value }', render: '❌ Never', use: 'DOM element focus, timer IDs, silent counters', color: '#8b5cf6' },
                     { name: 'useMemo(fn, deps)', ret: 'Calculated value', render: '❌ No', use: 'Caching heavy filters & expensive math', color: '#10b981' },
                     { name: 'useCallback(fn, deps)', ret: 'Function reference', render: '❌ No', use: 'Passing stable handlers to React.memo children', color: '#0ea5e9' },
-                    { name: 'Custom Hook', ret: 'Any custom data', render: 'Depends on hooks used', use: 'Reusing stateful logic across components', color: '#f59e0b' }
+                    { name: 'Custom Hook', ret: 'Any custom data', render: 'Depends on hooks', use: 'Reusing stateful logic across components', color: '#f59e0b' }
                   ].map((row, idx) => (
                     <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? 'white' : '#fcfcfd' }}>
                       <td style={{ padding: '10px 14px', fontWeight: 800, fontFamily: 'monospace', color: row.color }}>{row.name}</td>
@@ -713,7 +975,7 @@ export default function CustomHooksDemo() {
             </div>
 
             {/* Interactive Selector */}
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.25rem', marginBottom: '1.5rem' }}>
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 14, padding: '1.5rem', marginBottom: '1.5rem' }}>
               <h4 style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
                 💡 Which Hook Should You Use? Click a Scenario:
               </h4>
@@ -727,10 +989,10 @@ export default function CustomHooksDemo() {
                 ].map((item) => (
                   <button
                     key={item.id}
-                    onClick={() => setChosenTask(item.id)}
+                    onClick={() => setSelectedTask(item.id)}
                     style={{
-                      background: chosenTask === item.id ? '#6366f1' : 'white',
-                      color: chosenTask === item.id ? 'white' : '#334155',
+                      background: selectedTask === item.id ? taskRecommendations[selectedTask].color : 'white',
+                      color: selectedTask === item.id ? 'white' : '#334155',
                       border: '1px solid #cbd5e1',
                       borderRadius: 8,
                       padding: '8px 10px',
@@ -744,9 +1006,19 @@ export default function CustomHooksDemo() {
                 ))}
               </div>
 
-              <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 8, padding: '12px' }}>
-                <strong style={{ color: '#6366f1', fontSize: '0.95rem' }}>Recommended: {recommendations[chosenTask].hook}</strong>
-                <p style={{ margin: '4px 0 0', fontSize: '0.86rem', color: '#475569' }}>{recommendations[chosenTask].reason}</p>
+              <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, padding: '1.25rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                  <h4 style={{ margin: 0, fontWeight: 800, color: taskRecommendations[selectedTask].color }}>
+                    Recommended: {taskRecommendations[selectedTask].hook}
+                  </h4>
+                  <span style={{ fontSize: '0.75rem', background: '#f1f5f9', color: '#475569', padding: '3px 8px', borderRadius: 4, fontWeight: 700 }}>
+                    {taskRecommendations[selectedTask].badge}
+                  </span>
+                </div>
+                <p style={{ margin: '0 0 8px', fontSize: '0.88rem', color: '#475569' }}>
+                  {taskRecommendations[selectedTask].desc}
+                </p>
+                <CodeBlock title="Quick Boilerplate" code={taskRecommendations[selectedTask].code} />
               </div>
             </div>
 
@@ -769,13 +1041,13 @@ export default function CustomHooksDemo() {
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
 
             <p style={{ margin: '0 0 1.25rem', fontSize: '0.92rem', color: '#475569' }}>
-              This Capstone Project demonstrates all 4 hooks working seamlessly together in a real-world app:
-              <br />• <strong>useRef</strong>: Auto-focus the student name input.
-              <br />• <strong>useMemo</strong>: Filter students fast without lag.
-              <br />• <strong>useCallback</strong>: Freeze delete handler to prevent list re-renders.
+              This Capstone combines all 4 hooks together in a production-ready application:
+              <br />• <strong>useRef</strong>: Auto-focus the student name input on mount.
+              <br />• <strong>useMemo</strong>: Filter and sort the student roster without UI lag.
+              <br />• <strong>useCallback</strong>: Freeze delete and grade handlers to avoid re-rendering unaffected student rows.
             </p>
 
-            {/* Full Beginner Program */}
+            {/* Complete Beginner Program */}
             <div style={{ marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>
                 💻 Complete Capstone Source Code
@@ -785,11 +1057,14 @@ export default function CustomHooksDemo() {
                 code={`import React, { useState, useRef, useMemo, useCallback, useEffect } from "react";
 
 // 1. Memoized Child Row
-const StudentRow = React.memo(({ student, onDelete }) => {
+const StudentRow = React.memo(({ student, onDelete, onBoost }) => {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", padding: 10, borderBottom: "1px solid #eee" }}>
       <span><b>{student.name}</b> ({student.course}) - Score: {student.score}</span>
-      <button onClick={() => onDelete(student.id)} style={{ color: "red" }}>Delete</button>
+      <div>
+        <button onClick={() => onBoost(student.id)} style={{ marginRight: 6 }}>+5 Pts</button>
+        <button onClick={() => onDelete(student.id)} style={{ color: "red" }}>Delete</button>
+      </div>
     </div>
   );
 });
@@ -798,47 +1073,61 @@ const StudentRow = React.memo(({ student, onDelete }) => {
 export default function StudentPortal() {
   const nameInputRef = useRef(null);
   const [search, setSearch] = useState("");
+  const [minScore, setMinScore] = useState(50);
   const [name, setName] = useState("");
   const [students, setStudents] = useState([
     { id: 1, name: "Alice Johnson", course: "React 19", score: 95 },
     { id: 2, name: "Bob Smith", course: "Node.js", score: 82 }
   ]);
 
-  // useRef: Auto-focus on mount
+  // useRef: Auto-focus input on mount
   useEffect(() => {
     if (nameInputRef.current) nameInputRef.current.focus();
   }, []);
 
-  // useMemo: Filter students
+  // useMemo: Filter and Sort dataset cleanly
   const filtered = useMemo(() => {
-    return students.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
-  }, [students, search]);
+    return students
+      .filter((s) => s.name.toLowerCase().includes(search.toLowerCase()) && s.score >= minScore)
+      .sort((a, b) => b.score - a.score);
+  }, [students, search, minScore]);
 
-  // useCallback: Stable delete handler
+  // useCallback: Stable handlers for list items
   const handleDelete = useCallback((id) => {
-    setStudents(prev => prev.filter(s => s.id !== id));
+    setStudents((prev) => prev.filter((s) => s.id !== id));
+  }, []);
+
+  const handleBoost = useCallback((id) => {
+    setStudents((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, score: Math.min(100, s.score + 5) } : s))
+    );
   }, []);
 
   const handleAdd = (e) => {
     e.preventDefault();
     if (!name.trim()) return;
-    setStudents(prev => [{ id: Date.now(), name, course: "React 19", score: 90 }, ...prev]);
+    setStudents((prev) => [{ id: Date.now(), name, course: "React 19", score: 85 }, ...prev]);
     setName("");
     if (nameInputRef.current) nameInputRef.current.focus();
   };
 
   return (
-    <div style={{ maxWidth: 500, padding: 20 }}>
+    <div style={{ maxWidth: 550, padding: 20 }}>
       <h3>Student Management Portal</h3>
       <form onSubmit={handleAdd} style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-        <input ref={nameInputRef} value={name} onChange={e => setName(e.target.value)} placeholder="Student name..." />
+        <input ref={nameInputRef} value={name} onChange={(e) => setName(e.target.value)} placeholder="Student name..." />
         <button type="submit">Add</button>
       </form>
 
-      <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search student..." style={{ width: "100%", marginBottom: 12 }} />
+      <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
+        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search..." style={{ flex: 1 }} />
+        <label>Min: {minScore} <input type="range" min={0} max={100} value={minScore} onChange={(e) => setMinScore(+e.target.value)} /></label>
+      </div>
 
       <div>
-        {filtered.map(s => <StudentRow key={s.id} student={s} onDelete={handleDelete} />)}
+        {filtered.map((s) => (
+          <StudentRow key={s.id} student={s} onDelete={handleDelete} onBoost={handleBoost} />
+        ))}
       </div>
     </div>
   );
@@ -846,46 +1135,94 @@ export default function StudentPortal() {
               />
             </div>
 
-            {/* Interactive Live Demo */}
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.25rem', marginBottom: '1.5rem' }}>
-              <h4 style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
-                🔬 Live Capstone Application Preview
+            {/* Live Interactive Demo */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 14, padding: '1.5rem', marginBottom: '1.5rem' }}>
+              <h4 style={{ margin: '0 0 1rem', fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Eye size={18} color="#6366f1" /> Live Capstone Application Preview
               </h4>
 
-              <form onSubmit={handleAddStudent} style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-                <input
-                  ref={capstoneNameRef}
-                  type="text"
-                  placeholder="Enter student name..."
-                  value={newStudent}
-                  onChange={(e) => setNewStudent(e.target.value)}
-                  style={{ flex: 1, padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
-                />
-                <button type="submit" style={{ background: '#6366f1', color: 'white', border: 'none', borderRadius: 6, padding: '8px 14px', fontWeight: 700, cursor: 'pointer' }}>
-                  Add Record
-                </button>
-              </form>
-
-              <input
-                type="text"
-                placeholder="Search students (useMemo)..."
-                value={capstoneQuery}
-                onChange={(e) => setCapstoneQuery(e.target.value)}
-                style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem', marginBottom: 12 }}
-              />
-
-              <div style={{ border: '1px solid #e2e8f0', borderRadius: 8, overflow: 'hidden', background: 'white' }}>
-                {filteredCapstone.map((student) => (
-                  <div key={student.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', borderBottom: '1px solid #f1f5f9' }}>
-                    <span style={{ fontSize: '0.88rem' }}><b>{student.name}</b> ({student.course}) - Score: <strong style={{ color: '#6366f1' }}>{student.score}</strong></span>
-                    <button
-                      onClick={() => handleCapstoneDelete(student.id)}
-                      style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: 4, padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+              <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 0.7fr', gap: '1.25rem' }}>
+                <div>
+                  {/* Add Form */}
+                  <form onSubmit={handleAddStudentSubmit} style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+                    <input
+                      ref={capstoneInputRef}
+                      type="text"
+                      placeholder="Enter student name..."
+                      value={newStudentName}
+                      onChange={(e) => setNewStudentName(e.target.value)}
+                      style={{ flex: 1, padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                    />
+                    <select
+                      value={newStudentCourse}
+                      onChange={(e) => setNewStudentCourse(e.target.value)}
+                      style={{ padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem', background: 'white' }}
                     >
-                      Delete
+                      <option>React 19</option>
+                      <option>Node.js</option>
+                      <option>SQL Databases</option>
+                    </select>
+                    <button type="submit" style={{ background: '#6366f1', color: 'white', border: 'none', borderRadius: 6, padding: '8px 14px', fontWeight: 700, cursor: 'pointer' }}>
+                      Add
                     </button>
+                  </form>
+
+                  {/* Filter Toolbar */}
+                  <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12 }}>
+                    <input
+                      type="text"
+                      placeholder="Search students (useMemo)..."
+                      value={capstoneQuery}
+                      onChange={(e) => setCapstoneQuery(e.target.value)}
+                      style={{ flex: 1, padding: '6px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                    />
+                    <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748b' }}>
+                      Min: {minScore}
+                      <input type="range" min={0} max={100} value={minScore} onChange={(e) => setMinScore(+e.target.value)} style={{ marginLeft: 6 }} />
+                    </label>
                   </div>
-                ))}
+
+                  {/* Student List */}
+                  <div style={{ border: '1px solid #e2e8f0', borderRadius: 8, overflow: 'hidden', background: 'white' }}>
+                    {filteredStudents.length === 0 ? (
+                      <div style={{ padding: 16, textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem' }}>No matching students found</div>
+                    ) : (
+                      filteredStudents.map((student) => (
+                        <div key={student.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', borderBottom: '1px solid #f1f5f9' }}>
+                          <span style={{ fontSize: '0.88rem' }}><b>{student.name}</b> ({student.course}) - Score: <strong style={{ color: '#6366f1' }}>{student.score}</strong></span>
+                          <div style={{ display: 'flex', gap: 6 }}>
+                            <button
+                              onClick={() => handleScoreBoost(student.id)}
+                              style={{ background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0', borderRadius: 4, padding: '3px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                            >
+                              +5 Pts
+                            </button>
+                            <button
+                              onClick={() => handleDeleteStudent(student.id)}
+                              style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: 4, padding: '3px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+
+                {/* Optimization Log */}
+                <div style={{ background: '#0f172a', color: 'white', borderRadius: 10, padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8892b0', textTransform: 'uppercase', marginBottom: 8 }}>
+                    Hook Optimization Log:
+                  </span>
+                  <div style={{ flex: 1, fontFamily: 'monospace', fontSize: '0.75rem', lineHeight: 1.6, overflowY: 'auto' }}>
+                    {capstoneLog.map((log, i) => (
+                      <div key={i} style={{ padding: '3px 0', borderBottom: '1px solid #1e293b', color: log.includes('useRef') ? '#c4b5fd' : log.includes('useMemo') ? '#86efac' : '#38bdf8' }}>
+                        {log}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -920,7 +1257,7 @@ export default function StudentPortal() {
                       const correct = optIndex === q.answer;
                       let bg = 'white', border = '1px solid #cbd5e1';
 
-                      if (quizDone) {
+                      if (quizSubmitted) {
                         if (correct) { bg = '#dcfce7'; border = '1.5px solid #10b981'; }
                         else if (selected) { bg = '#fee2e2'; border = '1.5px solid #ef4444'; }
                       } else if (selected) {
@@ -930,9 +1267,9 @@ export default function StudentPortal() {
                       return (
                         <button
                           key={optIndex}
-                          disabled={quizDone}
-                          onClick={() => setQuizAnswers(prev => ({ ...prev, [q.id]: optIndex }))}
-                          style={{ background: bg, border, padding: '8px 12px', borderRadius: 6, textAlign: 'left', cursor: quizDone ? 'default' : 'pointer', fontSize: '0.85rem' }}
+                          disabled={quizSubmitted}
+                          onClick={() => setQuizAnswers((prev) => ({ ...prev, [q.id]: optIndex }))}
+                          style={{ background: bg, border, padding: '8px 12px', borderRadius: 6, textAlign: 'left', cursor: quizSubmitted ? 'default' : 'pointer', fontSize: '0.85rem' }}
                         >
                           {opt}
                         </button>
@@ -940,7 +1277,7 @@ export default function StudentPortal() {
                     })}
                   </div>
 
-                  {quizDone && (
+                  {quizSubmitted && (
                     <div style={{ marginTop: 8, fontSize: '0.8rem', color: '#1e40af', background: '#eff6ff', padding: '6px 10px', borderRadius: 6 }}>
                       <strong>Explanation:</strong> {q.explanation}
                     </div>
@@ -950,10 +1287,10 @@ export default function StudentPortal() {
             </div>
 
             <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-              {!quizDone ? (
+              {!quizSubmitted ? (
                 <button
                   className="btn btn-primary"
-                  onClick={() => setQuizDone(true)}
+                  onClick={() => setQuizSubmitted(true)}
                   disabled={Object.keys(quizAnswers).length < quizQuestions.length}
                   style={{ background: '#6366f1', borderColor: '#6366f1' }}
                 >
@@ -961,7 +1298,7 @@ export default function StudentPortal() {
                 </button>
               ) : (
                 <>
-                  <button className="btn btn-outline" onClick={() => { setQuizAnswers({}); setQuizDone(false); }}>
+                  <button className="btn btn-outline" onClick={() => { setQuizAnswers({}); setQuizSubmitted(false); }}>
                     Retry Quiz
                   </button>
                   <strong style={{ color: quizScore === quizQuestions.length ? '#16a34a' : '#ea580c' }}>
@@ -998,7 +1335,7 @@ export default function StudentPortal() {
                 Create a component that automatically focuses the input field when the page first loads using <code>useRef</code> and <code>useEffect</code>.
               </p>
               <button
-                onClick={() => setShowTask1(v => !v)}
+                onClick={() => setShowTask1((v) => !v)}
                 style={{ background: '#6366f1', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', marginBottom: 8 }}
               >
                 {showTask1 ? 'Hide Solution' : '👁️ View Solution Code'}
@@ -1030,7 +1367,7 @@ export default function AutoFocusInput() {
                 Create a custom hook called <code>useToggle(initialValue = false)</code> that returns <code>[value, toggleFunction]</code> and use it to show/hide a message.
               </p>
               <button
-                onClick={() => setShowTask2(v => !v)}
+                onClick={() => setShowTask2((v) => !v)}
                 style={{ background: '#10b981', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', marginBottom: 8 }}
               >
                 {showTask2 ? 'Hide Solution' : '👁️ View Solution Code'}
@@ -1042,7 +1379,7 @@ export default function AutoFocusInput() {
 
 export function useToggle(initial = false) {
   const [state, setState] = useState(initial);
-  const toggle = useCallback(() => setState(s => !s), []);
+  const toggle = useCallback(() => setState((s) => !s), []);
   return [state, toggle];
 }
 
@@ -1068,7 +1405,7 @@ export function ToggleDemo() {
                 Create a searchable product list where the filtered array is cached with <code>useMemo</code> and row deletion uses <code>useCallback</code>.
               </p>
               <button
-                onClick={() => setShowTask3(v => !v)}
+                onClick={() => setShowTask3((v) => !v)}
                 style={{ background: '#f59e0b', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', marginBottom: 8 }}
               >
                 {showTask3 ? 'Hide Solution' : '👁️ View Solution Code'}
@@ -1093,17 +1430,17 @@ export default function FastList() {
   ]);
 
   const filtered = useMemo(() => {
-    return items.filter(i => i.name.toLowerCase().includes(query.toLowerCase()));
+    return items.filter((i) => i.name.toLowerCase().includes(query.toLowerCase()));
   }, [items, query]);
 
   const handleDelete = useCallback((id) => {
-    setItems(prev => prev.filter(i => i.id !== id));
+    setItems((prev) => prev.filter((i) => i.id !== id));
   }, []);
 
   return (
     <div>
-      <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search..." />
-      {filtered.map(i => <ItemRow key={i.id} item={i} onDelete={handleDelete} />)}
+      <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search..." />
+      {filtered.map((i) => <ItemRow key={i.id} item={i} onDelete={handleDelete} />)}
     </div>
   );
 }`}
