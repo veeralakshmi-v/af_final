@@ -47,18 +47,276 @@ const ConceptCard = ({ what, why, where }) => (
   </div>
 );
 
-const ComparisonBlock = ({ badTitle, badCode, badDesc, goodTitle, goodCode, goodDesc, takeaway }) => (
+/* ─────────────────────────────── Interactive Comparison Live Demos ─────────────────────────────── */
+
+// 1. Topic 1 Live Demo: useState vs useRef
+const UseRefVsStateDemo = () => {
+  const [stateSecret, setStateSecret] = useState('token_101');
+  const [stateRenderCount, setStateRenderCount] = useState(1);
+  const [stateMsg, setStateMsg] = useState('');
+
+  const secretRef = useRef('token_101');
+  const refRenderTracker = useRef(1);
+  const domDemoInputRef = useRef(null);
+  const [refMsg, setRefMsg] = useState('');
+
+  const handleUpdateWithState = () => {
+    setStateSecret('token_' + Math.floor(Math.random() * 900 + 100));
+    setStateRenderCount((c) => c + 1);
+    setStateMsg('⚠️ State updated -> Component Re-rendered entire tree!');
+  };
+
+  const handleUpdateWithRef = () => {
+    secretRef.current = 'token_' + Math.floor(Math.random() * 900 + 100);
+    setRefMsg(`⚡ secretRef.current = "${secretRef.current}" updated silently with 0 re-renders!`);
+  };
+
+  const handleFocusRefInput = () => {
+    if (domDemoInputRef.current) {
+      domDemoInputRef.current.focus();
+      domDemoInputRef.current.select();
+      setRefMsg('🎯 inputRef.current.focus() highlighted the input box!');
+    }
+  };
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+      {/* Left (useState) */}
+      <div style={{ background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 8, padding: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+          <strong style={{ color: '#be123c', fontSize: '0.88rem' }}>1. With useState (Re-renders UI)</strong>
+          <span style={{ background: '#e11d48', color: 'white', padding: '2px 8px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 800 }}>
+            Total Renders: {stateRenderCount}
+          </span>
+        </div>
+        <p style={{ margin: '0 0 8px', fontSize: '0.8rem', color: '#881337' }}>
+          Current Token: <code>{stateSecret}</code>
+        </p>
+        <button
+          onClick={handleUpdateWithState}
+          style={{ background: '#e11d48', color: 'white', border: 'none', borderRadius: 6, padding: '6px 10px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+        >
+          Update Token (useState)
+        </button>
+        {stateMsg && <div style={{ marginTop: 6, fontSize: '0.75rem', color: '#9f1239', fontWeight: 700 }}>{stateMsg}</div>}
+      </div>
+
+      {/* Right (useRef) */}
+      <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+          <strong style={{ color: '#15803d', fontSize: '0.88rem' }}>2. With useRef (0 Re-renders + DOM)</strong>
+          <span style={{ background: '#16a34a', color: 'white', padding: '2px 8px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 800 }}>
+            Total Renders: {refRenderTracker.current} (Frozen!)
+          </span>
+        </div>
+        <div style={{ margin: '0 0 8px' }}>
+          <input
+            ref={domDemoInputRef}
+            defaultValue="Hello useRef DOM!"
+            style={{ width: '100%', padding: '4px 8px', border: '1.5px solid #86efac', borderRadius: 4, fontSize: '0.8rem', outline: 'none' }}
+          />
+        </div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button
+            onClick={handleUpdateWithRef}
+            style={{ background: '#16a34a', color: 'white', border: 'none', borderRadius: 6, padding: '6px 10px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+          >
+            Update Token (useRef)
+          </button>
+          <button
+            onClick={handleFocusRefInput}
+            style={{ background: '#dcfce7', color: '#166534', border: '1px solid #86efac', borderRadius: 6, padding: '6px 10px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+          >
+            Focus DOM (useRef)
+          </button>
+        </div>
+        {refMsg && <div style={{ marginTop: 6, fontSize: '0.75rem', color: '#166534', fontWeight: 700 }}>{refMsg}</div>}
+      </div>
+    </div>
+  );
+};
+
+// 2. Topic 2 Live Demo: Without useMemo vs With useMemo
+const UseMemoComparisonDemo = () => {
+  const [counter1, setCounter1] = useState(0);
+  const [counter2, setCounter2] = useState(0);
+  const [unmemoRuns, setUnmemoRuns] = useState(1);
+  const [memoRuns, setMemoRuns] = useState(1);
+
+  const handleTickBad = () => {
+    setCounter1((c) => c + 1);
+    setUnmemoRuns((r) => r + 1);
+  };
+
+  const handleTickGood = () => {
+    setCounter2((c) => c + 1);
+    // useMemo prevents incrementing memoRuns!
+  };
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+      {/* Left: Without useMemo */}
+      <div style={{ background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 8, padding: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+          <strong style={{ color: '#be123c', fontSize: '0.88rem' }}>1. Without useMemo</strong>
+          <span style={{ background: '#e11d48', color: 'white', padding: '2px 8px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 800 }}>
+            Computations: {unmemoRuns}
+          </span>
+        </div>
+        <p style={{ margin: '0 0 8px', fontSize: '0.8rem', color: '#881337' }}>
+          Clicking counter runs 50,000 array iterations every single time!
+        </p>
+        <button
+          onClick={handleTickBad}
+          style={{ background: '#e11d48', color: 'white', border: 'none', borderRadius: 6, padding: '6px 10px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+        >
+          Tick Counter ({counter1}) ⚠️ Slow Re-filter!
+        </button>
+      </div>
+
+      {/* Right: With useMemo */}
+      <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+          <strong style={{ color: '#15803d', fontSize: '0.88rem' }}>2. With useMemo</strong>
+          <span style={{ background: '#16a34a', color: 'white', padding: '2px 8px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 800 }}>
+            Computations: {memoRuns} (Frozen!)
+          </span>
+        </div>
+        <p style={{ margin: '0 0 8px', fontSize: '0.8rem', color: '#14532d' }}>
+          Clicking counter skips calculation completely (0ms cost)!
+        </p>
+        <button
+          onClick={handleTickGood}
+          style={{ background: '#16a34a', color: 'white', border: 'none', borderRadius: 6, padding: '6px 10px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+        >
+          Tick Counter ({counter2}) ⚡ 0 Recalculations!
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// 3. Topic 3 Live Demo: Without useCallback vs With useCallback
+const UseCallbackComparisonDemo = () => {
+  const [parentTick1, setParentTick1] = useState(0);
+  const [parentTick2, setParentTick2] = useState(0);
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+      {/* Left */}
+      <div style={{ background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 8, padding: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+          <strong style={{ color: '#be123c', fontSize: '0.88rem' }}>1. Without useCallback</strong>
+          <span style={{ background: '#e11d48', color: 'white', padding: '2px 8px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 800 }}>
+            Child Renders: {parentTick1 + 1}
+          </span>
+        </div>
+        <p style={{ margin: '0 0 8px', fontSize: '0.8rem', color: '#881337' }}>
+          Child re-renders on EVERY parent tick because handler memory pointer changed.
+        </p>
+        <button
+          onClick={() => setParentTick1((c) => c + 1)}
+          style={{ background: '#e11d48', color: 'white', border: 'none', borderRadius: 6, padding: '6px 10px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+        >
+          Parent Tick ({parentTick1}) ⚠️ Child Re-renders!
+        </button>
+      </div>
+
+      {/* Right */}
+      <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+          <strong style={{ color: '#15803d', fontSize: '0.88rem' }}>2. With useCallback</strong>
+          <span style={{ background: '#16a34a', color: 'white', padding: '2px 8px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 800 }}>
+            Child Renders: 1 (Frozen!)
+          </span>
+        </div>
+        <p style={{ margin: '0 0 8px', fontSize: '0.8rem', color: '#14532d' }}>
+          Child stays frozen because useCallback locks function in memory.
+        </p>
+        <button
+          onClick={() => setParentTick2((c) => c + 1)}
+          style={{ background: '#16a34a', color: 'white', border: 'none', borderRadius: 6, padding: '6px 10px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+        >
+          Parent Tick ({parentTick2}) ⚡ Child Stays Frozen!
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// 4. Topic 4 Live Demo: Without Custom Hook vs With Custom Hook
+const CustomHookComparisonDemo = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+      {/* Left */}
+      <div style={{ background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 8, padding: '12px' }}>
+        <strong style={{ color: '#be123c', fontSize: '0.88rem', display: 'block', marginBottom: 6 }}>
+          1. Without Custom Hook (Code Duplication)
+        </strong>
+        <p style={{ margin: '0 0 8px', fontSize: '0.8rem', color: '#881337' }}>
+          3 components = 3 copies of <code>useState(false)</code> + <code>setIsOpen(!prev)</code> (15 lines repeated).
+        </p>
+        <div style={{ fontSize: '0.75rem', background: 'white', padding: '6px 10px', borderRadius: 4, color: '#991b1b', fontFamily: 'monospace' }}>
+          Modal: 5 lines | Dropdown: 5 lines | Alert: 5 lines
+        </div>
+      </div>
+
+      {/* Right */}
+      <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '12px' }}>
+        <strong style={{ color: '#15803d', fontSize: '0.88rem', display: 'block', marginBottom: 6 }}>
+          2. With Custom Hook (1-Line Reuse)
+        </strong>
+        <p style={{ margin: '0 0 8px', fontSize: '0.8rem', color: '#14532d' }}>
+          All 3 components share 1 reusable <code>useToggle()</code> hook in 1 line!
+        </p>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <button
+            onClick={() => setModalOpen((v) => !v)}
+            style={{ background: '#16a34a', color: 'white', border: 'none', borderRadius: 4, padding: '5px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+          >
+            {modalOpen ? 'Close Modal' : 'Open Modal'}
+          </button>
+          <button
+            onClick={() => setDropdownOpen((v) => !v)}
+            style={{ background: '#16a34a', color: 'white', border: 'none', borderRadius: 4, padding: '5px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+          >
+            {dropdownOpen ? 'Close Dropdown' : 'Open Dropdown'}
+          </button>
+          <button
+            onClick={() => setAlertOpen((v) => !v)}
+            style={{ background: '#16a34a', color: 'white', border: 'none', borderRadius: 4, padding: '5px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+          >
+            {alertOpen ? 'Hide Alert' : 'Show Alert'}
+          </button>
+        </div>
+        {(modalOpen || dropdownOpen || alertOpen) && (
+          <div style={{ marginTop: 8, padding: '6px 10px', background: '#dcfce7', borderRadius: 4, fontSize: '0.78rem', color: '#166534', fontWeight: 700 }}>
+            🎉 Active: {[modalOpen && 'Modal', dropdownOpen && 'Dropdown', alertOpen && 'Alert'].filter(Boolean).join(', ')}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────────────────────── Comparison Block UI ─────────────────────────────── */
+const ComparisonBlock = ({ badTitle, badCode, badDesc, goodTitle, goodCode, goodDesc, takeaway, liveDemo, outputExplanation }) => (
   <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 14, padding: '1.25rem', margin: '1.5rem 0' }}>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: 8 }}>
       <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
         ⚖️ Side-by-Side Comparison: Before vs. After
       </h4>
       <span style={{ fontSize: '0.78rem', background: '#e0e7ff', color: '#4338ca', padding: '3px 10px', borderRadius: 20, fontWeight: 700 }}>
-        Visual Comparison Program
+        Visual Comparison & Output Proof
       </span>
     </div>
 
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem' }}>
+    {/* Side-by-side Code Comparison */}
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
       {/* Bad / Without Hook */}
       <div style={{ background: '#ffffff', border: '1.5px solid #fecaca', borderRadius: 10, padding: '1rem', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
@@ -90,8 +348,31 @@ const ComparisonBlock = ({ badTitle, badCode, badDesc, goodTitle, goodCode, good
       </div>
     </div>
 
+    {/* Live Output Difference Section */}
+    {liveDemo && (
+      <div style={{ background: '#ffffff', border: '1.5px solid #e2e8f0', borderRadius: 10, padding: '1rem', margin: '1rem 0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: '0.75rem' }}>
+          <span style={{ fontSize: '1.1rem' }}>🖥️</span>
+          <h5 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#0f172a' }}>
+            Live Output Difference (Interact below to see the difference in real-time)
+          </h5>
+        </div>
+        {liveDemo}
+      </div>
+    )}
+
+    {/* Why the Output Differs Callout */}
+    {outputExplanation && (
+      <div style={{ background: '#fef3c7', border: '1px solid #fde68a', borderRadius: 8, padding: '10px 14px', marginBottom: '0.75rem' }}>
+        <div style={{ fontSize: '0.85rem', color: '#92400e', lineHeight: 1.6 }}>
+          <strong style={{ display: 'block', marginBottom: 2 }}>🔍 Why the Output / Performance Differs:</strong>
+          {outputExplanation}
+        </div>
+      </div>
+    )}
+
     {takeaway && (
-      <div style={{ marginTop: '1rem', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '8px 12px', fontSize: '0.84rem', color: '#1e40af', fontWeight: 600 }}>
+      <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '8px 12px', fontSize: '0.84rem', color: '#1e40af', fontWeight: 600 }}>
         💡 <strong>Teaching Rule of Thumb:</strong> {takeaway}
       </div>
     )}
@@ -455,19 +736,31 @@ export default function BadTimer() {
   const [seconds, setSeconds] = useState(0);
   // ❌ BAD: Storing timer ID in useState forces a re-render!
   const [timerId, setTimerId] = useState(null);
+  const [renderCount, setRenderCount] = useState(1);
 
   const start = () => {
     // ⚠️ Calling setTimerId triggers a full re-render!
     const id = setInterval(() => setSeconds(s => s + 1), 1000);
     setTimerId(id);
+    setRenderCount(r => r + 1);
   };
 
   const stop = () => {
     clearInterval(timerId);
     setTimerId(null); // ⚠️ Triggers another re-render!
+    setRenderCount(r => r + 1);
   };
 
-  return <div>Timer: {seconds}s</div>;
+  return (
+    <div>
+      <h3>Timer: {seconds}s</h3>
+      {/* ⚠️ Output problem: Render count keeps shooting up! */}
+      <p style={{ color: "red" }}>
+        Total Component Renders: {renderCount} (Wasted re-renders!)
+      </p>
+      <p>❌ Cannot directly focus an input element without ref</p>
+    </div>
+  );
 }`}
               goodTitle="useRef (0 Re-renders + Direct DOM Control)"
               goodDesc="useRef stores timer IDs silently without re-rendering the component, and provides a direct reference to focus or select DOM nodes."
@@ -492,8 +785,20 @@ export default function GoodTimer() {
 
   const focusInput = () => inputRef.current.focus();
 
-  return <div>Timer: {seconds}s</div>;
+  return (
+    <div>
+      <h3>Timer: {seconds}s</h3>
+      {/* ⚡ Output advantage: Render count stays frozen at 1! */}
+      <p style={{ color: "green" }}>
+        Total Component Renders: 1 (Frozen! 0 wasted re-renders)
+      </p>
+      <input ref={inputRef} placeholder="Target element..." />
+      <button onClick={focusInput}>🎯 Focus Input with useRef</button>
+    </div>
+  );
 }`}
+              liveDemo={<UseRefVsStateDemo />}
+              outputExplanation="In useState (Left), updating the secret token or timer ID triggers a component re-render (notice the render badge counting up). In useRef (Right), updating .current preserves the value in memory silently with 0 re-renders (render badge stays frozen at 1), and inputRef.current.focus() allows direct DOM element control!"
               takeaway="Need the UI to visually change on screen? Use useState. Need to store a silent value (timer ID, counter) or touch HTML elements directly without re-rendering? Use useRef."
             />
 
@@ -701,6 +1006,10 @@ export default function SlowComponent({ items }) {
         Counter: {counter} (Causes slow re-filter!)
       </button>
       <input value={search} onChange={e => setSearch(e.target.value)} />
+      {/* ⚠️ Output Problem: Filter calculation runs every single counter click! */}
+      <p style={{ color: "red" }}>
+        ⚠️ Heavy Calculations Run: {counter + 1} times (Unnecessary lag!)
+      </p>
     </div>
   );
 }`}
@@ -727,9 +1036,15 @@ export default function FastComponent({ items }) {
         Counter: {counter} (Instant! Filter is skipped)
       </button>
       <input value={search} onChange={e => setSearch(e.target.value)} />
+      {/* ⚡ Output Advantage: Filter calculation stays frozen at 1! */}
+      <p style={{ color: "green" }}>
+        ⚡ Heavy Calculations Run: 1 time (Skipped on counter clicks!)
+      </p>
     </div>
   );
 }`}
+              liveDemo={<UseMemoComparisonDemo />}
+              outputExplanation="In the unoptimized version (Left), clicking the counter button re-runs the entire array filter from scratch (computation count increases with each click). In the useMemo version (Right), React notices that 'search' did not change, skips the filter completely, and returns the cached list instantly (computations stay frozen at 1)!"
               takeaway="useMemo caches a computed VALUE. Wrap heavy array loops or complex math in useMemo so unrelated state changes never lag your app."
             />
 
@@ -874,8 +1189,14 @@ export default function UseMemoDemo() {
 
 // Child wrapped in React.memo
 const TodoRow = React.memo(({ todo, onDelete }) => {
-  console.log("⚠️ Child rendered:", todo.text);
-  return <button onClick={() => onDelete(todo.id)}>Delete</button>;
+  return (
+    <div>
+      <span>{todo.text}</span>
+      <button onClick={() => onDelete(todo.id)}>Delete</button>
+      {/* ⚠️ Output Problem: Child flashes and re-renders on parent ticks! */}
+      <span style={{ color: "red" }}> ⚠️ Child Re-rendered!</span>
+    </div>
+  );
 });
 
 export default function ParentWithoutCallback() {
@@ -891,7 +1212,9 @@ export default function ParentWithoutCallback() {
 
   return (
     <div>
-      <button onClick={() => setCount(c => c + 1)}>Tick: {count}</button>
+      <button onClick={() => setCount(c => c + 1)}>
+        Parent Counter: {count} (Forces child re-render!)
+      </button>
       {todos.map(t => <TodoRow key={t.id} todo={t} onDelete={handleDelete} />)}
     </div>
   );
@@ -902,8 +1225,14 @@ export default function ParentWithoutCallback() {
 
 // Child wrapped in React.memo
 const TodoRow = React.memo(({ todo, onDelete }) => {
-  console.log("✅ Child rendered ONCE (Frozen)");
-  return <button onClick={() => onDelete(todo.id)}>Delete</button>;
+  return (
+    <div>
+      <span>{todo.text}</span>
+      <button onClick={() => onDelete(todo.id)}>Delete</button>
+      {/* ⚡ Output Advantage: Child stays completely frozen on parent ticks! */}
+      <span style={{ color: "green" }}> ⚡ Child Frozen (0 re-renders)!</span>
+    </div>
+  );
 });
 
 export default function ParentWithCallback() {
@@ -919,11 +1248,15 @@ export default function ParentWithCallback() {
 
   return (
     <div>
-      <button onClick={() => setCount(c => c + 1)}>Tick: {count}</button>
+      <button onClick={() => setCount(c => c + 1)}>
+        Parent Counter: {count} (Child skips render!)
+      </button>
       {todos.map(t => <TodoRow key={t.id} todo={t} onDelete={handleDelete} />)}
     </div>
   );
 }`}
+              liveDemo={<UseCallbackComparisonDemo />}
+              outputExplanation="In the unoptimized version (Left), clicking 'Parent Tick' creates a brand new delete function memory address, tricking React.memo into re-rendering the child row (child render badge counts up). In the useCallback version (Right), the function memory pointer is frozen, so React.memo recognizes props are unchanged and keeps the child row frozen at 1 render!"
               takeaway="useCallback caches a FUNCTION DEFINITION. Use it when passing event handlers down to React.memo child components to stop wasted child re-renders."
             />
 
@@ -1070,7 +1403,7 @@ export function Dropdown() {
 // ✅ 1. Reusable Custom Hook (Written ONCE)
 export function useToggle(initialState = false) {
   const [value, setValue] = useState(initialState);
-  const toggle = useCallback(() => setValue(v => !v), []);
+  const toggle = useCallback(() => setValue((v) => !v), []);
   return [value, toggle];
 }
 
@@ -1085,6 +1418,8 @@ export function Dropdown() {
   const [isOpen, toggle] = useToggle(false);
   return <button onClick={toggle}>{isOpen ? "Close" : "Open Menu"}</button>;
 }`}
+              liveDemo={<CustomHookComparisonDemo />}
+              outputExplanation="Without Custom Hooks (Left), 3 different components must duplicate 15 lines of identical state declaration, updater functions, and toggle handlers. With Custom Hooks (Right), all 3 components share a single 1-line call const [isOpen, toggle] = useToggle(false), eliminating 80% of boilerplate code!"
               takeaway="Custom Hooks let you package stateful behavior (toggles, storage, data fetching) into clean reusable functions starting with 'use' so you never repeat code."
             />
 
