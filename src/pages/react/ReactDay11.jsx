@@ -34,11 +34,15 @@ const StepCard = ({ stepNumber, title, desc, children }) => (
 );
 
 /* ─────────────────────────────── main component ──────────────────────── */
-export default function ReactDay11({ activeTab, onNavigate }) {
+export default function ReactDay11({ activeTab = 'intro_react', onNavigate }) {
   const go = (id) => {
     onNavigate('react_module11', id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const [showTask1, setShowTask1] = useState(false);
+  const [showTask2, setShowTask2] = useState(false);
+  const [showTask3, setShowTask3] = useState(false);
 
   /* ──────────────────────────────────────────────────────────────────────────
      1. WHY CLIENT ROUTING? INTERACTIVE STATE
@@ -1671,9 +1675,55 @@ function NotFound() {
                   <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 0.75rem' }}>
                     Create a mini-site containing <code>Home (/)</code>, <code>About (/about)</code>, <code>Services (/services)</code>, and a custom <code>404 Catch-all Route (/*)</code>. Ensure all navbar tabs use <code>NavLink</code> with dynamic active colors.
                   </p>
-                  <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#1d4ed8' }}>
+                  <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#1d4ed8', marginBottom: '0.75rem' }}>
                     💡 <strong>Step Hint:</strong> Remember to add the <code>end</code> prop to the Home link (<code>&lt;NavLink to="/" end&gt;</code>) to avoid parent route highlighting!
                   </div>
+                  <button
+                    onClick={() => setShowTask1((v) => !v)}
+                    style={{ background: '#4338ca', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', marginBottom: '0.75rem' }}
+                  >
+                    {showTask1 ? 'Hide Solution' : '👁️ View Solution Code'}
+                  </button>
+                  {showTask1 && (
+                    <CodeBlock
+                      title="Task 1 Solution: 4-Page NavLink Router"
+                      code={`import React from "react";
+import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+
+const Home = () => <h2>🏠 Home Page</h2>;
+const About = () => <h2>ℹ️ About Us</h2>;
+const Services = () => <h2>🛠️ Our Services</h2>;
+const NotFound = () => <h2>404 - Page Not Found</h2>;
+
+export default function NavLinkDemo() {
+  const getNavLinkStyle = ({ isActive }) => ({
+    color: isActive ? "#6366f1" : "#475569",
+    fontWeight: isActive ? 800 : 500,
+    textDecoration: "none",
+    marginRight: 16
+  });
+
+  return (
+    <BrowserRouter>
+      <nav style={{ padding: 16, borderBottom: "1px solid #e2e8f0" }}>
+        <NavLink to="/" end style={getNavLinkStyle}>Home</NavLink>
+        <NavLink to="/about" style={getNavLinkStyle}>About</NavLink>
+        <NavLink to="/services" style={getNavLinkStyle}>Services</NavLink>
+      </nav>
+
+      <div style={{ padding: 20 }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
+  );
+}`}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -1691,9 +1741,70 @@ function NotFound() {
                   <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 0.75rem' }}>
                     Configure a dynamic route <code>/products/:productId</code>. Inside the <code>ProductDetail</code> component, extract <code>productId</code> with <code>useParams()</code>, look up the item from a mock products array, and render the title, price, and image. If ID is not found, display a helpful error message.
                   </p>
-                  <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#166534' }}>
-                    💡 <strong>Step Hint:</strong> Use <code>const { productId } = useParams();</code> and array find: <code>products.find(p =&gt; p.id === productId)</code>.
+                  <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#166534', marginBottom: '0.75rem' }}>
+                    💡 <strong>Step Hint:</strong> Use <code>{"const { productId } = useParams();"}</code> and array find: <code>{"products.find(p => p.id === productId)"}</code>.
                   </div>
+                  <button
+                    onClick={() => setShowTask2((v) => !v)}
+                    style={{ background: '#16a34a', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', marginBottom: '0.75rem' }}
+                  >
+                    {showTask2 ? 'Hide Solution' : '👁️ View Solution Code'}
+                  </button>
+                  {showTask2 && (
+                    <CodeBlock
+                      title="Task 2 Solution: Dynamic useParams Route"
+                      code={`import React from "react";
+import { BrowserRouter, Routes, Route, Link, useParams } from "react-router-dom";
+
+const PRODUCTS = [
+  { id: "1", name: "Wireless Headphones", price: "$99" },
+  { id: "2", name: "Mechanical Keyboard", price: "$129" },
+  { id: "3", name: "Gaming Mouse", price: "$59" }
+];
+
+function ProductDetail() {
+  const { productId } = useParams();
+  const product = PRODUCTS.find((p) => p.id === productId);
+
+  if (!product) {
+    return <p style={{ color: "red" }}>Product #{productId} not found!</p>;
+  }
+
+  return (
+    <div style={{ padding: 16, border: "1px solid #cbd5e1", borderRadius: 8 }}>
+      <h3>{product.name}</h3>
+      <p>Price: <b>{product.price}</b></p>
+      <Link to="/">← Back to Products</Link>
+    </div>
+  );
+}
+
+export default function ProductApp() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div>
+              <h3>Products Catalog</h3>
+              <ul>
+                {PRODUCTS.map((p) => (
+                  <li key={p.id}>
+                    <Link to={\`/products/\${p.id}\`}>{p.name} - {p.price}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          }
+        />
+        <Route path="/products/:productId" element={<ProductDetail />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}`}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -1711,9 +1822,75 @@ function NotFound() {
                   <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 0.75rem' }}>
                     Build a reusable <code>&lt;ProtectedRoute&gt;</code> wrapper that checks an <code>isLoggedIn</code> boolean state. Protect <code>/dashboard</code>. On the login form, when the user clicks 'Sign In', simulate auth verification and call <code>{"navigate('/dashboard', { replace: true })"}</code>.
                   </p>
-                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#92400e' }}>
+                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#92400e', marginBottom: '0.75rem' }}>
                     💡 <strong>Step Hint:</strong> If <code>!isLoggedIn</code>, return <code>&lt;Navigate to="/login" replace /&gt;</code> inside the wrapper component.
                   </div>
+                  <button
+                    onClick={() => setShowTask3((v) => !v)}
+                    style={{ background: '#d97706', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', marginBottom: '0.75rem' }}
+                  >
+                    {showTask3 ? 'Hide Solution' : '👁️ View Solution Code'}
+                  </button>
+                  {showTask3 && (
+                    <CodeBlock
+                      title="Task 3 Solution: Protected Route with useNavigate"
+                      code={`import React, { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+
+function ProtectedRoute({ isLoggedIn, children }) {
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
+
+function Login({ onLogin }) {
+  const navigate = useNavigate();
+
+  const handleSignIn = () => {
+    onLogin();
+    navigate("/dashboard", { replace: true });
+  };
+
+  return (
+    <div>
+      <h3>Login Page</h3>
+      <button onClick={handleSignIn}>Sign In</button>
+    </div>
+  );
+}
+
+function Dashboard({ onLogout }) {
+  return (
+    <div>
+      <h3>🔒 Private Dashboard</h3>
+      <button onClick={onLogout}>Logout</button>
+    </div>
+  );
+}
+
+export default function ProtectedApp() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login onLogin={() => setIsLoggedIn(true)} />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <Dashboard onLogout={() => setIsLoggedIn(false)} />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}`}
+                    />
+                  )}
                 </div>
               </div>
             </div>
