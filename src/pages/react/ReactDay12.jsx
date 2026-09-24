@@ -989,27 +989,48 @@ export default function UseRefDemo() {
               badDesc="Every time ANY unrelated state updates (e.g. clicking a counter button), heavy array loops run again from scratch, freezing the browser."
               badCode={`import React, { useState } from "react";
 
-export default function SlowComponent({ items }) {
+// Mock dataset included directly (No external props required!)
+const PRODUCTS = [
+  { id: 1, name: "Apple iPhone 15 Pro" },
+  { id: 2, name: "Samsung Galaxy S24" },
+  { id: 3, name: "Sony WH-1000XM5 Headphones" },
+  { id: 4, name: "MacBook Pro M3 Max" },
+  { id: 5, name: "Dell XPS 15 Laptop" }
+];
+
+export default function SlowComponent() {
   const [search, setSearch] = useState("");
   const [counter, setCounter] = useState(0);
 
-  // ❌ BAD: Runs 50,000 array iterations EVERY time "counter" changes!
-  // Clicking "Increment Counter" causes UI stutter.
-  const filtered = items.filter(item => {
-    console.log("Slow filter recalculating...");
+  // ❌ BAD: Runs on EVERY single counter click!
+  const filtered = PRODUCTS.filter((item) => {
+    console.log("Slow filter recalculating for:", item.name);
     return item.name.toLowerCase().includes(search.toLowerCase());
   });
 
   return (
-    <div>
-      <button onClick={() => setCounter(c => c + 1)}>
+    <div style={{ padding: 20, fontFamily: "sans-serif" }}>
+      <button onClick={() => setCounter((c) => c + 1)}>
         Counter: {counter} (Causes slow re-filter!)
       </button>
-      <input value={search} onChange={e => setSearch(e.target.value)} />
+
+      <input
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search products..."
+        style={{ display: "block", margin: "10px 0", padding: 8 }}
+      />
+
       {/* ⚠️ Output Problem: Filter calculation runs every single counter click! */}
-      <p style={{ color: "red" }}>
+      <p style={{ color: "red", fontWeight: "bold" }}>
         ⚠️ Heavy Calculations Run: {counter + 1} times (Unnecessary lag!)
       </p>
+
+      <ul>
+        {filtered.map((item) => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
     </div>
   );
 }`}
@@ -1017,7 +1038,16 @@ export default function SlowComponent({ items }) {
               goodDesc="useMemo caches the returned value and only runs the heavy filter when the 'search' dependency actually changes. Counter clicks are instant."
               goodCode={`import React, { useState, useMemo } from "react";
 
-export default function FastComponent({ items }) {
+// Mock dataset included directly (No external props required!)
+const PRODUCTS = [
+  { id: 1, name: "Apple iPhone 15 Pro" },
+  { id: 2, name: "Samsung Galaxy S24" },
+  { id: 3, name: "Sony WH-1000XM5 Headphones" },
+  { id: 4, name: "MacBook Pro M3 Max" },
+  { id: 5, name: "Dell XPS 15 Laptop" }
+];
+
+export default function FastComponent() {
   const [search, setSearch] = useState("");
   const [counter, setCounter] = useState(0);
 
@@ -1025,21 +1055,34 @@ export default function FastComponent({ items }) {
   // When "counter" changes, React SKIPS this calculation completely!
   const filtered = useMemo(() => {
     console.log("⚡ [useMemo] Filter running ONLY when search changes");
-    return items.filter(item =>
+    return PRODUCTS.filter((item) =>
       item.name.toLowerCase().includes(search.toLowerCase())
     );
   }, [search]); // <-- Only re-run when search string changes!
 
   return (
-    <div>
-      <button onClick={() => setCounter(c => c + 1)}>
+    <div style={{ padding: 20, fontFamily: "sans-serif" }}>
+      <button onClick={() => setCounter((c) => c + 1)}>
         Counter: {counter} (Instant! Filter is skipped)
       </button>
-      <input value={search} onChange={e => setSearch(e.target.value)} />
+
+      <input
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search products..."
+        style={{ display: "block", margin: "10px 0", padding: 8 }}
+      />
+
       {/* ⚡ Output Advantage: Filter calculation stays frozen at 1! */}
-      <p style={{ color: "green" }}>
+      <p style={{ color: "green", fontWeight: "bold" }}>
         ⚡ Heavy Calculations Run: 1 time (Skipped on counter clicks!)
       </p>
+
+      <ul>
+        {filtered.map((item) => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
     </div>
   );
 }`}
@@ -1190,32 +1233,39 @@ export default function UseMemoDemo() {
 // Child wrapped in React.memo
 const TodoRow = React.memo(({ todo, onDelete }) => {
   return (
-    <div>
+    <div style={{ display: "flex", justifyContent: "space-between", margin: "8px 0", padding: "8px 12px", background: "#fee2e2", borderRadius: 6 }}>
       <span>{todo.text}</span>
       <button onClick={() => onDelete(todo.id)}>Delete</button>
       {/* ⚠️ Output Problem: Child flashes and re-renders on parent ticks! */}
-      <span style={{ color: "red" }}> ⚠️ Child Re-rendered!</span>
+      <span style={{ color: "red", fontWeight: "bold" }}> ⚠️ Child Re-rendered!</span>
     </div>
   );
 });
 
 export default function ParentWithoutCallback() {
-  const [todos, setTodos] = useState([{ id: 1, text: "Learn React" }]);
+  const [todos, setTodos] = useState([
+    { id: 1, text: "Learn React Hooks" },
+    { id: 2, text: "Master useCallback" }
+  ]);
   const [count, setCount] = useState(0);
 
   // ❌ BAD: A brand new function is created on EVERY render!
   // React.memo checks props: prevProps.onDelete !== nextProps.onDelete.
   // Result: <TodoRow /> re-renders EVERY time "count" ticks!
   const handleDelete = (id) => {
-    setTodos(t => t.filter(x => x.id !== id));
+    setTodos((t) => t.filter((x) => x.id !== id));
   };
 
   return (
-    <div>
-      <button onClick={() => setCount(c => c + 1)}>
+    <div style={{ padding: 20, fontFamily: "sans-serif" }}>
+      <button onClick={() => setCount((c) => c + 1)}>
         Parent Counter: {count} (Forces child re-render!)
       </button>
-      {todos.map(t => <TodoRow key={t.id} todo={t} onDelete={handleDelete} />)}
+      <div style={{ marginTop: 12 }}>
+        {todos.map((t) => (
+          <TodoRow key={t.id} todo={t} onDelete={handleDelete} />
+        ))}
+      </div>
     </div>
   );
 }`}
@@ -1226,32 +1276,39 @@ export default function ParentWithoutCallback() {
 // Child wrapped in React.memo
 const TodoRow = React.memo(({ todo, onDelete }) => {
   return (
-    <div>
+    <div style={{ display: "flex", justifyContent: "space-between", margin: "8px 0", padding: "8px 12px", background: "#dcfce7", borderRadius: 6 }}>
       <span>{todo.text}</span>
       <button onClick={() => onDelete(todo.id)}>Delete</button>
       {/* ⚡ Output Advantage: Child stays completely frozen on parent ticks! */}
-      <span style={{ color: "green" }}> ⚡ Child Frozen (0 re-renders)!</span>
+      <span style={{ color: "green", fontWeight: "bold" }}> ⚡ Child Frozen (0 re-renders)!</span>
     </div>
   );
 });
 
 export default function ParentWithCallback() {
-  const [todos, setTodos] = useState([{ id: 1, text: "Learn React" }]);
+  const [todos, setTodos] = useState([
+    { id: 1, text: "Learn React Hooks" },
+    { id: 2, text: "Master useCallback" }
+  ]);
   const [count, setCount] = useState(0);
 
   // ✅ GOOD: useCallback preserves the function pointer in memory!
   // React.memo checks props: prevProps.onDelete === nextProps.onDelete.
   // Result: <TodoRow /> NEVER re-renders when "count" ticks!
   const handleDelete = useCallback((id) => {
-    setTodos(t => t.filter(x => x.id !== id));
+    setTodos((t) => t.filter((x) => x.id !== id));
   }, []); // <-- Empty array = never recreated
 
   return (
-    <div>
-      <button onClick={() => setCount(c => c + 1)}>
+    <div style={{ padding: 20, fontFamily: "sans-serif" }}>
+      <button onClick={() => setCount((c) => c + 1)}>
         Parent Counter: {count} (Child skips render!)
       </button>
-      {todos.map(t => <TodoRow key={t.id} todo={t} onDelete={handleDelete} />)}
+      <div style={{ marginTop: 12 }}>
+        {todos.map((t) => (
+          <TodoRow key={t.id} todo={t} onDelete={handleDelete} />
+        ))}
+      </div>
     </div>
   );
 }`}
@@ -1382,19 +1439,39 @@ export default function UseCallbackDemo() {
               badCode={`import React, { useState } from "react";
 
 // Component 1: Modal Dialog
-export function Modal() {
+function Modal() {
   // ❌ Duplicate logic: 4 lines repeated
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(v => !v);
-  return <button onClick={toggle}>{isOpen ? "Hide" : "Show Modal"}</button>;
+  return (
+    <div style={{ margin: "10px 0" }}>
+      <button onClick={toggle}>{isOpen ? "Hide Modal" : "Show Modal"}</button>
+      {isOpen && <p style={{ background: "#fee2e2", padding: 8 }}>Modal Content</p>}
+    </div>
+  );
 }
 
 // Component 2: Dropdown Menu
-export function Dropdown() {
+function Dropdown() {
   // ❌ Duplicate logic: exact same 4 lines repeated again!
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(v => !v);
-  return <button onClick={toggle}>{isOpen ? "Close" : "Open Menu"}</button>;
+  return (
+    <div style={{ margin: "10px 0" }}>
+      <button onClick={toggle}>{isOpen ? "Close Menu" : "Open Menu"}</button>
+      {isOpen && <p style={{ background: "#fee2e2", padding: 8 }}>Dropdown Menu Options</p>}
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <div style={{ padding: 20, fontFamily: "sans-serif" }}>
+      <h2>Without Custom Hook (Duplicate State)</h2>
+      <Modal />
+      <Dropdown />
+    </div>
+  );
 }`}
               goodTitle="With Custom Hook (Write Once, Use in 1 Clean Line)"
               goodDesc="Extract the toggle logic into a reusable useToggle custom hook once. Any component can now use it in just 1 line of code."
@@ -1408,15 +1485,35 @@ export function useToggle(initialState = false) {
 }
 
 // ✅ 2. Clean 1-liner in Component 1
-export function Modal() {
+function Modal() {
   const [isOpen, toggle] = useToggle(false);
-  return <button onClick={toggle}>{isOpen ? "Hide" : "Show Modal"}</button>;
+  return (
+    <div style={{ margin: "10px 0" }}>
+      <button onClick={toggle}>{isOpen ? "Hide Modal" : "Show Modal"}</button>
+      {isOpen && <p style={{ background: "#dcfce7", padding: 8 }}>Modal Content</p>}
+    </div>
+  );
 }
 
 // ✅ 3. Clean 1-liner in Component 2
-export function Dropdown() {
+function Dropdown() {
   const [isOpen, toggle] = useToggle(false);
-  return <button onClick={toggle}>{isOpen ? "Close" : "Open Menu"}</button>;
+  return (
+    <div style={{ margin: "10px 0" }}>
+      <button onClick={toggle}>{isOpen ? "Close Menu" : "Open Menu"}</button>
+      {isOpen && <p style={{ background: "#dcfce7", padding: 8 }}>Dropdown Menu Options</p>}
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <div style={{ padding: 20, fontFamily: "sans-serif" }}>
+      <h2>With Custom Hook (Clean 1-Liners)</h2>
+      <Modal />
+      <Dropdown />
+    </div>
+  );
 }`}
               liveDemo={<CustomHookComparisonDemo />}
               outputExplanation="Without Custom Hooks (Left), 3 different components must duplicate 15 lines of identical state declaration, updater functions, and toggle handlers. With Custom Hooks (Right), all 3 components share a single 1-line call const [isOpen, toggle] = useToggle(false), eliminating 80% of boilerplate code!"
