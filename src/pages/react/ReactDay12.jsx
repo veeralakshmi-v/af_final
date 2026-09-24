@@ -47,6 +47,57 @@ const ConceptCard = ({ what, why, where }) => (
   </div>
 );
 
+const ComparisonBlock = ({ badTitle, badCode, badDesc, goodTitle, goodCode, goodDesc, takeaway }) => (
+  <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 14, padding: '1.25rem', margin: '1.5rem 0' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: 8 }}>
+      <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+        ⚖️ Side-by-Side Comparison: Before vs. After
+      </h4>
+      <span style={{ fontSize: '0.78rem', background: '#e0e7ff', color: '#4338ca', padding: '3px 10px', borderRadius: 20, fontWeight: 700 }}>
+        Visual Comparison Program
+      </span>
+    </div>
+
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem' }}>
+      {/* Bad / Without Hook */}
+      <div style={{ background: '#ffffff', border: '1.5px solid #fecaca', borderRadius: 10, padding: '1rem', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+          <span style={{ background: '#fee2e2', color: '#dc2626', padding: '3px 8px', borderRadius: 4, fontSize: '0.78rem', fontWeight: 800 }}>
+            ❌ {badTitle}
+          </span>
+        </div>
+        <p style={{ fontSize: '0.82rem', color: '#991b1b', margin: '0 0 8px', lineHeight: 1.5 }}>
+          {badDesc}
+        </p>
+        <div style={{ flex: 1 }}>
+          <CodeBlock title={badTitle} code={badCode} />
+        </div>
+      </div>
+
+      {/* Good / With Hook */}
+      <div style={{ background: '#ffffff', border: '1.5px solid #bbf7d0', borderRadius: 10, padding: '1rem', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+          <span style={{ background: '#dcfce7', color: '#16a34a', padding: '3px 8px', borderRadius: 4, fontSize: '0.78rem', fontWeight: 800 }}>
+            ✅ {goodTitle}
+          </span>
+        </div>
+        <p style={{ fontSize: '0.82rem', color: '#166534', margin: '0 0 8px', lineHeight: 1.5 }}>
+          {goodDesc}
+        </p>
+        <div style={{ flex: 1 }}>
+          <CodeBlock title={goodTitle} code={goodCode} />
+        </div>
+      </div>
+    </div>
+
+    {takeaway && (
+      <div style={{ marginTop: '1rem', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '8px 12px', fontSize: '0.84rem', color: '#1e40af', fontWeight: 600 }}>
+        💡 <strong>Teaching Rule of Thumb:</strong> {takeaway}
+      </div>
+    )}
+  </div>
+);
+
 // Child components for useCallback Tab
 const UnoptimizedChild = ({ count }) => {
   const renderTracker = useRef(0);
@@ -394,6 +445,58 @@ export default function ReactDay12({ activeTab = 'intro_react', onNavigate }) {
               where="1. Auto-focusing an input on page load. 2. Storing setInterval/setTimeout IDs without re-rendering. 3. Tracking component render counts."
             />
 
+            {/* Comparison Program: useState vs useRef */}
+            <ComparisonBlock
+              badTitle="useState (Unneeded Re-renders for Silent Data)"
+              badDesc="Using useState to track timer IDs or input focus causes the entire component to re-render needlessly every time the value updates."
+              badCode={`import React, { useState } from "react";
+
+export default function BadTimer() {
+  const [seconds, setSeconds] = useState(0);
+  // ❌ BAD: Storing timer ID in useState forces a re-render!
+  const [timerId, setTimerId] = useState(null);
+
+  const start = () => {
+    // ⚠️ Calling setTimerId triggers a full re-render!
+    const id = setInterval(() => setSeconds(s => s + 1), 1000);
+    setTimerId(id);
+  };
+
+  const stop = () => {
+    clearInterval(timerId);
+    setTimerId(null); // ⚠️ Triggers another re-render!
+  };
+
+  return <div>Timer: {seconds}s</div>;
+}`}
+              goodTitle="useRef (0 Re-renders + Direct DOM Control)"
+              goodDesc="useRef stores timer IDs silently without re-rendering the component, and provides a direct reference to focus or select DOM nodes."
+              goodCode={`import React, { useState, useRef } from "react";
+
+export default function GoodTimer() {
+  const [seconds, setSeconds] = useState(0);
+  // ✅ GOOD: useRef stores timer ID silently (0 re-renders)
+  const timerRef = useRef(null);
+  const inputRef = useRef(null); // Direct DOM pointer
+
+  const start = () => {
+    if (timerRef.current) return;
+    // ⚡ Updating .current updates instantly with 0 UI re-renders!
+    timerRef.current = setInterval(() => setSeconds(s => s + 1), 1000);
+  };
+
+  const stop = () => {
+    clearInterval(timerRef.current);
+    timerRef.current = null; // ⚡ 0 wasted re-renders!
+  };
+
+  const focusInput = () => inputRef.current.focus();
+
+  return <div>Timer: {seconds}s</div>;
+}`}
+              takeaway="Need the UI to visually change on screen? Use useState. Need to store a silent value (timer ID, counter) or touch HTML elements directly without re-rendering? Use useRef."
+            />
+
             {/* Complete Beginner Program */}
             <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>
@@ -575,6 +678,61 @@ export default function UseRefDemo() {
               where="1. Filtering or sorting lists with 100+ items. 2. Heavy mathematical calculations. 3. Transforming complex datasets before rendering."
             />
 
+            {/* Comparison Program: Without useMemo vs With useMemo */}
+            <ComparisonBlock
+              badTitle="Without useMemo (Slow Recalculation on Every Render)"
+              badDesc="Every time ANY unrelated state updates (e.g. clicking a counter button), heavy array loops run again from scratch, freezing the browser."
+              badCode={`import React, { useState } from "react";
+
+export default function SlowComponent({ items }) {
+  const [search, setSearch] = useState("");
+  const [counter, setCounter] = useState(0);
+
+  // ❌ BAD: Runs 50,000 array iterations EVERY time "counter" changes!
+  // Clicking "Increment Counter" causes UI stutter.
+  const filtered = items.filter(item => {
+    console.log("Slow filter recalculating...");
+    return item.name.toLowerCase().includes(search.toLowerCase());
+  });
+
+  return (
+    <div>
+      <button onClick={() => setCounter(c => c + 1)}>
+        Counter: {counter} (Causes slow re-filter!)
+      </button>
+      <input value={search} onChange={e => setSearch(e.target.value)} />
+    </div>
+  );
+}`}
+              goodTitle="With useMemo (Cached Result, 0 Wasted Computations)"
+              goodDesc="useMemo caches the returned value and only runs the heavy filter when the 'search' dependency actually changes. Counter clicks are instant."
+              goodCode={`import React, { useState, useMemo } from "react";
+
+export default function FastComponent({ items }) {
+  const [search, setSearch] = useState("");
+  const [counter, setCounter] = useState(0);
+
+  // ✅ GOOD: Cached in memory!
+  // When "counter" changes, React SKIPS this calculation completely!
+  const filtered = useMemo(() => {
+    console.log("⚡ [useMemo] Filter running ONLY when search changes");
+    return items.filter(item =>
+      item.name.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [search]); // <-- Only re-run when search string changes!
+
+  return (
+    <div>
+      <button onClick={() => setCounter(c => c + 1)}>
+        Counter: {counter} (Instant! Filter is skipped)
+      </button>
+      <input value={search} onChange={e => setSearch(e.target.value)} />
+    </div>
+  );
+}`}
+              takeaway="useMemo caches a computed VALUE. Wrap heavy array loops or complex math in useMemo so unrelated state changes never lag your app."
+            />
+
             {/* Complete Beginner Program */}
             <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>
@@ -708,6 +866,67 @@ export default function UseMemoDemo() {
               where="1. Passing delete/update handlers to memoized list rows. 2. Passing stable functions into useEffect dependency arrays."
             />
 
+            {/* Comparison Program: Without useCallback vs With useCallback */}
+            <ComparisonBlock
+              badTitle="Without useCallback (Breaks React.memo Optimization)"
+              badDesc="In JavaScript, () => {} !== () => {}. Every render creates a new function in memory, so React.memo child components re-render pointlessly."
+              badCode={`import React, { useState } from "react";
+
+// Child wrapped in React.memo
+const TodoRow = React.memo(({ todo, onDelete }) => {
+  console.log("⚠️ Child rendered:", todo.text);
+  return <button onClick={() => onDelete(todo.id)}>Delete</button>;
+});
+
+export default function ParentWithoutCallback() {
+  const [todos, setTodos] = useState([{ id: 1, text: "Learn React" }]);
+  const [count, setCount] = useState(0);
+
+  // ❌ BAD: A brand new function is created on EVERY render!
+  // React.memo checks props: prevProps.onDelete !== nextProps.onDelete.
+  // Result: <TodoRow /> re-renders EVERY time "count" ticks!
+  const handleDelete = (id) => {
+    setTodos(t => t.filter(x => x.id !== id));
+  };
+
+  return (
+    <div>
+      <button onClick={() => setCount(c => c + 1)}>Tick: {count}</button>
+      {todos.map(t => <TodoRow key={t.id} todo={t} onDelete={handleDelete} />)}
+    </div>
+  );
+}`}
+              goodTitle="With useCallback (Locks Function Memory Address)"
+              goodDesc="useCallback returns the exact same function reference across renders. React.memo sees props haven't changed and completely freezes the child component."
+              goodCode={`import React, { useState, useCallback } from "react";
+
+// Child wrapped in React.memo
+const TodoRow = React.memo(({ todo, onDelete }) => {
+  console.log("✅ Child rendered ONCE (Frozen)");
+  return <button onClick={() => onDelete(todo.id)}>Delete</button>;
+});
+
+export default function ParentWithCallback() {
+  const [todos, setTodos] = useState([{ id: 1, text: "Learn React" }]);
+  const [count, setCount] = useState(0);
+
+  // ✅ GOOD: useCallback preserves the function pointer in memory!
+  // React.memo checks props: prevProps.onDelete === nextProps.onDelete.
+  // Result: <TodoRow /> NEVER re-renders when "count" ticks!
+  const handleDelete = useCallback((id) => {
+    setTodos(t => t.filter(x => x.id !== id));
+  }, []); // <-- Empty array = never recreated
+
+  return (
+    <div>
+      <button onClick={() => setCount(c => c + 1)}>Tick: {count}</button>
+      {todos.map(t => <TodoRow key={t.id} todo={t} onDelete={handleDelete} />)}
+    </div>
+  );
+}`}
+              takeaway="useCallback caches a FUNCTION DEFINITION. Use it when passing event handlers down to React.memo child components to stop wasted child re-renders."
+            />
+
             {/* Complete Beginner Program */}
             <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>
@@ -821,6 +1040,52 @@ export default function UseCallbackDemo() {
               what="A Custom Hook is a regular JavaScript function starting with 'use' (e.g. useToggle, useLocalStorage) that calls other built-in React hooks to encapsulate reusable logic."
               why="Instead of re-writing the same useState and useEffect logic in 10 different components, custom hooks let you package it into a single clean function."
               where="1. useToggle for modals, dialogs, and accordions. 2. useLocalStorage for browser persistence. 3. useFetch for API data loading."
+            />
+
+            {/* Comparison Program: Without Custom Hook vs With Custom Hook */}
+            <ComparisonBlock
+              badTitle="Without Custom Hook (Duplicated Code in Every Component)"
+              badDesc="Every time you need a modal or dropdown toggle, you write the same useState and handler logic over and over across multiple files."
+              badCode={`import React, { useState } from "react";
+
+// Component 1: Modal Dialog
+export function Modal() {
+  // ❌ Duplicate logic: 4 lines repeated
+  const [isOpen, setIsOpen] = useState(false);
+  const toggle = () => setIsOpen(v => !v);
+  return <button onClick={toggle}>{isOpen ? "Hide" : "Show Modal"}</button>;
+}
+
+// Component 2: Dropdown Menu
+export function Dropdown() {
+  // ❌ Duplicate logic: exact same 4 lines repeated again!
+  const [isOpen, setIsOpen] = useState(false);
+  const toggle = () => setIsOpen(v => !v);
+  return <button onClick={toggle}>{isOpen ? "Close" : "Open Menu"}</button>;
+}`}
+              goodTitle="With Custom Hook (Write Once, Use in 1 Clean Line)"
+              goodDesc="Extract the toggle logic into a reusable useToggle custom hook once. Any component can now use it in just 1 line of code."
+              goodCode={`import React, { useState, useCallback } from "react";
+
+// ✅ 1. Reusable Custom Hook (Written ONCE)
+export function useToggle(initialState = false) {
+  const [value, setValue] = useState(initialState);
+  const toggle = useCallback(() => setValue(v => !v), []);
+  return [value, toggle];
+}
+
+// ✅ 2. Clean 1-liner in Component 1
+export function Modal() {
+  const [isOpen, toggle] = useToggle(false);
+  return <button onClick={toggle}>{isOpen ? "Hide" : "Show Modal"}</button>;
+}
+
+// ✅ 3. Clean 1-liner in Component 2
+export function Dropdown() {
+  const [isOpen, toggle] = useToggle(false);
+  return <button onClick={toggle}>{isOpen ? "Close" : "Open Menu"}</button>;
+}`}
+              takeaway="Custom Hooks let you package stateful behavior (toggles, storage, data fetching) into clean reusable functions starting with 'use' so you never repeat code."
             />
 
             {/* Complete Beginner Program */}
@@ -1020,6 +1285,118 @@ export default function CustomHooksDemo() {
                 </p>
                 <CodeBlock title="Quick Boilerplate" code={taskRecommendations[selectedTask].code} />
               </div>
+            </div>
+
+            {/* Master Comparison Program */}
+            <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: '0.5rem' }}>
+                <span style={{ fontSize: '1.3rem' }}>🎓</span>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  Master Comparison Program (All Advanced Hooks in One File)
+                </h3>
+              </div>
+              <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 10px' }}>
+                Use this single reference program to teach and review how <code>useState</code>, <code>useRef</code>, <code>useMemo</code>, <code>useCallback</code>, and <code>Custom Hooks</code> cooperate together in real applications:
+              </p>
+              <CodeBlock
+                title="MasterHooksComparison.jsx"
+                code={`import React, { useState, useRef, useMemo, useCallback, useEffect } from "react";
+
+// ── 1. CUSTOM HOOK: Reusable toggle logic ──
+function useToggle(initial = false) {
+  const [open, setOpen] = useState(initial);
+  const toggle = useCallback(() => setOpen((v) => !v), []);
+  return [open, toggle];
+}
+
+// ── 2. MEMOIZED CHILD: Protected from wasted re-renders ──
+const StudentRow = React.memo(({ student, onDelete }) => {
+  console.log("Rendered Row:", student.name);
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between", margin: "6px 0" }}>
+      <span>{student.name} - Score: {student.score}</span>
+      <button onClick={() => onDelete(student.id)}>Delete</button>
+    </div>
+  );
+});
+
+// ── 3. MAIN TEACHING COMPONENT ──
+export default function MasterHooksComparison() {
+  // ── HOOK A: useState (Triggers UI Re-renders) ──
+  const [search, setSearch] = useState("");
+  const [unrelatedTick, setUnrelatedTick] = useState(0);
+  const [students, setStudents] = useState([
+    { id: 1, name: "Alice", score: 95 },
+    { id: 2, name: "Bob", score: 80 },
+    { id: 3, name: "Charlie", score: 90 }
+  ]);
+
+  // ── HOOK B: useRef (Silent container & DOM pointer - 0 re-renders) ──
+  const inputRef = useRef(null);        // Holds DOM <input> element
+  const renderCounterRef = useRef(0);   // Counts total renders silently
+  renderCounterRef.current += 1;
+
+  // Auto-focus input on page load
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus();
+  }, []);
+
+  // ── HOOK C: useMemo (Caches expensive computed VALUE) ──
+  // When "unrelatedTick" changes, this filter is SKIPPED (0ms cost)!
+  const filteredStudents = useMemo(() => {
+    console.log("⚡ [useMemo] Filtering student list...");
+    return students.filter((s) =>
+      s.name.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [students, search]); // <-- Only re-runs when students or search changes
+
+  // ── HOOK D: useCallback (Freezes FUNCTION definition for React.memo) ──
+  // Child <StudentRow /> will NOT re-render when "unrelatedTick" changes!
+  const handleDelete = useCallback((id) => {
+    setStudents((prev) => prev.filter((s) => s.id !== id));
+  }, []); // <-- Same function pointer preserved in memory
+
+  // ── HOOK E: Custom Hook (1-line clean usage) ──
+  const [showStats, toggleStats] = useToggle(false);
+
+  return (
+    <div style={{ padding: 20, fontFamily: "sans-serif" }}>
+      <h2>Master Hooks Comparison Demo</h2>
+      <p>Component Renders: <b>{renderCounterRef.current}</b> (tracked by useRef)</p>
+
+      {/* Unrelated state change to prove useMemo & useCallback in action */}
+      <button onClick={() => setUnrelatedTick((t) => t + 1)}>
+        Tick Counter: {unrelatedTick} (Skips filter & child re-renders!)
+      </button>
+
+      <div style={{ margin: "14px 0" }}>
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder="Search students (useRef focused)..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <button onClick={toggleStats} style={{ marginLeft: 8 }}>
+          {showStats ? "Hide Stats (useToggle)" : "Show Stats (useToggle)"}
+        </button>
+      </div>
+
+      {showStats && (
+        <div style={{ background: "#e0e7ff", padding: 10, borderRadius: 6, marginBottom: 10 }}>
+          Total Students: {students.length} | Filtered Count: {filteredStudents.length}
+        </div>
+      )}
+
+      <div>
+        {filteredStudents.map((student) => (
+          <StudentRow key={student.id} student={student} onDelete={handleDelete} />
+        ))}
+      </div>
+    </div>
+  );
+}`}
+              />
             </div>
 
             {/* Navigation Button */}
