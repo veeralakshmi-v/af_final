@@ -100,6 +100,10 @@ export default function ReactDay12({ activeTab, onNavigate }) {
   const [stateCounterVal, setStateCounterVal] = useState(0);
   const [dummyText, setDummyText] = useState('');
 
+  const [showSolution1, setShowSolution1] = useState(false);
+  const [showSolution2, setShowSolution2] = useState(false);
+  const [showSolution3, setShowSolution3] = useState(false);
+
   // Track component renders
   renderCounterRef.current += 1;
 
@@ -1484,9 +1488,57 @@ export function useFetch(url) {
                   <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 0.75rem' }}>
                     Create a form component that automatically focuses the input on initial mount. Also, use a second <code>useRef</code> to store and display the <strong>previous value</strong> of the input state whenever the user types.
                   </p>
-                  <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#1d4ed8' }}>
+                  <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#1d4ed8', marginBottom: '0.75rem' }}>
                     💡 <strong>Step Hint:</strong> Update <code>prevRef.current = value</code> inside a <code>useEffect</code> so it captures the previous render's value!
                   </div>
+                  <button
+                    onClick={() => setShowSolution1(v => !v)}
+                    style={{ background: '#4f46e5', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', marginBottom: '0.75rem' }}
+                  >
+                    {showSolution1 ? 'Hide Solution Code' : '👁️ View Full Solution Code'}
+                  </button>
+                  {showSolution1 && (
+                    <CodeBlock
+                      title="Solution 1: AutoFocus & Previous State Tracker"
+                      code={`import React, { useState, useRef, useEffect } from 'react';
+
+export default function InputWithPrevTracker() {
+  const [text, setText] = useState('');
+  const inputRef = useRef(null);
+  const prevTextRef = useRef('');
+
+  // 1. Auto-focus on initial mount
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
+  // 2. Track previous text value
+  useEffect(() => {
+    prevTextRef.current = text;
+  }, [text]);
+
+  return (
+    <div style={{ padding: 20, border: '1px solid #cbd5e1', borderRadius: 8 }}>
+      <h3>AutoFocus & Previous Value Tracker</h3>
+      <input
+        ref={inputRef}
+        type="text"
+        placeholder="Type something here..."
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        style={{ padding: '8px 12px', width: '100%', marginBottom: 12 }}
+      />
+      <div style={{ fontSize: '0.9rem' }}>
+        <p>Current Value: <strong style={{ color: '#6366f1' }}>"{text}"</strong></p>
+        <p>Previous Value: <strong style={{ color: '#64748b' }}>"{prevTextRef.current}"</strong></p>
+      </div>
+    </div>
+  );
+}`}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -1504,9 +1556,87 @@ export function useFetch(url) {
                   <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 0.75rem' }}>
                     Build two reusable custom hooks in your project: (1) <code>useToggle(initialValue = false)</code> returning <code>[state, toggleFn]</code>, and (2) <code>useFetch(url)</code> returning <code>{"{ data, loading, error }"}</code>. Use them in a modal dialog component.
                   </p>
-                  <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#166534' }}>
+                  <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#166534', marginBottom: '0.75rem' }}>
                     💡 <strong>Step Hint:</strong> <code>const toggle = useCallback(() =&gt; setState(v =&gt; !v), []);</code> inside useToggle.
                   </div>
+                  <button
+                    onClick={() => setShowSolution2(v => !v)}
+                    style={{ background: '#16a34a', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', marginBottom: '0.75rem' }}
+                  >
+                    {showSolution2 ? 'Hide Solution Code' : '👁️ View Full Solution Code'}
+                  </button>
+                  {showSolution2 && (
+                    <CodeBlock
+                      title="Solution 2: useToggle and useFetch Custom Hooks"
+                      code={`// 1. useToggle Hook
+import { useState, useCallback, useEffect } from 'react';
+
+export function useToggle(initialValue = false) {
+  const [value, setValue] = useState(initialValue);
+  const toggle = useCallback(() => setValue((v) => !v), []);
+  return [value, toggle];
+}
+
+// 2. useFetch Hook
+export function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch resource');
+        return res.json();
+      })
+      .then((json) => {
+        if (isMounted) {
+          setData(json);
+          setError(null);
+        }
+      })
+      .catch((err) => {
+        if (isMounted) setError(err.message);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [url]);
+
+  return { data, loading, error };
+}
+
+// 3. Example Component Using Both
+export function ModalWithFetchDemo() {
+  const [isOpen, toggleOpen] = useToggle(false);
+  const { data, loading, error } = useFetch('https://jsonplaceholder.typicode.com/todos/1');
+
+  return (
+    <div style={{ padding: 16 }}>
+      <button onClick={toggleOpen} style={{ padding: '8px 16px' }}>
+        {isOpen ? 'Close Modal' : 'Open Fetch Modal'}
+      </button>
+
+      {isOpen && (
+        <div style={{ marginTop: 12, padding: 16, border: '1px solid #6366f1', borderRadius: 8 }}>
+          <h4>Async Data inside Modal</h4>
+          {loading && <p>Loading data from API...</p>}
+          {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+          {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+        </div>
+      )}
+    </div>
+  );
+}`}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -1524,9 +1654,89 @@ export function useFetch(url) {
                   <p style={{ fontSize: '0.88rem', color: '#475569', margin: '0 0 0.75rem' }}>
                     Render a list of 500 items. Implement <code>useMemo</code> to filter by price range and search term. Wrap each item component in <code>React.memo</code>, and pass a memoized <code>useCallback</code> delete handler so deleting an item does not re-render unaffected items.
                   </p>
-                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#92400e' }}>
+                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#92400e', marginBottom: '0.75rem' }}>
                     💡 <strong>Step Hint:</strong> Wrap row component with <code>React.memo(RowComponent)</code> and verify 0 extra renders.
                   </div>
+                  <button
+                    onClick={() => setShowSolution3(v => !v)}
+                    style={{ background: '#d97706', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', marginBottom: '0.75rem' }}
+                  >
+                    {showSolution3 ? 'Hide Solution Code' : '👁️ View Full Solution Code'}
+                  </button>
+                  {showSolution3 && (
+                    <CodeBlock
+                      title="Solution 3: 500-Item High Performance List"
+                      code={`import React, { useState, useMemo, useCallback } from 'react';
+
+// 1. Memoized Child Row
+const ProductRow = React.memo(({ item, onDelete }) => {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', borderBottom: '1px solid #e2e8f0' }}>
+      <span>{item.name} - <b>\${item.price}</b></span>
+      <button onClick={() => onDelete(item.id)} style={{ color: '#dc2626', cursor: 'pointer' }}>
+        Delete
+      </button>
+    </div>
+  );
+});
+
+// 2. Main List Component
+export default function FastProductList() {
+  const [items, setItems] = useState(() =>
+    Array.from({ length: 500 }, (_, i) => ({
+      id: i + 1,
+      name: \`Product #\${i + 1}\`,
+      price: Math.floor(Math.random() * 500) + 10
+    }))
+  );
+  const [search, setSearch] = useState('');
+  const [maxPrice, setMaxPrice] = useState(500);
+
+  // useMemo: Filter items cleanly without recalculating on unrelated renders
+  const filtered = useMemo(() => {
+    return items.filter(
+      (item) => item.name.toLowerCase().includes(search.toLowerCase()) && item.price <= maxPrice
+    );
+  }, [items, search, maxPrice]);
+
+  // useCallback: Stable delete reference passed to React.memo child
+  const handleDelete = useCallback((id) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  }, []);
+
+  return (
+    <div style={{ padding: 20 }}>
+      <h3>High Performance 500-Item Catalog</h3>
+      <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
+        <input
+          type="text"
+          placeholder="Search items..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{ padding: 8, flex: 1 }}
+        />
+        <label>
+          Max Price: \${maxPrice}
+          <input
+            type="range"
+            min={10}
+            max={500}
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(+e.target.value)}
+          />
+        </label>
+      </div>
+
+      <div style={{ maxHeight: 300, overflowY: 'auto', border: '1px solid #cbd5e1', borderRadius: 8 }}>
+        {filtered.map((item) => (
+          <ProductRow key={item.id} item={item} onDelete={handleDelete} />
+        ))}
+      </div>
+    </div>
+  );
+}`}
+                    />
+                  )}
                 </div>
               </div>
             </div>
