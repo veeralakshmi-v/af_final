@@ -493,7 +493,7 @@ export default function UseRefDemo() {
                   </div>
                   <div style={{ display: 'flex', gap: 6 }}>
                     <button
-                      onClick={handleFocusClick}
+                      onClick={handleFocusInput}
                       style={{ background: '#6366f1', color: 'white', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
                     >
                       Focus Input (useRef)
