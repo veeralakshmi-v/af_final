@@ -83,7 +83,7 @@ const OptimizedChild = React.memo(({ title, onClick }) => {
 OptimizedChild.displayName = 'OptimizedChild';
 
 /* ─────────────────────────────── main component ──────────────────────── */
-export default function ReactDay12({ activeTab, onNavigate }) {
+export default function ReactDay12({ activeTab = 'intro_react', onNavigate }) {
   const go = (id) => {
     onNavigate('react_module12', id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -659,6 +659,100 @@ function MyComponent() {
               </div>
             </div>
 
+            {/* Complete Beginner Standalone Code */}
+            <div style={{ marginTop: '2rem' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.75rem' }}>
+                ⭐ Complete Standalone Beginner Component (Copy & Paste Ready)
+              </h3>
+              <p style={{ fontSize: '0.88rem', color: '#475569', marginBottom: '0.75rem' }}>
+                Here is a full, self-contained React component demonstrating both <strong>DOM auto-focusing</strong> and <strong>render tracking / interval storage</strong> using <code>useRef</code>.
+              </p>
+              <CodeBlock title="App.jsx (Complete useRef Beginner Demo)" code={`import React, { useState, useRef, useEffect } from "react";
+
+export default function UseRefFullDemo() {
+  const [inputText, setInputText] = useState("");
+  const [timerSeconds, setTimerSeconds] = useState(0);
+
+  // 1. Ref to directly point to the HTML input element
+  const inputElementRef = useRef(null);
+
+  // 2. Ref to store the setInterval ID across renders
+  const timerIdRef = useRef(null);
+
+  // 3. Ref to track how many times this component has re-rendered
+  const totalRendersRef = useRef(1);
+
+  // Auto-focus the input box when the page first loads
+  useEffect(() => {
+    if (inputElementRef.current) {
+      inputElementRef.current.focus();
+    }
+  }, []);
+
+  // Update render count without causing a new render
+  useEffect(() => {
+    totalRendersRef.current += 1;
+  });
+
+  const handleManualFocus = () => {
+    if (inputElementRef.current) {
+      inputElementRef.current.focus();
+      inputElementRef.current.select(); // Select existing text
+    }
+  };
+
+  const startTimer = () => {
+    if (timerIdRef.current) return; // Already running
+    timerIdRef.current = setInterval(() => {
+      setTimerSeconds((prev) => prev + 1);
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    clearInterval(timerIdRef.current);
+    timerIdRef.current = null;
+  };
+
+  return (
+    <div style={{ padding: 24, maxWidth: 500, fontFamily: "sans-serif" }}>
+      <h2>useRef Beginner Masterclass</h2>
+      <p>Component Renders so far: <b>{totalRendersRef.current}</b></p>
+
+      {/* DOM Focus Section */}
+      <div style={{ marginBottom: 16 }}>
+        <input
+          ref={inputElementRef}
+          type="text"
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="I will be focused on load!"
+          style={{ padding: 8, width: "70%", marginRight: 8 }}
+        />
+        <button onClick={handleManualFocus} style={{ padding: 8 }}>
+          Focus & Select
+        </button>
+      </div>
+
+      {/* Timer Section */}
+      <div style={{ background: "#f1f5f9", padding: 16, borderRadius: 8 }}>
+        <h3>Timer: {timerSeconds}s</h3>
+        <button onClick={startTimer} style={{ marginRight: 8 }}>Start</button>
+        <button onClick={stopTimer}>Stop</button>
+      </div>
+    </div>
+  );
+}`} />
+            </div>
+
+            {/* Common Beginner Mistakes */}
+            <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 12, padding: '1.25rem', marginTop: '1.5rem', marginBottom: '1.5rem' }}>
+              <h4 style={{ margin: '0 0 8px', color: '#92400e', fontWeight: 800 }}>⚠️ Common useRef Beginner Gotchas</h4>
+              <ul style={{ margin: 0, paddingLeft: 20, fontSize: '0.86rem', color: '#78350f', lineHeight: 1.7 }}>
+                <li><strong>Don't read/write <code>ref.current</code> during rendering:</strong> Modifying <code>ref.current</code> directly in the JSX render body leads to unpredictable UI bugs. Always mutate refs inside event handlers or <code>useEffect</code>.</li>
+                <li><strong>Don't use <code>useRef</code> when the UI needs to update immediately:</strong> If you want the text on screen to change when a variable changes, use <code>useState</code> instead.</li>
+              </ul>
+            </div>
+
             {/* Continue Button */}
             <div className="card-actions" style={{ marginTop: '2rem' }}>
               <button className="btn btn-primary" onClick={() => go('useState_hook')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
@@ -814,6 +908,80 @@ const fullName = firstName + " " + lastName;`} />
               </div>
             </div>
 
+            {/* Complete Beginner Standalone Code */}
+            <div style={{ marginTop: '2rem' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.75rem' }}>
+                ⭐ Complete Standalone Beginner Component (Copy & Paste Ready)
+              </h3>
+              <p style={{ fontSize: '0.88rem', color: '#475569', marginBottom: '0.75rem' }}>
+                Here is a full component showing how to filter a large dataset with <code>useMemo</code> so that typing in a search bar or toggling dark mode is fast and responsive.
+              </p>
+              <CodeBlock title="ProductFilterDemo.jsx (Complete useMemo Example)" code={`import React, { useState, useMemo } from "react";
+
+// Initial dataset of items
+const ALL_ITEMS = Array.from({ length: 2000 }, (_, i) => ({
+  id: i + 1,
+  name: \`Course #\${i + 1}\`,
+  category: i % 2 === 0 ? "Frontend" : "Backend",
+  price: Math.floor(Math.random() * 200) + 20,
+}));
+
+export default function ProductFilterDemo() {
+  const [query, setQuery] = useState("");
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // ✅ useMemo: ONLY re-runs the expensive filter when "query" changes.
+  // When "isDarkMode" toggles, this computation is SKIPPED (0ms cost)!
+  const filteredList = useMemo(() => {
+    console.log("Filtering 2,000 items with query:", query);
+    return ALL_ITEMS.filter((item) =>
+      item.name.toLowerCase().includes(query.toLowerCase())
+    );
+  }, [query]); // <-- Only depend on query
+
+  return (
+    <div style={{
+      padding: 24,
+      background: isDarkMode ? "#0f172a" : "#f8fafc",
+      color: isDarkMode ? "#ffffff" : "#0f172a",
+      borderRadius: 12
+    }}>
+      <h2>useMemo Filter Demo</h2>
+
+      <button onClick={() => setIsDarkMode(prev => !prev)} style={{ marginBottom: 12 }}>
+        Toggle Theme ({isDarkMode ? "Dark" : "Light"})
+      </button>
+
+      <div>
+        <input
+          type="text"
+          placeholder="Search 2,000 courses..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          style={{ padding: "8px 12px", width: "100%", marginBottom: 12 }}
+        />
+      </div>
+
+      <p>Showing <b>{filteredList.length}</b> results</p>
+      <ul style={{ maxHeight: 180, overflowY: "auto" }}>
+        {filteredList.slice(0, 30).map((item) => (
+          <li key={item.id}>{item.name} - \${item.price} ({item.category})</li>
+        ))}
+      </ul>
+    </div>
+  );
+}`} />
+            </div>
+
+            {/* When NOT to use useMemo */}
+            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 12, padding: '1.25rem', marginTop: '1.5rem', marginBottom: '1.5rem' }}>
+              <h4 style={{ margin: '0 0 8px', color: '#166534', fontWeight: 800 }}>💡 Golden Rule: When to Use useMemo vs Plain Variables</h4>
+              <ul style={{ margin: 0, paddingLeft: 20, fontSize: '0.86rem', color: '#14532d', lineHeight: 1.7 }}>
+                <li><strong>Use it for:</strong> Filtering/sorting arrays with hundreds of items, complex regex parsing, or heavy mathematical formulas.</li>
+                <li><strong>Don't use it for:</strong> Simple operations like <code>a + b</code>, <code>firstName + ' ' + lastName</code>, or small array lengths under 50 items (the memory overhead of useMemo is slower than the operation itself!).</li>
+              </ul>
+            </div>
+
             {/* Continue Button */}
             <div className="card-actions" style={{ marginTop: '2rem' }}>
               <button className="btn btn-primary" onClick={() => go('multiple_states')} style={{ background: '#6366f1', borderColor: '#6366f1' }}>
@@ -938,6 +1106,88 @@ const handleSave = useMemo(() => fn, [deps]);`} />
                   </p>
                 </div>
               </div>
+            </div>
+
+            {/* Complete Beginner Standalone Code */}
+            <div style={{ marginTop: '2rem' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.75rem' }}>
+                ⭐ Complete Standalone Beginner Component (Copy & Paste Ready)
+              </h3>
+              <p style={{ fontSize: '0.88rem', color: '#475569', marginBottom: '0.75rem' }}>
+                Here is a complete parent-child component demonstrating how <code>React.memo</code> and <code>useCallback</code> work together to prevent unnecessary child re-renders.
+              </p>
+              <CodeBlock title="TodoListWithCallback.jsx (Complete useCallback Example)" code={`import React, { useState, useCallback } from "react";
+
+// 1. Memoized Child Component (React.memo)
+const TodoRow = React.memo(({ todo, onDelete }) => {
+  console.log(\`[Render] TodoRow rendered: "\${todo.text}"\`);
+  return (
+    <div style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "8px 12px",
+      background: "#ffffff",
+      border: "1px solid #e2e8f0",
+      marginBottom: 6,
+      borderRadius: 6
+    }}>
+      <span>{todo.text}</span>
+      <button
+        onClick={() => onDelete(todo.id)}
+        style={{ background: "#fee2e2", color: "#b91c1c", border: "none", padding: "4px 8px", borderRadius: 4, cursor: "pointer" }}
+      >
+        Delete
+      </button>
+    </div>
+  );
+});
+
+// 2. Parent Component
+export default function TodoListWithCallback() {
+  const [todos, setTodos] = useState([
+    { id: 1, text: "Learn React Fundamentals" },
+    { id: 2, text: "Master Advanced Hooks" },
+    { id: 3, text: "Deploy to Vercel" }
+  ]);
+  const [counter, setCounter] = useState(0);
+
+  // ✅ useCallback: Keeps this function reference fixed in memory!
+  // Notice we use functional state update (prev => ...) so deps array can be []
+  const handleDelete = useCallback((id) => {
+    setTodos((prevTodos) => prevTodos.filter((t) => t.id !== id));
+  }, []); // <-- Empty array: Never re-creates in memory!
+
+  return (
+    <div style={{ padding: 24, maxWidth: 500, fontFamily: "sans-serif" }}>
+      <h2>useCallback & React.memo Demo</h2>
+
+      {/* Clicking this button re-renders the parent, but NOT the TodoRow children! */}
+      <div style={{ marginBottom: 16 }}>
+        <button onClick={() => setCounter((c) => c + 1)} style={{ padding: "6px 12px" }}>
+          Increment Parent Counter: {counter}
+        </button>
+        <p style={{ fontSize: "0.82rem", color: "#64748b", margin: "4px 0 0" }}>
+          (Open browser console: Notice Todo items DO NOT re-render when counter increments!)
+        </p>
+      </div>
+
+      <div>
+        {todos.map((todo) => (
+          <TodoRow key={todo.id} todo={todo} onDelete={handleDelete} />
+        ))}
+      </div>
+    </div>
+  );
+}`} />
+            </div>
+
+            {/* Why useCallback Alone Is Not Enough */}
+            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 12, padding: '1.25rem', marginTop: '1.5rem', marginBottom: '1.5rem' }}>
+              <h4 style={{ margin: '0 0 8px', color: '#1d4ed8', fontWeight: 800 }}>💡 Crucial Takeaway: useCallback + React.memo</h4>
+              <p style={{ margin: 0, fontSize: '0.86rem', color: '#1e40af', lineHeight: 1.7 }}>
+                Wrapping a function in <code>useCallback</code> by itself does <strong>not</strong> stop a child component from re-rendering. You <strong>must also wrap the child component in <code>React.memo(Child)</code></strong>. Together, <code>React.memo</code> checks if props changed, and <code>useCallback</code> ensures the function prop reference didn't change!
+              </p>
             </div>
 
             {/* Continue Button */}
@@ -1098,6 +1348,105 @@ export function useFetch(url) {
                 </div>
 
               </div>
+            </div>
+
+            {/* Complete Beginner Standalone Code */}
+            <div style={{ marginTop: '2rem' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.75rem' }}>
+                ⭐ Complete Standalone Beginner Component: Multi-Custom-Hooks App
+              </h3>
+              <p style={{ fontSize: '0.88rem', color: '#475569', marginBottom: '0.75rem' }}>
+                Here is a full application file showing how <code>useToggle</code>, <code>useLocalStorage</code>, and <code>useFetch</code> work together inside a real component.
+              </p>
+              <CodeBlock title="AppWithCustomHooks.jsx (Complete Custom Hooks Example)" code={`import React, { useState, useEffect, useCallback } from "react";
+
+// ── CUSTOM HOOK 1: useToggle ──
+export function useToggle(initialValue = false) {
+  const [value, setValue] = useState(initialValue);
+  const toggle = useCallback(() => setValue((v) => !v), []);
+  return [value, toggle];
+}
+
+// ── CUSTOM HOOK 2: useLocalStorage ──
+export function useLocalStorage(key, initialValue) {
+  const [storedValue, setStoredValue] = useState(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch {
+      return initialValue;
+    }
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem(key, JSON.stringify(storedValue));
+  }, [key, storedValue]);
+
+  return [storedValue, setStoredValue];
+}
+
+// ── CUSTOM HOOK 3: useFetch ──
+export function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(url)
+      .then((res) => res.json())
+      .then(setData)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [url]);
+
+  return { data, loading, error };
+}
+
+// ── MAIN COMPONENT USING ALL 3 HOOKS ──
+export default function AppWithCustomHooks() {
+  const [isOpen, toggleOpen] = useToggle(false);
+  const [username, setUsername] = useLocalStorage("app_student_name", "Alex");
+  const { data: userPost, loading } = useFetch("https://jsonplaceholder.typicode.com/posts/1");
+
+  return (
+    <div style={{ padding: 24, maxWidth: 500, fontFamily: "sans-serif" }}>
+      <h2>Custom Hooks Showcase</h2>
+
+      {/* useLocalStorage Test */}
+      <div style={{ marginBottom: 16 }}>
+        <label>Saved Student Name (localStorage): </label>
+        <input
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          style={{ padding: 6, marginLeft: 8 }}
+        />
+      </div>
+
+      {/* useToggle Test */}
+      <button onClick={toggleOpen} style={{ padding: "8px 16px", cursor: "pointer" }}>
+        {isOpen ? "Hide API Details" : "Show API Details (useToggle)"}
+      </button>
+
+      {/* useFetch Test */}
+      {isOpen && (
+        <div style={{ marginTop: 12, padding: 16, background: "#f1f5f9", borderRadius: 8 }}>
+          <h4>Latest Course Update for {username}:</h4>
+          {loading ? <p>Loading API data...</p> : <p><b>Title:</b> {userPost?.title}</p>}
+        </div>
+      )}
+    </div>
+  );
+}`} />
+            </div>
+
+            {/* Custom Hook Rules */}
+            <div style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', borderRadius: 12, padding: '1.25rem', marginTop: '1.5rem', marginBottom: '1.5rem' }}>
+              <h4 style={{ margin: '0 0 8px', color: '#5b21b6', fontWeight: 800 }}>✨ The 2 Golden Rules for Writing Custom Hooks</h4>
+              <ul style={{ margin: 0, paddingLeft: 20, fontSize: '0.86rem', color: '#4c1d95', lineHeight: 1.7 }}>
+                <li><strong>Always start the function name with <code>use</code>:</strong> React linting tools rely on the <code>use</code> prefix (e.g. <code>useAuth</code>, <code>useWindowSize</code>) to enforce hook rules.</li>
+                <li><strong>Do two custom hook calls share state?</strong> No! Each component calling a custom hook gets its own isolated, independent instance of state.</li>
+              </ul>
             </div>
 
             {/* Continue Button */}
@@ -1352,6 +1701,161 @@ export function useFetch(url) {
                 </button>
               </div>
 
+            </div>
+
+            {/* Complete Beginner Standalone Code for Capstone */}
+            <div style={{ marginTop: '2rem' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.75rem' }}>
+                ⭐ Complete Standalone Source Code for Capstone Student Portal
+              </h3>
+              <p style={{ fontSize: '0.88rem', color: '#475569', marginBottom: '0.75rem' }}>
+                Copy and paste this entire standalone component into your own project to run the complete High-Performance Student Portal combining <code>useRef</code>, <code>useMemo</code>, <code>useCallback</code>, and <code>React.memo</code>.
+              </p>
+              <CodeBlock title="StudentPortalCapstone.jsx (Complete Capstone Code)" code={`import React, { useState, useRef, useMemo, useCallback, useEffect } from "react";
+
+// 1. Memoized Student Row Component (React.memo)
+const StudentRow = React.memo(({ student, onDelete, onGradeChange }) => {
+  return (
+    <div style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "10px 14px",
+      background: "white",
+      border: "1px solid #e2e8f0",
+      borderRadius: 8,
+      marginBottom: 8
+    }}>
+      <div>
+        <strong>{student.name}</strong>
+        <span style={{ display: "block", fontSize: "0.8rem", color: "#64748b" }}>
+          Course: {student.course} | Score: <b style={{ color: "#6366f1" }}>{student.score}</b> (Grade: {student.grade})
+        </span>
+      </div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <button
+          onClick={() => onGradeChange(student.id, Math.min(100, student.score + 5))}
+          style={{ background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", padding: "4px 8px", borderRadius: 6, cursor: "pointer", fontWeight: 700 }}
+        >
+          +5 Pts
+        </button>
+        <button
+          onClick={() => onDelete(student.id)}
+          style={{ background: "#fef2f2", color: "#dc2626", border: "1px solid #fecaca", padding: "4px 8px", borderRadius: 6, cursor: "pointer", fontWeight: 700 }}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+});
+
+// 2. Main Capstone Component
+export default function StudentPortalCapstone() {
+  const nameInputRef = useRef(null);
+  const [students, setStudents] = useState([
+    { id: 1, name: "Alice Johnson", course: "React 19", score: 95, grade: "A" },
+    { id: 2, name: "Bob Smith", course: "Node.js", score: 82, grade: "B" },
+    { id: 3, name: "Carol White", course: "React 19", score: 98, grade: "A" },
+    { id: 4, name: "David Miller", course: "SQL Databases", score: 64, grade: "C" }
+  ]);
+  const [search, setSearch] = useState("");
+  const [minScore, setMinScore] = useState(50);
+  const [newName, setNewName] = useState("");
+  const [newCourse, setNewCourse] = useState("React 19");
+
+  // useRef 1: Auto-focus on first render
+  useEffect(() => {
+    if (nameInputRef.current) nameInputRef.current.focus();
+  }, []);
+
+  // useMemo: Filter and Sort dataset cleanly
+  const filteredStudents = useMemo(() => {
+    return students
+      .filter((s) => s.name.toLowerCase().includes(search.toLowerCase()) && s.score >= minScore)
+      .sort((a, b) => b.score - a.score);
+  }, [students, search, minScore]);
+
+  // useCallback: Stable handler for row deletion
+  const handleDelete = useCallback((id) => {
+    setStudents((prev) => prev.filter((s) => s.id !== id));
+  }, []);
+
+  // useCallback: Stable handler for grade updates
+  const handleGradeChange = useCallback((id, newScore) => {
+    setStudents((prev) =>
+      prev.map((s) => {
+        if (s.id === id) {
+          const grade = newScore >= 90 ? "A" : newScore >= 80 ? "B" : newScore >= 60 ? "C" : "D";
+          return { ...s, score: newScore, grade };
+        }
+        return s;
+      })
+    );
+  }, []);
+
+  const handleAdd = (e) => {
+    e.preventDefault();
+    if (!newName.trim()) return;
+    const score = Math.floor(Math.random() * 25) + 75;
+    const grade = score >= 90 ? "A" : "B";
+    setStudents((prev) => [{ id: Date.now(), name: newName, course: newCourse, score, grade }, ...prev]);
+    setNewName("");
+    if (nameInputRef.current) nameInputRef.current.focus(); // Refocus input
+  };
+
+  return (
+    <div style={{ padding: 24, maxWidth: 650, margin: "0 auto", fontFamily: "sans-serif" }}>
+      <h2>🎓 Student Management Portal</h2>
+
+      {/* Add Form */}
+      <form onSubmit={handleAdd} style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+        <input
+          ref={nameInputRef}
+          type="text"
+          placeholder="Student Name"
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
+          style={{ flex: 1, padding: 8, borderRadius: 6, border: "1px solid #cbd5e1" }}
+        />
+        <select
+          value={newCourse}
+          onChange={(e) => setNewCourse(e.target.value)}
+          style={{ padding: 8, borderRadius: 6, border: "1px solid #cbd5e1" }}
+        >
+          <option>React 19</option>
+          <option>Node.js</option>
+          <option>SQL Databases</option>
+        </select>
+        <button type="submit" style={{ background: "#6366f1", color: "white", border: "none", borderRadius: 6, padding: "8px 16px", cursor: "pointer", fontWeight: 700 }}>
+          Add Record
+        </button>
+      </form>
+
+      {/* Filter Toolbar */}
+      <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 16 }}>
+        <input
+          type="text"
+          placeholder="Search by name (useMemo)..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{ flex: 1, padding: 8, borderRadius: 6, border: "1px solid #cbd5e1" }}
+        />
+        <label style={{ fontSize: "0.85rem" }}>
+          Min Score: {minScore}
+          <input type="range" min={0} max={100} value={minScore} onChange={(e) => setMinScore(+e.target.value)} />
+        </label>
+      </div>
+
+      {/* Student List */}
+      <div>
+        {filteredStudents.map((student) => (
+          <StudentRow key={student.id} student={student} onDelete={handleDelete} onGradeChange={handleGradeChange} />
+        ))}
+      </div>
+    </div>
+  );
+}`} />
             </div>
 
             {/* Continue Button */}
