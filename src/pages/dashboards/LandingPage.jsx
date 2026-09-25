@@ -267,7 +267,7 @@ function CourseCarouselSection() {
   const coursesCatalog = [
     {
       title: 'Story-Based Learning (Spoko English)',
-      modules: '5 Days Active (Story-Based English Course)',
+      modules: '6 Days Active (Story-Based English Course)',
       desc: 'Master English fluency through story reading immersion, bilingual vocabulary, dialogues, reading speed highlighter, video stories, and observation studio.',
       icon: <BookOpen size={24} />,
       color: '#ea580c', bg: 'rgba(234, 88, 12, 0.08)', accent: '#f97316',

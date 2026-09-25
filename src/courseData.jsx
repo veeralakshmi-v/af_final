@@ -2873,6 +2873,18 @@ export const spokoStoryCourseData = [
       { id: 'story_challenge', label: 'Speaking Challenge & Moral', icon: <Award size={18} /> },
       { id: 'story_video', label: 'Video Story & Observation', icon: <Video size={18} /> },
     ]
+  },
+  {
+    id: 'spoko_story_day6',
+    title: 'Day 6 — The Repetitive Task in IT Field',
+    items: [
+      { id: 'story_reading', label: 'Reading Story', icon: <BookOpen size={18} /> },
+      { id: 'story_vocab', label: 'Vocabulary & Tamil', icon: <FileText size={18} /> },
+      { id: 'story_conversation', label: 'Conversation & Dialogue', icon: <MessageCircle size={18} /> },
+      { id: 'story_speed_highlighter', label: 'Reading Speed & Highlighter', icon: <Zap size={18} /> },
+      { id: 'story_challenge', label: 'Speaking Challenge & Moral', icon: <Award size={18} /> },
+      { id: 'story_video', label: 'Video Story & Observation', icon: <Video size={18} /> },
+    ]
   }
 ];
 

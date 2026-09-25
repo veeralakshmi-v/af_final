@@ -345,7 +345,7 @@ const subCourses = [
     bgColor: 'rgba(234, 88, 12, 0.08)',
     borderColor: '#f97316',
     shadowColor: 'rgba(234, 88, 12, 0.15)',
-    modulesCount: '5 Days Active (Story-Based English Course)',
+    modulesCount: '6 Days Active (Story-Based English Course)',
     enrolledKey: 'spoko_story'
   }
 ];

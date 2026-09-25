@@ -1634,12 +1634,331 @@ export const storySyllabus = {
             correctIndex: 1,
             feedback: "Spot on! Emotional equanimity combined with root-cause analysis is the hallmark of master problem solvers."
         }
+    },
+    6: {
+        day: 6,
+        title: "The Repetitive Task in IT Field",
+        subtitle: "Overcoming Monotonous Work, Automation Mindset, Scripting & Freeing Up Creative Bandwidth",
+        moral: "Don't just endure repetitive manual tasks—use curiosity, automation, and continuous learning to turn boring routines into career breakthrough innovations.",
+        moralTamil: "தினசரி சலிப்பூட்டும் வேலைகளை சகித்துக் கொள்ளாமல், தானியங்கி நிரல்கள் (Automation) மூலம் எளிமைப்படுத்தினால் தொழில் வாழ்க்கையில் வேகமாக முன்னேறலாம்.",
+        themeGradient: "from-blue-600 via-indigo-600 to-violet-700",
+        badgeBg: "bg-indigo-100 text-indigo-800 border-indigo-200",
+        objectives: [
+            "Understand the impact of monotonous manual tasks in software and IT industries",
+            "Master 12 essential IT automation and workplace efficiency vocabulary terms with Tamil meanings",
+            "Learn how to identify repetitive bottlenecks and propose automated scripting solutions",
+            "Practice an assertive technical dialogue proposing an automation pipeline to a Team Lead",
+            "Deliver a 60-second speaking challenge on automating repetitive workflows",
+            "Submit video reflections on software automation for staff evaluation"
+        ],
+        youtubeVideo: {
+            title: "Automating Repetitive Tasks in IT - Python & Scripting for Beginners",
+            videoId: "pxi6jV27Zg4",
+            embedUrl: "https://www.youtube-nocookie.com/embed/pxi6jV27Zg4",
+            duration: "8 Mins",
+            channel: "Spoko IT & Career Studio",
+            instructions: "Watch the video carefully. Observe how engineers identify repetitive daily chores, write clean automation scripts, and free up their mental bandwidth for higher-value software development.",
+            observationQuestions: [
+                "1. Video Observation: What are the main benefits of automating repetitive tasks mentioned in the video?",
+                "2. Video Observation: How does learning basic scripting improve a junior developer's problem-solving skills?",
+                "3. Reading Story Observation: How did Deepa transform her 3-hour manual Excel reporting chore into a 15-second script?",
+                "4. Integrated Summary: Write a 3-5 sentence reflection on how you can apply an automation mindset in your own studies or future job."
+            ]
+        },
+        story: {
+            paragraphs: [
+                "Deepa was a junior quality assurance associate at a fast-growing software company. She was excited about her new job, but within a month, she noticed that a large part of her daily work was completely monotonous. Every evening at 4:30 PM, Deepa had to manually download fifty Excel reports from different client databases, copy the numbers into a master spreadsheet, check for data errors, and email status updates to six department leads.",
+                "This tedious process took nearly three exhausting hours every single day. Deepa often had to stay late at the office just to finish copy-pasting numbers. Even worse, staring at spreadsheets for hours caused mental fatigue, leading to accidental copy-paste mistakes that upset her senior managers. Deepa felt trapped in a circle of endless routine.",
+                "One evening, Deepa looked at the repetitive spreadsheet and asked herself an important question: 'Why am I doing manually what a computer was designed to do automatically?' She remembered a piece of advice from her college mentor: 'The best software professionals do not just repeat tasks; they build tools to eliminate redundant work.'",
+                "Deepa decided to take a proactive step. During her commute and weekend spare time, she began learning basic Python scripting. She discovered how simple libraries could read Excel files, compare database entries, and automatically send formatted emails in seconds.",
+                "Over the weekend, Deepa wrote a small automation script. Her script read all fifty client files, checked every data column for any discrepancy, generated a beautiful summary table, and dispatched the emails with a single click. When she tested the script on Monday, the entire task that previously took three hours finished in just fifteen seconds with zero errors.",
+                "Deepa scheduled a short demo with her Team Lead, Suresh. When Suresh saw the automated pipeline in action, he was astonished. 'Deepa, this is brilliant innovation,' Suresh remarked. 'You didn't just save your own time; you streamlined our entire team's release workflow and eliminated human errors.'",
+                "Recognizing her initiative, the management promoted Deepa to Associate Automation Engineer and assigned her to build internal efficiency tools. Her daily work was no longer boring data entry; she was now writing code that saved hundreds of hours across the entire company.",
+                "Reflecting on her journey, Deepa realized that in the IT industry, repetitive tasks are not a life sentence—they are hidden opportunities. When professionals look at monotonous work with curiosity and build automated solutions, they reclaim their creative bandwidth and accelerate their career growth."
+            ],
+            readTime: "2-3 Min Read (480 words)",
+            audioSpeedOptions: [0.75, 1.0, 1.25],
+            tamilNotes: [
+                { term: "monotonous", tamil: "ஒரே மாதிரியான / சலிப்பூட்டும் வேலை", note: "Lacking variety, dull and repetitive" },
+                { term: "tedious", tamil: "அதிக நேரம் எடுக்கும் கடினமான பணி", note: "Tiresome, slow and exhausting" },
+                { term: "automation", tamil: "தானியங்கி முறை", note: "Using software scripts to do tasks automatically" },
+                { term: "streamline", tamil: "எளிமைப்படுத்தி வேகப்படுத்துதல்", note: "Making a workflow faster and more efficient" }
+            ]
+        },
+        vocabulary: [
+            {
+                id: "v1",
+                word: "Monotonous",
+                phonetic: "/məˈnɑː.tən.əs/",
+                partOfSpeech: "Adjective",
+                meaning: "Dull, tedious, and repetitive; lacking in variety and interest",
+                tamil: "ஒரே மாதிரியான / சலிப்பூட்டும்",
+                example: "She noticed that a large part of her daily work was completely monotonous.",
+                isToughWord: true,
+                distractorMeanings: ["Exciting and thrilling", "Very colorful"]
+            },
+            {
+                id: "v2",
+                word: "Tedious",
+                phonetic: "/ˈtiː.di.əs/",
+                partOfSpeech: "Adjective",
+                meaning: "Too long, slow, or tiresome; causing weariness and mental fatigue",
+                tamil: "அதிக நேரம் எடுக்கும் சலிப்பான வேலை",
+                example: "This tedious process took nearly three exhausting hours every single day.",
+                isToughWord: true,
+                distractorMeanings: ["Quick and simple", "Fun and enjoyable"]
+            },
+            {
+                id: "v3",
+                word: "Automation",
+                phonetic: "/ˌɑː.t̬əˈmeɪ.ʃən/",
+                partOfSpeech: "Noun",
+                meaning: "The use of scripts, software, or technology to execute tasks without manual human effort",
+                tamil: "தானியங்கி முறை",
+                example: "Over the weekend, Deepa wrote a small automation script to handle report generation.",
+                isToughWord: true,
+                distractorMeanings: ["Manual typing", "Physical paperwork"]
+            },
+            {
+                id: "v4",
+                word: "Redundant",
+                phonetic: "/rɪˈdʌn.dənt/",
+                partOfSpeech: "Adjective",
+                meaning: "No longer needed or useful; unnecessary repetition of an existing process",
+                tamil: "தேவையற்ற / திரும்பத் திரும்பச் செய்யப்படும்",
+                example: "Good engineers build automated tools to eliminate redundant manual operations.",
+                isToughWord: true,
+                distractorMeanings: ["Extremely valuable", "Rare and precious"]
+            },
+            {
+                id: "v5",
+                word: "Streamline",
+                phonetic: "/ˈstriːm.laɪn/",
+                partOfSpeech: "Verb",
+                meaning: "To make an organization, system, or process simpler, faster, and more efficient",
+                tamil: "எளிமைப்படுத்தி வேகப்படுத்துதல்",
+                example: "You didn't just save time; you streamlined our entire team's release workflow.",
+                isToughWord: true,
+                distractorMeanings: ["To make complicated", "To delay on purpose"]
+            },
+            {
+                id: "v6",
+                word: "Discrepancy",
+                phonetic: "/dɪˈskrep.ən.si/",
+                partOfSpeech: "Noun",
+                meaning: "An illogical difference, error, or inconsistency between two sets of data or records",
+                tamil: "தரவுகளில் உள்ள முரண்பாடு அல்லது வேறுபாடு",
+                example: "Her script checked every data column for any discrepancy before sending the email.",
+                isToughWord: true,
+                distractorMeanings: ["A perfect match", "A polite thank you"]
+            },
+            {
+                id: "v7",
+                word: "Efficiency",
+                phonetic: "/ɪˈfɪʃ.ən.si/",
+                partOfSpeech: "Noun",
+                meaning: "The ability to achieve maximum results and quality with minimum wasted time and energy",
+                tamil: "செயல் திறன் / நேர விரயமின்றி செயல்படும் ஆற்றல்",
+                example: "Management assigned her to build internal efficiency tools for the company.",
+                isToughWord: true,
+                distractorMeanings: ["Extreme laziness", "Complete failure"]
+            },
+            {
+                id: "v8",
+                word: "Innovation",
+                phonetic: "/ˌɪn.əˈveɪ.ʃən/",
+                partOfSpeech: "Noun",
+                meaning: "The introduction of new ideas, creative methods, or advanced automated tools",
+                tamil: "புதிய கண்டுபிடிப்பு / புதுமை படைத்தல்",
+                example: "Her lead praised the automation script as a brilliant innovation.",
+                isToughWord: true,
+                distractorMeanings: ["Copying old habits", "Following old rules"]
+            },
+            {
+                id: "v9",
+                word: "Scripting",
+                phonetic: "/ˈskrɪp.tɪŋ/",
+                partOfSpeech: "Noun",
+                meaning: "The process of writing short code scripts (like Python or Bash) to automate repetitive tasks",
+                tamil: "தானியங்கி நிரல் எழுதுதல்",
+                example: "Learning basic scripting allowed her to turn three hours of work into fifteen seconds.",
+                isToughWord: true,
+                distractorMeanings: ["Acting in a movie", "Drawing pictures"]
+            },
+            {
+                id: "v10",
+                word: "Eliminate",
+                phonetic: "/iˈlɪm.ə.neɪt/",
+                partOfSpeech: "Verb",
+                meaning: "To completely remove, get rid of, or destroy unnecessary hurdles or errors",
+                tamil: "முழுமையாக நீக்குதல் / தவிர்த்தல்",
+                example: "The automated script helped eliminate human copy-paste errors completely.",
+                isToughWord: true,
+                distractorMeanings: ["To multiply", "To welcome warmly"]
+            },
+            {
+                id: "v11",
+                word: "Bandwidth",
+                phonetic: "/ˈbænd.wɪtθ/",
+                partOfSpeech: "Noun",
+                meaning: "The mental capacity, energy, or available time needed to take on new projects",
+                tamil: "வேலை செய்வதற்கான நேரம் மற்றும் ஆற்றல்",
+                example: "Automating routine tasks freed up her bandwidth to learn software architecture.",
+                isToughWord: true,
+                distractorMeanings: ["A wrist watch", "A music concert"]
+            },
+            {
+                id: "v12",
+                word: "Proactive",
+                phonetic: "/proʊˈæk.tɪv/",
+                partOfSpeech: "Adjective",
+                meaning: "Controlling a situation by creating improvements in advance rather than just complaining",
+                tamil: "முன்கூட்டியே சிந்தித்து செயல்படுதல்",
+                example: "She took a proactive step by learning automation instead of doing manual tasks forever.",
+                isToughWord: true,
+                distractorMeanings: ["Waiting for instructions", "Complaining constantly"]
+            }
+        ],
+        vocabQuiz: [
+            {
+                id: "vq1",
+                question: "What does 'Monotonous' mean when describing a daily IT assignment?",
+                options: [
+                    "A highly creative and unpredictable task",
+                    "Dull, repetitive work lacking in variety and challenge",
+                    "A high-speed gaming competition"
+                ],
+                correctIndex: 1,
+                explanation: "'Monotonous' means repetitive, unchanging routine work that feels boring."
+            },
+            {
+                id: "vq2",
+                question: "Which term refers to writing small programs to automate repetitive manual operations?",
+                options: ["Scripting", "Hardware soldering", "Manual typing"],
+                correctIndex: 0,
+                explanation: "'Scripting' involves writing short code programs (e.g. Python) to execute tasks automatically."
+            },
+            {
+                id: "vq3",
+                question: "What does it mean to 'Streamline' a team workflow?",
+                options: [
+                    "Make it slower and more complex",
+                    "Simplify and speed up the process to increase efficiency",
+                    "Cancel the project entirely"
+                ],
+                correctIndex: 1,
+                explanation: "'Streamline' means removing unnecessary steps so work flows faster and smoother."
+            }
+        ],
+        listeningQuestions: [
+            {
+                id: "lq1",
+                question: "What repetitive task was Deepa assigned to do every evening at 4:30 PM?",
+                options: [
+                    "Clean the office computer screens",
+                    "Manually download 50 Excel reports, merge numbers, and email status updates",
+                    "Conduct customer support phone calls"
+                ],
+                correctIndex: 1
+            },
+            {
+                id: "lq2",
+                question: "How long did the manual reporting process take Deepa each day?",
+                options: [
+                    "5 minutes",
+                    "Nearly 3 exhausting hours",
+                    "The entire weekend"
+                ],
+                correctIndex: 1
+            },
+            {
+                id: "lq3",
+                question: "How did Deepa solve her monotonous work problem?",
+                options: [
+                    "She resigned from her job immediately",
+                    "She learned Python scripting and built an automated reporting script",
+                    "She asked another intern to do the work for her"
+                ],
+                correctIndex: 1
+            },
+            {
+                id: "lq4",
+                question: "How long did the automated script take to finish the task?",
+                options: [
+                    "Just 15 seconds with zero errors",
+                    "2 hours",
+                    "3 days"
+                ],
+                correctIndex: 0
+            },
+            {
+                id: "lq5",
+                question: "What happened to Deepa after demonstrating her automation tool?",
+                options: [
+                    "She was scolded for writing code",
+                    "She was promoted to Associate Automation Engineer to build efficiency tools",
+                    "She was transferred to the marketing team"
+                ],
+                correctIndex: 1
+            }
+        ],
+        speakingPatterns: [
+            { pattern: "Currently, our team spends hours manually doing...", example: "Currently, our team spends hours manually downloading and verifying reports." },
+            { pattern: "By automating this repetitive task, we can save...", example: "By automating this repetitive task, we can save ten engineering hours every week." },
+            { pattern: "I have built a working script that eliminates...", example: "I have built a working script that eliminates human copy-paste errors." },
+            { pattern: "This automation frees up our bandwidth to focus on...", example: "This automation frees up our bandwidth to focus on building core product features." },
+            { pattern: "I would like to demonstrate how this tool streamlines...", example: "I would like to demonstrate how this tool streamlines our release pipeline." }
+        ],
+        speakingChallenge: {
+            topic: "Automating Repetitive IT Workflows Pitch",
+            guidance: "Deliver a 60-second presentation proposing an automation script to replace a repetitive manual chore in your team or college project.",
+            structure: [
+                "Hello everyone! Today I want to propose an automation solution for our daily workflow.",
+                "Currently, our team spends nearly three hours every day manually compiling reports.",
+                "This repetitive routine causes mental fatigue and occasional copy-paste errors.",
+                "To solve this, I developed a lightweight Python script that automates data validation.",
+                "This tool reduces processing time from three hours to just fifteen seconds with 100% accuracy.",
+                "By eliminating this manual chore, we reclaim valuable bandwidth for high-impact innovation.",
+                "Thank you!"
+            ]
+        },
+        dialogue: [
+            { speaker: "Suresh (Team Lead)", line: "Deepa, I noticed you've been working late this week. Is the daily reporting volume too heavy?", audio: "Deepa, I noticed you've been working late this week. Is the daily reporting volume too heavy?", tamil: "தீபா, இந்த வாரம் நீங்கள் தாமதமாக வேலை செய்வதை கவனித்தேன். தினசரி அறிக்கை தயாரிக்கும் பணிச்சுமை அதிகமாக உள்ளதா?" },
+            { speaker: "Deepa", line: "Yes Suresh. Merging fifty spreadsheets manually takes three hours and is prone to accidental errors.", audio: "Yes Suresh. Merging fifty spreadsheets manually takes three hours and is prone to accidental errors.", tamil: "ஆம் சுரேஷ். ஐம்பது எக்செல் தாள்களை கையால் இணைப்பது மூன்று மணி நேரம் எடுப்பதோடு தவறுகளுக்கும் வழிவகுக்கிறது." },
+            { speaker: "Suresh (Team Lead)", line: "It is indeed a tedious bottleneck. Do you have any ideas on how we can improve this?", audio: "It is indeed a tedious bottleneck. Do you have any ideas on how we can improve this?", tamil: "உண்மையிலேயே அது நேரத்தை வீணடிக்கும் வேலைதான். இதை மேம்படுத்த ஏதேனும் யோசனை உள்ளதா?" },
+            { speaker: "Deepa", line: "Over the weekend, I wrote a Python script that automates data validation and email dispatching.", audio: "Over the weekend, I wrote a Python script that automates data validation and email dispatching.", tamil: "வார இறுதியில் நான் ஒரு பைதான் ஸ்கிரிப்ட் எழுதினேன். அது தரவுகளை சரிபார்த்து மின்னஞ்சல்களை தானாக அனுப்பிவிடும்." },
+            { speaker: "Suresh (Team Lead)", line: "That sounds promising! Can you demonstrate how it runs right now?", audio: "That sounds promising! Can you demonstrate how it runs right now?", tamil: "கேட்பதற்கு மிக நன்றாக உள்ளது! அது எவ்வாறு இயங்குகிறது என்பதை இப்போது காட்ட முடியுமா?" },
+            { speaker: "Deepa", line: "Certainly! Watch this: I trigger the script, and all fifty reports are processed in fifteen seconds.", audio: "Certainly! Watch this: I trigger the script, and all fifty reports are processed in fifteen seconds.", tamil: "நிச்சயமாக! இதோ பாருங்கள்: இந்த ஸ்கிரிப்டை இயக்கினால் பதினைந்து வினாடிகளில் அனைத்து அறிக்கைகளும் தயாராகிவிடும்." },
+            { speaker: "Suresh (Team Lead)", line: "Incredible efficiency, Deepa! You have eliminated a massive redundant bottleneck for our team.", audio: "Incredible efficiency, Deepa! You have eliminated a massive redundant bottleneck for our team.", tamil: "அற்புதமான செயல்திறன் தீபா! எங்கள் குழுவிற்கு இருந்த மிகப்பெரிய தேவையற்ற சுமையை நீக்கிவிட்டீர்கள்." },
+            { speaker: "Deepa", line: "Thank you, Suresh! I am eager to help automate other routine operations across our projects.", audio: "Thank you, Suresh! I am eager to help automate other routine operations across our projects.", tamil: "நன்றி சுரேஷ்! நமது பிற திட்டங்களிலும் உள்ள இது போன்ற வேலைகளை தானியங்கியாக்க நான் ஆர்வமாக உள்ளேன்." }
+        ],
+        retellingPoints: [
+            "1. Deepa spent three exhausting hours every evening manually merging 50 Excel reports and emailing status updates.",
+            "2. The monotonous chore caused mental fatigue and accidental copy-paste errors.",
+            "3. Instead of resigning to routine, Deepa remembered that great engineers build tools to eliminate redundant work.",
+            "4. She learned basic Python scripting in her spare time to automate data validation and email sending.",
+            "5. Her script reduced the 3-hour manual chore to just 15 seconds with zero errors.",
+            "6. Team Lead Suresh was thrilled and commended her innovation and proactive mindset.",
+            "7. Deepa was promoted to Associate Automation Engineer, turning a boring chore into a major career breakthrough."
+        ],
+        moralSection: {
+            title: "Embracing the Automation Mindset (தானியங்கி மூலம் வேலைத்திறன் உயர்வு)",
+            enSummary: "Never settle for mindless, repetitive manual routines. Developing curiosity, learning automation tools, and eliminating redundant bottlenecks transforms mundane tasks into powerful opportunities for professional growth.",
+            taSummary: "சலிப்பூட்டும் ஒரே மாதிரியான வேலைகளை சகித்துக் கொள்ளாமல், புதிய தானியங்கி கருவிகளைக் கற்றுக்கொண்டு செயல்படுத்தினால் மிகப்பெரிய தொழில் வளர்ச்சியை அடையலாம்.",
+            question: "What is the best way to handle a repetitive, monotonous task in your IT career?",
+            options: [
+                "Complain every day and continue doing it manually forever.",
+                "Learn scripting and automation to streamline the workflow and eliminate redundant effort.",
+                "Ignore the task and miss all project deadlines."
+            ],
+            correctIndex: 1,
+            feedback: "Brilliant! Top tech professionals build automation tools that save time, eliminate errors, and drive company innovation."
+        }
     }
 };
 
-// Generate placeholder syllabus metadata for Days 6 to 15
+// Generate placeholder syllabus metadata for Days 7 to 15
 const upcomingStoryTopics = [
-    { day: 6, title: "The Lost Wallet", moral: "Honesty is the best policy." },
     { day: 7, title: "Two Friends, One Project", moral: "Cooperation achieves more than competition." },
     { day: 8, title: "The Email That Was Misunderstood", moral: "Clear communication avoids confusion." },
     { day: 9, title: "Standing Up for a Friend", moral: "Courage to support others matters." },

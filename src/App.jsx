@@ -242,6 +242,7 @@ import SpokoStoryDay2 from './pages/spoko/SpokoStoryDay2';
 import SpokoStoryDay3 from './pages/spoko/SpokoStoryDay3';
 import SpokoStoryDay4 from './pages/spoko/SpokoStoryDay4';
 import SpokoStoryDay5 from './pages/spoko/SpokoStoryDay5';
+import SpokoStoryDay6 from './pages/spoko/SpokoStoryDay6';
 import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData, spokoStoryCourseData } from './courseData';
 import TallyCourseDay from './pages/tally/TallyCourseDay';
 import AssignmentSubmissionPage from './components/AssignmentSubmissionPage';
@@ -1037,6 +1038,7 @@ function App() {
                 {activeNode.moduleId === 'spoko_story_day3' && <SpokoStoryDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} session={session} />}
                 {activeNode.moduleId === 'spoko_story_day4' && <SpokoStoryDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} session={session} />}
                 {activeNode.moduleId === 'spoko_story_day5' && <SpokoStoryDay5 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} session={session} />}
+                {activeNode.moduleId === 'spoko_story_day6' && <SpokoStoryDay6 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} session={session} />}
               </>
             )}
 
