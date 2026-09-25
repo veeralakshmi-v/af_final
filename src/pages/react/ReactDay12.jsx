@@ -20,7 +20,7 @@ const Section = ({ eyebrow, title, children }) => (
 );
 
 const ConceptCard = ({ what, why, where }) => (
-  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
     <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem', borderTop: '4px solid #6366f1', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: '0.5rem' }}>
         <span style={{ fontSize: '1.2rem' }}>📌</span>
@@ -80,10 +80,10 @@ const UseRefVsStateDemo = () => {
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1rem' }}>
       {/* Left (useState) */}
       <div style={{ background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 8, padding: '12px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap', gap: 4 }}>
           <strong style={{ color: '#be123c', fontSize: '0.88rem' }}>1. With useState (Re-renders UI)</strong>
           <span style={{ background: '#e11d48', color: 'white', padding: '2px 8px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 800 }}>
             Total Renders: {stateRenderCount}
@@ -103,7 +103,7 @@ const UseRefVsStateDemo = () => {
 
       {/* Right (useRef) */}
       <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '12px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap', gap: 4 }}>
           <strong style={{ color: '#15803d', fontSize: '0.88rem' }}>2. With useRef (0 Re-renders + DOM)</strong>
           <span style={{ background: '#16a34a', color: 'white', padding: '2px 8px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 800 }}>
             Total Renders: {refRenderTracker.current} (Frozen!)
@@ -113,10 +113,10 @@ const UseRefVsStateDemo = () => {
           <input
             ref={domDemoInputRef}
             defaultValue="Hello useRef DOM!"
-            style={{ width: '100%', padding: '4px 8px', border: '1.5px solid #86efac', borderRadius: 4, fontSize: '0.8rem', outline: 'none' }}
+            style={{ width: '100%', padding: '4px 8px', border: '1.5px solid #86efac', borderRadius: 4, fontSize: '0.8rem', outline: 'none', boxSizing: 'border-box' }}
           />
         </div>
-        <div style={{ display: 'flex', gap: 6 }}>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           <button
             onClick={handleUpdateWithRef}
             style={{ background: '#16a34a', color: 'white', border: 'none', borderRadius: 6, padding: '6px 10px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
@@ -154,10 +154,10 @@ const UseMemoComparisonDemo = () => {
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1rem' }}>
       {/* Left: Without useMemo */}
       <div style={{ background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 8, padding: '12px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap', gap: 4 }}>
           <strong style={{ color: '#be123c', fontSize: '0.88rem' }}>1. Without useMemo</strong>
           <span style={{ background: '#e11d48', color: 'white', padding: '2px 8px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 800 }}>
             Computations: {unmemoRuns}
@@ -176,7 +176,7 @@ const UseMemoComparisonDemo = () => {
 
       {/* Right: With useMemo */}
       <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '12px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap', gap: 4 }}>
           <strong style={{ color: '#15803d', fontSize: '0.88rem' }}>2. With useMemo</strong>
           <span style={{ background: '#16a34a', color: 'white', padding: '2px 8px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 800 }}>
             Computations: {memoRuns} (Frozen!)
@@ -202,10 +202,10 @@ const UseCallbackComparisonDemo = () => {
   const [parentTick2, setParentTick2] = useState(0);
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1rem' }}>
       {/* Left */}
       <div style={{ background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 8, padding: '12px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap', gap: 4 }}>
           <strong style={{ color: '#be123c', fontSize: '0.88rem' }}>1. Without useCallback</strong>
           <span style={{ background: '#e11d48', color: 'white', padding: '2px 8px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 800 }}>
             Child Renders: {parentTick1 + 1}
@@ -224,7 +224,7 @@ const UseCallbackComparisonDemo = () => {
 
       {/* Right */}
       <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '12px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap', gap: 4 }}>
           <strong style={{ color: '#15803d', fontSize: '0.88rem' }}>2. With useCallback</strong>
           <span style={{ background: '#16a34a', color: 'white', padding: '2px 8px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 800 }}>
             Child Renders: 1 (Frozen!)
@@ -251,7 +251,7 @@ const CustomHookComparisonDemo = () => {
   const [alertOpen, setAlertOpen] = useState(false);
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1rem' }}>
       {/* Left */}
       <div style={{ background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 8, padding: '12px' }}>
         <strong style={{ color: '#be123c', fontSize: '0.88rem', display: 'block', marginBottom: 6 }}>
@@ -306,74 +306,88 @@ const CustomHookComparisonDemo = () => {
 /* ─────────────────────────────── Comparison Block UI ─────────────────────────────── */
 const ComparisonBlock = ({ badTitle, badCode, badDesc, goodTitle, goodCode, goodDesc, takeaway, liveDemo, outputExplanation }) => (
   <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 14, padding: '1.25rem', margin: '1.5rem 0' }}>
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: 8 }}>
-      <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
-        ⚖️ Side-by-Side Comparison: Before vs. After
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: 8 }}>
+      <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+        ⚖️ Before vs. After Code Comparison
       </h4>
-      <span style={{ fontSize: '0.78rem', background: '#e0e7ff', color: '#4338ca', padding: '3px 10px', borderRadius: 20, fontWeight: 700 }}>
-        Visual Comparison & Output Proof
+      <span style={{ fontSize: '0.78rem', background: '#e0e7ff', color: '#4338ca', padding: '4px 12px', borderRadius: 20, fontWeight: 700 }}>
+        Step-by-Step Breakdown & Output Proof
       </span>
     </div>
 
-    {/* Side-by-side Code Comparison */}
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
-      {/* Bad / Without Hook */}
-      <div style={{ background: '#ffffff', border: '1.5px solid #fecaca', borderRadius: 10, padding: '1rem', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-          <span style={{ background: '#fee2e2', color: '#dc2626', padding: '3px 8px', borderRadius: 4, fontSize: '0.78rem', fontWeight: 800 }}>
-            ❌ {badTitle}
+    {/* Section 1: The Problem / Before Hook */}
+    <div style={{ background: '#ffffff', border: '1.5px solid #fecaca', borderRadius: 12, padding: '1.25rem', marginBottom: '1.25rem', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, marginBottom: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <span style={{ background: '#dc2626', color: 'white', fontWeight: 800, fontSize: '0.8rem', width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            1
+          </span>
+          <span style={{ background: '#fee2e2', color: '#dc2626', padding: '4px 10px', borderRadius: 6, fontSize: '0.85rem', fontWeight: 800 }}>
+            ❌ Before (Problem): {badTitle}
           </span>
         </div>
-        <p style={{ fontSize: '0.82rem', color: '#991b1b', margin: '0 0 8px', lineHeight: 1.5 }}>
-          {badDesc}
-        </p>
-        <div style={{ flex: 1 }}>
-          <CodeBlock title={badTitle} code={badCode} />
-        </div>
+        <span style={{ fontSize: '0.75rem', color: '#dc2626', fontWeight: 700, background: '#fef2f2', padding: '3px 8px', borderRadius: 4, border: '1px solid #fecaca' }}>
+          Problem: Unneeded Re-renders & Lag
+        </span>
       </div>
-
-      {/* Good / With Hook */}
-      <div style={{ background: '#ffffff', border: '1.5px solid #bbf7d0', borderRadius: 10, padding: '1rem', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-          <span style={{ background: '#dcfce7', color: '#16a34a', padding: '3px 8px', borderRadius: 4, fontSize: '0.78rem', fontWeight: 800 }}>
-            ✅ {goodTitle}
-          </span>
-        </div>
-        <p style={{ fontSize: '0.82rem', color: '#166534', margin: '0 0 8px', lineHeight: 1.5 }}>
-          {goodDesc}
-        </p>
-        <div style={{ flex: 1 }}>
-          <CodeBlock title={goodTitle} code={goodCode} />
-        </div>
+      <p style={{ fontSize: '0.88rem', color: '#991b1b', margin: '0 0 12px', lineHeight: 1.6 }}>
+        {badDesc}
+      </p>
+      <div style={{ width: '100%', overflowX: 'auto' }}>
+        <CodeBlock title={`❌ ${badTitle}`} code={badCode} />
       </div>
     </div>
 
-    {/* Live Output Difference Section */}
+    {/* Section 2: The Solution / After Hook (Next Section) */}
+    <div style={{ background: '#ffffff', border: '1.5px solid #86efac', borderRadius: 12, padding: '1.25rem', marginBottom: '1.25rem', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, marginBottom: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <span style={{ background: '#16a34a', color: 'white', fontWeight: 800, fontSize: '0.8rem', width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            2
+          </span>
+          <span style={{ background: '#dcfce7', color: '#16a34a', padding: '4px 10px', borderRadius: 6, fontSize: '0.85rem', fontWeight: 800 }}>
+            ✅ After (Optimized Solution): {goodTitle}
+          </span>
+        </div>
+        <span style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 700, background: '#f0fdf4', padding: '3px 8px', borderRadius: 4, border: '1px solid #bbf7d0' }}>
+          Solution: 0 Wasted Renders & Direct Control
+        </span>
+      </div>
+      <p style={{ fontSize: '0.88rem', color: '#166534', margin: '0 0 12px', lineHeight: 1.6 }}>
+        {goodDesc}
+      </p>
+      <div style={{ width: '100%', overflowX: 'auto' }}>
+        <CodeBlock title={`✅ ${goodTitle}`} code={goodCode} />
+      </div>
+    </div>
+
+    {/* Section 3: Live Output Difference Section */}
     {liveDemo && (
-      <div style={{ background: '#ffffff', border: '1.5px solid #e2e8f0', borderRadius: 10, padding: '1rem', margin: '1rem 0' }}>
+      <div style={{ background: '#ffffff', border: '1.5px solid #cbd5e1', borderRadius: 12, padding: '1.25rem', marginBottom: '1.25rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: '0.75rem' }}>
-          <span style={{ fontSize: '1.1rem' }}>🖥️</span>
-          <h5 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#0f172a' }}>
-            Live Output Difference (Interact below to see the difference in real-time)
+          <span style={{ fontSize: '1.2rem' }}>🖥️</span>
+          <h5 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 800, color: '#0f172a' }}>
+            Interactive Live Demonstration (Compare Output in Real-Time)
           </h5>
         </div>
         {liveDemo}
       </div>
     )}
 
-    {/* Why the Output Differs Callout */}
+    {/* Section 4: Why the Output Differs Callout */}
     {outputExplanation && (
-      <div style={{ background: '#fef3c7', border: '1px solid #fde68a', borderRadius: 8, padding: '10px 14px', marginBottom: '0.75rem' }}>
-        <div style={{ fontSize: '0.85rem', color: '#92400e', lineHeight: 1.6 }}>
-          <strong style={{ display: 'block', marginBottom: 2 }}>🔍 Why the Output / Performance Differs:</strong>
+      <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 10, padding: '12px 16px', marginBottom: '1rem' }}>
+        <div style={{ fontSize: '0.88rem', color: '#92400e', lineHeight: 1.6 }}>
+          <strong style={{ display: 'block', marginBottom: 4, color: '#78350f' }}>🔍 Why the Output / Performance Differs:</strong>
           {outputExplanation}
         </div>
       </div>
     )}
 
+    {/* Section 5: Takeaway */}
     {takeaway && (
-      <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '8px 12px', fontSize: '0.84rem', color: '#1e40af', fontWeight: 600 }}>
-        💡 <strong>Teaching Rule of Thumb:</strong> {takeaway}
+      <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 10, padding: '10px 14px', fontSize: '0.88rem', color: '#1e40af', fontWeight: 600, lineHeight: 1.6 }}>
+        💡 <strong>Key Takeaway:</strong> {takeaway}
       </div>
     )}
   </div>
@@ -883,7 +897,7 @@ export default function UseRefDemo() {
                 </span>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.25rem' }}>
                 {/* 1. DOM Input Focus Tester */}
                 <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, padding: '1.25rem' }}>
                   <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#6366f1', textTransform: 'uppercase' }}>
@@ -1146,7 +1160,7 @@ export default function UseMemoDemo() {
                 <Eye size={18} color="#10b981" /> Live Interactive Demo
               </h4>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.25rem' }}>
                 {/* Search Filter with useMemo */}
                 <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, padding: '1.25rem' }}>
                   <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#10b981', textTransform: 'uppercase' }}>
@@ -1380,7 +1394,7 @@ export default function UseCallbackDemo() {
               </div>
 
               {/* Side-by-side comparison */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
                 <div>
                   <UnoptimizedChild count={parentTick} />
                 </div>
@@ -1583,7 +1597,7 @@ export default function CustomHooksDemo() {
                 <Eye size={18} color="#7c3aed" /> Live Interactive Demo
               </h4>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.25rem' }}>
                 {/* useLocalStorage Demo */}
                 <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 10, padding: '1.25rem' }}>
                   <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#7c3aed', textTransform: 'uppercase' }}>
@@ -1677,7 +1691,7 @@ export default function CustomHooksDemo() {
                 💡 Which Hook Should You Use? Click a Scenario:
               </h4>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 8, marginBottom: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 8, marginBottom: 12 }}>
                 {[
                   { id: 'dom', label: '1. Focus Input / Timer ID' },
                   { id: 'calc', label: '2. Filter 1,000+ Items' },
@@ -1950,22 +1964,22 @@ export default function StudentPortal() {
                 <Eye size={18} color="#6366f1" /> Live Capstone Application Preview
               </h4>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 0.7fr', gap: '1.25rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '1.25rem' }}>
                 <div>
                   {/* Add Form */}
-                  <form onSubmit={handleAddStudentSubmit} style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+                  <form onSubmit={handleAddStudentSubmit} style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
                     <input
                       ref={capstoneInputRef}
                       type="text"
                       placeholder="Enter student name..."
                       value={newStudentName}
                       onChange={(e) => setNewStudentName(e.target.value)}
-                      style={{ flex: 1, padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                      style={{ flex: '1 1 160px', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
                     />
                     <select
                       value={newStudentCourse}
                       onChange={(e) => setNewStudentCourse(e.target.value)}
-                      style={{ padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem', background: 'white' }}
+                      style={{ flex: '0 1 140px', padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem', background: 'white' }}
                     >
                       <option>React 19</option>
                       <option>Node.js</option>
@@ -1977,13 +1991,13 @@ export default function StudentPortal() {
                   </form>
 
                   {/* Filter Toolbar */}
-                  <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12 }}>
+                  <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12, flexWrap: 'wrap' }}>
                     <input
                       type="text"
                       placeholder="Search students (useMemo)..."
                       value={capstoneQuery}
                       onChange={(e) => setCapstoneQuery(e.target.value)}
-                      style={{ flex: 1, padding: '6px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                      style={{ flex: '1 1 180px', padding: '6px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
                     />
                     <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748b' }}>
                       Min: {minScore}
