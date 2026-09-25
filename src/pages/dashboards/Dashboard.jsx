@@ -340,12 +340,12 @@ const subCourses = [
     id: 'spoko_story',
     mainCourseId: 'spoko_english',
     title: 'Story-Based Learning (Spoko English)',
-    desc: 'Master English fluency through immersive story reading, vocabulary cards, dialogues, reading speed highlighter, video stories, and writing exercises.',
+    desc: 'Master English fluency through immersive story reading, vocabulary cards, dialogues, reading speed highlighter, video stories, and observation exercises.',
     icon: <BookOpen size={24} />,
     bgColor: 'rgba(234, 88, 12, 0.08)',
     borderColor: '#f97316',
     shadowColor: 'rgba(234, 88, 12, 0.15)',
-    modulesCount: '2 Days Active (8 Modules per Day)',
+    modulesCount: '5 Days Active (Story-Based English Course)',
     enrolledKey: 'spoko_story'
   }
 ];
