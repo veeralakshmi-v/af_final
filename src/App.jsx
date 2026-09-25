@@ -237,7 +237,12 @@ import WebDesignDay9 from './pages/web-design/WebDesignDay9';
 import WebDesignDay10 from './pages/web-design/WebDesignDay10';
 import WebDesignDay11 from './pages/web-design/WebDesignDay11';
 import WebDesignDay12 from './pages/web-design/WebDesignDay12';
-import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData } from './courseData';
+import SpokoStoryDay1 from './pages/spoko/SpokoStoryDay1';
+import SpokoStoryDay2 from './pages/spoko/SpokoStoryDay2';
+import SpokoStoryDay3 from './pages/spoko/SpokoStoryDay3';
+import SpokoStoryDay4 from './pages/spoko/SpokoStoryDay4';
+import SpokoStoryDay5 from './pages/spoko/SpokoStoryDay5';
+import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData, spokoStoryCourseData } from './courseData';
 import TallyCourseDay from './pages/tally/TallyCourseDay';
 import AssignmentSubmissionPage from './components/AssignmentSubmissionPage';
 import { isModuleLocked, getLockReason } from './utils/htmlCssLocking';
@@ -428,7 +433,8 @@ function App() {
       core_js: coreJsCourseData,
       induction: inductionCourseData,
       tally_prime: tallyCourseData,
-      web_design_20days: webDesignCourseData
+      web_design_20days: webDesignCourseData,
+      spoko_story: spokoStoryCourseData
     };
     const modules = map[courseKey] || [];
     for (const m of modules) {
@@ -468,7 +474,9 @@ function App() {
         }
       }
 
-      if (course === 'tally_prime') {
+      if (course === 'spoko_story') {
+        setActiveNode({ moduleId: 'spoko_story_day1', tabId: 'story_reading' });
+      } else if (course === 'tally_prime') {
         setActiveNode({ moduleId: 'tally_prime_module1', tabId: 'day1' });
       } else if (course === 'web_design_20days') {
         setActiveNode({ moduleId: 'web_design_day1', tabId: 'intro' });
@@ -537,7 +545,8 @@ function App() {
           core_js: coreJsCourseData,
           induction: inductionCourseData,
           tally_prime: tallyCourseData,
-          web_design_20days: webDesignCourseData
+          web_design_20days: webDesignCourseData,
+          spoko_story: spokoStoryCourseData
         };
         const data = courseMap[course];
         if (data && data.length > 0 && data[0].items && data[0].items.length > 0) {
@@ -651,6 +660,7 @@ function App() {
   else if (activeCourse === 'induction') currentCourseData = inductionCourseData;
   else if (activeCourse === 'tally_prime') currentCourseData = tallyCourseData;
   else if (activeCourse === 'web_design_20days') currentCourseData = webDesignCourseData;
+  else if (activeCourse === 'spoko_story') currentCourseData = spokoStoryCourseData;
 
   if (!session) {
     return <LandingPage onLoginSuccess={handleLoginSuccess} />;
@@ -690,7 +700,7 @@ function App() {
             {/* Mobile Header — shown on tablet/mobile via responsive.css */}
             <div className="mobile-header">
               <h2 style={{ fontSize: '1.2rem', margin: 0, color: '#1E3A8A' }}>
-                {activeCourse === 'tally_prime' ? 'AI powered Tally' : activeCourse === 'html_css' ? 'HTML, CSS & Bootstrap' : activeCourse === 'javascript_course' ? 'AI-Powered JavaScript' : activeCourse === 'core_js' ? 'Core JavaScript' : activeCourse === 'react_course' ? 'AI-Powered React JS' : activeCourse === 'powerbi' ? 'AI-Powered Data Analytics' : activeCourse === 'agentic_ai' ? 'Agentic AI Development' : activeCourse === 'induction' ? 'Free Induction & Demo Sessions' : activeCourse === 'devops' ? 'DevOps & CI/CD' : activeCourse === 'numpy_course' ? 'NumPy for Data Science' : activeCourse === 'pandas_course' ? 'Pandas for Data Science' : activeCourse === 'matplotlib_course' ? 'Matplotlib for Data Science' : activeCourse === 'seaborn_course' ? 'Seaborn for Data Science' : 'AI-Powered SQL'}
+                {activeCourse === 'spoko_story' ? 'Spoko Story-Based English' : activeCourse === 'tally_prime' ? 'AI powered Tally' : activeCourse === 'html_css' ? 'HTML, CSS & Bootstrap' : activeCourse === 'javascript_course' ? 'AI-Powered JavaScript' : activeCourse === 'core_js' ? 'Core JavaScript' : activeCourse === 'react_course' ? 'AI-Powered React JS' : activeCourse === 'powerbi' ? 'AI-Powered Data Analytics' : activeCourse === 'agentic_ai' ? 'Agentic AI Development' : activeCourse === 'induction' ? 'Free Induction & Demo Sessions' : activeCourse === 'devops' ? 'DevOps & CI/CD' : activeCourse === 'numpy_course' ? 'NumPy for Data Science' : activeCourse === 'pandas_course' ? 'Pandas for Data Science' : activeCourse === 'matplotlib_course' ? 'Matplotlib for Data Science' : activeCourse === 'seaborn_course' ? 'Seaborn for Data Science' : 'AI-Powered SQL'}
               </h2>
               <button
                 className="btn btn-outline"
@@ -1020,6 +1030,13 @@ function App() {
                 {activeNode.moduleId === 'core_js_day9' && <CoreJSDay9 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'core_js_day10' && <CoreJSDay10 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId.startsWith('stats_day') && !['stats_day1', 'stats_day2', 'stats_day3', 'stats_day4', 'stats_day5', 'stats_day6', 'stats_day7', 'stats_day8', 'stats_day9', 'stats_day10', 'stats_day11', 'stats_day12', 'stats_day13', 'stats_day14', 'stats_day15', 'stats_day16', 'stats_day17', 'stats_mini_projects', 'stats_final_project'].includes(activeNode.moduleId) && <StatsDayPlaceholder activeTab={activeNode.tabId} onNavigate={handleNavClick} dayTitle={activeNode.moduleId.replace('stats_day', 'Day ')} />}
+
+                {/* Spoko Story-Based English Course Rendering */}
+                {activeNode.moduleId === 'spoko_story_day1' && <SpokoStoryDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} session={session} />}
+                {activeNode.moduleId === 'spoko_story_day2' && <SpokoStoryDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} session={session} />}
+                {activeNode.moduleId === 'spoko_story_day3' && <SpokoStoryDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} session={session} />}
+                {activeNode.moduleId === 'spoko_story_day4' && <SpokoStoryDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} session={session} />}
+                {activeNode.moduleId === 'spoko_story_day5' && <SpokoStoryDay5 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} session={session} />}
               </>
             )}
 

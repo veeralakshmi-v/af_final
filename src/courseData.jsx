@@ -4,7 +4,7 @@ import {
   Code, CheckCircle, LayoutGrid, Layers, MonitorPlay, MousePointerClick,
   Video, Edit3, Palette, Layout, Brush, FileCode2, Target, Type as TypeIcon,
   Wand2, FastForward, Move3d, Clapperboard, Smartphone, Database, Table, Columns, List, Terminal, ShieldAlert, PenTool, Settings, PieChart, Link, Activity, Store,
-  Briefcase, Map, Zap, Brain, Bot, Cpu, GitBranch, Rocket, Eye, Sliders, Filter, Trophy, Shield, FileSpreadsheet, Music, RefreshCw, Sparkles, Hash, Globe, Wifi, AlertTriangle, AlertCircle, Award, Send, Home, Compass, User, Lock, ShoppingCart, Folder, Server, Trash2, Plus, LogIn, LogOut, UserPlus, Users, UserCheck, BarChart2, GitMerge, Radio, Key, Copy, CheckSquare, Play, Percent
+  Briefcase, Map, Zap, Brain, Bot, Cpu, GitBranch, Rocket, Eye, Sliders, Filter, Trophy, Shield, FileSpreadsheet, Music, RefreshCw, Sparkles, Hash, Globe, Wifi, AlertTriangle, AlertCircle, Award, Send, Home, Compass, User, Lock, ShoppingCart, Folder, Server, Trash2, Plus, LogIn, LogOut, UserPlus, Users, UserCheck, BarChart2, GitMerge, Radio, Key, Copy, CheckSquare, Play, Percent, MessageCircle
 } from 'lucide-react';
 
 
@@ -2812,6 +2812,70 @@ export const webDesignCourseData = [
     ]
   }
 ];
+
+export const spokoStoryCourseData = [
+  {
+    id: 'spoko_story_day1',
+    title: 'Day 1 — The Boy Who Was Afraid to Speak',
+    items: [
+      { id: 'story_reading', label: 'Reading Story', icon: <BookOpen size={18} /> },
+      { id: 'story_vocab', label: 'Vocabulary & Tamil', icon: <FileText size={18} /> },
+      { id: 'story_conversation', label: 'Conversation & Dialogue', icon: <MessageCircle size={18} /> },
+      { id: 'story_speed_highlighter', label: 'Reading Speed & Highlighter', icon: <Zap size={18} /> },
+      { id: 'story_challenge', label: 'Speaking Challenge & Moral', icon: <Award size={18} /> },
+      { id: 'story_video', label: 'Video Story & Observation', icon: <Video size={18} /> },
+    ]
+  },
+  {
+    id: 'spoko_story_day2',
+    title: 'Day 2 — The Race Against Time',
+    items: [
+      { id: 'story_reading', label: 'Reading Story', icon: <BookOpen size={18} /> },
+      { id: 'story_vocab', label: 'Vocabulary & Tamil', icon: <FileText size={18} /> },
+      { id: 'story_conversation', label: 'Conversation & Dialogue', icon: <MessageCircle size={18} /> },
+      { id: 'story_speed_highlighter', label: 'Reading Speed & Highlighter', icon: <Zap size={18} /> },
+      { id: 'story_challenge', label: 'Speaking Challenge & Moral', icon: <Award size={18} /> },
+      { id: 'story_video', label: 'Video Story & Observation', icon: <Video size={18} /> },
+    ]
+  },
+  {
+    id: 'spoko_story_day3',
+    title: 'Day 3 — Mastering the HR Interview',
+    items: [
+      { id: 'story_reading', label: 'Reading Story', icon: <BookOpen size={18} /> },
+      { id: 'story_vocab', label: 'Vocabulary & Tamil', icon: <FileText size={18} /> },
+      { id: 'story_conversation', label: 'Conversation & Dialogue', icon: <MessageCircle size={18} /> },
+      { id: 'story_speed_highlighter', label: 'Reading Speed & Highlighter', icon: <Zap size={18} /> },
+      { id: 'story_challenge', label: 'Speaking Challenge & Moral', icon: <Award size={18} /> },
+      { id: 'story_video', label: 'Video Story & Observation', icon: <Video size={18} /> },
+    ]
+  },
+  {
+    id: 'spoko_story_day4',
+    title: 'Day 4 — Behavioral & Situational HR Questions',
+    items: [
+      { id: 'story_reading', label: 'Reading Story', icon: <BookOpen size={18} /> },
+      { id: 'story_vocab', label: 'Vocabulary & Tamil', icon: <FileText size={18} /> },
+      { id: 'story_conversation', label: 'Conversation & Dialogue', icon: <MessageCircle size={18} /> },
+      { id: 'story_speed_highlighter', label: 'Reading Speed & Highlighter', icon: <Zap size={18} /> },
+      { id: 'story_challenge', label: 'Speaking Challenge & Moral', icon: <Award size={18} /> },
+      { id: 'story_video', label: 'Video Story & Observation', icon: <Video size={18} /> },
+    ]
+  },
+  {
+    id: 'spoko_story_day5',
+    title: 'Day 5 — Problem Solving Skills for Career, Tech & Life',
+    items: [
+      { id: 'story_reading', label: 'Reading Story', icon: <BookOpen size={18} /> },
+      { id: 'story_vocab', label: 'Vocabulary & Tamil', icon: <FileText size={18} /> },
+      { id: 'story_conversation', label: 'Conversation & Dialogue', icon: <MessageCircle size={18} /> },
+      { id: 'story_speed_highlighter', label: 'Reading Speed & Highlighter', icon: <Zap size={18} /> },
+      { id: 'story_challenge', label: 'Speaking Challenge & Moral', icon: <Award size={18} /> },
+      { id: 'story_video', label: 'Video Story & Observation', icon: <Video size={18} /> },
+    ]
+  }
+];
+
 
 
 

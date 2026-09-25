@@ -48,6 +48,7 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
 
   const getCourseDuration = () => {
     const firstId = courseStructure?.[0]?.id || '';
+    if (firstId.includes('spoko_story')) return 180; // 3h
     if (courseStructure?.some(m => m.id?.includes('sql_da'))) return 540; // 9h
     if (firstId.includes('summer_sql')) return 420; // 7h
     if (firstId.includes('sql')) return 630; // 10h 30m
@@ -99,7 +100,8 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
       {/* Course Title (Dynamic) */}
       <div style={{ padding: '1rem 1.5rem 0' }}>
         <h2 style={{ fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: 0 }}>
-          {courseStructure?.[0]?.id?.includes('web_design') ? 'AI-Powered Web Design' :
+          {courseStructure?.[0]?.id?.includes('spoko_story') ? 'Spoko Story English' :
+           courseStructure?.[0]?.id?.includes('web_design') ? 'AI-Powered Web Design' :
            courseStructure?.some(m => m.id?.includes('sql_da')) ? 'SQL for Data Analytics' :
            courseStructure?.[0]?.id?.includes('sql') ? 'Databases & SQL' : 
            courseStructure?.[0]?.id?.includes('powerbi') ? 'Data Analytics (Power BI)' : 

@@ -1,10 +1,10 @@
-// Utility for LMS Course Assignment Validation & Navigation Locking across all courses
 import { 
   htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, 
   agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, 
   pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, 
   djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, 
-  pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData 
+  pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData,
+  spokoStoryCourseData
 } from '../courseData';
 
 export const COURSE_DATA_MAP = {
@@ -32,7 +32,9 @@ export const COURSE_DATA_MAP = {
   induction: inductionCourseData,
   tally_prime: tallyCourseData,
   web_design_20days: webDesignCourseData,
-  web_design: webDesignCourseData
+  web_design: webDesignCourseData,
+  spoko_story: spokoStoryCourseData,
+  spoko_course: spokoStoryCourseData
 };
 
 export const HTML_CSS_MODULE_ORDER = [

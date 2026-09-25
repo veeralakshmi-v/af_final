@@ -59,6 +59,15 @@ const mainCourses = [
     color: '#059669',
     gradient: 'linear-gradient(135deg, #34d399 0%, #059669 100%)',
     bgLight: 'rgba(5, 150, 105, 0.08)'
+  },
+  {
+    id: 'spoko_english',
+    title: 'Spoko English Communication',
+    desc: 'Practical English fluency through story reading immersion, bilingual vocabulary, real dialogues, speed teleprompter, video stories, and retell writing.',
+    icon: <BookOpen size={24} />,
+    color: '#ea580c',
+    gradient: 'linear-gradient(135deg, #f97316 0%, #c2410c 100%)',
+    bgLight: 'rgba(234, 88, 12, 0.08)'
   }
 ];
 
@@ -326,6 +335,18 @@ const subCourses = [
     shadowColor: 'rgba(5,150,105,0.15)',
     modulesCount: '5 Modules',
     enrolledKey: 'tally_prime'
+  },
+  {
+    id: 'spoko_story',
+    mainCourseId: 'spoko_english',
+    title: 'Story-Based Learning (Spoko English)',
+    desc: 'Master English fluency through immersive story reading, vocabulary cards, dialogues, reading speed highlighter, video stories, and writing exercises.',
+    icon: <BookOpen size={24} />,
+    bgColor: 'rgba(234, 88, 12, 0.08)',
+    borderColor: '#f97316',
+    shadowColor: 'rgba(234, 88, 12, 0.15)',
+    modulesCount: '2 Days Active (8 Modules per Day)',
+    enrolledKey: 'spoko_story'
   }
 ];
 
@@ -380,7 +401,8 @@ const availableCourseOptions = [
   { value: "matplotlib_course", label: "Matplotlib for Data Science" },
   { value: "seaborn_course", label: "Seaborn for Data Science" },
   { value: "core_js", label: "Core JavaScript" },
-  { value: "tally_prime", label: "AI powered Tally" }
+  { value: "tally_prime", label: "AI powered Tally" },
+  { value: "spoko_story", label: "Story-Based Learning (Spoko English)" }
 ];
 
 function getCourseLabel(courseKey) {
@@ -415,7 +437,8 @@ function getCourseLabel(courseKey) {
     matplotlib_course: 'Matplotlib for Data Science',
     seaborn_course: 'Seaborn for Data Science',
     core_js: 'Core JavaScript',
-    tally_prime: 'AI powered Tally'
+    tally_prime: 'AI powered Tally',
+    spoko_story: 'Story-Based Learning (Spoko English)'
   };
   if (labels[courseKey]) return labels[courseKey];
   return courseKey.replace(/_/g, ' ').toUpperCase();
@@ -447,7 +470,8 @@ function getCourseDataList(courseKey) {
     core_js: CourseData.coreJsCourseData,
     induction: CourseData.inductionCourseData,
     tally: CourseData.tallyCourseData,
-    web_design_20days: CourseData.webDesignCourseData
+    web_design_20days: CourseData.webDesignCourseData,
+    spoko_story: CourseData.spokoStoryCourseData
   };
   return map[courseKey] || [];
 }
@@ -464,7 +488,7 @@ function calculateDetailedCourseProgress(student) {
       'html_css', 'react_course', 'python_course', 'django_course', 'git_github',
       'core_js', 'web_design_20days', 'sql', 'powerbi', 'stats_course', 'devops',
       'json_course', 'numpy_course', 'pandas_course', 'matplotlib_course', 'seaborn_course',
-      'summer_sql', 'sql_da', 'python_da', 'agentic_ai', 'generative_ai_course', 'induction', 'tally'
+      'summer_sql', 'sql_da', 'python_da', 'agentic_ai', 'generative_ai_course', 'induction', 'tally', 'spoko_story'
     ];
   } else if (Array.isArray(enrolledCourse)) {
     courseKeys = enrolledCourse;
@@ -540,7 +564,7 @@ function calculateStudentProgress(student) {
       'python_fullstack', 'python_course', 'python_da', 'generative_ai_course',
       'react_course', 'git_github', 'json_course', 'django_course', 'devops',
       'stats_course', 'numpy_course', 'pandas_course', 'matplotlib_course',
-      'seaborn_course', 'core_js', 'induction', 'tally', 'web_design_20days'
+      'seaborn_course', 'core_js', 'induction', 'tally', 'web_design_20days', 'spoko_story'
     ];
     allKeys.forEach(k => {
       const data = getCourseDataList(k);

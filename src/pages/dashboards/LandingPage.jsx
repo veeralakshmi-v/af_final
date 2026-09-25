@@ -266,6 +266,14 @@ function CourseCarouselSection() {
 
   const coursesCatalog = [
     {
+      title: 'Story-Based Learning (Spoko English)',
+      modules: '2 Days Active (8 Modules per Day)',
+      desc: 'Master English fluency through story reading immersion, bilingual vocabulary, dialogues, reading speed highlighter, video stories, and retell writing.',
+      icon: <BookOpen size={24} />,
+      color: '#ea580c', bg: 'rgba(234, 88, 12, 0.08)', accent: '#f97316',
+      topics: ['Story Reading with Audio Narration & Instant Meaning', 'Vocabulary Flashcards & Tamil Interactive Quiz', 'Multi-Character Conversation Audio & Dialogue Flow', 'Reading Speed Teleprompter & Live Highlighter (100–220 WPM)', 'Video Story Presentation & 60s Speaking Challenge', 'Story Retelling & Live Target Vocabulary Writing Check']
+    },
+    {
       title: 'Web Design (HTML, CSS & Bootstrap)',
       modules: '12 Modules',
       desc: 'Build responsive layouts using semantic structures, CSS Grid, Flexbox, and Bootstrap.',
