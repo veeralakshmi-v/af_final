@@ -120,6 +120,45 @@ const staffSchema = new mongoose.Schema({
 
 const Staff = mongoose.model('Staff', staffSchema);
 
+const invoiceItemSchema = new mongoose.Schema({
+  description: { type: String, default: '' },
+  duration: { type: String, default: '' },
+  qty: { type: Number, default: 1 },
+  rate: { type: Number, default: 0 }
+});
+
+const invoiceSchema = new mongoose.Schema({
+  invoiceNo: { type: String, required: true, unique: true },
+  invoiceDate: { type: String, default: '' },
+  dueDate: { type: String, default: '' },
+  studentName: { type: String, default: '' },
+  studentId: { type: String, default: '' },
+  enrollment: { type: String, default: '' },
+  session: { type: String, default: '' },
+  course: { type: String, default: '' },
+  batch: { type: String, default: '' },
+  mobile: { type: String, default: '' },
+  address: { type: String, default: '' },
+  items: { type: [invoiceItemSchema], default: [] },
+  subtotal: { type: Number, default: 0 },
+  discount: { type: Number, default: 0 },
+  gstPercent: { type: Number, default: 0 },
+  gstAmount: { type: Number, default: 0 },
+  grandTotal: { type: Number, default: 0 },
+  amountPaid: { type: Number, default: 0 },
+  balanceDue: { type: Number, default: 0 },
+  status: { type: String, default: 'UNPAID' },
+  paymentModes: { type: Object, default: {} },
+  activeModesStr: { type: String, default: '' },
+  transactionId: { type: String, default: '' },
+  upiId: { type: String, default: 'alphafly@okaxis' },
+  qrImage: { type: String, default: null },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const Invoice = mongoose.model('Invoice', invoiceSchema);
+
 // Helper to manage local JSON files
 const getLocalStudents = () => {
   if (!fs.existsSync(localDbPath)) {
@@ -159,6 +198,25 @@ const getLocalStaff = () => {
 
 const saveLocalStaff = (data) => {
   fs.writeFileSync(localStaffDbPath, JSON.stringify(data, null, 2));
+};
+
+const localInvoiceDbPath = process.env.VERCEL
+  ? '/tmp/invoices.json'
+  : path.join(__dirname, 'invoices.json');
+
+const getLocalInvoices = () => {
+  if (!fs.existsSync(localInvoiceDbPath)) {
+    fs.writeFileSync(localInvoiceDbPath, JSON.stringify([]));
+  }
+  try {
+    return JSON.parse(fs.readFileSync(localInvoiceDbPath, 'utf8'));
+  } catch (e) {
+    return [];
+  }
+};
+
+const saveLocalInvoices = (data) => {
+  fs.writeFileSync(localInvoiceDbPath, JSON.stringify(data, null, 2));
 };
 
 // 3. API ROUTES
@@ -766,6 +824,94 @@ app.get('/api/students/:id/certificate', async (req, res) => {
       const student = students.find(s => s.id === id || s.accessCode === id.trim());
       if (!student) return res.status(404).json({ error: 'Student not found!' });
       return res.json(student.certificate || null);
+    }
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// G. INVOICE ROUTES (Staff & Admin Only)
+
+// G-1. Get all invoices (sorted newest first)
+app.get('/api/invoices', async (req, res) => {
+  try {
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      const invoices = await Invoice.find({}).sort({ createdAt: -1, _id: -1 });
+      return res.json(invoices);
+    } else {
+      const invoices = getLocalInvoices();
+      invoices.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      return res.json(invoices);
+    }
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// G-2. Create or Update an Invoice (Upsert by invoiceNo)
+app.post('/api/invoices', async (req, res) => {
+  const invoiceData = req.body;
+  if (!invoiceData || !invoiceData.invoiceNo || !invoiceData.invoiceNo.trim()) {
+    return res.status(400).json({ error: 'Invoice number is required.' });
+  }
+
+  const invoiceNo = invoiceData.invoiceNo.trim();
+  const payload = {
+    ...invoiceData,
+    invoiceNo,
+    updatedAt: new Date()
+  };
+
+  try {
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      const updated = await Invoice.findOneAndUpdate(
+        { invoiceNo },
+        { $set: payload },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
+      return res.json({ success: true, invoice: updated });
+    } else {
+      const invoices = getLocalInvoices();
+      const idx = invoices.findIndex(inv => inv.invoiceNo === invoiceNo);
+      if (idx >= 0) {
+        invoices[idx] = { ...invoices[idx], ...payload };
+      } else {
+        invoices.unshift({
+          _id: 'inv_' + Math.random().toString(36).substring(2, 11),
+          createdAt: new Date(),
+          ...payload
+        });
+      }
+      saveLocalInvoices(invoices);
+      return res.json({ success: true, invoice: idx >= 0 ? invoices[idx] : invoices[0] });
+    }
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// G-3. Delete an invoice by ID or invoiceNo
+app.delete('/api/invoices/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      const query = mongoose.Types.ObjectId.isValid(id)
+        ? { _id: id }
+        : { invoiceNo: id };
+      const deleted = await Invoice.findOneAndDelete(query);
+      if (!deleted) return res.status(404).json({ error: 'Invoice not found!' });
+      return res.json({ success: true, message: 'Invoice deleted successfully.' });
+    } else {
+      const invoices = getLocalInvoices();
+      const filtered = invoices.filter(inv => inv._id !== id && inv.id !== id && inv.invoiceNo !== id);
+      if (filtered.length === invoices.length) {
+        return res.status(404).json({ error: 'Invoice not found!' });
+      }
+      saveLocalInvoices(filtered);
+      return res.json({ success: true, message: 'Invoice deleted successfully.' });
     }
   } catch (e) {
     return res.status(500).json({ error: e.message });

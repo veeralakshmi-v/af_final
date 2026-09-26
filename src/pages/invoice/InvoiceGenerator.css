@@ -1,0 +1,447 @@
+/* ========================================================================= */
+/* ALPHA FLY INVOICE GENERATOR — EXACT ORIGINAL STYLES (100% BULLETPROOF) */
+/* ========================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+/* Main Root Layout */
+.af-invoice-root {
+  font-family: 'Inter', sans-serif;
+  background-color: #0f172a !important; /* Slate 900 background */
+  color: #1e293b;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.af-invoice-root *, 
+.af-invoice-root *::before, 
+.af-invoice-root *::after {
+  box-sizing: border-box;
+}
+
+.af-invoice-root h1, 
+.af-invoice-root h2, 
+.af-invoice-root h3, 
+.af-invoice-root h4, 
+.af-invoice-root .brand-title {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Constrain all SVG icons */
+.af-invoice-root svg {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.af-invoice-root .h-3, .af-invoice-root svg.h-3 { height: 12px !important; width: 12px !important; }
+.af-invoice-root .h-3\.5, .af-invoice-root svg.h-3\.5 { height: 14px !important; width: 14px !important; }
+.af-invoice-root .h-4, .af-invoice-root svg.h-4 { height: 16px !important; width: 16px !important; }
+.af-invoice-root .h-5, .af-invoice-root svg.h-5 { height: 20px !important; width: 20px !important; }
+.af-invoice-root .h-5\.5, .af-invoice-root svg.h-5\.5 { height: 22px !important; width: 22px !important; }
+
+/* Custom interactive input classes for the Invoice Canvas */
+.af-invoice-root .canvas-input {
+  background: transparent;
+  border: 0;
+  border-bottom: 1.5px dashed transparent;
+  border-radius: 2px;
+  transition: all 0.15s ease-in-out;
+  color: #1e293b;
+  outline: none;
+  font-family: inherit;
+  padding: 2px 4px;
+}
+
+.af-invoice-root .canvas-input:hover {
+  border-bottom-color: rgba(249, 115, 22, 0.4);
+  background-color: rgba(249, 115, 22, 0.03);
+}
+
+.af-invoice-root .canvas-input:focus {
+  border-bottom-color: #0A3D91;
+  border-bottom-style: solid;
+  background-color: rgba(10, 61, 145, 0.05);
+}
+
+/* Number input adjustment - remove browser default arrows */
+.af-invoice-root .no-spinner::-webkit-inner-spin-button,
+.af-invoice-root .no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.af-invoice-root .no-spinner {
+  -moz-appearance: textfield;
+}
+
+/* Page canvas sizing — compact single-page layout (B5 size) */
+.af-invoice-root .invoice-canvas {
+  width: 176mm;
+  height: 250mm;
+  max-height: 250mm;
+  box-sizing: border-box;
+  background: #ffffff;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+/* Responsive canvas scaling */
+.af-invoice-root .invoice-canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .af-invoice-root {
+    flex-direction: column;
+  }
+
+  .af-invoice-root .invoice-canvas-wrapper {
+    overflow-x: hidden;
+    padding-bottom: 24px;
+  }
+
+  .af-invoice-root .invoice-canvas {
+    transform-origin: top center;
+    transform: scale(0.55);
+    margin-bottom: calc(250mm * (0.55 - 1));
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  .af-invoice-root .invoice-canvas {
+    transform: scale(0.68);
+    margin-bottom: calc(250mm * (0.68 - 1));
+  }
+}
+
+/* Table styling fixes */
+.af-invoice-root th {
+  background-color: #0A3D91;
+  color: white;
+}
+
+/* Toast notification */
+.af-invoice-root .toast-notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  border: 1px solid #334155;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.af-invoice-root .toast-notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Sidebar should fill the full viewport height on desktop */
+@media (min-width: 768px) {
+  .af-invoice-root aside {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+}
+
+/* Watermark styles */
+.af-invoice-root .invoice-watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0.055;
+  z-index: 0;
+  user-select: none;
+  overflow: hidden;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.af-invoice-root .invoice-watermark svg {
+  width: 250px !important;
+  height: 250px !important;
+  max-width: 250px !important;
+  max-height: 250px !important;
+  color: #0A3D91 !important;
+}
+
+/* Stacking context to place invoice sections above the watermark background */
+.af-invoice-root .invoice-canvas > *:not(.invoice-watermark) {
+  position: relative;
+  z-index: 10;
+}
+
+/* Color classes */
+.af-invoice-root .text-primary {
+  color: #0A3D91 !important;
+}
+.af-invoice-root .bg-primary {
+  background-color: #0A3D91 !important;
+}
+.af-invoice-root .hover\:bg-primary-hover:hover {
+  background-color: #083278 !important;
+}
+
+.af-invoice-root .text-accent {
+  color: #F97316 !important;
+}
+.af-invoice-root .bg-accent {
+  background-color: #F97316 !important;
+}
+.af-invoice-root .hover\:bg-accent-hover:hover {
+  background-color: #ea580c !important;
+}
+.af-invoice-root .border-accent {
+  border-color: #F97316 !important;
+}
+
+.af-invoice-root .rounded-custom {
+  border-radius: 10px;
+}
+
+/* Status Badges */
+.af-invoice-root .status-draft {
+  background-color: #f1f5f9;
+  color: #64748b;
+  border-color: #e2e8f0;
+}
+
+.af-invoice-root .status-paid {
+  background-color: #dcfce7;
+  color: #15803d;
+  border-color: #86efac;
+}
+
+.af-invoice-root .status-partial {
+  background-color: #fef3c7;
+  color: #b45309;
+  border-color: #fcd34d;
+}
+
+.af-invoice-root .status-unpaid {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+/* Responsive mobile sidebar drawer styles */
+@media (max-width: 767px) {
+  .af-invoice-root aside.mobile-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 20px 0 25px -5px rgba(0, 0, 0, 0.4);
+  }
+  
+  .af-invoice-root aside.mobile-drawer.open {
+    transform: translateX(0);
+  }
+
+  .af-invoice-root .drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .af-invoice-root .drawer-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Print adjustments */
+@media print {
+  @page {
+    size: B5 portrait;
+    margin: 0mm;
+  }
+  
+  html, body, #root, .app, .main-content, .af-invoice-root {
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: white !important;
+    background-image: none !important;
+    color: black !important;
+    font-size: 9pt !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  header, footer {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  h1, h2, h3, h4, p {
+    letter-spacing: inherit !important;
+    word-spacing: inherit !important;
+  }
+
+  .no-print,
+  .sidebar,
+  .sidebar-overlay,
+  .mobile-header,
+  .af-invoice-root header.no-print,
+  .af-invoice-root aside,
+  .af-invoice-root .toast-notification,
+  .af-invoice-root .drawer-backdrop {
+    display: none !important;
+  }
+  
+  .af-invoice-root main {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .af-invoice-root .invoice-canvas-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .af-invoice-root .invoice-canvas {
+    width: 176mm !important;
+    height: 250mm !important;
+    max-height: none !important;
+    box-sizing: border-box !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 auto !important;
+    padding: 3mm !important;
+    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 2mm !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    transform: scale(0.85) !important;
+    transform-origin: top center !important;
+  }
+
+  .af-invoice-root .invoice-canvas * {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    orphans: 1 !important;
+    widows: 1 !important;
+  }
+
+  .af-invoice-root table, 
+  .af-invoice-root thead, 
+  .af-invoice-root tbody, 
+  .af-invoice-root tr, 
+  .af-invoice-root td, 
+  .af-invoice-root th {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .af-invoice-root .canvas-input {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .af-invoice-root .text-primary {
+    color: #0A3D91 !important;
+  }
+  
+  .af-invoice-root .bg-primary {
+    background-color: #0A3D91 !important;
+    color: white !important;
+  }
+
+  .af-invoice-root .text-accent {
+    color: #F97316 !important;
+  }
+
+  .af-invoice-root table, 
+  .af-invoice-root th, 
+  .af-invoice-root td {
+    border-color: #cbd5e1 !important;
+  }
+}
+
+/* PDF rendering mode */
+body.pdf-rendering {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.pdf-rendering .no-print,
+body.pdf-rendering .print\:hidden {
+  display: none !important;
+}
+
+body.pdf-rendering .print\:col-span-2 {
+  grid-column: span 2 / span 2 !important;
+}
+
+body.pdf-rendering .invoice-canvas {
+  width: 176mm !important;
+  height: 250mm !important;
+  max-height: none !important;
+  box-sizing: border-box !important;
+  box-shadow: none !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 3mm !important;
+  overflow: hidden !important;
+  justify-content: flex-start !important;
+  gap: 2mm !important;
+}
+
+body.pdf-rendering .canvas-input {
+  border: none !important;
+  background: transparent !important;
+}

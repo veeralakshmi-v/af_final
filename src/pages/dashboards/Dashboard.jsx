@@ -4,7 +4,7 @@ import {
   UserPlus, Users, LogIn, LogOut, CheckCircle, BarChart3, Layers, GitBranch,
   Server, RefreshCw, Trash2, Key, Star, ShieldAlert, Award, Grid, HelpCircle,
   BookOpen, ExternalLink, Upload, Download, FileText, Lock, AlertTriangle, Menu, X,
-  Search, ChevronLeft, ChevronRight, Copy
+  Search, ChevronLeft, ChevronRight, Copy, Receipt
 } from 'lucide-react';
 import {
   getAssignmentValidations,
@@ -13,6 +13,7 @@ import {
   isModuleLocked
 } from '../../utils/htmlCssLocking';
 import * as CourseData from '../../courseData';
+import InvoiceGenerator from '../invoice/InvoiceGenerator';
 
 const mainCourses = [
   {
@@ -1368,6 +1369,20 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 >
                   <Award size={18} /> Certificates
                 </button>
+
+                <button
+                  onClick={() => { setActiveTab('invoices'); fetchStudents(); if (isMobile) setIsMobileMenuOpen(false); }}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem',
+                    fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
+                    background: activeTab === 'invoices' ? 'linear-gradient(135deg, #0A3D91 0%, #1d4ed8 100%)' : 'transparent',
+                    color: activeTab === 'invoices' ? '#ffffff' : 'var(--text-secondary)',
+                    boxShadow: activeTab === 'invoices' ? '0 4px 12px rgba(10, 61, 145, 0.35)' : 'none',
+                    transition: 'var(--transition)'
+                  }}
+                >
+                  <Receipt size={18} /> Fee Invoices
+                </button>
               </>
             )}
 
@@ -1422,60 +1437,62 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       </aside>
 
       {/* 🖥️ MAIN WORKSPACE CONTENT CONTAINER */}
-      <main style={{ flex: 1, padding: isMobile ? '1.25rem 1rem' : '3rem 4rem', minHeight: '100vh', overflowY: 'auto', minWidth: 0 }}>
+      <main style={{ flex: 1, padding: activeTab === 'invoices' ? 0 : (isMobile ? '1.25rem 1rem' : '3rem 4rem'), minHeight: '100vh', overflowY: 'auto', minWidth: 0, background: activeTab === 'invoices' ? '#0f172a' : 'transparent' }}>
 
         {/* Dynamic header title based on active tab */}
-        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center', gap: '1rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.5rem', marginBottom: '2.5rem' }}>
-          <div>
-            <h1 style={{ fontSize: isMobile ? '1.5rem' : '2.2rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
-              {activeTab === 'overview' && 'LMS Workspace Overview'}
-              {activeTab === 'courses' && 'Interactive Course Catalog'}
-              {activeTab === 'register' && 'Enroll a New Student'}
-              {activeTab === 'database' && 'Student Credentials Directory'}
-              {activeTab === 'demos' && 'Alpha Fly Induction & Demo Classes'}
-              {activeTab === 'grading' && 'Review and Grade Assignments'}
-              {activeTab === 'certificates' && 'Certificate Management'}
-            </h1>
-            <p style={{ fontSize: isMobile ? '0.85rem' : '0.95rem', color: 'var(--text-secondary)', margin: '0.2rem 0 0 0' }}>
-              {activeTab === 'overview' && 'Overview stats, role privileges, and quick configuration access.'}
-              {activeTab === 'courses' && 'Browse, select, and launch learning timelines and bootcamp environments.'}
-              {activeTab === 'register' && 'Assign course tracks and generate direct student login credential links.'}
-              {activeTab === 'database' && 'Review and clear access token keys, device locks, or student databases.'}
-              {activeTab === 'demos' && 'Review AI-Powered workspaces, job roadmaps, salaries, and masterclass sessions.'}
-              {activeTab === 'grading' && 'View, grade, and leave feedback on student task/homework submissions.'}
-              {activeTab === 'certificates' && 'Upload completion certificates for students. Students can download them from their dashboard.'}
-            </p>
-          </div>
+        {activeTab !== 'invoices' && (
+          <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center', gap: '1rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.5rem', marginBottom: '2.5rem' }}>
+            <div>
+              <h1 style={{ fontSize: isMobile ? '1.5rem' : '2.2rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
+                {activeTab === 'overview' && 'LMS Workspace Overview'}
+                {activeTab === 'courses' && 'Interactive Course Catalog'}
+                {activeTab === 'register' && 'Enroll a New Student'}
+                {activeTab === 'database' && 'Student Credentials Directory'}
+                {activeTab === 'demos' && 'Alpha Fly Induction & Demo Classes'}
+                {activeTab === 'grading' && 'Review and Grade Assignments'}
+                {activeTab === 'certificates' && 'Certificate Management'}
+              </h1>
+              <p style={{ fontSize: isMobile ? '0.85rem' : '0.95rem', color: 'var(--text-secondary)', margin: '0.2rem 0 0 0' }}>
+                {activeTab === 'overview' && 'Overview stats, role privileges, and quick configuration access.'}
+                {activeTab === 'courses' && 'Browse, select, and launch learning timelines and bootcamp environments.'}
+                {activeTab === 'register' && 'Assign course tracks and generate direct student login credential links.'}
+                {activeTab === 'database' && 'Review and clear access token keys, device locks, or student databases.'}
+                {activeTab === 'demos' && 'Review AI-Powered workspaces, job roadmaps, salaries, and masterclass sessions.'}
+                {activeTab === 'grading' && 'View, grade, and leave feedback on student task/homework submissions.'}
+                {activeTab === 'certificates' && 'Upload completion certificates for students. Students can download them from their dashboard.'}
+              </p>
+            </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {session?.role !== 'student' && (
-              <button
-                type="button"
-                onClick={() => setActiveTab('grading')}
-                style={{
-                  background: pendingCount > 0 ? '#fef2f2' : '#ffffff',
-                  border: `1px solid ${pendingCount > 0 ? '#fca5a5' : 'var(--surface-border)'}`,
-                  color: pendingCount > 0 ? '#dc2626' : 'var(--text-secondary)',
-                  padding: '0.45rem 0.9rem',
-                  borderRadius: '20px',
-                  fontSize: '0.82rem',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  boxShadow: 'var(--shadow-sm)'
-                }}
-              >
-                🔔 {pendingCount} Pending Approvals
-              </button>
-            )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              {session?.role !== 'student' && (
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('grading')}
+                  style={{
+                    background: pendingCount > 0 ? '#fef2f2' : '#ffffff',
+                    border: `1px solid ${pendingCount > 0 ? '#fca5a5' : 'var(--surface-border)'}`,
+                    color: pendingCount > 0 ? '#dc2626' : 'var(--text-secondary)',
+                    padding: '0.45rem 0.9rem',
+                    borderRadius: '20px',
+                    fontSize: '0.82rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: 'var(--shadow-sm)'
+                  }}
+                >
+                  🔔 {pendingCount} Pending Approvals
+                </button>
+              )}
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)', background: '#ffffff', padding: '0.4rem 0.8rem', borderRadius: '20px', border: '1px solid var(--surface-border)', boxShadow: 'var(--shadow-sm)' }}>
-              <Award size={14} color="#eab308" /> LMS Engine Active
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)', background: '#ffffff', padding: '0.4rem 0.8rem', borderRadius: '20px', border: '1px solid var(--surface-border)', boxShadow: 'var(--shadow-sm)' }}>
+                <Award size={14} color="#eab308" /> LMS Engine Active
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* 📊 TAB 1: WORKSPACE OVERVIEW VIEW */}
         {activeTab === 'overview' && session.role === 'student' && (
@@ -2911,22 +2928,22 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
         {/* 🏆 TAB: CERTIFICATE MANAGEMENT (ADMIN/STAFF ONLY) */}
         {activeTab === 'certificates' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', width: '100%', boxSizing: 'border-box' }}>
 
             {/* Upload Certificate Card */}
-            <div style={{ background: '#ffffff', border: '1px solid var(--surface-border)', borderRadius: '24px', padding: '2rem', boxShadow: 'var(--shadow-sm)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.25rem' }}>
-                <div style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', borderRadius: '12px', padding: '0.6rem', display: 'flex', alignItems: 'center' }}>
+            <div style={{ background: '#ffffff', border: '1px solid var(--surface-border)', borderRadius: '20px', padding: 'clamp(1.25rem, 3vw, 2rem)', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.25rem', flexWrap: 'wrap' }}>
+                <div style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', borderRadius: '12px', padding: '0.6rem', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                   <Upload size={20} color="#ffffff" />
                 </div>
                 <div>
                   <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, fontFamily: 'system-ui' }}>Upload Student Certificate</h3>
-                  <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0, fontFamily: 'system-ui' }}>Select a student and upload a PDF or image certificate (max 2MB).</p>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: '0.2rem 0 0 0', fontFamily: 'system-ui' }}>Select a student and upload a PDF or image certificate (max 2MB).</p>
                 </div>
               </div>
 
-              {/* Student Selector */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+              {/* Responsive Student Selector & File Input Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginBottom: '0.5rem', fontFamily: 'system-ui' }}>
                     Select Student *
@@ -2939,7 +2956,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     <option value="">— Choose a student —</option>
                     {students.map(s => (
                       <option key={s._id || s.id} value={s._id || s.id}>
-                        {s.name} ({getCourseLabel(s.enrolledCourse)}) — {s.accessCode}
+                        {s.name} — {s.accessCode || s.studentId || s._id || s.id}
                       </option>
                     ))}
                   </select>
@@ -2955,9 +2972,9 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     padding: '0.75rem 1rem', borderRadius: '12px',
                     border: `2px dashed ${certFile ? '#f59e0b' : '#cbd5e1'}`,
                     background: certFile ? 'rgba(245,158,11,0.05)' : '#fafafa',
-                    cursor: 'pointer', transition: 'all 0.2s'
+                    cursor: 'pointer', transition: 'all 0.2s', boxSizing: 'border-box'
                   }}>
-                    <FileText size={20} color={certFile ? '#f59e0b' : '#94a3b8'} />
+                    <FileText size={20} color={certFile ? '#f59e0b' : '#94a3b8'} style={{ flexShrink: 0 }} />
                     <span style={{ fontSize: '0.88rem', color: certFile ? '#d97706' : '#94a3b8', fontWeight: certFile ? 700 : 500, fontFamily: 'system-ui', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {certFile ? certFile.name : 'Click to browse file...'}
                     </span>
@@ -3013,47 +3030,76 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             </div>
 
             {/* Existing Certificates Table */}
-            <div style={{ background: '#ffffff', border: '1px solid var(--surface-border)', borderRadius: '24px', padding: '2rem', boxShadow: 'var(--shadow-sm)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.25rem' }}>
+            <div style={{ background: '#ffffff', border: '1px solid var(--surface-border)', borderRadius: '20px', padding: 'clamp(1.25rem, 3vw, 2rem)', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, fontFamily: 'system-ui' }}>Students With Certificates</h3>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', background: 'rgba(245,158,11,0.1)', color: '#d97706', padding: '0.3rem 0.8rem', borderRadius: '20px', fontFamily: 'system-ui' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', background: 'rgba(245,158,11,0.1)', color: '#d97706', padding: '0.35rem 0.85rem', borderRadius: '20px', fontFamily: 'system-ui' }}>
                   {students.filter(s => s.certificate && s.certificate.data).length} Issued
                 </span>
               </div>
 
               {students.filter(s => s.certificate && s.certificate.data).length > 0 ? (
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+                <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', borderRadius: '14px', border: '1px solid var(--surface-border)' }}>
+                  <table style={{ width: '100%', minWidth: '550px', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                     <thead>
-                      <tr style={{ borderBottom: '2px solid var(--surface-border)', color: 'var(--text-secondary)', fontWeight: 700, textAlign: 'left' }}>
-                        <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Student Name</th>
-                        <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Enrolled Course</th>
-                        <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Certificate File</th>
-                        <th style={{ padding: '0.75rem 1rem', fontFamily: 'system-ui' }}>Uploaded At</th>
-                        <th style={{ padding: '0.75rem 1rem', textAlign: 'center', fontFamily: 'system-ui' }}>Action</th>
+                      <tr style={{ background: '#f8fafc', borderBottom: '1px solid var(--surface-border)', color: 'var(--text-secondary)', fontWeight: 700, textAlign: 'left' }}>
+                        <th style={{ padding: '0.85rem 1rem', fontFamily: 'system-ui' }}>Student</th>
+                        <th style={{ padding: '0.85rem 1rem', fontFamily: 'system-ui' }}>Certificate File</th>
+                        <th style={{ padding: '0.85rem 1rem', fontFamily: 'system-ui' }}>Uploaded At</th>
+                        <th style={{ padding: '0.85rem 1rem', textAlign: 'center', fontFamily: 'system-ui' }}>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {students.filter(s => s.certificate && s.certificate.data).map(s => (
-                        <tr key={s._id || s.id} style={{ borderBottom: '1px solid var(--surface-border)', color: 'var(--text-primary)' }}>
-                          <td style={{ padding: '1rem', fontWeight: 800 }}>{s.name}</td>
-                          <td style={{ padding: '1rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{getCourseLabel(s.enrolledCourse)}</td>
+                        <tr key={s._id || s.id} style={{ borderBottom: '1px solid var(--surface-border)', color: 'var(--text-primary)', transition: 'background 0.15s' }}>
                           <td style={{ padding: '1rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <FileText size={14} color="#f59e0b" />
-                              <span style={{ fontSize: '0.82rem', color: '#d97706', fontWeight: 700 }}>{s.certificate.filename}</span>
+                            <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-primary)' }}>{s.name}</div>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(99, 102, 241, 0.08)', color: '#4f46e5', padding: '0.15rem 0.55rem', borderRadius: '6px', fontSize: '0.76rem', fontWeight: 700, marginTop: '4px', fontFamily: 'monospace' }}>
+                              {s.accessCode || s.studentId || s._id || s.id}
                             </div>
                           </td>
-                          <td style={{ padding: '1rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                          <td style={{ padding: '1rem' }}>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(245,158,11,0.08)', padding: '0.35rem 0.75rem', borderRadius: '8px', maxWidth: '240px' }}>
+                              <FileText size={15} color="#d97706" style={{ flexShrink: 0 }} />
+                              <span style={{ fontSize: '0.82rem', color: '#b45309', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={s.certificate.filename}>
+                                {s.certificate.filename}
+                              </span>
+                            </div>
+                          </td>
+                          <td style={{ padding: '1rem', color: 'var(--text-secondary)', fontSize: '0.85rem', whiteSpace: 'nowrap' }}>
                             {s.certificate.uploadedAt ? new Date(s.certificate.uploadedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '—'}
                           </td>
-                          <td style={{ padding: '1rem', textAlign: 'center' }}>
-                            <button
-                              onClick={() => { setCertStudentId(s._id || s.id); setCertFile(null); setCertSuccessMsg(''); setCertError(''); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                              style={{ background: 'none', border: '1px solid #f59e0b', color: '#d97706', fontWeight: 800, cursor: 'pointer', fontSize: '0.82rem', borderRadius: '8px', padding: '0.35rem 0.8rem' }}
-                            >
-                              Re-upload
-                            </button>
+                          <td style={{ padding: '1rem', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                              {s.certificate.data && (
+                                <a
+                                  href={s.certificate.data}
+                                  download={s.certificate.filename || 'certificate.pdf'}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: '4px',
+                                    background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)',
+                                    color: '#d97706', fontWeight: 700, textDecoration: 'none',
+                                    fontSize: '0.8rem', borderRadius: '8px', padding: '0.4rem 0.75rem',
+                                    cursor: 'pointer', transition: 'all 0.2s'
+                                  }}
+                                >
+                                  View / Download
+                                </a>
+                              )}
+                              <button
+                                onClick={() => { setCertStudentId(s._id || s.id); setCertFile(null); setCertSuccessMsg(''); setCertError(''); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                                style={{
+                                  background: '#f8fafc', border: '1px solid #cbd5e1',
+                                  color: '#475569', fontWeight: 700, cursor: 'pointer',
+                                  fontSize: '0.8rem', borderRadius: '8px', padding: '0.4rem 0.75rem',
+                                  transition: 'all 0.2s'
+                                }}
+                              >
+                                Re-upload
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -3551,6 +3597,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
           </div>
         )}
 
+        {/* 🧾 TAB 7: INVOICE GENERATOR & FEE BILLING (STAFF & ADMIN ONLY) */}
+        {activeTab === 'invoices' && (session?.role === 'admin' || session?.role === 'staff') && (
+          <InvoiceGenerator session={session} students={students} onBack={() => setActiveTab('overview')} />
+        )}
       </main>
 
       {/* 📝 GRADING / EVALUATION MODAL */}

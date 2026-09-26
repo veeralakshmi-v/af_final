@@ -5,6 +5,35 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AlphaFly Course LMS - Learn Web Development & AI</title>
+    <!-- Tailwind CSS CDN for Alphafly Invoice Generator & LMS Tools -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      if (window.tailwind) {
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                primary: {
+                  DEFAULT: '#0A3D91',
+                  hover: '#083278',
+                  light: '#f0f5ff',
+                  border: '#bfdbfe'
+                },
+                accent: {
+                  DEFAULT: '#F97316',
+                  hover: '#ea580c',
+                  light: '#fff7ed',
+                  border: '#fed7aa'
+                }
+              },
+              borderRadius: {
+                'custom': '10px'
+              }
+            }
+          }
+        };
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
