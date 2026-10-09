@@ -665,12 +665,18 @@ app.delete('/api/students/:id', async (req, res) => {
   }
 });
 
-// D-2. Update student courses
+// D-2. Update student details (Name, Access Code, Enrolled Courses)
 app.put('/api/students/:id', async (req, res) => {
   const { id } = req.params;
-  const { enrolledCourse } = req.body;
-  if (!enrolledCourse) {
-    return res.status(400).json({ error: 'enrolledCourse is required!' });
+  const { name, accessCode, enrolledCourse } = req.body;
+
+  const updateFields = {};
+  if (name && name.trim()) updateFields.name = name.trim();
+  if (accessCode && accessCode.trim()) updateFields.accessCode = accessCode.trim();
+  if (enrolledCourse && enrolledCourse.trim()) updateFields.enrolledCourse = enrolledCourse.trim();
+
+  if (Object.keys(updateFields).length === 0) {
+    return res.status(400).json({ error: 'At least one field (name, accessCode, or enrolledCourse) is required!' });
   }
 
   try {
@@ -680,15 +686,15 @@ app.put('/api/students/:id', async (req, res) => {
         ? { _id: id } 
         : { accessCode: id.trim() };
         
-      const student = await Student.findOneAndUpdate(query, { enrolledCourse }, { new: true });
+      const student = await Student.findOneAndUpdate(query, updateFields, { new: true });
       if (!student) return res.status(404).json({ error: 'Student not found!' });
       return res.json(student);
     } else {
       const students = getLocalStudents();
-      const idx = students.findIndex(s => s.id === id || s.accessCode === id.trim());
+      const idx = students.findIndex(s => s.id === id || s._id === id || s.accessCode === id.trim());
       if (idx === -1) return res.status(404).json({ error: 'Student not found!' });
       
-      students[idx].enrolledCourse = enrolledCourse;
+      students[idx] = { ...students[idx], ...updateFields };
       saveLocalStudents(students);
       return res.json(students[idx]);
     }

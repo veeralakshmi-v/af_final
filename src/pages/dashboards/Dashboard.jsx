@@ -799,12 +799,16 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
   // Student course editing states
   const [editingStudent, setEditingStudent] = useState(null);
+  const [editingName, setEditingName] = useState('');
+  const [editingAccessCode, setEditingAccessCode] = useState('');
   const [editingCourses, setEditingCourses] = useState('');
   const [editingLoading, setEditingLoading] = useState(false);
   const [editingError, setEditingError] = useState('');
 
   const handleOpenEditCoursesModal = (student) => {
     setEditingStudent(student);
+    setEditingName(student.name || '');
+    setEditingAccessCode(student.accessCode || '');
     setEditingCourses(student.enrolledCourse || '');
     setEditingError('');
   };
@@ -817,14 +821,18 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       const res = await fetch(`/api/students/${editingStudent._id || editingStudent.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ enrolledCourse: editingCourses })
+        body: JSON.stringify({
+          name: editingName,
+          accessCode: editingAccessCode,
+          enrolledCourse: editingCourses
+        })
       });
       if (res.ok) {
         setEditingStudent(null);
         fetchStudents();
       } else {
         const err = await res.json();
-        setEditingError(err.error || 'Failed to save courses.');
+        setEditingError(err.error || 'Failed to save student profile.');
       }
     } catch (err) {
       setEditingError('Could not reach backend API server.');
@@ -3821,13 +3829,58 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             boxSizing: 'border-box'
           }}>
             <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0', fontFamily: 'system-ui' }}>
-              Modify Enrolled Courses
+              Edit Student Credentials & Tracks
             </h3>
             <p style={{ fontSize: '0.9rem', color: '#64748b', margin: '0 0 1.5rem 0' }}>
-              Assign or remove curriculum tracks for <strong>{editingStudent.name}</strong>.
+              Update student name, access key ID, or assign/remove curriculum tracks.
             </p>
 
             <form onSubmit={handleSaveCourses}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: '0.4rem', fontFamily: 'system-ui' }}>
+                    Student Name
+                  </label>
+                  <input
+                    type="text"
+                    value={editingName}
+                    onChange={(e) => setEditingName(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '0.55rem 0.75rem',
+                      borderRadius: '10px',
+                      border: '1px solid #cbd5e1',
+                      fontSize: '0.88rem',
+                      fontWeight: 600,
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: '0.4rem', fontFamily: 'system-ui' }}>
+                    Access Key (Student ID)
+                  </label>
+                  <input
+                    type="text"
+                    value={editingAccessCode}
+                    onChange={(e) => setEditingAccessCode(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '0.55rem 0.75rem',
+                      borderRadius: '10px',
+                      border: '1px solid #cbd5e1',
+                      fontSize: '0.88rem',
+                      fontFamily: 'monospace',
+                      fontWeight: 700,
+                      color: '#d97706',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+              </div>
+
               <div style={{ marginBottom: '1.5rem' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginBottom: '0.75rem', fontFamily: 'system-ui' }}>
                   Select Course Tracks
