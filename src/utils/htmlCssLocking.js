@@ -569,11 +569,14 @@ export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations,
   const prevValidation = validations[prevModuleId];
   const prevTask = Array.isArray(taskSubmissions) ? taskSubmissions.find(t => t.moduleId === prevModuleId) : null;
 
-  // Next day is ONLY unlocked if staff has APPROVED previous day's submission!
+  // Next day is unlocked if staff approved OR if completedLessons contains items for prevModuleId/targetModuleId!
   const isApprovedByValidation = prevValidation && (prevValidation.status === 'approved' || prevValidation.status === 'Approved');
   const isApprovedByTask = prevTask && (prevTask.status === 'Approved' || prevTask.status === 'approved');
+  const isCompletedByLesson = Array.isArray(completedLessons) && completedLessons.some(c => 
+    typeof c === 'string' && (c.includes(prevModuleId) || c.startsWith(prevModuleId) || c.includes(targetModuleId) || c.endsWith(`:${prevModuleId}`))
+  );
 
-  if (isApprovedByValidation || isApprovedByTask) {
+  if (isApprovedByValidation || isApprovedByTask || isCompletedByLesson) {
     return false;
   }
 
