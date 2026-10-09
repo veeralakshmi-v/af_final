@@ -83,6 +83,7 @@ const checkDbConnection = async () => {
 
 // 2. Mongoose Schema
 const taskSubmissionSchema = new mongoose.Schema({
+  _id: { type: mongoose.Schema.Types.Mixed },
   moduleId: { type: String, required: true },
   tabId: { type: String, required: true },
   taskUrl: { type: String, default: '' },
