@@ -705,7 +705,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       taskUrl: rec.submissionUrl || '',
       taskText: rec.studentFeedback ? `[Student Reflection]: ${rec.studentFeedback}${rec.submissionNotes ? `\n\n[Code / Notes]: ${rec.submissionNotes}` : ''}` : rec.submissionNotes || '',
       submittedAt: rec.submittedAt || rec.updatedAt || 'Recently',
-      status: rec.status === 'approved' ? 'Approved' : rec.status === 'rejected' ? 'Rejected' : 'Pending',
+      status: (rec.status || '').toLowerCase() === 'approved' ? 'Approved' : (rec.status || '').toLowerCase() === 'rejected' ? 'Rejected' : 'Pending',
       staffFeedback: rec.staffFeedback || '',
       validatedAt: rec.validatedAt || '',
       validatedBy: rec.validatedBy || ''
@@ -714,15 +714,24 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
   // 2) Topic Homework Submissions from Students Backend
   const topicSubmissions = students.flatMap(s =>
-    (s.tasks || []).map(t => ({
-      ...t,
-      isHtmlCss: false,
-      studentName: s.name,
-      studentId: s._id || s.id,
-      accessCode: s.accessCode,
-      moduleTitle: t.moduleId,
-      status: t.status === 'Approved' ? 'Approved' : t.status === 'Rejected' ? 'Rejected' : 'Pending'
-    }))
+    (s.tasks || []).map((t, idx) => {
+      const rawStatus = (t.status || 'Pending').toLowerCase();
+      const normalizedStatus = rawStatus === 'approved' ? 'Approved' : rawStatus === 'rejected' ? 'Rejected' : 'Pending';
+      const taskId = t._id || t.id || `task_${s._id || s.id}_${t.moduleId || idx}`;
+      return {
+        ...t,
+        _id: taskId,
+        id: taskId,
+        isHtmlCss: false,
+        studentName: s.name,
+        studentId: s._id || s.id,
+        accessCode: s.accessCode,
+        moduleId: t.moduleId,
+        tabId: t.tabId || 'assignment',
+        moduleTitle: t.moduleId,
+        status: normalizedStatus
+      };
+    })
   );
 
   // Combined Chronological Submissions
@@ -732,10 +741,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     return db - da;
   });
 
-  const pendingSubmissions = allSubmissions.filter(s => s.status === 'Pending');
+  const pendingSubmissions = allSubmissions.filter(s => (s.status || '').toLowerCase() === 'pending');
   const pendingCount = pendingSubmissions.length;
 
-  const handleQuickApprove = (task) => {
+  const handleQuickApprove = async (task) => {
     if (task.isHtmlCss) {
       const rec = htmlCssValidations[task.moduleId] || {};
       const updatedRecord = {
@@ -748,20 +757,42 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       saveAssignmentValidation(task.moduleId, updatedRecord);
       setHtmlCssValidations(getAssignmentValidations());
     } else {
-      fetch(`/api/students/tasks/${task._id || task.id}/grade`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          studentId: task.studentId,
-          status: 'Approved',
-          feedback: 'Approved by staff',
-          grade: 'A+'
-        })
-      }).then(() => fetchStudents());
+      try {
+        const taskId = task._id || task.id;
+        const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            studentId: task.studentId,
+            accessCode: task.accessCode,
+            moduleId: task.moduleId,
+            tabId: task.tabId || 'assignment',
+            status: 'Approved',
+            feedback: 'Approved by staff',
+            grade: 'A+'
+          })
+        });
+        if (res.ok) {
+          if (task.moduleId) {
+            saveAssignmentValidation(task.moduleId, {
+              status: 'approved',
+              studentName: task.studentName,
+              staffFeedback: 'Approved by staff'
+            });
+          }
+          await fetchStudents();
+        } else {
+          const err = await res.json().catch(() => ({}));
+          alert(err.error || 'Failed to approve task.');
+        }
+      } catch (err) {
+        console.warn('API error approving task:', err);
+        alert('Could not reach backend API server.');
+      }
     }
   };
 
-  const handleQuickReject = (task) => {
+  const handleQuickReject = async (task) => {
     if (task.isHtmlCss) {
       const rec = htmlCssValidations[task.moduleId] || {};
       const updatedRecord = {
@@ -774,16 +805,38 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       saveAssignmentValidation(task.moduleId, updatedRecord);
       setHtmlCssValidations(getAssignmentValidations());
     } else {
-      fetch(`/api/students/tasks/${task._id || task.id}/grade`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          studentId: task.studentId,
-          status: 'Rejected',
-          feedback: 'Revision requested by staff',
-          grade: 'Needs Revision'
-        })
-      }).then(() => fetchStudents());
+      try {
+        const taskId = task._id || task.id;
+        const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            studentId: task.studentId,
+            accessCode: task.accessCode,
+            moduleId: task.moduleId,
+            tabId: task.tabId || 'assignment',
+            status: 'Rejected',
+            feedback: 'Revision requested by staff. Please review comments and resubmit.',
+            grade: 'Needs Revision'
+          })
+        });
+        if (res.ok) {
+          if (task.moduleId) {
+            saveAssignmentValidation(task.moduleId, {
+              status: 'rejected',
+              studentName: task.studentName,
+              staffFeedback: 'Revision requested by staff'
+            });
+          }
+          await fetchStudents();
+        } else {
+          const err = await res.json().catch(() => ({}));
+          alert(err.error || 'Failed to request revision.');
+        }
+      } catch (err) {
+        console.warn('API error requesting revision:', err);
+        alert('Could not reach backend API server.');
+      }
     }
   };
 
@@ -1073,23 +1126,49 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
     setGradingLoading(true);
     try {
-      const res = await fetch(`/api/students/tasks/${gradingTask._id || gradingTask.id}/grade`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          studentId: gradingStudentId,
-          status: statusTrimmed,
-          feedback: feedbackTrimmed,
-          grade: gradeTrimmed
-        })
-      });
-      if (res.ok) {
-        alert('Task graded successfully!');
+      if (gradingTask.isHtmlCss) {
+        const rec = htmlCssValidations[gradingTask.moduleId] || {};
+        const updatedRecord = {
+          ...rec,
+          staffFeedback: feedbackTrimmed || (statusTrimmed === 'Approved' ? 'Approved by staff' : 'Revision requested'),
+          status: statusTrimmed.toLowerCase(),
+          validatedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+          validatedBy: session?.name || 'Staff Instructor'
+        };
+        saveAssignmentValidation(gradingTask.moduleId, updatedRecord);
+        setHtmlCssValidations(getAssignmentValidations());
+        alert('Task evaluated successfully!');
         setGradingTask(null);
-        fetchStudents();
       } else {
-        const err = await res.json();
-        alert(err.error || 'Failed to grade task.');
+        const taskId = gradingTask._id || gradingTask.id;
+        const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            studentId: gradingStudentId || gradingTask.studentId,
+            accessCode: gradingTask.accessCode,
+            moduleId: gradingTask.moduleId,
+            tabId: gradingTask.tabId || 'assignment',
+            status: statusTrimmed,
+            feedback: feedbackTrimmed,
+            grade: gradeTrimmed || (statusTrimmed === 'Approved' ? 'A+' : statusTrimmed === 'Rejected' ? 'Needs Revision' : '')
+          })
+        });
+        if (res.ok) {
+          if (gradingTask.moduleId) {
+            saveAssignmentValidation(gradingTask.moduleId, {
+              status: statusTrimmed.toLowerCase(),
+              studentName: gradingTask.studentName,
+              staffFeedback: feedbackTrimmed
+            });
+          }
+          alert('Task graded successfully!');
+          setGradingTask(null);
+          await fetchStudents();
+        } else {
+          const err = await res.json().catch(() => ({}));
+          alert(err.error || 'Failed to grade task.');
+        }
       }
     } catch (err) {
       console.warn('API error grading task:', err);
@@ -3163,14 +3242,15 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
             {/* 📊 1) KPI Metrics Summary Bar */}
             {(() => {
-              const approvedCount = allSubmissions.filter(s => s.status === 'Approved').length;
-              const rejectedCount = allSubmissions.filter(s => s.status === 'Rejected').length;
+              const approvedCount = allSubmissions.filter(s => (s.status || '').toLowerCase() === 'approved').length;
+              const rejectedCount = allSubmissions.filter(s => (s.status || '').toLowerCase() === 'rejected').length;
 
               const filteredSubmissions = allSubmissions.filter(s => {
-                if (reviewFilter === 'pending') if (s.status !== 'Pending') return false;
-                if (reviewFilter === 'approved') if (s.status !== 'Approved') return false;
-                if (reviewFilter === 'rejected') if (s.status !== 'Rejected') return false;
-                if (reviewFilter === 'html_css') if (!s.isHtmlCss) return false;
+                const sStatus = (s.status || '').toLowerCase();
+                if (reviewFilter === 'pending' && sStatus !== 'pending') return false;
+                if (reviewFilter === 'approved' && sStatus !== 'approved') return false;
+                if (reviewFilter === 'rejected' && sStatus !== 'rejected') return false;
+                if (reviewFilter === 'html_css' && !s.isHtmlCss) return false;
 
                 if (reviewSearch.trim()) {
                   const q = reviewSearch.trim().toLowerCase();

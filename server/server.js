@@ -83,7 +83,10 @@ const checkDbConnection = async () => {
 
 // 2. Mongoose Schema
 const taskSubmissionSchema = new mongoose.Schema({
-  _id: { type: mongoose.Schema.Types.Mixed },
+  _id: { 
+    type: mongoose.Schema.Types.Mixed, 
+    default: () => new mongoose.Types.ObjectId().toString() 
+  },
   moduleId: { type: String, required: true },
   tabId: { type: String, required: true },
   taskUrl: { type: String, default: '' },
@@ -525,8 +528,11 @@ app.post('/api/students/:id/tasks', async (req, res) => {
       if (!student) return res.status(404).json({ error: 'Student not found!' });
       
       // Check if already submitted
-      const existingTask = student.tasks.find(t => t.moduleId === moduleId && t.tabId === tabId);
+      let existingTask = student.tasks.find(t => t.moduleId === moduleId && t.tabId === tabId);
       if (existingTask) {
+        if (!existingTask._id) {
+          existingTask._id = new mongoose.Types.ObjectId().toString();
+        }
         existingTask.taskUrl = urlTrimmed;
         existingTask.taskText = textTrimmed;
         existingTask.submittedAt = new Date();
@@ -535,6 +541,7 @@ app.post('/api/students/:id/tasks', async (req, res) => {
         existingTask.grade = '';
       } else {
         student.tasks.push({
+          _id: new mongoose.Types.ObjectId().toString(),
           moduleId,
           tabId,
           taskUrl: urlTrimmed,
@@ -545,6 +552,7 @@ app.post('/api/students/:id/tasks', async (req, res) => {
           grade: ''
         });
       }
+      student.markModified('tasks');
       await student.save();
       return res.json(student);
     } else {
@@ -555,8 +563,11 @@ app.post('/api/students/:id/tasks', async (req, res) => {
       const student = students[idx];
       if (!student.tasks) student.tasks = [];
       
-      const existingTask = student.tasks.find(t => t.moduleId === moduleId && t.tabId === tabId);
+      let existingTask = student.tasks.find(t => t.moduleId === moduleId && t.tabId === tabId);
       if (existingTask) {
+        if (!existingTask._id) {
+          existingTask._id = 'task-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+        }
         existingTask.taskUrl = urlTrimmed;
         existingTask.taskText = textTrimmed;
         existingTask.submittedAt = new Date();
@@ -588,8 +599,8 @@ app.post('/api/students/:id/tasks', async (req, res) => {
 // C-6. Grade Student Task Assignment (Admin/Staff only)
 app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
   const { taskId } = req.params;
-  const { studentId, status, feedback, grade } = req.body;
-  if (!studentId || !status) {
+  const { studentId, accessCode, status, feedback, grade, moduleId, tabId } = req.body;
+  if ((!studentId && !accessCode) || !status) {
     return res.status(400).json({ error: 'studentId and status are required!' });
   }
 
@@ -597,48 +608,123 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
   const feedbackTrimmed = feedback ? feedback.trim() : '';
   const gradeTrimmed = grade ? grade.trim() : '';
 
-  if (!['Approved', 'Rejected', 'Pending'].includes(statusTrimmed)) {
+  const lowerStatus = statusTrimmed.toLowerCase();
+  if (!['approved', 'rejected', 'pending'].includes(lowerStatus)) {
     return res.status(400).json({ error: 'Invalid review status. Status must be Approved, Rejected, or Pending.' });
   }
 
-  if (statusTrimmed === 'Rejected' && feedbackTrimmed.length < 10) {
-    return res.status(400).json({ error: 'Evaluation feedback is required and must be at least 10 characters when rejecting an assignment.' });
+  const normalizedStatus = lowerStatus === 'approved' 
+    ? 'Approved' 
+    : lowerStatus === 'rejected' 
+      ? 'Rejected' 
+      : 'Pending';
+
+  if (normalizedStatus === 'Rejected' && feedbackTrimmed.length < 5) {
+    return res.status(400).json({ error: 'Evaluation feedback is required when requesting a revision.' });
   }
 
-  if (statusTrimmed === 'Approved' && !gradeTrimmed) {
-    return res.status(400).json({ error: 'A grade or score is required when approving an assignment.' });
-  }
+  const finalGrade = gradeTrimmed || (normalizedStatus === 'Approved' ? 'A+' : normalizedStatus === 'Rejected' ? 'Needs Revision' : '');
 
   try {
     const isDbConnected = await checkDbConnection();
     if (isDbConnected) {
-      const student = await Student.findById(studentId);
+      let student = null;
+      if (studentId && mongoose.Types.ObjectId.isValid(studentId)) {
+        student = await Student.findById(studentId);
+      }
+      if (!student && studentId) {
+        student = await Student.findOne({ accessCode: String(studentId).trim() });
+      }
+      if (!student && accessCode) {
+        student = await Student.findOne({ accessCode: String(accessCode).trim() });
+      }
+      if (!student && taskId && taskId !== 'undefined' && taskId !== 'null') {
+        student = await Student.findOne({
+          $or: [
+            { 'tasks._id': taskId },
+            { 'tasks.id': taskId }
+          ]
+        });
+      }
       if (!student) return res.status(404).json({ error: 'Student not found!' });
-      
-      const task = student.tasks.id(taskId);
+
+      let task = null;
+      if (taskId && taskId !== 'undefined' && taskId !== 'null') {
+        if (typeof student.tasks.id === 'function') {
+          try {
+            task = student.tasks.id(taskId);
+          } catch (e) {}
+        }
+        if (!task) {
+          task = student.tasks.find(t => String(t._id || t.id) === String(taskId));
+        }
+      }
+      if (!task && moduleId) {
+        task = student.tasks.find(t => t.moduleId === moduleId && (!tabId || t.tabId === tabId));
+      }
+      if (!task && moduleId) {
+        task = student.tasks.find(t => t.moduleId === moduleId);
+      }
+
       if (!task) return res.status(404).json({ error: 'Task submission not found!' });
-      
-      task.status = statusTrimmed;
+
+      task.status = normalizedStatus;
       task.feedback = feedbackTrimmed;
-      task.grade = gradeTrimmed;
-      
+      task.grade = finalGrade;
+      if (!task._id) {
+        task._id = new mongoose.Types.ObjectId().toString();
+      }
+
+      // When approved, also ensure student.completedLessons includes moduleId so next day is unlocked!
+      if (normalizedStatus === 'Approved' && task.moduleId) {
+        if (!Array.isArray(student.completedLessons)) {
+          student.completedLessons = [];
+        }
+        if (!student.completedLessons.includes(task.moduleId)) {
+          student.completedLessons.push(task.moduleId);
+        }
+      }
+
+      student.markModified('tasks');
+      student.markModified('completedLessons');
       await student.save();
       return res.json(student);
     } else {
       const students = getLocalStudents();
-      const idx = students.findIndex(s => s.id === studentId || s.accessCode === studentId.trim());
-      if (idx === -1) return res.status(404).json({ error: 'Student not found!' });
-      
-      const student = students[idx];
+      let student = students.find(s => 
+        (studentId && (s.id === studentId || s.accessCode === String(studentId).trim())) ||
+        (accessCode && s.accessCode === String(accessCode).trim()) ||
+        (s.tasks && s.tasks.some(t => String(t._id || t.id) === String(taskId)))
+      );
+      if (!student) return res.status(404).json({ error: 'Student not found!' });
+
       if (!student.tasks) student.tasks = [];
-      
-      const task = student.tasks.find(t => t._id === taskId || t.id === taskId);
+      let task = student.tasks.find(t => String(t._id || t.id) === String(taskId));
+      if (!task && moduleId) {
+        task = student.tasks.find(t => t.moduleId === moduleId && (!tabId || t.tabId === tabId));
+      }
+      if (!task && moduleId) {
+        task = student.tasks.find(t => t.moduleId === moduleId);
+      }
+
       if (!task) return res.status(404).json({ error: 'Task submission not found!' });
-      
-      task.status = statusTrimmed;
+
+      task.status = normalizedStatus;
       task.feedback = feedbackTrimmed;
-      task.grade = gradeTrimmed;
-      
+      task.grade = finalGrade;
+      if (!task._id) {
+        task._id = 'task-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+      }
+
+      if (normalizedStatus === 'Approved' && task.moduleId) {
+        if (!Array.isArray(student.completedLessons)) {
+          student.completedLessons = [];
+        }
+        if (!student.completedLessons.includes(task.moduleId)) {
+          student.completedLessons.push(task.moduleId);
+        }
+      }
+
       saveLocalStudents(students);
       return res.json(student);
     }

@@ -300,6 +300,14 @@ function App() {
         }
       };
       fetchStudentData();
+
+      const handleFocus = () => fetchStudentData();
+      window.addEventListener('focus', handleFocus);
+      window.addEventListener('storage', handleFocus);
+      return () => {
+        window.removeEventListener('focus', handleFocus);
+        window.removeEventListener('storage', handleFocus);
+      };
     } else {
       setCompletedLessons([]);
       setTaskSubmissions([]);
