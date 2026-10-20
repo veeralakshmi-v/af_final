@@ -532,6 +532,7 @@ export const powerBiCourseData = [
     title: 'Day 8 - Live Connections, Streaming & Python',
     items: [
       { id: 'intro_day8', label: 'Day 8 Overview', icon: <Eye size={18} /> },
+      { id: 'architecture_differences', label: 'Live vs DirectQuery vs Streaming', icon: <Scale size={18} /> },
       { id: 'google_sheets_connection', label: 'Google Sheets Live Connection', icon: <FileSpreadsheet size={18} /> },
       { id: 'live_connections', label: 'Live Data & DirectQuery', icon: <Radio size={18} /> },
       { id: 'realtime_streaming', label: 'Real-Time Data Streaming', icon: <Activity size={18} /> },

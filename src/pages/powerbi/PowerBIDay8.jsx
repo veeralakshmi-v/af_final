@@ -4,7 +4,7 @@ import {
   Eye, Radio, Activity, Terminal, FileSpreadsheet, Database, Copy, Check, 
   ExternalLink, Play, Pause, RefreshCw, Sliders, CheckCircle, AlertTriangle, 
   Layers, Zap, TrendingUp, Clock, ArrowRight, Code, Laptop, Server, Globe, Wifi, 
-  PieChart, BarChart2, ShieldAlert, Sparkles, HelpCircle
+  PieChart, BarChart2, ShieldAlert, Sparkles, HelpCircle, Scale, Info, HardDrive, Cpu, CheckSquare
 } from 'lucide-react';
 
 /* ─────────────────────────────────────────────
@@ -79,6 +79,345 @@ const CodeBlock = ({ code, language = 'python', title }) => {
       <pre style={{ margin: 0, padding: '1.25rem', color: '#e2e8f0', fontFamily: 'Consolas, Monaco, "Courier New", monospace', fontSize: '0.88rem', lineHeight: 1.65, overflowX: 'auto', whiteSpace: 'pre' }}>
         {code}
       </pre>
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────────────
+   INTERACTIVE LIVE PIPELINE VS STATIC EXPLAINER
+   Directly answers: "These 3 having only few data. How come this is live data?"
+───────────────────────────────────────────── */
+const LivePipelineVsStaticExplainer = () => {
+  const [activeScenario, setActiveScenario] = useState('sheets'); // 'sheets' | 'directquery' | 'streaming'
+  
+  // Sheet demo state
+  const [sheetRows, setSheetRows] = useState([
+    { id: 'ORD-1001', rep: 'Karthik S.', region: 'South', category: 'Laptops', amount: 54000, time: '10:14 AM' },
+    { id: 'ORD-1002', rep: 'Priya N.', region: 'West', category: 'Accessories', amount: 3200, time: '10:22 AM' },
+    { id: 'ORD-1003', rep: 'Amit Verma', region: 'North', category: 'Smartphones', amount: 28500, time: '10:35 AM' },
+    { id: 'ORD-1004', rep: 'Sneha Patel', region: 'East', category: 'Monitors', amount: 16800, time: '10:48 AM' },
+    { id: 'ORD-1005', rep: 'Rahul Mehta', region: 'South', category: 'Smartphones', amount: 31200, time: '11:02 AM' },
+  ]);
+  const [syncingSheet, setSyncingSheet] = useState(false);
+  const [lastSyncTrace, setLastSyncTrace] = useState(null);
+
+  // DirectQuery demo state
+  const [selectedRegion, setSelectedRegion] = useState('South');
+  const [queryRunning, setQueryRunning] = useState(false);
+  const [queryLatency, setQueryLatency] = useState(28);
+
+  const simulateAddSheetOrder = () => {
+    setSyncingSheet(true);
+    setTimeout(() => {
+      const reps = ['Ananya Rao', 'Deepak Joshi', 'Kavita Menon', 'Vignesh K.', 'Rohan Roy'];
+      const regions = ['South', 'North', 'West', 'East'];
+      const categories = ['Smartphones', 'Laptops', 'Wearables', 'Printers', 'Audio'];
+      const amounts = [4500, 12800, 24500, 38900, 62000, 8900];
+      const newOrder = {
+        id: `ORD-${1006 + sheetRows.length - 5}`,
+        rep: reps[Math.floor(Math.random() * reps.length)],
+        region: regions[Math.floor(Math.random() * regions.length)],
+        category: categories[Math.floor(Math.random() * categories.length)],
+        amount: amounts[Math.floor(Math.random() * amounts.length)],
+        time: 'Just now'
+      };
+      setSheetRows(prev => [newOrder, ...prev]);
+      setLastSyncTrace({
+        endpoint: 'GET https://docs.google.com/spreadsheets/d/.../pub?output=csv',
+        status: '200 OK (Cloud Webhook Event)',
+        duration: `${Math.floor(Math.random() * 120) + 210}ms`,
+        addedRow: newOrder.id
+      });
+      setSyncingSheet(false);
+    }, 400);
+  };
+
+  const handleRegionChange = (reg) => {
+    setQueryRunning(true);
+    setSelectedRegion(reg);
+    setTimeout(() => {
+      setQueryLatency(Math.floor(Math.random() * 25) + 20);
+      setQueryRunning(false);
+    }, 250);
+  };
+
+  const totalRevenue = sheetRows.reduce((acc, r) => acc + r.amount, 0);
+
+  // DirectQuery metrics simulated over 3.45M rows
+  const dqDataByRegion = {
+    South: { rowsScanned: '3,450,000', matchedOrders: '842,120', revenue: '₹4,12,40,000', topCategory: 'Smartphones (42%)' },
+    North: { rowsScanned: '3,450,000', matchedOrders: '721,500', revenue: '₹3,56,80,000', topCategory: 'Laptops (38%)' },
+    West:  { rowsScanned: '3,450,000', matchedOrders: '984,300', revenue: '₹4,89,10,000', topCategory: 'Electronics (46%)' },
+    East:  { rowsScanned: '3,450,000', matchedOrders: '512,400', revenue: '₹2,64,30,000', topCategory: 'Wearables (29%)' },
+    All:   { rowsScanned: '3,450,000', matchedOrders: '3,060,320', revenue: '₹15,22,60,000', topCategory: 'Smartphones (39%)' }
+  };
+
+  return (
+    <div style={{ background: '#0f172a', borderRadius: '20px', padding: '2rem', color: '#ffffff', marginBottom: '2rem', border: '1px solid #1e293b', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
+      
+      {/* Title & Mystery Clarification */}
+      <div style={{ borderBottom: '1px solid #1e293b', paddingBottom: '1.25rem', marginBottom: '1.5rem' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.8rem' }}>
+          <HelpCircle size={15} /> Critical Concept: Why Row Count ≠ Data Liveness
+        </div>
+        <h3 style={{ fontSize: '1.6rem', fontWeight: 900, margin: '0 0 0.6rem 0', color: '#f8fafc' }}>
+          "These Examples Have Only A Few Rows — How Come This is Live Data?"
+        </h3>
+        <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.95rem', lineHeight: 1.65 }}>
+          A common confusion for new BI developers is seeing a tutorial table with 5 rows and asking: <em>"Is this really live?"</em> 
+          <br /><strong style={{ color: '#38bdf8' }}>The Answer:</strong> <strong>Liveness is about the PIPELINE CONNECTION, NOT how many rows exist right now!</strong> A 10-million row CSV stored on your hard drive is 100% <em>static</em>. A Google Sheet with only 5 rows is 100% <em>live</em> because new rows flow into Power BI dynamically without re-uploading files!
+        </p>
+      </div>
+
+      {/* Mode Selector Tabs */}
+      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+        {[
+          { id: 'sheets', label: '1. Live Google Sheets Pipeline', icon: <FileSpreadsheet size={16} />, color: '#10b981' },
+          { id: 'directquery', label: '2. DirectQuery on 3.4M SQL Rows', icon: <Server size={16} />, color: '#3b82f6' },
+          { id: 'streaming', label: '3. Real-Time Streaming Buffer', icon: <Activity size={16} />, color: '#f59e0b' }
+        ].map(tab => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveScenario(tab.id)}
+            style={{
+              background: activeScenario === tab.id ? 'rgba(255,255,255,0.1)' : '#1e293b',
+              border: `1.5px solid ${activeScenario === tab.id ? tab.color : '#334155'}`,
+              color: activeScenario === tab.id ? '#ffffff' : '#94a3b8',
+              padding: '0.7rem 1.2rem',
+              borderRadius: '12px',
+              fontWeight: 800,
+              fontSize: '0.88rem',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'all 0.2s'
+            }}
+          >
+            <span style={{ color: tab.color }}>{tab.icon}</span>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* SCENARIO 1: LIVE GOOGLE SHEETS */}
+      {activeScenario === 'sheets' && (
+        <div style={{ background: '#131d31', borderRadius: '14px', padding: '1.5rem', border: '1px solid #1e293b' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+            <div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#10b981', textTransform: 'uppercase' }}>
+                Interactive Demonstration: Cloud Collaborative Ingestion
+              </span>
+              <h4 style={{ margin: '4px 0 0 0', fontSize: '1.2rem', fontWeight: 800, color: '#ffffff' }}>
+                Watch a Live Google Sheet Dynamically Expand in Power BI
+              </h4>
+            </div>
+            <button
+              type="button"
+              onClick={simulateAddSheetOrder}
+              disabled={syncingSheet}
+              style={{
+                background: syncingSheet ? '#334155' : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                color: '#ffffff',
+                border: 'none',
+                padding: '0.65rem 1.25rem',
+                borderRadius: '10px',
+                fontWeight: 800,
+                fontSize: '0.85rem',
+                cursor: syncingSheet ? 'not-allowed' : 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
+              }}
+            >
+              {syncingSheet ? <RefreshCw size={15} className="animate-spin" /> : <Zap size={15} />}
+              {syncingSheet ? 'Syncing Cloud Payload...' : '+ Simulate Sales Rep Adding Order on Phone'}
+            </button>
+          </div>
+
+          {/* Dynamic KPI Bar */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+            <div style={{ background: '#090d16', padding: '0.9rem', borderRadius: '10px', border: '1px solid #1e293b' }}>
+              <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Current Rows in Sheet</span>
+              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#38bdf8' }}>{sheetRows.length} Live Rows</div>
+              <span style={{ fontSize: '0.75rem', color: '#10b981' }}>● Auto-synced via Web CSV</span>
+            </div>
+            <div style={{ background: '#090d16', padding: '0.9rem', borderRadius: '10px', border: '1px solid #1e293b' }}>
+              <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Total Revenue (DAX SUM)</span>
+              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#10b981' }}>₹{totalRevenue.toLocaleString('en-IN')}</div>
+              <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Dynamic calculation</span>
+            </div>
+            <div style={{ background: '#090d16', padding: '0.9rem', borderRadius: '10px', border: '1px solid #1e293b' }}>
+              <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Power BI Desktop File (.pbix)</span>
+              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#f59e0b' }}>Zero File Mod.</div>
+              <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>No manual re-upload needed!</span>
+            </div>
+          </div>
+
+          {/* Network Trace */}
+          {lastSyncTrace && (
+            <div style={{ background: '#090d16', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #1e293b', marginBottom: '1rem', fontSize: '0.8rem', fontFamily: 'monospace', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
+              <span style={{ color: '#38bdf8' }}>📡 [HTTP GET] {lastSyncTrace.endpoint}</span>
+              <span style={{ color: '#10b981', fontWeight: 800 }}>{lastSyncTrace.status} ({lastSyncTrace.duration})</span>
+            </div>
+          )}
+
+          {/* Table Preview */}
+          <div style={{ overflowX: 'auto', maxHeight: '230px', overflowY: 'auto', borderRadius: '8px', border: '1px solid #1e293b' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem', textAlign: 'left', background: '#090d16' }}>
+              <thead>
+                <tr style={{ background: '#1e293b', color: '#cbd5e1' }}>
+                  <th style={{ padding: '8px 12px' }}>Order ID</th>
+                  <th style={{ padding: '8px 12px' }}>Sales Rep</th>
+                  <th style={{ padding: '8px 12px' }}>Region</th>
+                  <th style={{ padding: '8px 12px' }}>Category</th>
+                  <th style={{ padding: '8px 12px' }}>Amount (INR)</th>
+                  <th style={{ padding: '8px 12px' }}>Time Added</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sheetRows.map((r, i) => (
+                  <tr key={i} style={{ borderBottom: '1px solid #1e293b', background: i === 0 ? 'rgba(16, 185, 129, 0.08)' : 'transparent' }}>
+                    <td style={{ padding: '8px 12px', color: '#38bdf8', fontWeight: 700, fontFamily: 'monospace' }}>{r.id}</td>
+                    <td style={{ padding: '8px 12px', color: '#f8fafc' }}>{r.rep}</td>
+                    <td style={{ padding: '8px 12px', color: '#94a3b8' }}>{r.region}</td>
+                    <td style={{ padding: '8px 12px', color: '#cbd5e1' }}>{r.category}</td>
+                    <td style={{ padding: '8px 12px', color: '#10b981', fontWeight: 700 }}>₹{r.amount.toLocaleString('en-IN')}</td>
+                    <td style={{ padding: '8px 12px', color: '#94a3b8' }}>{r.time}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div style={{ marginTop: '1rem', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '10px', padding: '0.85rem 1rem', fontSize: '0.86rem', color: '#a7f3d0', lineHeight: 1.6 }}>
+            <strong>💡 Why this proves it is LIVE:</strong> In static import mode, you have to download <code>sales.xlsx</code> to your laptop, open Power BI Desktop, click Refresh, and republish. In this Live Google Sheet method, any user adding a row in Google Sheets via web browser, Google Form, or phone app immediately populates Power BI automatically upon scheduled refresh without anyone touching the <code>.pbix</code> file!
+          </div>
+        </div>
+      )}
+
+      {/* SCENARIO 2: DIRECTQUERY ON 3.4M ROWS */}
+      {activeScenario === 'directquery' && (
+        <div style={{ background: '#131d31', borderRadius: '14px', padding: '1.5rem', border: '1px solid #1e293b' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+            <div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#3b82f6', textTransform: 'uppercase' }}>
+                Interactive Demonstration: Query Pushdown & Zero Local Storage
+              </span>
+              <h4 style={{ margin: '4px 0 0 0', fontSize: '1.2rem', fontWeight: 800, color: '#ffffff' }}>
+                Why DirectQuery Shows "Few Rows" in Visuals Despite 3,450,000 DB Rows
+              </h4>
+            </div>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 700 }}>Filter Region Slicer:</span>
+              {['South', 'North', 'West', 'East', 'All'].map(reg => (
+                <button
+                  key={reg}
+                  type="button"
+                  onClick={() => handleRegionChange(reg)}
+                  style={{
+                    background: selectedRegion === reg ? '#2563eb' : '#1e293b',
+                    color: '#ffffff',
+                    border: '1px solid #3b82f6',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    cursor: 'pointer'
+                  }}
+                >
+                  {reg}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* DirectQuery Server vs Visual Metrics */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+            <div style={{ background: '#090d16', padding: '0.9rem', borderRadius: '10px', border: '1px solid #1e293b' }}>
+              <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Enterprise SQL Database</span>
+              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#f8fafc' }}>{dqDataByRegion[selectedRegion].rowsScanned} Rows</div>
+              <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Hosted on Azure SQL DB</span>
+            </div>
+            <div style={{ background: '#090d16', padding: '0.9rem', borderRadius: '10px', border: '1px solid #1e293b' }}>
+              <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Rows Stored in .pbix File</span>
+              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#10b981' }}>0 Rows (Zero!)</div>
+              <span style={{ fontSize: '0.75rem', color: '#10b981' }}>DirectQuery Storage Mode</span>
+            </div>
+            <div style={{ background: '#090d16', padding: '0.9rem', borderRadius: '10px', border: '1px solid #1e293b' }}>
+              <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Returned Aggregated Metric</span>
+              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#38bdf8' }}>{dqDataByRegion[selectedRegion].revenue}</div>
+              <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Returned in {queryLatency}ms</span>
+            </div>
+          </div>
+
+          {/* Real-time Generated T-SQL */}
+          <div style={{ background: '#090d16', borderRadius: '10px', padding: '1rem', border: '1px solid #1e293b', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>
+                Live SQL Query Generated & Pushed Down to Server (Query Folding):
+              </span>
+              <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 800 }}>⚡ Executed in {queryLatency}ms</span>
+            </div>
+            <pre style={{ margin: 0, color: '#38bdf8', fontFamily: 'monospace', fontSize: '0.82rem', lineHeight: 1.5, overflowX: 'auto' }}>
+{`-- Power BI generates this dynamic T-SQL query on every slicer click:
+SELECT 
+    f.Region,
+    COUNT(f.OrderID) AS MatchedOrders,
+    SUM(f.SalesAmount) AS TotalRevenue
+FROM sales.fact_orders AS f WITH (NOLOCK)
+${selectedRegion === 'All' ? '-- No region filter applied' : `WHERE f.Region = '${selectedRegion}'`}
+GROUP BY f.Region;`}
+            </pre>
+          </div>
+
+          <div style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '10px', padding: '0.85rem 1rem', fontSize: '0.86rem', color: '#bfdbfe', lineHeight: 1.6 }}>
+            <strong>💡 Why the visual only shows 1 or 2 rows:</strong> When you put a Card or Bar Chart in Power BI, the visual requests an <em>aggregation</em> (Total Sales for South). DirectQuery does NOT download 3.45 million rows to your computer; the remote SQL Server aggregates them and returns ONLY the single aggregated answer. The few rows you see on screen is the design goal of business intelligence, while the connection to the database is 100% LIVE!
+          </div>
+        </div>
+      )}
+
+      {/* SCENARIO 3: REAL-TIME STREAMING BUFFER */}
+      {activeScenario === 'streaming' && (
+        <div style={{ background: '#131d31', borderRadius: '14px', padding: '1.5rem', border: '1px solid #1e293b' }}>
+          <div>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#f59e0b', textTransform: 'uppercase' }}>
+              Interactive Demonstration: Transient In-Memory FIFO Buffer
+            </span>
+            <h4 style={{ margin: '4px 0 0.8rem 0', fontSize: '1.2rem', fontWeight: 800, color: '#ffffff' }}>
+              Why Real-Time Streaming Does NOT Store Gigabytes in Visuals
+            </h4>
+            <p style={{ margin: '0 0 1rem 0', color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.6 }}>
+              If a streaming IoT device sends 100 readings every second, storing all historical rows in the browser visual would crash Power BI Desktop within minutes. Streaming datasets intentionally use a <strong>rolling FIFO (First In, First Out) memory window</strong> (such as the last 60 seconds or 1 hour).
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+            <div style={{ background: '#090d16', padding: '1rem', borderRadius: '10px', border: '1px solid #1e293b' }}>
+              <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Ingestion Cadence</span>
+              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#f59e0b' }}>Sub-Second (1 tick/s)</div>
+              <span style={{ fontSize: '0.75rem', color: '#10b981' }}>Direct REST POST</span>
+            </div>
+            <div style={{ background: '#090d16', padding: '1rem', borderRadius: '10px', border: '1px solid #1e293b' }}>
+              <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Visual Retention Window</span>
+              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#38bdf8' }}>Rolling 60 Seconds</div>
+              <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Oldest records expire</span>
+            </div>
+            <div style={{ background: '#090d16', padding: '1rem', borderRadius: '10px', border: '1px solid #1e293b' }}>
+              <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Dashboard Visual Tile</span>
+              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#10b981' }}>Live Auto-Update</div>
+              <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Zero click refresh</span>
+            </div>
+          </div>
+
+          <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '10px', padding: '0.85rem 1rem', fontSize: '0.86rem', color: '#fde68a', lineHeight: 1.6 }}>
+            <strong>💡 Key Takeaway:</strong> In real-time streaming, having 5 to 10 points on a heart-rate monitor, factory gauge, or stock ticker line chart is the exact industry definition of real-time telemetry. You are observing live data as it pulses through memory!
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
@@ -223,9 +562,10 @@ export default function PowerBIDay8({ activeTab, onNavigate }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Safe fallback: Map any legacy tabs (ai_prompt_engineering, etc.) gracefully
+  // Safe fallback: Map any legacy tabs gracefully
   const normalizedTab = [
     'intro_day8',
+    'architecture_differences',
     'google_sheets_connection',
     'live_connections',
     'realtime_streaming',
@@ -234,6 +574,44 @@ export default function PowerBIDay8({ activeTab, onNavigate }) {
   ].includes(activeTab) 
     ? activeTab 
     : (activeTab === 'python_powerbi' ? 'python_powerbi' : 'intro_day8');
+
+  // Interactive Quiz State in Architecture Differences Tab
+  const [selectedScenario, setSelectedScenario] = useState(null);
+
+  const scenarioQuestions = [
+    {
+      id: 'scen1',
+      title: 'Scenario 1: 500 Million Records in Snowflake',
+      problem: 'Your company has 500,000,000 transaction records in Snowflake. Security policy strictly forbids downloading data to employee laptops. Executives need live sales KPIs by state.',
+      correct: 'directquery',
+      recommendation: 'DirectQuery Mode',
+      reason: 'With 500M rows, the dataset exceeds Power BI Desktop in-memory limits (1GB). DirectQuery leaves data inside Snowflake and translates visual clicks to live SQL queries in milliseconds.'
+    },
+    {
+      id: 'scen2',
+      title: 'Scenario 2: Certified Corporate Semantic Model with 180 DAX Measures',
+      problem: 'The central Enterprise BI team created an SSAS Tabular model on Azure with complex Year-over-Year Gross Margin calculations already tested and certified for company finance.',
+      correct: 'live_connection',
+      recommendation: 'Live Connection',
+      reason: 'Use Live Connection to Analysis Services / Power BI Semantic Model. The business logic is already perfected in the external model; Power BI acts purely as the presentation canvas.'
+    },
+    {
+      id: 'scen3',
+      title: 'Scenario 3: Factory Temperature & Machine Vibration Sensors',
+      problem: 'Assembly line IoT sensors broadcast motor temperatures and vibration RPM every 500ms. Hallway monitors must flash alert cards instantly if heat exceeds 90°C.',
+      correct: 'realtime_streaming',
+      recommendation: 'Real-Time Streaming Dataset',
+      reason: 'Neither DirectQuery nor scheduled refresh can update every 500ms. A Power BI Streaming Dataset with REST API pushes packets directly to in-memory tiles with sub-second latency.'
+    },
+    {
+      id: 'scen4',
+      title: 'Scenario 4: Monthly Sales Quotas from Google Sheet (15 Rows)',
+      problem: 'Branch managers update their quarterly revenue target numbers (15 rows) in a shared Google Sheet once a week. The team needs the dashboard to auto-sync without file attachments.',
+      correct: 'sheets_live',
+      recommendation: 'Google Sheets Live Cloud Sync',
+      reason: 'Connect via Published CSV link. Although it is only 15 rows, it is 100% Live because any edit made by branch managers automatically flows into Power BI upon scheduled refresh.'
+    }
+  ];
 
   return (
     <AnimatePresence mode="wait">
@@ -277,6 +655,9 @@ export default function PowerBIDay8({ activeTab, onNavigate }) {
                 When sales reps update opportunities in <strong>Google Sheets</strong>, inventory managers scan barcode items on warehouse floors, or stock markets fluctuate every second, executives need decisions based on <strong>now</strong>, not last week. Mastering live ingestion separates entry-level dashboard designers from full-stack BI data engineers.
               </p>
             </div>
+
+            {/* EMBEDDED INTERACTIVE LIVE EXPLAINER */}
+            <LivePipelineVsStaticExplainer />
 
             {/* The 4 Dynamic Ingestion Pillars */}
             <div>
@@ -375,6 +756,321 @@ export default function PowerBIDay8({ activeTab, onNavigate }) {
             <div style={{ textAlign: 'center', paddingTop: '1rem' }}>
               <button
                 type="button"
+                onClick={() => handleContinue('architecture_differences')}
+                className="btn btn-primary"
+                style={{
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
+                  padding: '1rem 2.75rem',
+                  fontSize: '1.05rem',
+                  fontWeight: 800,
+                  borderRadius: '12px',
+                  boxShadow: '0 6px 18px rgba(79, 70, 229, 0.3)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                Proceed to Architecture Differences: Live vs DirectQuery vs Streaming <ArrowRight size={18} />
+              </button>
+            </div>
+
+          </div>
+        </Section>
+      )}
+
+      {/* ─────────────────────────────────────────────
+          TAB 2: ARCHITECTURE DIFFERENCES
+          (LIVE CONNECTION VS DIRECTQUERY VS REAL-TIME STREAMING)
+      ───────────────────────────────────────────── */}
+      {normalizedTab === 'architecture_differences' && (
+        <Section 
+          key="architecture_differences" 
+          id="architecture_differences" 
+          eyebrow="Microsoft PL-300 Standard • Enterprise Core Concept" 
+          title="Differences: Live Connection vs DirectQuery vs Real-Time Streaming"
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+
+            {/* Intro Lead */}
+            <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '16px', border: '1px solid #cbd5e1' }}>
+              <p style={{ fontSize: '1.05rem', color: '#334155', lineHeight: 1.7, margin: 0 }}>
+                Understanding the technical distinction between <strong>Live Connection</strong>, <strong>DirectQuery</strong>, and <strong>Real-Time Streaming</strong> is the most critical architecture decision in enterprise Business Intelligence. Each mode operates on fundamentally different protocols, storage locations, and query pushdown mechanics.
+              </p>
+            </div>
+
+            {/* The 3 Architectures Visual Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: '1.5rem' }}>
+              
+              {/* CARD 1: LIVE CONNECTION */}
+              <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '2px solid #818cf8', boxShadow: '0 8px 24px rgba(99, 102, 241, 0.08)' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#e0e7ff', color: '#4338ca', padding: '0.35rem 0.85rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 800, marginBottom: '1rem' }}>
+                  <Radio size={14} /> Mode 1: Live Connection
+                </div>
+                <h4 style={{ margin: '0 0 0.6rem 0', fontSize: '1.25rem', fontWeight: 900, color: '#1e1b4b' }}>
+                  Live Connection (To Analysis Services / Semantic Model)
+                </h4>
+                <p style={{ margin: '0 0 1.25rem 0', fontSize: '0.9rem', color: '#475569', lineHeight: 1.6 }}>
+                  Power BI connects directly to an existing, pre-built <strong>SSAS Tabular Model</strong>, <strong>Azure Analysis Services (AAS)</strong>, or <strong>Power BI Service Semantic Model</strong>.
+                </p>
+                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', fontSize: '0.85rem', color: '#334155', lineHeight: 1.7, border: '1px solid #e2e8f0' }}>
+                  <div><strong>• Where Data Lives:</strong> In the external Analysis Services engine.</div>
+                  <div><strong>• Data in .pbix:</strong> <strong>0 Bytes</strong> (Zero rows downloaded).</div>
+                  <div><strong>• Modeling in PBI:</strong> <span style={{ color: '#ef4444', fontWeight: 700 }}>LOCKED</span>. You cannot edit relationships or create calculated columns.</div>
+                  <div><strong>• Query Language:</strong> Visuals generate pure <strong>DAX</strong> queries sent to the SSAS engine.</div>
+                </div>
+              </div>
+
+              {/* CARD 2: DIRECTQUERY */}
+              <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '2px solid #60a5fa', boxShadow: '0 8px 24px rgba(59, 130, 246, 0.08)' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#dbeafe', color: '#1d4ed8', padding: '0.35rem 0.85rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 800, marginBottom: '1rem' }}>
+                  <Server size={14} /> Mode 2: DirectQuery
+                </div>
+                <h4 style={{ margin: '0 0 0.6rem 0', fontSize: '1.25rem', fontWeight: 900, color: '#1e3a8a' }}>
+                  DirectQuery (To Relational DBs & Data Warehouses)
+                </h4>
+                <p style={{ margin: '0 0 1.25rem 0', fontSize: '0.9rem', color: '#475569', lineHeight: 1.6 }}>
+                  Power BI connects to relational databases (<strong>SQL Server</strong>, <strong>Snowflake</strong>, <strong>Azure SQL</strong>, <strong>BigQuery</strong>). Every user interaction generates native SQL queries on the fly.
+                </p>
+                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', fontSize: '0.85rem', color: '#334155', lineHeight: 1.7, border: '1px solid #e2e8f0' }}>
+                  <div><strong>• Where Data Lives:</strong> In the source relational database / warehouse.</div>
+                  <div><strong>• Data in .pbix:</strong> <strong>0 Bytes</strong> (Only table schema and metadata).</div>
+                  <div><strong>• Modeling in PBI:</strong> <span style={{ color: '#10b981', fontWeight: 700 }}>UNLOCKED</span>. You can build Star Schemas, relationships & DAX measures.</div>
+                  <div><strong>• Query Language:</strong> Power BI translates visual clicks into native <strong>T-SQL / SQL</strong>.</div>
+                </div>
+              </div>
+
+              {/* CARD 3: REAL-TIME STREAMING */}
+              <div style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '2px solid #f59e0b', boxShadow: '0 8px 24px rgba(245, 158, 11, 0.08)' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#fef3c7', color: '#b45309', padding: '0.35rem 0.85rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 800, marginBottom: '1rem' }}>
+                  <Activity size={14} /> Mode 3: Real-Time Streaming
+                </div>
+                <h4 style={{ margin: '0 0 0.6rem 0', fontSize: '1.25rem', fontWeight: 900, color: '#78350f' }}>
+                  Real-Time Streaming (Push / Streaming Datasets)
+                </h4>
+                <p style={{ margin: '0 0 1.25rem 0', fontSize: '0.9rem', color: '#475569', lineHeight: 1.6 }}>
+                  Data producers (IoT sensors, Python emitters, Kafka, Azure Stream Analytics) push JSON packets directly into Power BI Service via REST API.
+                </p>
+                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', fontSize: '0.85rem', color: '#334155', lineHeight: 1.7, border: '1px solid #e2e8f0' }}>
+                  <div><strong>• Where Data Lives:</strong> In-memory rolling FIFO buffer (Power BI Service cache).</div>
+                  <div><strong>• Data in .pbix:</strong> <strong>0 Bytes</strong> (Streaming datasets reside exclusively in cloud).</div>
+                  <div><strong>• Modeling in PBI:</strong> Fixed API schema. No DAX formulas or relationships.</div>
+                  <div><strong>• Query Language:</strong> Direct HTTP POST JSON payloads (e.g. <code>/rows</code> endpoint).</div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* 12-DIMENSION MASTER COMPARISON MATRIX TABLE */}
+            <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '18px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
+              <div style={{ background: '#f8fafc', padding: '1.25rem 1.75rem', borderBottom: '1px solid #cbd5e1', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                <div>
+                  <h4 style={{ margin: 0, fontSize: '1.2rem', color: '#0f172a', fontWeight: 900 }}>
+                    🏆 Master 12-Dimension Enterprise Comparison Matrix
+                  </h4>
+                  <span style={{ fontSize: '0.82rem', color: '#64748b' }}>Comparing Live Connection vs DirectQuery vs Streaming vs Import Mode</span>
+                </div>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, background: '#e0e7ff', color: '#3730a3', padding: '4px 10px', borderRadius: '12px' }}>
+                  PL-300 Exam Core
+                </span>
+              </div>
+
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem', textAlign: 'left' }}>
+                  <thead>
+                    <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                      <th style={{ padding: '14px 16px', fontWeight: 800, color: '#334155', minWidth: '160px' }}>Architecture Dimension</th>
+                      <th style={{ padding: '14px 16px', fontWeight: 800, color: '#4338ca', minWidth: '220px' }}>1. Live Connection</th>
+                      <th style={{ padding: '14px 16px', fontWeight: 800, color: '#1d4ed8', minWidth: '220px' }}>2. DirectQuery</th>
+                      <th style={{ padding: '14px 16px', fontWeight: 800, color: '#b45309', minWidth: '220px' }}>3. Real-Time Streaming</th>
+                      <th style={{ padding: '14px 16px', fontWeight: 800, color: '#64748b', minWidth: '180px' }}>4. Standard Import</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      {
+                        dim: 'Target Data Sources',
+                        live: 'SSAS Tabular, Azure Analysis Services, Power BI Semantic Models',
+                        dq: 'SQL Server, Azure SQL, Snowflake, BigQuery, Oracle, Databricks',
+                        stream: 'IoT Hub, Azure Stream Analytics, Python/Node REST APIs, PubNub',
+                        imp: 'Excel, CSV, Folders, Web, SharePoint, Databases'
+                      },
+                      {
+                        dim: 'Where Data Physically Resides',
+                        live: 'External Analysis Services tabular engine',
+                        dq: 'Remote SQL Database / Cloud Data Warehouse',
+                        stream: 'Transient Azure streaming memory buffer',
+                        imp: 'Compressed into local VertiPaq columnar memory'
+                      },
+                      {
+                        dim: '.pbix File Size on Disk',
+                        live: 'Tiny (~100 KB - metadata only)',
+                        dq: 'Small (~200 KB - schema & relationships only)',
+                        stream: 'N/A (Built in Power BI Service cloud)',
+                        imp: 'Can grow to several gigabytes (1 GB default limit)'
+                      },
+                      {
+                        dim: 'Data Modeling & Relationships',
+                        live: '❌ LOCKED (Cannot build relationships or tables in PBI)',
+                        dq: '✅ UNLOCKED (Can build Star Schema, relationships & measures)',
+                        stream: '❌ Fixed API schema (No tables or relationships)',
+                        imp: '✅ Full freedom (Complete modeling & relationships)'
+                      },
+                      {
+                        dim: 'DAX Function Support',
+                        live: '✅ 100% Full DAX supported by underlying SSAS model',
+                        dq: '⚠️ Restricted DAX (Must translate to SQL; no Time Intelligence calculated columns)',
+                        stream: '❌ No DAX formulas (Visuals display raw streaming values)',
+                        imp: '✅ 100% Full DAX capabilities'
+                      },
+                      {
+                        dim: 'Power Query (M) Transformations',
+                        live: '❌ NONE (Power Query Editor completely disabled)',
+                        dq: '⚠️ Query Folding only (Steps must translate to SQL)',
+                        stream: '❌ NONE (JSON must be pre-shaped by emitter)',
+                        imp: '✅ Unlimited Power Query M steps & transformations'
+                      },
+                      {
+                        dim: 'Update Latency / Refresh Trigger',
+                        live: 'Immediate on SSAS partition process',
+                        dq: 'Near real-time (Query sent on every slicer/filter click)',
+                        stream: '⚡ Sub-second (Continuous 1-second push)',
+                        imp: 'Scheduled batch refresh (e.g. 8x or 48x daily)'
+                      },
+                      {
+                        dim: 'Max Data Volume Capacity',
+                        live: 'Unlimited (Determined by SSAS cluster RAM)',
+                        dq: 'Unlimited (Billions of rows in Snowflake / Synapse)',
+                        stream: 'High throughput (Up to 10,000 requests/sec)',
+                        imp: 'Limited by 1 GB / 10 GB capacity limits'
+                      },
+                      {
+                        dim: 'Gateway Required for Cloud?',
+                        live: 'Yes (If SSAS is on-premises)',
+                        dq: 'Yes (If SQL DB is behind corporate firewall)',
+                        stream: 'No (Direct HTTPS push over the web)',
+                        imp: 'Yes (If source file is on local server/PC)'
+                      },
+                      {
+                        dim: 'Source System CPU Load',
+                        live: 'Moderate (Analysis Services handles tabular DAX)',
+                        dq: 'HIGH (Every user click triggers live SQL execution)',
+                        stream: 'Low (Power BI Service absorbs HTTP payloads)',
+                        imp: 'None during viewing; heavy during batch refresh'
+                      },
+                      {
+                        dim: 'Ideal Real-World Scenario',
+                        live: 'Enterprise standardized financial models across 500+ analysts',
+                        dq: 'High-volume live transactional databases (Orders, ERP, Telematics)',
+                        stream: 'Factory floor IoT sensor gauges, live trading tickers, hospital vitals',
+                        imp: 'Monthly reports, sales summaries, small-to-medium datasets (<5M rows)'
+                      },
+                      {
+                        dim: 'When NOT to Use',
+                        live: 'When you need to mash up multiple disparate raw CSV/Web sources',
+                        dq: 'When users expect sub-second slicer clicks on slow, unindexed databases',
+                        stream: 'When you need multi-year historical trend analysis and complex DAX',
+                        imp: 'When data changes second-by-second or exceeds memory capacity'
+                      }
+                    ].map((row, idx) => (
+                      <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
+                        <td style={{ padding: '12px 16px', fontWeight: 800, color: '#0f172a' }}>{row.dim}</td>
+                        <td style={{ padding: '12px 16px', color: '#4338ca', fontSize: '0.85rem', lineHeight: 1.5 }}>{row.live}</td>
+                        <td style={{ padding: '12px 16px', color: '#1d4ed8', fontSize: '0.85rem', lineHeight: 1.5 }}>{row.dq}</td>
+                        <td style={{ padding: '12px 16px', color: '#b45309', fontSize: '0.85rem', lineHeight: 1.5 }}>{row.stream}</td>
+                        <td style={{ padding: '12px 16px', color: '#475569', fontSize: '0.85rem', lineHeight: 1.5 }}>{row.imp}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* INTERACTIVE ARCHITECTURAL DECISION HELPER */}
+            <div style={{ background: '#f8fafc', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#dcfce7', color: '#166534', padding: '0.35rem 0.85rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 800, marginBottom: '0.8rem' }}>
+                <CheckSquare size={14} /> Interactive Scenario Decision Helper
+              </div>
+              <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
+                Which Storage Connection Should You Choose? Test Your Knowledge
+              </h3>
+              <p style={{ margin: '0 0 1.5rem 0', color: '#64748b', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Click each enterprise business scenario below to test your understanding of connection modes:
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+                {scenarioQuestions.map(scen => (
+                  <button
+                    key={scen.id}
+                    type="button"
+                    onClick={() => setSelectedScenario(scen.id)}
+                    style={{
+                      background: selectedScenario === scen.id ? '#1e1b4b' : '#ffffff',
+                      color: selectedScenario === scen.id ? '#ffffff' : '#0f172a',
+                      border: `1.5px solid ${selectedScenario === scen.id ? '#6366f1' : '#cbd5e1'}`,
+                      borderRadius: '12px',
+                      padding: '1.25rem',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      boxShadow: selectedScenario === scen.id ? '0 8px 20px rgba(99, 102, 241, 0.2)' : 'none'
+                    }}
+                  >
+                    <div style={{ fontSize: '0.82rem', fontWeight: 800, color: selectedScenario === scen.id ? '#a5b4fc' : '#6366f1', marginBottom: '6px' }}>
+                      {scen.title}
+                    </div>
+                    <p style={{ margin: 0, fontSize: '0.88rem', color: selectedScenario === scen.id ? '#cbd5e1' : '#475569', lineHeight: 1.5 }}>
+                      {scen.problem}
+                    </p>
+                  </button>
+                ))}
+              </div>
+
+              {selectedScenario && (
+                <div style={{ background: '#ffffff', borderRadius: '14px', padding: '1.5rem', border: '2px solid #10b981', boxShadow: '0 4px 15px rgba(16, 185, 129, 0.1)' }}>
+                  {(() => {
+                    const active = scenarioQuestions.find(s => s.id === selectedScenario);
+                    return (
+                      <div>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#dcfce7', color: '#15803d', padding: '4px 10px', borderRadius: '6px', fontWeight: 900, fontSize: '0.85rem', marginBottom: '8px' }}>
+                          <CheckCircle size={15} /> Architect Recommendation: {active.recommendation}
+                        </div>
+                        <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.15rem', color: '#0f172a', fontWeight: 800 }}>
+                          Why This Architecture is Chosen:
+                        </h4>
+                        <p style={{ margin: 0, fontSize: '0.92rem', color: '#334155', lineHeight: 1.7 }}>
+                          {active.reason}
+                        </p>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
+
+            {/* ADVANCED CONCEPT: COMPOSITE MODELS & DUAL STORAGE MODE */}
+            <div style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)', borderRadius: '18px', padding: '2rem', color: '#ffffff' }}>
+              <h3 style={{ margin: '0 0 0.75rem 0', fontSize: '1.35rem', fontWeight: 900, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Zap size={20} color="#facc15" /> Advanced Enterprise Pattern: Composite Models & Dual Storage
+              </h3>
+              <p style={{ margin: '0 0 1.25rem 0', fontSize: '0.95rem', color: '#c7d2fe', lineHeight: 1.65 }}>
+                Did you know that in modern Power BI you don't have to choose exclusively between Import and DirectQuery? You can combine them using <strong>Composite Models</strong>!
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
+                <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: '12px', padding: '1.25rem', border: '1px solid rgba(255,255,255,0.15)' }}>
+                  <strong style={{ color: '#facc15', display: 'block', marginBottom: '6px', fontSize: '1rem' }}>Fact Table (DirectQuery)</strong>
+                  <span style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: 1.5 }}>Keep your 500-million row <code>fact_sales</code> table in DirectQuery mode so it never overloads local RAM.</span>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: '12px', padding: '1.25rem', border: '1px solid rgba(255,255,255,0.15)' }}>
+                  <strong style={{ color: '#38bdf8', display: 'block', marginBottom: '6px', fontSize: '1rem' }}>Dimension Tables (Dual Mode)</strong>
+                  <span style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: 1.5 }}>Set small dimension tables (<code>dim_date</code>, <code>dim_store</code>) to <strong>Dual Mode</strong>. Power BI caches them in memory so slicers operate instantaneously!</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Continue Button */}
+            <div style={{ textAlign: 'center', paddingTop: '1rem' }}>
+              <button
+                type="button"
                 onClick={() => handleContinue('google_sheets_connection')}
                 className="btn btn-primary"
                 style={{
@@ -389,7 +1085,7 @@ export default function PowerBIDay8({ activeTab, onNavigate }) {
                   gap: '8px'
                 }}
               >
-                Proceed to Step 1: Google Sheets Connection <ArrowRight size={18} />
+                Proceed to Step 1: Google Sheets Live Connection <ArrowRight size={18} />
               </button>
             </div>
 
@@ -398,7 +1094,7 @@ export default function PowerBIDay8({ activeTab, onNavigate }) {
       )}
 
       {/* ─────────────────────────────────────────────
-          TAB 2: GOOGLE SHEETS CONNECTION (STEP-BY-STEP)
+          TAB 3: GOOGLE SHEETS CONNECTION (STEP-BY-STEP)
       ───────────────────────────────────────────── */}
       {normalizedTab === 'google_sheets_connection' && (
         <Section key="google_sheets_connection" id="google_sheets_connection" eyebrow="Live Cloud Data Integration • Method 1" title="Step-by-Step: Connecting Live Google Sheets to Power BI">
@@ -407,6 +1103,64 @@ export default function PowerBIDay8({ activeTab, onNavigate }) {
             <p style={{ fontSize: '1.05rem', color: '#475569', lineHeight: 1.7, margin: 0 }}>
               Google Sheets is the primary collaborative tool used by finance, sales, and operations teams worldwide. In this step-by-step module, you will learn how to connect Power BI to live Google Sheets so that whenever any team member adds or updates a row in the Google Sheet, the Power BI dashboard automatically syncs!
             </p>
+
+            {/* REALISTIC PRODUCTION DATASET PREVIEW */}
+            <div style={{ background: '#f8fafc', borderRadius: '16px', padding: '1.5rem', border: '1px solid #cbd5e1' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '0.8rem' }}>
+                <h4 style={{ margin: 0, fontSize: '1.15rem', color: '#0f172a', fontWeight: 800 }}>
+                  📋 Sample Live Production Dataset (E-Commerce Multi-Branch Sales)
+                </h4>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, background: '#dcfce7', color: '#166534', padding: '3px 8px', borderRadius: '8px' }}>
+                  Auto-Sync Endpoint
+                </span>
+              </div>
+              <p style={{ margin: '0 0 1rem 0', fontSize: '0.88rem', color: '#64748b' }}>
+                This is a realistic representation of an active Google Sheet. When team members add new rows, Power BI reads them directly:
+              </p>
+              <div style={{ overflowX: 'auto', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem', textAlign: 'left', background: '#ffffff' }}>
+                  <thead>
+                    <tr style={{ background: '#f1f5f9', color: '#334155', borderBottom: '1px solid #cbd5e1' }}>
+                      <th style={{ padding: '8px 12px' }}>Order_ID</th>
+                      <th style={{ padding: '8px 12px' }}>Customer_Name</th>
+                      <th style={{ padding: '8px 12px' }}>Region</th>
+                      <th style={{ padding: '8px 12px' }}>Product_Category</th>
+                      <th style={{ padding: '8px 12px' }}>Units</th>
+                      <th style={{ padding: '8px 12px' }}>Revenue_INR</th>
+                      <th style={{ padding: '8px 12px' }}>Order_Status</th>
+                      <th style={{ padding: '8px 12px' }}>Timestamp</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { id: 'ORD-8921', cust: 'Aarav Sharma', reg: 'South', cat: 'Laptops', units: 1, rev: '₹64,500', stat: 'Delivered', ts: '2026-10-20 09:15' },
+                      { id: 'ORD-8922', cust: 'Meera Iyer', reg: 'South', cat: 'Accessories', units: 3, rev: '₹4,200', stat: 'Shipped', ts: '2026-10-20 09:28' },
+                      { id: 'ORD-8923', cust: 'Rajesh Kumar', reg: 'North', cat: 'Smartphones', units: 1, rev: '₹28,999', stat: 'Processing', ts: '2026-10-20 09:42' },
+                      { id: 'ORD-8924', cust: 'Pooja Hegde', reg: 'West', cat: 'Monitors', units: 2, rev: '₹32,400', stat: 'Delivered', ts: '2026-10-20 10:05' },
+                      { id: 'ORD-8925', cust: 'Karthik Rao', reg: 'South', cat: 'Audio', units: 2, rev: '₹9,800', stat: 'Delivered', ts: '2026-10-20 10:18' },
+                      { id: 'ORD-8926', cust: 'Sneha Roy', reg: 'East', cat: 'Smartphones', units: 1, rev: '₹34,500', stat: 'Shipped', ts: '2026-10-20 10:35' },
+                      { id: 'ORD-8927', cust: 'Vignesh N.', reg: 'South', cat: 'Printers', units: 1, rev: '₹14,200', stat: 'Processing', ts: '2026-10-20 10:50' },
+                      { id: 'ORD-8928', cust: 'Ananya Desai', reg: 'West', cat: 'Wearables', units: 2, rev: '₹8,600', stat: 'Delivered', ts: '2026-10-20 11:12' },
+                    ].map((row, idx) => (
+                      <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                        <td style={{ padding: '8px 12px', fontWeight: 700, color: '#2563eb', fontFamily: 'monospace' }}>{row.id}</td>
+                        <td style={{ padding: '8px 12px', fontWeight: 600, color: '#0f172a' }}>{row.cust}</td>
+                        <td style={{ padding: '8px 12px', color: '#475569' }}>{row.reg}</td>
+                        <td style={{ padding: '8px 12px', color: '#0f172a' }}>{row.cat}</td>
+                        <td style={{ padding: '8px 12px', color: '#475569' }}>{row.units}</td>
+                        <td style={{ padding: '8px 12px', fontWeight: 700, color: '#16a34a' }}>{row.rev}</td>
+                        <td style={{ padding: '8px 12px' }}>
+                          <span style={{ fontSize: '0.72rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: row.stat === 'Delivered' ? '#dcfce7' : '#fef3c7', color: row.stat === 'Delivered' ? '#166534' : '#b45309' }}>
+                            {row.stat}
+                          </span>
+                        </td>
+                        <td style={{ padding: '8px 12px', color: '#64748b', fontSize: '0.78rem' }}>{row.ts}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
             {/* METHOD 1: PUBLISHED WEB CSV LINK */}
             <div style={{ background: '#f0fdf4', borderRadius: '18px', padding: '2rem', border: '2px solid #86efac' }}>
@@ -562,7 +1316,7 @@ print("Successfully loaded columns:", df.columns.tolist())`}
       )}
 
       {/* ─────────────────────────────────────────────
-          TAB 3: LIVE CONNECTIONS & DIRECTQUERY
+          TAB 4: LIVE CONNECTIONS & DIRECTQUERY
       ───────────────────────────────────────────── */}
       {normalizedTab === 'live_connections' && (
         <Section key="live_connections" id="live_connections" eyebrow="Enterprise Storage Architecture • Method 2" title="Step-by-Step: Live Web APIs, Databases & DirectQuery">
@@ -698,7 +1452,7 @@ print("Successfully loaded columns:", df.columns.tolist())`}
       )}
 
       {/* ─────────────────────────────────────────────
-          TAB 4: REAL-TIME DATA STREAMING (STEP-BY-STEP)
+          TAB 5: REAL-TIME DATA STREAMING (STEP-BY-STEP)
       ───────────────────────────────────────────── */}
       {normalizedTab === 'realtime_streaming' && (
         <Section key="realtime_streaming" id="realtime_streaming" eyebrow="Sub-Second Telemetry • Method 3" title="Step-by-Step: Real-Time Data Streaming & Automatic Page Refresh">
@@ -748,101 +1502,103 @@ print("Successfully loaded columns:", df.columns.tolist())`}
                   },
                   {
                     step: 'Step 2',
-                    title: 'Create New Streaming Dataset',
-                    body: 'Click the "+ New" button in the upper toolbar ➔ Select "Streaming dataset".'
+                    title: 'Click New ➔ Streaming Dataset',
+                    body: 'Click the "+ New" button at top left, and choose "Streaming dataset". In the modal, select "API" and click Next.'
                   },
                   {
                     step: 'Step 3',
-                    title: 'Choose API Source & Define Schema',
-                    body: 'Select "API" and click Next. Name your dataset (e.g., "Live_Factory_Telemetry"). Define the schema fields: Timestamp (DateTime), Sensor_Name (Text), Temperature (Number), Pressure (Number), Units_Produced (Number).'
+                    title: 'Define Payload Schema & Columns',
+                    body: 'Enter a Dataset Name (e.g. "Factory_Telemetry"). Add fields: timestamp (DateTime), sensor_id (Text), temperature_celsius (Number), pressure_bar (Number), rpm (Number). Toggle "Historic data analysis" to ON if you want reporting!'
                   },
                   {
                     step: 'Step 4',
-                    title: 'Enable Historic Data Analysis (Crucial!)',
-                    body: 'Toggle the switch labeled "Historic data analysis" to ON! This turns your streaming dataset into a hybrid Push Dataset so Power BI saves history and allows standard report visuals!'
+                    title: 'Copy the Generated Push URL Endpoint',
+                    body: 'Power BI Service instantly creates your private REST Push URL endpoint (looks like: https://api.powerbi.com/beta/.../datasets/.../rows?key=...). Copy this URL!'
                   },
                   {
                     step: 'Step 5',
-                    title: 'Copy the Push URL Endpoint',
-                    body: 'Click "Create". Power BI will generate a unique HTTPS Push URL (e.g. https://api.powerbi.com/beta/YOUR_TENANT/datasets/.../rows?key=...). Copy this URL — your Python script will push data to it!'
+                    title: 'Create Live Dashboard Tile',
+                    body: 'Create a new Dashboard. Click "Add Tile" ➔ "Real-time data" ➔ select "Factory_Telemetry". Choose Card or Line Chart and watch values update continuously!'
                   }
-                ].map((s, idx) => (
-                  <div key={idx} style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                    <span style={{ background: '#f59e0b', color: '#000000', fontWeight: 900, fontSize: '0.78rem', padding: '4px 10px', borderRadius: '6px' }}>{s.step}</span>
+                ].map((st, i) => (
+                  <div key={i} style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                    <span style={{ background: '#f59e0b', color: '#ffffff', fontWeight: 900, fontSize: '0.8rem', padding: '4px 10px', borderRadius: '8px', flexShrink: 0 }}>{st.step}</span>
                     <div>
-                      <strong style={{ color: '#0f172a', fontSize: '0.98rem', display: 'block', marginBottom: '4px' }}>{s.title}</strong>
-                      <span style={{ color: '#475569', fontSize: '0.88rem', lineHeight: 1.6 }}>{s.body}</span>
+                      <h5 style={{ margin: '0 0 4px 0', fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>{st.title}</h5>
+                      <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569', lineHeight: 1.6 }}>{st.body}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* PYTHON STREAMING PRODUCER CODE */}
+            {/* PYTHON LIVE STREAMING PRODUCER CODE */}
             <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
-              <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
-                Python Producer Script: Streaming Live Data into Power BI Every Second
+              <h3 style={{ margin: '0 0 0.8rem 0', fontSize: '1.35rem', fontWeight: 900, color: '#0f172a' }}>
+                🐍 Python Real-Time Streaming Producer Script
               </h3>
               <p style={{ margin: '0 0 1.25rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                Run this lightweight Python script on your machine. It continuously emits simulated live telemetry packets and pushes them to your Power BI streaming endpoint:
+                Run this lightweight Python script on your local machine or server. It pushes simulated sensor telemetry to your Power BI Streaming Dataset every second:
               </p>
 
               <CodeBlock
                 language="python"
-                title="live_streaming_producer.py"
+                title="powerbi_live_stream_producer.py"
                 code={`import requests
 import time
 import random
-from datetime import datetime, timezone
+from datetime import datetime
 
-# 1. Paste your Power BI Service Streaming Dataset Push URL here:
-POWER_BI_PUSH_URL = "https://api.powerbi.com/beta/YOUR_TENANT_ID/datasets/YOUR_DATASET_ID/rows?key=YOUR_KEY"
+# Paste your Power BI Service Push URL here:
+PBI_PUSH_URL = "https://api.powerbi.com/beta/YOUR_TENANT_ID/datasets/YOUR_DATASET_ID/rows?key=YOUR_KEY"
 
-print("🚀 Starting Live Real-Time Stream to Power BI...")
-print("Press Ctrl + C to stop the producer at any time.\\n")
+print("🚀 Starting Live Telemetry Stream to Power BI...")
 
 try:
     while True:
-        # 2. Generate simulated live telemetry payload
+        # Generate real-time telemetry payload
         payload = [{
-            "Timestamp": datetime.now(timezone.utc).isoformat(),
-            "Sensor_Name": "Turbine_Alpha_01",
-            "Temperature": round(random.uniform(65.0, 95.0), 2),
-            "Pressure": round(random.uniform(100.0, 140.0), 2),
-            "Units_Produced": random.randint(10, 50)
+            "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "sensor_id": "SENSOR-01-A",
+            "temperature_celsius": round(random.uniform(68.0, 92.5), 2),
+            "pressure_bar": round(random.uniform(2.1, 3.8), 3),
+            "rpm": random.randint(3200, 3650)
         }]
-        
-        # 3. HTTP POST request to Power BI REST API
-        response = requests.post(POWER_BI_PUSH_URL, json=payload)
-        
+
+        # Push to Power BI REST API
+        response = requests.post(PBI_PUSH_URL, json=payload)
+
         if response.status_code == 200:
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Streamed: Temp={payload[0]['Temperature']}°C | Units={payload[0]['Units_Produced']}")
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Pushed: Temp={payload[0]['temperature_celsius']}°C | Pressure={payload[0]['pressure_bar']} bar")
         else:
-            print(f"⚠️ Error {response.status_code}: {response.text}")
-            
-        # 4. Wait 1 second before emitting next telemetry packet
-        time.sleep(1)
+            print(f"❌ Error {response.status_code}: {response.text}")
+
+        # Stream interval (1 tick per second)
+        time.sleep(1.0)
 
 except KeyboardInterrupt:
-    print("\\n🛑 Live stream producer stopped gracefully.")`}
+    print("\\n🛑 Live Stream stopped by user.")`}
               />
             </div>
 
             {/* AUTOMATIC PAGE REFRESH (APR) */}
             <div style={{ background: '#f8fafc', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
-              <h3 style={{ margin: '0 0 0.8rem 0', fontSize: '1.35rem', fontWeight: 900, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Clock size={20} color="#6366f1" /> Automatic Page Refresh (APR) in Power BI Desktop
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#dbeafe', color: '#1e40af', padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.8rem' }}>
+                ⚡ Power BI Desktop Feature
+              </div>
+              <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.45rem', fontWeight: 900, color: '#1e3a8a' }}>
+                Automatic Page Refresh (APR) in DirectQuery
               </h3>
               <p style={{ margin: '0 0 1.25rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                If you are using DirectQuery or live database connections, you can turn on <strong>Automatic Page Refresh (APR)</strong> so the entire report canvas redraws itself periodically:
+                For DirectQuery reports in Power BI Desktop, you can configure <strong>Automatic Page Refresh (APR)</strong> so the visual canvas automatically polls and refreshes without the user clicking the refresh button:
               </p>
 
               <ol style={{ paddingLeft: '1.3rem', margin: 0, fontSize: '0.92rem', color: '#334155', lineHeight: 1.8 }}>
-                <li>Click anywhere on the blank canvas background (so no single chart is selected).</li>
-                <li>In the right-hand sidebar, open the <strong>Format page</strong> pane (paint roller icon).</li>
-                <li>Scroll down to find <strong>Page refresh</strong> and toggle it to <strong>On</strong>.</li>
-                <li>Choose refresh type: <strong>Auto page refresh</strong> and set the duration (e.g. <em>Every 5 seconds</em> or <em>10 seconds</em>).</li>
-                <li>Now watch your charts continuously poll the backend and refresh numbers live on screen!</li>
+                <li>Ensure your storage mode is <strong>DirectQuery</strong>.</li>
+                <li>Deselect all visuals (click the blank canvas background).</li>
+                <li>In the <strong>Format</strong> pane on the right, toggle <strong>Page refresh</strong> to <strong>ON</strong>.</li>
+                <li>Set the <strong>Refresh interval</strong> (e.g. every 5 seconds, 10 seconds, or 1 minute).</li>
+                <li>Choose <em>Auto refresh</em> or <em>Change detection</em> (which queries a measure like <code>MAX(Transactions[Timestamp])</code> to only refresh when new rows appear)!</li>
               </ol>
             </div>
 
@@ -873,180 +1629,152 @@ except KeyboardInterrupt:
       )}
 
       {/* ─────────────────────────────────────────────
-          TAB 5: PYTHON IN POWER BI (STEP-BY-STEP)
+          TAB 6: PYTHON IN POWER BI (STEP-BY-STEP)
       ───────────────────────────────────────────── */}
       {normalizedTab === 'python_powerbi' && (
-        <Section key="python_powerbi" id="python_powerbi" eyebrow="Advanced Scripting & Science Visuals • Method 4" title="Step-by-Step: Python Integration in Power BI">
+        <Section key="python_powerbi" id="python_powerbi" eyebrow="Advanced Analytics & Data Science • Step 4" title="Step-by-Step: Python Scripting & Visuals in Power BI">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
             <p style={{ fontSize: '1.05rem', color: '#475569', lineHeight: 1.7, margin: 0 }}>
-              Python expands Power BI with data science capabilities that native BI tools cannot replicate: advanced statistical modeling, natural language cleaning, and specialized scientific visuals like Seaborn correlation heatmaps, violin plots, and density curves.
+              Python transforms Power BI from a standard BI dashboard into an advanced data science and statistical computing workstation. You can use Python for <strong>data ingestion</strong>, <strong>data transformation in Power Query</strong>, and <strong>custom Matplotlib/Seaborn visualizations</strong>.
             </p>
 
-            {/* STEP 1: PREREQUISITES & SETUP */}
-            <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: '18px', padding: '2rem', color: '#ffffff' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.8rem' }}>
-                ⚙️ Step 1 • Local Python Setup
+            {/* ENVIRONMENT CONFIGURATION GUIDE */}
+            <div style={{ background: '#f8fafc', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#e0e7ff', color: '#3730a3', padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.8rem' }}>
+                🛠️ Setup & Prerequisites
               </div>
-              <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#f8fafc' }}>
-                Installing Python Libraries on Your Computer
+              <h3 style={{ margin: '0 0 0.8rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
+                Step 1: Configuring Your Python Environment for Power BI
               </h3>
-              <p style={{ margin: '0 0 1.25rem 0', color: '#cbd5e1', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                Before Power BI can run Python code, install Python (version 3.9 - 3.12) on your PC and install the standard data science trio:
+              <p style={{ margin: '0 0 1.25rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Before executing Python in Power BI Desktop, ensure your local Python installation is linked:
               </p>
 
-              <div style={{ background: '#090d16', padding: '1rem', borderRadius: '10px', border: '1px solid #334155', fontFamily: 'monospace', fontSize: '0.9rem', color: '#4ade80', marginBottom: '1.25rem' }}>
-                pip install pandas matplotlib seaborn scipy
-              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ background: '#ffffff', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                  <strong style={{ color: '#0f172a', display: 'block', marginBottom: '6px', fontSize: '1rem' }}>1. Install Required Python Packages</strong>
+                  <span style={{ color: '#475569', fontSize: '0.88rem', display: 'block', marginBottom: '8px' }}>Open Command Prompt or Terminal on your PC and run:</span>
+                  <code style={{ background: '#0f172a', color: '#38bdf8', padding: '6px 12px', borderRadius: '6px', fontSize: '0.85rem', display: 'inline-block' }}>
+                    pip install pandas matplotlib seaborn numpy scipy
+                  </code>
+                </div>
 
-              <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '12px', padding: '1.2rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                <strong style={{ color: '#38bdf8', display: 'block', marginBottom: '6px' }}>Configure Power BI Scripting Directory:</strong>
-                <ol style={{ paddingLeft: '1.2rem', margin: 0, fontSize: '0.88rem', color: '#cbd5e1', lineHeight: 1.7 }}>
-                  <li>In Power BI Desktop, open <strong>File ➔ Options and Settings ➔ Options</strong>.</li>
-                  <li>In the left panel, click <strong>Python scripting</strong>.</li>
-                  <li>Verify that <strong>Detected Python home directories</strong> points to your installed Python environment (e.g. <code>C:\Python311</code> or Anaconda). Click OK.</li>
-                </ol>
+                <div style={{ background: '#ffffff', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                  <strong style={{ color: '#0f172a', display: 'block', marginBottom: '6px', fontSize: '1rem' }}>2. Link Python Path in Power BI Desktop</strong>
+                  <span style={{ color: '#475569', fontSize: '0.88rem', lineHeight: 1.6 }}>
+                    In Power BI Desktop, click <strong>File ➔ Options and settings ➔ Options</strong>. Under Global, click <strong>Python scripting</strong>. Verify your <em>Detected Python home directory</em> points to your active Python directory (e.g., Anaconda or Python 3.10+).
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* STEP 2: LOAD DATA VIA PYTHON SCRIPT */}
+            {/* USE CASE 1: PYTHON AS A DATA SOURCE */}
             <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
-              <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
-                Step 2: Python as a Data Source (Get Data ➔ Python Script)
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#dcfce7', color: '#166534', padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.8rem' }}>
+                📥 Use Case A
+              </div>
+              <h3 style={{ margin: '0 0 0.8rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
+                Python Script as a Data Source (Get Data ➔ Python Script)
               </h3>
               <p style={{ margin: '0 0 1.25rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                You can write a Python script directly inside Power BI to generate test datasets, calculate simulations, or scrape web tables:
+                You can write Python code to fetch data from APIs, scrape web pages, or generate synthetic test datasets:
               </p>
 
               <CodeBlock
                 language="python"
-                title="Get Data ➔ Other ➔ Python script"
+                title="Generate Multi-Store Sales Data with Python"
                 code={`import pandas as pd
 import numpy as np
 
-# Set random seed for reproducible numbers
+# Set random seed for reproducibility
 np.random.seed(42)
 
-# Generate a synthetic retail dataset with 100 transactions
-n = 100
-categories = ['Electronics', 'Home & Kitchen', 'Apparel', 'Books']
+# Generate 500 synthetic retail sales records
+n = 500
+stores = ['Chennai Metro', 'Bengaluru Central', 'Mumbai Express', 'Hyderabad Tech']
+categories = ['Electronics', 'Home Appliances', 'Fitness', 'Office Supplies']
 
 data = {
-    'Transaction_ID': range(1001, 1001 + n),
+    'TransactionID': [f'TXN-{10000+i}' for i in range(n)],
+    'Store': np.random.choice(stores, n),
     'Category': np.random.choice(categories, n),
-    'Units_Sold': np.random.randint(1, 15, n),
-    'Unit_Price': np.random.uniform(10.0, 450.0, n).round(2),
-    'Customer_Rating': np.random.uniform(2.5, 5.0, n).round(1)
+    'SalesAmount': np.round(np.random.exponential(scale=3500, size=n) + 200, 2),
+    'CustomerRating': np.random.choice([1, 2, 3, 4, 5], n, p=[0.05, 0.1, 0.2, 0.4, 0.25]),
+    'DiscountPct': np.random.choice([0.0, 0.05, 0.1, 0.15, 0.25], n)
 }
 
-# Create the final Pandas DataFrame
-df_retail_sales = pd.DataFrame(data)
-
-# Add Total Revenue column
-df_retail_sales['Total_Revenue'] = (df_retail_sales['Units_Sold'] * df_retail_sales['Unit_Price']).round(2)`}
+# Power BI will ingest all Pandas DataFrames created in this script:
+sales_df = pd.DataFrame(data)`}
               />
-
-              <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', borderLeft: '4px solid #6366f1', fontSize: '0.88rem', color: '#334155' }}>
-                <strong>🔍 How Power BI Reads This:</strong> Power BI scans the execution environment. Any variable that is a <code>pandas.DataFrame</code> (in this case <code>df_retail_sales</code>) will appear in the Navigator window as an importable table!
-              </div>
             </div>
 
-            {/* STEP 3: TRANSFORM DATA IN POWER QUERY WITH PYTHON */}
+            {/* USE CASE 2: PYTHON IN POWER QUERY TRANSFORMATIONS */}
             <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
-              <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
-                Step 3: Transforming Data with Python in Power Query
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#fef3c7', color: '#b45309', padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.8rem' }}>
+                ⚙️ Use Case B
+              </div>
+              <h3 style={{ margin: '0 0 0.8rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
+                Transforming Data with Python in Power Query Editor
               </h3>
               <p style={{ margin: '0 0 1.25rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                Inside the Power Query Editor, click the <strong>Transform tab ➔ Run Python script</strong>. Power BI automatically feeds your current table into a DataFrame variable named <code>dataset</code>:
+                In Power Query Editor, go to <strong>Transform ribbon ➔ Run Python script</strong>. Power BI automatically passes your current table as a Pandas DataFrame named <code>dataset</code>:
               </p>
 
               <CodeBlock
                 language="python"
-                title="Power Query ➔ Transform ➔ Run Python script"
-                code={`# Power BI automatically preloads:
-# dataset = pandas.DataFrame(...)
+                title="Power Query Python Step: Outlier Capping & Feature Engineering"
+                code={`# 'dataset' holds the input table for this script
+import pandas as pd
+import numpy as np
 
-# 1. Fill missing numerical values with column median
-dataset['Customer_Rating'] = dataset['Customer_Rating'].fillna(dataset['Customer_Rating'].median())
+# 1. Cap extreme outlier sales using 99th percentile
+cap_value = dataset['SalesAmount'].quantile(0.99)
+dataset['SalesAmount_Capped'] = np.where(dataset['SalesAmount'] > cap_value, cap_value, dataset['SalesAmount'])
 
-# 2. Add an automated High-Value Order Flag
-dataset['High_Value_Flag'] = dataset['Total_Revenue'].apply(
-    lambda x: 'High Value' if x >= 1000 else 'Standard'
-)
+# 2. Calculate Net Revenue after discount
+dataset['NetRevenue'] = dataset['SalesAmount_Capped'] * (1 - dataset['DiscountPct'])
 
-# 3. Create a normalized Revenue Score
-dataset['Revenue_ZScore'] = (
-    (dataset['Total_Revenue'] - dataset['Total_Revenue'].mean()) / dataset['Total_Revenue'].std()
-).round(2)`}
+# 3. Categorize High-Value vs Standard Transactions
+dataset['OrderTier'] = np.where(dataset['NetRevenue'] >= 5000, 'High Value', 'Standard')`}
               />
             </div>
 
-            {/* STEP 4: SEABORN & MATPLOTLIB VISUALS ON CANVAS */}
+            {/* USE CASE 3: HIGH-END STATISTICAL VISUALIZATIONS */}
             <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
-              <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
-                Step 4: Building Advanced Data Science Visuals (Seaborn Heatmap & Distributions)
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#ede9fe', color: '#6d28d9', padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.8rem' }}>
+                📊 Use Case C
+              </div>
+              <h3 style={{ margin: '0 0 0.8rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
+                Building Custom Python Visuals (Correlation Heatmap & Distributions)
               </h3>
               <p style={{ margin: '0 0 1.25rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                Native Power BI does not have correlation matrix heatmaps. You can build one in 10 seconds using a <strong>Python Visual</strong>:
+                In the Visualizations pane, click the <strong>Python Visual icon (Py)</strong>. Drag your metrics into Values. In the Python script editor, type:
               </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
-                <div>
-                  <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.5rem' }}>Correlation Matrix Heatmap:</strong>
-                  <CodeBlock
-                    language="python"
-                    title="Python Visual Canvas Code"
-                    code={`import matplotlib.pyplot as plt
+              <CodeBlock
+                language="python"
+                title="Python Visual: Seaborn Correlation Matrix Heatmap"
+                code={`# Paste this code into the Python visual editor in Power BI:
+import matplotlib.pyplot as plt
 import seaborn as sns
 
-# dataset contains the fields dragged into Values
-# (Units_Sold, Unit_Price, Total_Revenue, Customer_Rating)
+# Configure plot styling
+plt.figure(figsize=(7, 5))
+plt.title("Metrics Correlation Heatmap", fontsize=14, fontweight='bold', pad=12)
 
-plt.figure(figsize=(6, 4))
-sns.set_theme(style="white")
-
-# Calculate Pearson correlation matrix
+# Compute correlation matrix on numeric fields
 corr = dataset.corr(numeric_only=True)
 
-# Generate Heatmap with color gradient & annotations
-sns.heatmap(corr, annot=True, cmap='coolwarm', fmt=".2f", linewidths=1)
+# Generate high-contrast heatmap
+sns.heatmap(corr, annot=True, cmap='coolwarm', fmt=".2f", linewidths=1.0, cbar=True)
 
-plt.title('Feature Correlation Matrix', fontsize=12, fontweight='bold')
 plt.tight_layout()
-plt.show()`}
-                  />
-                </div>
+plt.show()  # Power BI renders this Matplotlib plot directly onto the canvas!`}
+              />
 
-                <div>
-                  <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.5rem' }}>Violin Distribution Density Plot:</strong>
-                  <CodeBlock
-                    language="python"
-                    title="Python Visual Canvas Code"
-                    code={`import matplotlib.pyplot as plt
-import seaborn as sns
-
-plt.figure(figsize=(6, 4))
-sns.set_theme(style="whitegrid")
-
-# Create Violin Plot comparing Category vs Revenue
-sns.violinplot(
-    data=dataset, 
-    x='Category', 
-    y='Total_Revenue', 
-    palette='muted',
-    inner="quartile"
-)
-
-plt.title('Revenue Distribution by Category', fontsize=12, fontweight='bold')
-plt.xticks(rotation=20)
-plt.tight_layout()
-plt.show()`}
-                  />
-                </div>
-              </div>
-
-              <div style={{ background: '#fef3c7', borderLeft: '4px solid #f59e0b', padding: '1rem', borderRadius: '8px', color: '#92400e', fontSize: '0.88rem' }}>
-                <strong>⚠️ Golden Rule for Python Visuals in Power BI:</strong> Always end your script with <code>plt.show()</code>! Without <code>plt.show()</code>, the image cannot be rendered onto the report canvas.
+              <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '0.88rem', color: '#475569' }}>
+                <strong>💡 Tip for Power BI Service:</strong> Python visuals are fully supported in Power BI Service for Pro/Premium capacities as long as standard packages (Pandas, Matplotlib, Seaborn, Scikit-learn) are used.
               </div>
             </div>
 
@@ -1077,44 +1805,66 @@ plt.show()`}
       )}
 
       {/* ─────────────────────────────────────────────
-          TAB 6: DAY 8 MINI PROJECT & ASSIGNMENT
+          TAB 7: DAY 8 MINI PROJECT & ASSIGNMENT
       ───────────────────────────────────────────── */}
       {normalizedTab === 'assignment_day8' && (
-        <Section key="assignment_day8" id="assignment_day8" eyebrow="Practical Capstone Challenge" title="Day 8 Mini Project: Live Dynamic Dashboard & Python Visuals">
+        <Section key="assignment_day8" id="assignment_day8" eyebrow="Practical Capstone • Day 8" title="Day 8 Mini Project: Live Dynamic Power BI Dashboard">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
-            <div style={{ background: '#f8fafc', padding: '2rem', borderRadius: '18px', border: '1px solid #cbd5e1' }}>
-              <h3 style={{ color: '#0f172a', margin: '0 0 0.8rem 0', fontSize: '1.4rem', fontWeight: 900 }}>
-                🏆 Day 8 Practical Assignment Mission
+            <div style={{
+              background: 'linear-gradient(135deg, #065f46 0%, #047857 100%)',
+              borderRadius: '20px',
+              padding: '2.5rem',
+              color: '#ffffff',
+              boxShadow: '0 12px 30px rgba(4, 120, 87, 0.25)'
+            }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255, 255, 255, 0.2)', padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, marginBottom: '1rem' }}>
+                🏆 Hands-on Assignment
+              </div>
+              <h3 style={{ fontSize: '2rem', margin: '0 0 1rem 0', fontWeight: 900, lineHeight: 1.25 }}>
+                Mission: Construct a Hybrid Multi-Source Live Dashboard
               </h3>
-              <p style={{ color: '#475569', fontSize: '1rem', lineHeight: 1.7, margin: '0 0 1.5rem 0' }}>
-                Build an executive-ready operational dashboard that integrates live cloud data and advanced statistical plotting:
+              <p style={{ fontSize: '1.05rem', color: '#a7f3d0', margin: 0, lineHeight: 1.7, maxWidth: '800px' }}>
+                Your client runs an omnichannel retail and crypto payment ecosystem. You must assemble a multi-source dashboard in Power BI that incorporates <strong>Google Sheets</strong>, <strong>Live API / DirectQuery</strong>, and a custom <strong>Python statistical visual</strong>.
               </p>
+            </div>
+
+            {/* The 4 Assignment Tasks */}
+            <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <h4 style={{ margin: '0 0 1.25rem 0', fontSize: '1.3rem', fontWeight: 900, color: '#0f172a' }}>
+                Your 4 Mandatory Implementation Steps:
+              </h4>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {[
                   {
-                    step: 'Task 1: Google Sheets Live Sync Pipeline',
-                    desc: 'Create or open a Google Sheet with at least 15 rows of sales, roster, or inventory data. Publish it as a CSV link, connect in Power BI via Get Data ➔ Web, and verify that edits in your Google Sheet refresh in Power BI.'
+                    num: '1',
+                    title: 'Live Google Sheet Integration',
+                    desc: 'Create a Google Sheet with 8+ rows of sales data (or use our sample). Publish as CSV, import into Power BI using Web connector, and confirm headers & types.'
                   },
                   {
-                    step: 'Task 2: Live Public API Connection',
-                    desc: 'Connect to the live Coinbase or Binance crypto ticker (or Open-Meteo weather API) using Get Data ➔ Web. Parse the JSON tree in Power Query and create a real-time KPI card showing the current price.'
+                    num: '2',
+                    title: 'DirectQuery or Live API Feed',
+                    desc: 'Connect to Coinbase/Binance BTC ticker API via Web connector, convert JSON Record to Table, transpose, and create a Live Price KPI Card.'
                   },
                   {
-                    step: 'Task 3: Automatic Page Refresh Configuration',
-                    desc: 'Format your report canvas to enable Automatic Page Refresh (APR) every 5 or 10 seconds so the API KPI card updates dynamically.'
+                    num: '3',
+                    title: 'Python Seaborn / Matplotlib Visual',
+                    desc: 'Add a Python Visual to your report canvas. Plot a Correlation Matrix Heatmap or a Distribution Box Plot comparing sales across categories.'
                   },
                   {
-                    step: 'Task 4: Custom Python Seaborn Chart',
-                    desc: 'Insert a Python Visual into the report canvas and generate either a Correlation Matrix Heatmap or a Violin/Distribution plot comparing your metrics.'
+                    num: '4',
+                    title: 'Interactive Slicers & Design Polish',
+                    desc: 'Add interactive slicers for Region and Category. Apply a cohesive dark or corporate theme, clear visual hierarchy, and KPI cards.'
                   }
                 ].map((task, idx) => (
-                  <div key={idx} style={{ background: '#ffffff', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                    <CheckCircle size={22} color="#10b981" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <div key={idx} style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#047857', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.9rem', flexShrink: 0 }}>
+                      {task.num}
+                    </div>
                     <div>
-                      <strong style={{ color: '#0f172a', fontSize: '1rem', display: 'block', marginBottom: '4px' }}>{task.step}</strong>
-                      <span style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.6 }}>{task.desc}</span>
+                      <h5 style={{ margin: '0 0 4px 0', fontSize: '1.05rem', fontWeight: 800, color: '#0f172a' }}>{task.title}</h5>
+                      <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569', lineHeight: 1.6 }}>{task.desc}</p>
                     </div>
                   </div>
                 ))}
