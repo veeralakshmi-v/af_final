@@ -493,10 +493,10 @@ export default function PowerBIDay8({ activeTab, onNavigate }) {
                   {
                     icon: <Activity size={22} color="#f59e0b" />,
                     title: '3. Real-Time Streaming',
-                    badge: 'Second-by-Second',
-                    badgeColor: '#fef3c7',
-                    textColor: '#b45309',
-                    desc: 'Watch numbers update live every second (like a live cricket score or factory sensor) without clicking the refresh button!'
+                    badge: 'Cloud Only ☁️',
+                    badgeColor: '#fee2e2',
+                    textColor: '#dc2626',
+                    desc: 'Watch numbers update live every second (like a live cricket score). Note: Streaming datasets are ONLY available in Power BI Service (Cloud at app.powerbi.com), NOT in Desktop mode!'
                   },
                   {
                     icon: <Terminal size={22} color="#8b5cf6" />,
@@ -585,9 +585,12 @@ export default function PowerBIDay8({ activeTab, onNavigate }) {
                 </div>
                 <div style={{ background: '#ffffff', padding: '1.2rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                   <div style={{ fontSize: '1.5rem', marginBottom: '4px' }}>🏎️</div>
-                  <strong style={{ color: '#b45309', display: 'block', fontSize: '1rem', marginBottom: '4px' }}>3. Real-Time Streaming</strong>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <strong style={{ color: '#b45309', fontSize: '1rem' }}>3. Real-Time Streaming</strong>
+                    <span style={{ fontSize: '0.68rem', fontWeight: 900, background: '#fee2e2', color: '#dc2626', padding: '2px 8px', borderRadius: '10px' }}>CLOUD ONLY ☁️</span>
+                  </div>
                   <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.55 }}>
-                    <strong>Like a car speedometer:</strong> It continuously shows your speed right now. It doesn't save past history, it just shows live movement!
+                    <strong>Like a car speedometer:</strong> Continuously shows your speed right now. <em>Notice:</em> Streaming datasets are <strong>only available online in Power BI Cloud (Service)</strong>, NOT in Desktop mode!
                   </p>
                 </div>
               </div>
@@ -616,6 +619,12 @@ export default function PowerBIDay8({ activeTab, onNavigate }) {
                       <td style={{ padding: '10px 14px', color: '#4338ca' }}>In the IT Semantic Model</td>
                       <td style={{ padding: '10px 14px', color: '#1d4ed8' }}>In the SQL Database</td>
                       <td style={{ padding: '10px 14px', color: '#b45309' }}>In Cloud Live Cache</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #e2e8f0', background: '#fffbeb' }}>
+                      <td style={{ padding: '10px 14px', fontWeight: 800, color: '#92400e' }}>Available in Desktop?</td>
+                      <td style={{ padding: '10px 14px', color: '#16a34a', fontWeight: 700 }}>✅ Yes (Desktop & Cloud)</td>
+                      <td style={{ padding: '10px 14px', color: '#16a34a', fontWeight: 700 }}>✅ Yes (Desktop & Cloud)</td>
+                      <td style={{ padding: '10px 14px', color: '#dc2626', fontWeight: 800 }}>❌ CLOUD ONLY! (app.powerbi.com)</td>
                     </tr>
                     <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
                       <td style={{ padding: '10px 14px', fontWeight: 700 }}>Does it take laptop RAM?</td>
@@ -904,6 +913,23 @@ export default function PowerBIDay8({ activeTab, onNavigate }) {
               <p style={{ margin: 0, fontSize: '0.95rem', color: '#b45309', lineHeight: 1.6 }}>
                 <strong>What is Real-Time Streaming?</strong> Think of a live cricket score or heart-rate monitor in a hospital. Numbers update second-by-second automatically without clicking any refresh button!
               </p>
+            </div>
+
+            {/* IMPORTANT NOTE: CLOUD POWER BI SERVICE ONLY */}
+            <div style={{ background: '#eff6ff', borderRadius: '14px', padding: '1.25rem 1.5rem', border: '2px solid #3b82f6', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+              <div style={{ background: '#3b82f6', color: '#ffffff', padding: '8px', borderRadius: '10px', flexShrink: 0, marginTop: '2px' }}>
+                <Globe size={22} />
+              </div>
+              <div>
+                <h4 style={{ margin: '0 0 0.35rem 0', fontSize: '1.1rem', fontWeight: 900, color: '#1e3a8a' }}>
+                  ☁️ Critical Rule: Streaming Data is ONLY Available in Power BI Cloud (Service), NOT in Desktop Mode!
+                </h4>
+                <p style={{ margin: 0, fontSize: '0.92rem', color: '#1e40af', lineHeight: 1.6 }}>
+                  You <strong>cannot create pure Streaming Datasets inside Power BI Desktop</strong> on your laptop. 
+                  Streaming datasets require Microsoft's live cloud memory buffer, which is <strong>only available online at <code style={{ background: '#dbeafe', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>app.powerbi.com</code> (Power BI Service)</strong>. 
+                  Always use your web browser to create and view real-time streaming tiles!
+                </p>
+              </div>
             </div>
 
             {/* Live Widget */}
