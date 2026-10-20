@@ -20,7 +20,10 @@ import {
   Columns,
   FileEdit,
   Eye,
-  Maximize2
+  Maximize2,
+  Upload,
+  Image as ImageIcon,
+  Trash2
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -79,6 +82,7 @@ export const CertificateEditor: React.FC<CertificateEditorProps> = ({
   const [saveSuccessMsg, setSaveSuccessMsg] = useState(false);
   const [showFullModal, setShowFullModal] = useState(false);
   const previewWrapperRef = useRef<HTMLDivElement>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
 
   // Auto-fit calculation based on both container width and viewport height
   const calculateFitZoom = () => {
@@ -130,6 +134,36 @@ export const CertificateEditor: React.FC<CertificateEditorProps> = ({
       ...prev,
       [field]: value,
     }));
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file (PNG, JPG, JPEG, WEBP).');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64 = event.target?.result as string;
+      if (!base64) return;
+
+      const img = new Image();
+      img.onload = () => {
+        // If wider than tall (landscape artwork or badge), default to contain so nothing gets cropped
+        const isLandscape = img.naturalWidth > img.naturalHeight;
+        setFormData(prev => ({
+          ...prev,
+          photoUrl: base64,
+          photoFit: isLandscape ? 'contain' : 'cover'
+        }));
+      };
+      img.src = base64;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
   };
 
   const handleAddAssessmentTag = (tagToAdd: string) => {
@@ -619,71 +653,153 @@ export const CertificateEditor: React.FC<CertificateEditorProps> = ({
                 <Sparkles className="w-4 h-4 text-orange-600" />
               </div>
 
-              {/* Student Photo Picker */}
+              {/* Student Photo Picker & Fitting Controls */}
               <div>
-                <label className="block text-xs font-bold text-slate-800 mb-2">
-                  Student Passport Photo (Top-Right of Certificate)
-                </label>
-                <div className="flex items-center gap-4 bg-slate-50/80 p-3 rounded-xl border border-slate-200">
-                  <div className="w-16 h-20 bg-slate-200 rounded-lg overflow-hidden border border-slate-300 shrink-0 shadow-xs flex items-center justify-center">
-                    <img
-                      src={formData.photoUrl || '/id_card_assets/sample_student_photo.jpg'}
-                      alt="Student Preview"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/id_card_assets/sample_student_photo.jpg';
-                      }}
-                    />
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-bold text-slate-800">
+                    Student Photo & Frame Fitting
+                  </label>
+                  <span className="text-[10.5px] font-bold px-2 py-0.5 rounded-md bg-orange-100 text-orange-700">
+                    {formData.photoFit === 'contain' ? 'Fit Entire Image (Contain)' : 'Fill Frame (Cover)'}
+                  </span>
+                </div>
+
+                <div className="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-3">
+                  <div className="flex items-center gap-4">
+                    {/* Thumbnail Preview with actual fit mode */}
+                    <div className="w-16 h-20 bg-white rounded-lg overflow-hidden border-2 border-orange-400 shrink-0 shadow-xs flex items-center justify-center p-0.5">
+                      <img
+                        src={formData.photoUrl || '/id_card_assets/sample_student_photo.jpg'}
+                        alt="Student Preview"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: formData.photoFit || (formData.photoUrl?.includes('kousalya') ? 'contain' : 'cover'),
+                          objectPosition: 'center top'
+                        }}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/id_card_assets/sample_student_photo.jpg';
+                        }}
+                      />
+                    </div>
+
+                    <div className="space-y-2 flex-1">
+                      <div className="flex flex-wrap gap-2">
+                        <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-xs font-bold cursor-pointer transition-colors shadow-xs">
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>Upload Photo</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handlePhotoUpload}
+                          />
+                        </label>
+
+                        {formData.photoUrl && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleTextChange('photoUrl', '');
+                              handleTextChange('photoFit', 'cover');
+                            }}
+                            className="px-2.5 py-1.5 bg-white hover:bg-rose-50 text-slate-700 hover:text-rose-600 border border-slate-300 rounded-lg text-xs font-semibold inline-flex items-center gap-1 transition-colors"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                            <span>Remove</span>
+                          </button>
+                        )}
+                      </div>
+
+                      <p className="text-[11px] text-slate-500">
+                        Supports student passport photos & custom wide artwork. Automatically detects landscape aspect ratios.
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="space-y-2 flex-1">
-                    <div className="flex flex-wrap gap-2">
-                      <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-xs font-bold cursor-pointer transition-colors shadow-xs">
-                        <span>Upload Photo</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const reader = new FileReader();
-                              reader.onload = (event) => {
-                                handleTextChange('photoUrl', event.target?.result as string);
-                              };
-                              reader.readAsDataURL(file);
-                            }
-                          }}
-                        />
-                      </label>
-
+                  {/* Fitting Mode Toggle Buttons */}
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      Image Fit in Certificate Frame:
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
                       <button
                         type="button"
-                        onClick={() => handleTextChange('photoUrl', '/id_card_assets/sample_student_photo.jpg')}
-                        className="px-2.5 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-semibold transition-colors"
+                        onClick={() => handleTextChange('photoFit', 'contain')}
+                        className={`px-3 py-2 rounded-lg text-xs text-left border transition-all flex flex-col gap-0.5 ${
+                          (formData.photoFit || (formData.photoUrl?.includes('kousalya') ? 'contain' : 'cover')) === 'contain'
+                            ? 'bg-orange-50 border-orange-400 text-orange-950 font-bold ring-1 ring-orange-400'
+                            : 'bg-white hover:bg-slate-100 border-slate-200 text-slate-700'
+                        }`}
                       >
-                        Sample Student
+                        <span className="flex items-center gap-1.5">
+                          <span className={`w-2 h-2 rounded-full ${(formData.photoFit || (formData.photoUrl?.includes('kousalya') ? 'contain' : 'cover')) === 'contain' ? 'bg-orange-500' : 'bg-slate-300'}`} />
+                          Fit Entire Image (Contain)
+                        </span>
+                        <span className="text-[10px] font-normal text-slate-500">
+                          Preserves entire graphic (no cropping of landscape art/edges)
+                        </span>
                       </button>
 
                       <button
                         type="button"
-                        onClick={() => handleTextChange('photoUrl', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80')}
-                        className="px-2.5 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-semibold transition-colors"
+                        onClick={() => handleTextChange('photoFit', 'cover')}
+                        className={`px-3 py-2 rounded-lg text-xs text-left border transition-all flex flex-col gap-0.5 ${
+                          (formData.photoFit || (formData.photoUrl?.includes('kousalya') ? 'contain' : 'cover')) === 'cover'
+                            ? 'bg-orange-50 border-orange-400 text-orange-950 font-bold ring-1 ring-orange-400'
+                            : 'bg-white hover:bg-slate-100 border-slate-200 text-slate-700'
+                        }`}
                       >
-                        Female Avatar
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleTextChange('photoUrl', 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&auto=format&fit=crop&q=80')}
-                        className="px-2.5 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-semibold transition-colors"
-                      >
-                        Male Avatar
+                        <span className="flex items-center gap-1.5">
+                          <span className={`w-2 h-2 rounded-full ${(formData.photoFit || (formData.photoUrl?.includes('kousalya') ? 'contain' : 'cover')) === 'cover' ? 'bg-orange-500' : 'bg-slate-300'}`} />
+                          Fill Frame (Cover)
+                        </span>
+                        <span className="text-[10px] font-normal text-slate-500">
+                          Classic passport portrait crop (fills frame top-to-bottom)
+                        </span>
                       </button>
                     </div>
-                    <p className="text-[11px] text-slate-500">
-                      Replaces the top-right QR code with the student's passport photo on the printed certificate.
-                    </p>
+                  </div>
+
+                  {/* Presets */}
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      Quick Presets:
+                    </label>
+                    <div className="flex flex-wrap gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleTextChange('photoUrl', '/id_card_assets/kousalya_photo.jpg');
+                          handleTextChange('photoFit', 'contain');
+                        }}
+                        className="px-2.5 py-1 bg-white hover:bg-orange-50 text-slate-700 hover:text-orange-700 border border-slate-300 rounded-md text-[11px] font-medium transition-colors"
+                      >
+                        Recovered Artwork (Kousalya)
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleTextChange('photoUrl', '/id_card_assets/sample_female_student_photo.jpg');
+                          handleTextChange('photoFit', 'cover');
+                        }}
+                        className="px-2.5 py-1 bg-white hover:bg-orange-50 text-slate-700 hover:text-orange-700 border border-slate-300 rounded-md text-[11px] font-medium transition-colors"
+                      >
+                        Female Student Photo
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleTextChange('photoUrl', '/id_card_assets/sample_student_photo.jpg');
+                          handleTextChange('photoFit', 'cover');
+                        }}
+                        className="px-2.5 py-1 bg-white hover:bg-orange-50 text-slate-700 hover:text-orange-700 border border-slate-300 rounded-md text-[11px] font-medium transition-colors"
+                      >
+                        Male Student Photo
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

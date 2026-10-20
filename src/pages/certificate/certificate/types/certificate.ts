@@ -17,6 +17,7 @@ export interface CertificateData {
   finalAssessmentRaw?: string; // comma/newline separated string
   qualities: [QualityItem, QualityItem]; // exactly 2 qualities
   photoUrl?: string; // Student portrait / passport photo URL or Base64
+  photoFit?: 'contain' | 'cover'; // Fitting mode for photo
   qrCodeUrl?: string; // target URL for verification (optional fallback)
   generatedDate: string; // ISO string or readable date
   templateId?: string; // 'template-1'

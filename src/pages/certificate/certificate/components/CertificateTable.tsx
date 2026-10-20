@@ -116,7 +116,23 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
                     </span>
                   </td>
                   <td className="py-3 px-4 font-bold text-slate-900 text-sm whitespace-nowrap align-middle">
-                    {cert.studentName}
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center shadow-2xs">
+                        <img
+                          src={cert.photoUrl || '/id_card_assets/sample_student_photo.jpg'}
+                          alt={cert.studentName}
+                          className="w-full h-full"
+                          style={{
+                            objectFit: cert.photoFit || (cert.photoUrl?.includes('kousalya') ? 'contain' : 'cover'),
+                            objectPosition: 'center top'
+                          }}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/id_card_assets/sample_student_photo.jpg';
+                          }}
+                        />
+                      </div>
+                      <span>{cert.studentName}</span>
+                    </div>
                   </td>
                   <td className="py-3 px-4 text-slate-700 font-medium align-middle">
                     <div className="max-w-[280px] truncate" title={cert.courseName}>

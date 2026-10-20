@@ -122,35 +122,59 @@ export const AlphaFlyTemplate: React.FC<AlphaFlyTemplateProps> = ({
             }}
           />
 
-          {/* Student Passport Photo */}
-          <div 
-            style={{
-              width: '86px',
-              height: '98px',
-              backgroundColor: '#F8FAFC',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '2px',
-              border: '2px solid #EE831B',
-              borderRadius: '4px',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
-              overflow: 'hidden',
-            }}
-          >
-            <img
-              src={data.photoUrl || '/id_card_assets/sample_student_photo.jpg'}
-              alt={data.studentName}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-              }}
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = '/id_card_assets/sample_student_photo.jpg';
-              }}
-            />
-          </div>
+          {/* Student Passport Photo / Emblem Frame */}
+          {(() => {
+            const isKousalya = (data.studentName || '').toLowerCase().includes('kous') || (data.id || '') === 'AFE-2026-0001';
+            const isFemale = [
+              'dhivya', 'vishnupriya', 'thulasi', 'ragavi', 'janani',
+              'maheswari', 'thanusha', 'pavithra', 'indira', 'dharika',
+              'ananthi', 'ramya', 'kousi', 'yazhini', 'rama'
+            ].some(name => (data.studentName || '').toLowerCase().includes(name));
+
+            const defaultPhoto = isKousalya
+              ? '/id_card_assets/kousalya_photo.jpg'
+              : (isFemale ? '/id_card_assets/sample_female_student_photo.jpg' : '/id_card_assets/sample_student_photo.jpg');
+
+            const activePhoto = data.photoUrl || defaultPhoto;
+            const photoFitMode = data.photoFit || (isKousalya || activePhoto.includes('kousalya') ? 'contain' : 'cover');
+
+            return (
+              <div 
+                style={{
+                  width: '92px',
+                  height: '110px',
+                  backgroundColor: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: photoFitMode === 'contain' ? '3px' : '0',
+                  border: '2px solid #EE831B',
+                  borderRadius: '6px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  overflow: 'hidden',
+                  boxSizing: 'border-box',
+                }}
+              >
+                <img
+                  src={activePhoto}
+                  alt={data.studentName}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: photoFitMode,
+                    objectPosition: 'center top',
+                    display: 'block',
+                  }}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    if (!target.src.endsWith(defaultPhoto)) {
+                      target.src = defaultPhoto;
+                    }
+                  }}
+                />
+              </div>
+            );
+          })()}
         </div>
       </div>
 

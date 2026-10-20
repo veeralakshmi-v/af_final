@@ -6,7 +6,9 @@ import {
   getStoredAssets, 
   saveStoredAssets, 
   createNewBlankCertificate,
-  generateNextCertificateId 
+  generateNextCertificateId,
+  recoverAllCertificates,
+  INITIAL_CERTIFICATES 
 } from './data/certificateStore';
 import { CertificateStats } from './components/CertificateStats';
 import { CertificateTable } from './components/CertificateTable';
@@ -17,12 +19,13 @@ import { AssetManager } from './components/AssetManager';
 import { 
   Eye,
   PlusCircle, 
-  Settings, 
   Upload,
   LayoutDashboard,
   ShieldCheck,
   Award,
-  FileSpreadsheet
+  FileSpreadsheet,
+  RotateCcw,
+  CheckCircle2
 } from 'lucide-react';
 import { GoogleSheetSyncModal } from '../shared/components/GoogleSheetSyncModal';
 
@@ -31,6 +34,7 @@ export function CertificateApp() {
   const [customAssets, setCustomAssets] = useState<CustomAssets>({});
   const [viewMode, setViewMode] = useState<ViewMode>('dashboard');
   const [isSheetModalOpen, setIsSheetModalOpen] = useState<boolean>(false);
+  const [recoveryNotice, setRecoveryNotice] = useState<string>('');
   
   // Active editing or previewing certificate
   const [activeCertificate, setActiveCertificate] = useState<CertificateData | null>(null);
@@ -39,8 +43,16 @@ export function CertificateApp() {
 
   // Load stored state on mount & handle URL path routing (e.g. /verify/AFE-2026-0001)
   useEffect(() => {
-    const loadedCerts = getStoredCertificates();
+    let loadedCerts = getStoredCertificates();
     const loadedAssets = getStoredAssets();
+
+    // Auto-recovery: If local storage only had sample records (less than initial database dataset)
+    if (loadedCerts.length < INITIAL_CERTIFICATES.length) {
+      loadedCerts = recoverAllCertificates();
+      setRecoveryNotice(`Auto-recovered ${loadedCerts.length} certificates from database!`);
+      setTimeout(() => setRecoveryNotice(''), 6000);
+    }
+
     setCertificates(loadedCerts);
     setCustomAssets(loadedAssets);
 
@@ -69,6 +81,14 @@ export function CertificateApp() {
   const handleSaveAssets = (newAssets: CustomAssets) => {
     setCustomAssets(newAssets);
     saveStoredAssets(newAssets);
+  };
+
+  // Action: Recover all database certificates
+  const handleRecoverDatabase = () => {
+    const recovered = recoverAllCertificates();
+    updateCertificates(recovered);
+    setRecoveryNotice(`Successfully restored all ${recovered.length} certificate records from LMS database!`);
+    setTimeout(() => setRecoveryNotice(''), 6000);
   };
 
   // Action: Start creating a brand new certificate
@@ -245,6 +265,16 @@ export function CertificateApp() {
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
+                onClick={handleRecoverDatabase}
+                className="inline-flex items-center gap-1.5 px-3 py-2 sm:py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold transition-all flex-1 sm:flex-initial justify-center shadow-xs cursor-pointer"
+                title="Recover all 31 student certificates from LMS database"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-amber-600" />
+                <span>Recover All DB ({certificates.length})</span>
+              </button>
+
+              <button
+                type="button"
                 onClick={() => setIsSheetModalOpen(true)}
                 className="inline-flex items-center gap-1.5 px-3 py-2 sm:py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold transition-all flex-1 sm:flex-initial justify-center"
               >
@@ -271,6 +301,22 @@ export function CertificateApp() {
               </button>
             </div>
           </div>
+
+          {recoveryNotice && (
+            <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between gap-2 shadow-xs transition-all">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>{recoveryNotice}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setRecoveryNotice('')}
+                className="text-emerald-700 hover:text-emerald-950 font-bold text-xs cursor-pointer ml-auto"
+              >
+                ✕
+              </button>
+            </div>
+          )}
 
           <CertificateStats certificates={certificates} />
 
