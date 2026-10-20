@@ -529,17 +529,13 @@ export const powerBiCourseData = [
   },
   {
     id: 'powerbi_module8',
-    title: 'Day 8 - AI, Python & Live Connections',
+    title: 'Day 8 - Live Connections, Streaming & Python',
     items: [
       { id: 'intro_day8', label: 'Day 8 Overview', icon: <Eye size={18} /> },
-      { id: 'ai_prompt_engineering', label: 'AI Prompt Engineering', icon: <Sparkles size={18} /> },
-      { id: 'ai_data_cleaning', label: 'AI Data Cleaning', icon: <Settings size={18} /> },
-      { id: 'ai_dashboard_creation', label: 'AI Dashboard Creation', icon: <Layout size={18} /> },
-      { id: 'ai_data_visualization', label: 'AI Data Visualization', icon: <PieChart size={18} /> },
-      { id: 'ai_report_generation', label: 'AI Report Generation', icon: <FileText size={18} /> },
-      { id: 'ai_insight_generation', label: 'AI Insight Generation', icon: <Brain size={18} /> },
+      { id: 'google_sheets_connection', label: 'Google Sheets Live Connection', icon: <FileSpreadsheet size={18} /> },
+      { id: 'live_connections', label: 'Live Data & DirectQuery', icon: <Radio size={18} /> },
+      { id: 'realtime_streaming', label: 'Real-Time Data Streaming', icon: <Activity size={18} /> },
       { id: 'python_powerbi', label: 'Python in Power BI', icon: <Terminal size={18} /> },
-      { id: 'live_connections', label: 'Live Connections & DirectQuery', icon: <Radio size={18} /> },
       { id: 'assignment_day8', label: 'Day 8 Mini Project', icon: <FileCode2 size={18} /> }
     ]
   },

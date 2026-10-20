@@ -1,810 +1,1169 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PieChart, Sliders, Eye, Layers, Zap, CheckCircle, Palette, Sparkles, Brain, Radio, Terminal, FileText, FileCode2, Activity, Play, RefreshCw, BarChart2, Layout, Settings, Target } from 'lucide-react';
+import { 
+  Eye, Radio, Activity, Terminal, FileSpreadsheet, Database, Copy, Check, 
+  ExternalLink, Play, Pause, RefreshCw, Sliders, CheckCircle, AlertTriangle, 
+  Layers, Zap, TrendingUp, Clock, ArrowRight, Code, Laptop, Server, Globe, Wifi, 
+  PieChart, BarChart2, ShieldAlert, Sparkles, HelpCircle
+} from 'lucide-react';
 
+/* ─────────────────────────────────────────────
+   SHARED SECTION WRAPPER
+───────────────────────────────────────────── */
 const Section = ({ id, eyebrow, title, children }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
+    initial={{ opacity: 0, y: 16 }}
     animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -20 }}
+    exit={{ opacity: 0, y: -16 }}
+    transition={{ duration: 0.25 }}
     className="learning-card"
+    style={{ background: '#ffffff', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.04)', border: '1px solid #e2e8f0' }}
   >
-    <div style={{ marginBottom: '1.5rem' }}>
-      <span style={{ color: 'var(--accent-secondary)', fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{eyebrow}</span>
-      <h2 style={{ fontSize: '2rem', marginTop: '0.5rem', color: '#0f172a' }}>{title}</h2>
+    <div style={{ marginBottom: '2rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem' }}>
+      <span style={{ color: '#6366f1', fontWeight: 800, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+        <Sparkles size={14} /> {eyebrow}
+      </span>
+      <h2 style={{ fontSize: '2.1rem', marginTop: '0.4rem', color: '#0f172a', fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1.25 }}>
+        {title}
+      </h2>
     </div>
     {children}
   </motion.div>
 );
 
+/* ─────────────────────────────────────────────
+   COPYABLE CODE BLOCK COMPONENT
+───────────────────────────────────────────── */
+const CodeBlock = ({ code, language = 'python', title }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div style={{ borderRadius: '14px', overflow: 'hidden', border: '1px solid #1e293b', background: '#090d16', marginBottom: '1.5rem', boxShadow: '0 8px 24px rgba(0,0,0,0.2)' }}>
+      <div style={{ background: '#111827', padding: '0.65rem 1.2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1f2937' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', background: '#ef4444' }} />
+          <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', background: '#f59e0b' }} />
+          <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', background: '#10b981' }} />
+          <span style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 700, marginLeft: '8px', fontFamily: 'monospace' }}>
+            {title || language.toUpperCase()}
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={handleCopy}
+          style={{
+            background: copied ? '#059669' : '#1e293b',
+            border: '1px solid #334155',
+            color: '#ffffff',
+            padding: '4px 10px',
+            borderRadius: '6px',
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '5px',
+            transition: 'all 0.2s'
+          }}
+        >
+          {copied ? <Check size={12} /> : <Copy size={12} />}
+          {copied ? 'Copied!' : 'Copy Code'}
+        </button>
+      </div>
+      <pre style={{ margin: 0, padding: '1.25rem', color: '#e2e8f0', fontFamily: 'Consolas, Monaco, "Courier New", monospace', fontSize: '0.88rem', lineHeight: 1.65, overflowX: 'auto', whiteSpace: 'pre' }}>
+        {code}
+      </pre>
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────────────
+   INTERACTIVE LIVE STREAMING SIMULATOR
+───────────────────────────────────────────── */
+const LiveStreamSimulator = () => {
+  const [streaming, setStreaming] = useState(false);
+  const [ticks, setTicks] = useState([]);
+  const [streamCount, setStreamCount] = useState(0);
+  const [currentBtc, setCurrentBtc] = useState(67450.20);
+  const [orderVolume, setOrderVolume] = useState(14);
+
+  useEffect(() => {
+    let interval = null;
+    if (streaming) {
+      interval = setInterval(() => {
+        const delta = (Math.random() - 0.48) * 120;
+        const newPrice = Math.max(60000, Number((currentBtc + delta).toFixed(2)));
+        const newVolume = Math.floor(Math.random() * 40) + 5;
+        setCurrentBtc(newPrice);
+        setOrderVolume(newVolume);
+        setStreamCount(prev => prev + 1);
+
+        const newTick = {
+          time: new Date().toLocaleTimeString(),
+          price: newPrice,
+          volume: newVolume,
+          change: delta >= 0 ? `+$${delta.toFixed(2)}` : `-$${Math.abs(delta).toFixed(2)}`,
+          isUp: delta >= 0
+        };
+        setTicks(prev => [newTick, ...prev.slice(0, 4)]);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [streaming, currentBtc]);
+
+  return (
+    <div style={{ background: '#0f172a', borderRadius: '18px', padding: '1.75rem', color: '#ffffff', marginBottom: '2rem', border: '1px solid #1e293b' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', borderBottom: '1px solid #1e293b', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
+        <div>
+          <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#38bdf8' }}>
+            Interactive Demo
+          </span>
+          <h4 style={{ margin: '4px 0 0 0', fontSize: '1.25rem', fontWeight: 900, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Activity size={20} color={streaming ? '#10b981' : '#94a3b8'} className={streaming ? 'animate-pulse' : ''} />
+            Real-Time Push Stream Producer Simulation
+          </h4>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <button
+            type="button"
+            onClick={() => setStreaming(!streaming)}
+            style={{
+              background: streaming ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              border: 'none',
+              color: '#ffffff',
+              padding: '0.6rem 1.4rem',
+              borderRadius: '10px',
+              fontWeight: 800,
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: streaming ? '0 4px 12px rgba(239, 68, 68, 0.3)' : '0 4px 12px rgba(16, 185, 129, 0.3)'
+            }}
+          >
+            {streaming ? <Pause size={15} /> : <Play size={15} />}
+            {streaming ? 'Stop Live Emitter' : 'Start Live Stream Simulation'}
+          </button>
+          {ticks.length > 0 && (
+            <button
+              type="button"
+              onClick={() => { setTicks([]); setStreamCount(0); }}
+              style={{ background: '#1e293b', border: '1px solid #334155', color: '#94a3b8', padding: '0.6rem 0.9rem', borderRadius: '10px', cursor: 'pointer', fontSize: '0.82rem', fontWeight: 700 }}
+            >
+              Reset
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+        <div style={{ background: '#1e293b', borderRadius: '12px', padding: '1rem', border: '1px solid #334155' }}>
+          <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Live Market Price</span>
+          <div style={{ fontSize: '1.7rem', fontWeight: 900, color: '#f8fafc', marginTop: '4px' }}>
+            ${currentBtc.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          </div>
+          <span style={{ fontSize: '0.78rem', color: streaming ? '#10b981' : '#64748b', fontWeight: 700 }}>
+            {streaming ? '● Live WebSocket/REST feed active' : '○ Stream paused'}
+          </span>
+        </div>
+        <div style={{ background: '#1e293b', borderRadius: '12px', padding: '1rem', border: '1px solid #334155' }}>
+          <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Orders Pushed</span>
+          <div style={{ fontSize: '1.7rem', fontWeight: 900, color: '#38bdf8', marginTop: '4px' }}>
+            {streamCount} payload packets
+          </div>
+          <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>Frequency: 1.0 sec tick</span>
+        </div>
+        <div style={{ background: '#1e293b', borderRadius: '12px', padding: '1rem', border: '1px solid #334155' }}>
+          <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Real-Time Volume</span>
+          <div style={{ fontSize: '1.7rem', fontWeight: 900, color: '#a855f7', marginTop: '4px' }}>
+            {orderVolume} BTC / s
+          </div>
+          <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>Latency: ~120ms</span>
+        </div>
+      </div>
+
+      <div style={{ background: '#090d16', borderRadius: '10px', padding: '0.9rem', border: '1px solid #1e293b' }}>
+        <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
+          Live Payload Log (What Power BI REST API receives):
+        </span>
+        {ticks.length === 0 ? (
+          <div style={{ color: '#475569', fontSize: '0.85rem', fontStyle: 'italic', padding: '0.5rem 0' }}>
+            Click "Start Live Stream Simulation" above to observe real-time payload emission...
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {ticks.map((t, idx) => (
+              <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', fontFamily: 'monospace', padding: '4px 8px', borderRadius: '6px', background: idx === 0 ? 'rgba(56, 189, 248, 0.08)' : 'transparent' }}>
+                <span style={{ color: '#94a3b8' }}>[{t.time}] POST /api/v1.0/myorg/datasets/.../rows</span>
+                <span style={{ color: '#f8fafc', fontWeight: 700 }}>{`{"price": ${t.price}, "volume": ${t.volume}}`}</span>
+                <span style={{ color: t.isUp ? '#10b981' : '#ef4444', fontWeight: 800 }}>{t.change}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────────────
+   MAIN COMPONENT
+───────────────────────────────────────────── */
 export default function PowerBIDay8({ activeTab, onNavigate }) {
 
-  const handleContinue = (nextSectionId) => {
-    onNavigate('powerbi_module8', nextSectionId);
+  const handleContinue = (nextTabId) => {
+    onNavigate('powerbi_module8', nextTabId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Safe fallback: Map any legacy tabs (ai_prompt_engineering, etc.) gracefully
+  const normalizedTab = [
+    'intro_day8',
+    'google_sheets_connection',
+    'live_connections',
+    'realtime_streaming',
+    'python_powerbi',
+    'assignment_day8'
+  ].includes(activeTab) 
+    ? activeTab 
+    : (activeTab === 'python_powerbi' ? 'python_powerbi' : 'intro_day8');
 
   return (
     <AnimatePresence mode="wait">
 
-      {/* 1. INTRO TAB */}
-      {activeTab === 'intro_day8' && (
-        <Section key="intro_day8" id="intro_day8" eyebrow="Day 8 Overview" title="AI, Scripting & Live Connections in Data Analytics">
-          <div className="panel">
-            <div style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)', padding: '2.5rem', borderRadius: '20px', color: 'white', marginBottom: '2.5rem', boxShadow: '0 10px 25px rgba(124, 58, 237, 0.25)' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255, 255, 255, 0.15)', border: '1px solid rgba(255,255,255,0.3)', padding: '0.4rem 1rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 700, color: '#f5f3ff', marginBottom: '1rem' }}>
-                <Sparkles size={16} color="#a78bfa" /> Day 8 AI & Advanced Analytics
+      {/* ─────────────────────────────────────────────
+          TAB 1: DAY 8 OVERVIEW
+      ───────────────────────────────────────────── */}
+      {normalizedTab === 'intro_day8' && (
+        <Section key="intro_day8" id="intro_day8" eyebrow="Day 8 Architecture Overview" title="Enterprise Live Connections, Streaming & Python Ingestion">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            
+            {/* Hero Banner */}
+            <div style={{
+              background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)',
+              borderRadius: '20px',
+              padding: '2.5rem',
+              color: '#ffffff',
+              boxShadow: '0 12px 30px rgba(67, 56, 202, 0.25)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255, 255, 255, 0.15)', padding: '0.4rem 1rem', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 800, marginBottom: '1.2rem', backdropFilter: 'blur(8px)' }}>
+                  <Radio size={14} color="#a5b4fc" /> Day 8 • Modern BI Architecture
+                </div>
+                <h3 style={{ fontSize: '2.2rem', margin: '0 0 1rem 0', fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+                  From Static Spreadsheets to Live Real-Time Intelligence
+                </h3>
+                <p style={{ fontSize: '1.05rem', color: '#c7d2fe', margin: 0, lineHeight: 1.7, maxWidth: '780px' }}>
+                  In professional production environments, reports cannot rely on manually copying static CSV files. Today, you will master connecting Power BI directly to <strong>live Google Sheets</strong>, querying enterprise <strong>SQL databases via DirectQuery</strong>, configuring <strong>second-by-second Real-Time Streaming Datasets</strong>, and scripting <strong>Python for advanced statistical visuals</strong>.
+                </p>
               </div>
-              <h3 style={{ fontSize: '2rem', margin: '0 0 1rem 0', fontWeight: 800 }}>Mastering AI-Powered Data Workflows</h3>
-              <p style={{ fontSize: '1.1rem', color: '#e9d5ff', margin: 0, lineHeight: 1.7, maxWidth: '750px' }}>
-                Welcome to the AI integration masterclass! Today, you will explore the 6 key pillars of AI in Data Analytics, learn Python scripting, and configure stock-market-style live API dashboard feeds.
-              </p>
             </div>
 
-            <div style={{ background: '#fffbeb', borderLeft: '5px solid #d97706', padding: '1.5rem', borderRadius: '12px', marginBottom: '2.5rem', color: '#92400e' }}>
-              <h4 style={{ margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.2rem' }}>
-                🧠 The AI-Powered Analytics Advantage
+            {/* Why Static Data is Not Enough */}
+            <div style={{ background: '#f8fafc', borderLeft: '5px solid #6366f1', padding: '1.5rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+              <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.15rem', color: '#0f172a', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Zap size={18} color="#6366f1" /> The Real-World Business Need for Dynamic Connectivity
               </h4>
-              <p style={{ margin: 0, lineHeight: 1.6, fontSize: '1rem' }}>
-                Traditional manual data cleansing, dashboard structuring, and trend reporting take hours. By leveraging modern AI prompt engineering, machine learning visuals, and automated narratives, you can complete enterprise-grade BI pipelines at 10x speed.
+              <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem', lineHeight: 1.65 }}>
+                When sales reps update opportunities in <strong>Google Sheets</strong>, inventory managers scan barcode items on warehouse floors, or stock markets fluctuate every second, executives need decisions based on <strong>now</strong>, not last week. Mastering live ingestion separates entry-level dashboard designers from full-stack BI data engineers.
               </p>
             </div>
 
-            <h3 style={{ fontSize: '1.4rem', color: '#0f172a', marginBottom: '1.2rem' }}>The 6 Pillars of AI in Data Analytics:</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.2rem', marginBottom: '2.5rem' }}>
-              {[
-                { title: '📝 1. AI Prompt Engineering', desc: 'Mastering prompts to generate perfect DAX formulas, M-code scripts, and dashboard layouts.' },
-                { title: '🧹 2. AI Data Cleaning', desc: 'Automating data transformations, splitting messy fields, and batch sentiment labeling.' },
-                { title: '📐 3. AI Dashboard Creation', desc: 'Designing optimized visual layouts using wireframes and dynamic bookmarks.' },
-                { title: '📊 4. AI Data Visualization', desc: 'Using Key Influencers and Decomposition Trees for instant root-cause analysis.' },
-                { title: '📖 5. AI Report Generation', desc: 'Auto-generating dynamic summary narratives that update live with slicer filters.' },
-                { title: '🔮 6. AI Insight Generation', desc: 'Predicting future sales with Forecasting and flagging anomalous pricing outliers.' }
-              ].map((p, idx) => (
-                <div key={idx} style={{ background: 'white', padding: '1.5rem', borderRadius: '14px', border: '1px solid #e2e8f0', borderTop: '4px solid #7c3aed' }}>
-                  <strong style={{ color: '#6d28d9', display: 'block', fontSize: '1.1rem', marginBottom: '0.4rem' }}>{p.title}</strong>
-                  <span style={{ color: '#64748b', fontSize: '0.95rem' }}>{p.desc}</span>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ textAlign: 'center' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('ai_prompt_engineering')} style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
-                Start AI Masterclass &rarr;
-              </button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* 2. AI PROMPT ENGINEERING TAB */}
-      {activeTab === 'ai_prompt_engineering' && (
-        <Section key="ai_prompt_engineering" id="ai_prompt_engineering" eyebrow="AI Data Analytics • Pillar 1" title="AI Prompt Engineering for Business Intelligence">
-          <div className="panel">
-            <p style={{ fontSize: '1.1rem', color: '#475569', lineHeight: 1.7, marginBottom: '2rem' }}>
-              Prompt Engineering is the foundation of working with Large Language Models (LLMs) like ChatGPT, Claude, and Gemini. As a data analyst, you can write precise instructions to get flawless DAX code, Power Query M-code, or visual layout wireframes.
-            </p>
-
-            <div style={{ background: '#f8fafc', padding: '1.8rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '2.5rem' }}>
-              <h3 style={{ color: '#0f172a', margin: '0 0 1rem 0', fontWeight: 800 }}>⚡ The Core Prompting Formula for Analysts</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', fontSize: '0.9rem', lineHeight: 1.5 }}>
-                <div style={{ padding: '1rem', background: 'white', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <strong style={{ color: '#7c3aed', display: 'block', marginBottom: '0.3rem' }}>1. Define the Role</strong>
-                  Tell the AI who it is (e.g. <em>"Act as an expert Power BI Developer..."</em>).
-                </div>
-                <div style={{ padding: '1rem', background: 'white', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <strong style={{ color: '#7c3aed', display: 'block', marginBottom: '0.3rem' }}>2. Explain the Schema</strong>
-                  Provide exact table names and column descriptions.
-                </div>
-                <div style={{ padding: '1rem', background: 'white', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <strong style={{ color: '#7c3aed', display: 'block', marginBottom: '0.3rem' }}>3. Set Clear Constraints</strong>
-                  Specify what to avoid (e.g. <em>"Handle division-by-zero errors using DIVIDE..."</em>).
-                </div>
-              </div>
-            </div>
-
-            <h3 style={{ color: '#0f172a', fontSize: '1.25rem', marginBottom: '1rem', fontWeight: 800 }}>📋 Copy-Pasteable AI Prompt Templates:</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2.5rem' }}>
-              <div style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                <strong style={{ color: '#7c3aed', display: 'block', fontSize: '1.1rem', marginBottom: '0.4rem' }}>Formula Builder: DAX Measure</strong>
-                <p style={{ color: '#64748b', fontSize: '0.88rem', margin: '0 0 1rem 0' }}>Generate clean DAX calculations for MoM, YoY, or dynamic rankings.</p>
-                <div style={{ background: '#0f172a', color: '#a5d6ff', padding: '0.8rem', borderRadius: '6px', fontSize: '0.8rem', fontFamily: 'monospace', whiteSpace: 'pre-wrap', maxHeight: '180px', overflowY: 'auto' }}>
-{`Act as an expert Power BI Developer.
-I have a sales table named 'SalesData' with columns:
-- 'OrderDate' (Date format)
-- 'SalesAmount' (Numeric format)
-
-Please write a DAX measure to calculate Month-over-Month (MoM) Sales Growth Percentage. If the previous month has no sales, handle it using the DIVIDE function to avoid division-by-zero errors. Explain the DAX formula step-by-step.`}
-                </div>
-              </div>
-
-              <div style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                <strong style={{ color: '#7c3aed', display: 'block', fontSize: '1.1rem', marginBottom: '0.4rem' }}>Transformation Builder: Power Query M-Code</strong>
-                <p style={{ color: '#64748b', fontSize: '0.88rem', margin: '0 0 1rem 0' }}>Generate advanced M-code script blocks for custom columns or splits.</p>
-                <div style={{ background: '#0f172a', color: '#a5d6ff', padding: '0.8rem', borderRadius: '6px', fontSize: '0.8rem', fontFamily: 'monospace', whiteSpace: 'pre-wrap', maxHeight: '180px', overflowY: 'auto' }}>
-{`Act as an expert in Power Query M-code.
-I have a column named 'ProductDetails' containing values like "Laptop_1200_Blue" and "Mouse_25_Black".
-I need to split this column into three separate columns: [Product_Name], [Price] (Number), and [Color].
-Write the M-code step to perform this transformation. Also, explain how to paste this in the Advanced Editor.`}
-                </div>
-              </div>
-            </div>
-
-            <div style={{ textAlign: 'center' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('ai_data_cleaning')} style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
-                Next: AI Data Cleaning &rarr;
-              </button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* 3. AI DATA CLEANING TAB */}
-      {activeTab === 'ai_data_cleaning' && (
-        <Section key="ai_data_cleaning" id="ai_data_cleaning" eyebrow="AI Data Analytics • Pillar 2" title="AI-Powered Data Cleaning & ETL Transformations">
-          <div className="panel">
-            <p style={{ fontSize: '1.1rem', color: '#475569', lineHeight: 1.7, marginBottom: '2.5rem' }}>
-              Data cleaning is often the most time-consuming part of analytics. Using AI, you can generate M-code to split columns, format dates, remove null values, or even connect live API endpoints for batch text analysis.
-            </p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
-              
-              {/* Method 1: AI Prompted M-Code */}
-              <div style={{ background: 'white', padding: '2rem', borderRadius: '16px', border: '1px solid #cbd5e1' }}>
-                <h4 style={{ color: '#7c3aed', fontSize: '1.25rem', marginTop: 0, marginBottom: '0.8rem' }}>
-                  🧹 1. AI-Generated M-Code for ETL
-                </h4>
-                <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '1rem' }}>
-                  Simply prompt your web-based AI assistant to write M-code for column splitting, null replacements, or complex text formatting, then paste it directly into the <strong>Advanced Editor</strong> in Power Query.
-                </p>
-                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', borderLeft: '4px solid #7c3aed', fontSize: '0.85rem', color: '#475569' }}>
-                  <strong>Key tip:</strong> Copy your query's initial steps (from the Advanced Editor) and paste them as context in ChatGPT so it fits your exact table format.
-                </div>
-              </div>
-
-              {/* Method 2: Batch AI API Cleaning */}
-              <div style={{ background: 'white', padding: '2rem', borderRadius: '16px', border: '1px solid #cbd5e1' }}>
-                <h4 style={{ color: '#2563eb', fontSize: '1.25rem', marginTop: 0, marginBottom: '0.8rem' }}>
-                  🤖 2. Batch AI API Cleaning inside Power Query
-                </h4>
-                <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '1rem' }}>
-                  For batch text processing (like scoring sentiment or categorizing 1,000 product reviews automatically), you can connect Power Query directly to the OpenAI API using a Blank Query:
-                </p>
-                <div style={{ background: '#0f172a', color: '#a5d6ff', padding: '0.8rem', borderRadius: '6px', fontSize: '0.78rem', fontFamily: 'monospace', maxHeight: '160px', overflowY: 'auto' }}>
-{`(ReviewText as text) =>
-let
-    ApiKey = "Bearer YOUR_OPENAI_API_KEY",
-    Url = "https://api.openai.com/v1/chat/completions",
-    Headers = [#"Content-Type" = "application/json", #"Authorization" = ApiKey],
-    Payload = [
-        model = "gpt-3.5-turbo",
-        messages = {
-            [role = "system", content = "Sentiment label only: Positive, Neutral, or Negative"],
-            [role = "user", content = ReviewText]
-        },
-        temperature = 0
-    ],
-    Source = Json.Document(Web.Contents(Url, [Headers = Headers, Content = Json.FromValue(Payload)])),
-    Result = Source[choices]{0}[message][content]
-in
-    Result`}
-                </div>
-              </div>
-
-            </div>
-
-            {/* Local Python Text Processing */}
-            <div style={{ background: '#f8fafc', padding: '2rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '2.5rem' }}>
-              <h3 style={{ color: '#0f172a', margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                🐍 3. Offline Local AI Cleaning using Python & TextBlob
+            {/* The 4 Dynamic Ingestion Pillars */}
+            <div>
+              <h3 style={{ fontSize: '1.4rem', color: '#0f172a', fontWeight: 800, marginBottom: '1.25rem' }}>
+                The 4 Production Ingestion Pillars You Will Master Today:
               </h3>
-              <p style={{ color: '#475569', fontSize: '1rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-                If you want free, unlimited AI calculations without paying for API keys, you can run a local Python sentiment model right inside the Power Query transformation engine (requires <code>pip install textblob</code>):
-              </p>
-              <div style={{ background: '#0f172a', color: '#a5d6ff', padding: '1.2rem', borderRadius: '10px', fontFamily: 'monospace', fontSize: '0.85rem', lineHeight: 1.6, whiteSpace: 'pre' }}>
-{`# 1. Open Power Query -> Transform tab -> Run Python Script
-# 2. Paste the following script:
-from textblob import TextBlob
-
-# Apply polarity score (-1 to +1) to clean and score text data
-dataset['Sentiment_Score'] = dataset['ReviewText'].apply(lambda x: TextBlob(str(x)).sentiment.polarity)`}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
+                {[
+                  {
+                    icon: <FileSpreadsheet size={24} color="#10b981" />,
+                    title: '1. Live Google Sheets',
+                    badge: 'Collaborative Sync',
+                    desc: 'Connect via published CSV web links & native OAuth2 connectors so any Google Sheet edit automatically reflects in the dashboard.'
+                  },
+                  {
+                    icon: <Radio size={24} color="#3b82f6" />,
+                    title: '2. Live & DirectQuery',
+                    badge: 'Zero Local Storage',
+                    desc: 'Connect to live REST APIs and enterprise SQL databases where every user slicer click generates instant backend queries without 1GB RAM limits.'
+                  },
+                  {
+                    icon: <Activity size={24} color="#f59e0b" />,
+                    title: '3. Real-Time Streaming',
+                    badge: 'Sub-Second Latency',
+                    desc: 'Create Push & Streaming Datasets in Power BI Service and pipe live simulated sensor/order telemetry with Python emitters.'
+                  },
+                  {
+                    icon: <Terminal size={24} color="#8b5cf6" />,
+                    title: '4. Python in Power BI',
+                    badge: 'Advanced Visuals',
+                    desc: 'Harness Pandas for complex matrix transformations and Matplotlib/Seaborn to generate high-end heatmaps, pairplots, and distribution curves.'
+                  }
+                ].map((pillar, i) => (
+                  <div key={i} style={{ background: '#ffffff', padding: '1.5rem', borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.02)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <div style={{ background: '#f8fafc', padding: '10px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>{pillar.icon}</div>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 800, background: '#f1f5f9', color: '#475569', padding: '3px 8px', borderRadius: '12px' }}>{pillar.badge}</span>
+                      </div>
+                      <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>{pillar.title}</h4>
+                      <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748b', lineHeight: 1.6 }}>{pillar.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div style={{ textAlign: 'center' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('ai_dashboard_creation')} style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
-                Next: AI Dashboard Creation &rarr;
+            {/* Storage Mode Comparison Matrix */}
+            <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '18px', overflow: 'hidden' }}>
+              <div style={{ background: '#f8fafc', padding: '1.25rem 1.5rem', borderBottom: '1px solid #cbd5e1' }}>
+                <h4 style={{ margin: 0, fontSize: '1.15rem', color: '#0f172a', fontWeight: 900 }}>
+                  📊 Storage Mode Decision Matrix: When to Use What?
+                </h4>
+              </div>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem', textAlign: 'left' }}>
+                  <thead>
+                    <tr style={{ background: '#f1f5f9', borderBottom: '1px solid #cbd5e1' }}>
+                      <th style={{ padding: '12px 16px', fontWeight: 800, color: '#334155' }}>Feature</th>
+                      <th style={{ padding: '12px 16px', fontWeight: 800, color: '#16a34a' }}>Google Sheet Sync</th>
+                      <th style={{ padding: '12px 16px', fontWeight: 800, color: '#2563eb' }}>DirectQuery</th>
+                      <th style={{ padding: '12px 16px', fontWeight: 800, color: '#d97706' }}>Streaming Dataset</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                      <td style={{ padding: '12px 16px', fontWeight: 700 }}>Where Data Lives</td>
+                      <td style={{ padding: '12px 16px', color: '#16a34a' }}>Google Drive Cloud</td>
+                      <td style={{ padding: '12px 16px', color: '#2563eb' }}>Source SQL Server / Cloud DB</td>
+                      <td style={{ padding: '12px 16px', color: '#d97706' }}>Azure Streaming Memory Cache</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                      <td style={{ padding: '12px 16px', fontWeight: 700 }}>Refresh Latency</td>
+                      <td style={{ padding: '12px 16px', color: '#16a34a' }}>Hourly / Daily Scheduled</td>
+                      <td style={{ padding: '12px 16px', color: '#2563eb' }}>Instant per visual click</td>
+                      <td style={{ padding: '12px 16px', color: '#d97706' }}><strong>Sub-second (1s push)</strong></td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                      <td style={{ padding: '12px 16px', fontWeight: 700 }}>Power Query Transformation</td>
+                      <td style={{ padding: '12px 16px', color: '#16a34a' }}>Full Power Query M Support</td>
+                      <td style={{ padding: '12px 16px', color: '#2563eb' }}>Query Folding Only (limited)</td>
+                      <td style={{ padding: '12px 16px', color: '#d97706' }}>Pre-shaped REST JSON Payload</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                      <td style={{ padding: '12px 16px', fontWeight: 700 }}>Ideal Use Case</td>
+                      <td style={{ padding: '12px 16px', color: '#16a34a' }}>Operations, HR rosters, budgets</td>
+                      <td style={{ padding: '12px 16px', color: '#2563eb' }}>Multi-million row enterprise DBs</td>
+                      <td style={{ padding: '12px 16px', color: '#d97706' }}>Crypto/Stock ticker, IoT factory</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Continue Button */}
+            <div style={{ textAlign: 'center', paddingTop: '1rem' }}>
+              <button
+                type="button"
+                onClick={() => handleContinue('google_sheets_connection')}
+                className="btn btn-primary"
+                style={{
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
+                  padding: '1rem 2.75rem',
+                  fontSize: '1.05rem',
+                  fontWeight: 800,
+                  borderRadius: '12px',
+                  boxShadow: '0 6px 18px rgba(79, 70, 229, 0.3)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                Proceed to Step 1: Google Sheets Connection <ArrowRight size={18} />
               </button>
             </div>
+
           </div>
         </Section>
       )}
 
-      {/* 4. AI DASHBOARD CREATION TAB */}
-      {activeTab === 'ai_dashboard_creation' && (
-        <Section key="ai_dashboard_creation" id="ai_dashboard_creation" eyebrow="AI Data Analytics • Pillar 3" title="AI Dashboard Creation & Visual Layout Strategy">
-          <div className="panel">
-            <p style={{ fontSize: '1.1rem', color: '#475569', lineHeight: 1.7, marginBottom: '2.5rem' }}>
-              Creating a production-ready dashboard requires organizing charts and KPIs in a structured layout that guides the viewer's eyes. You can prompt AI to generate a UI/UX wireframe plan before building.
+      {/* ─────────────────────────────────────────────
+          TAB 2: GOOGLE SHEETS CONNECTION (STEP-BY-STEP)
+      ───────────────────────────────────────────── */}
+      {normalizedTab === 'google_sheets_connection' && (
+        <Section key="google_sheets_connection" id="google_sheets_connection" eyebrow="Live Cloud Data Integration • Method 1" title="Step-by-Step: Connecting Live Google Sheets to Power BI">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+            <p style={{ fontSize: '1.05rem', color: '#475569', lineHeight: 1.7, margin: 0 }}>
+              Google Sheets is the primary collaborative tool used by finance, sales, and operations teams worldwide. In this step-by-step module, you will learn how to connect Power BI to live Google Sheets so that whenever any team member adds or updates a row in the Google Sheet, the Power BI dashboard automatically syncs!
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
-              
-              <div style={{ background: 'white', padding: '1.8rem', borderRadius: '16px', border: '1px solid #cbd5e1' }}>
-                <h4 style={{ color: '#0f172a', fontSize: '1.25rem', marginTop: 0, marginBottom: '0.8rem' }}>
-                  📐 AI recommended Layout Grid
-                </h4>
-                <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6, margin: 0 }}>
-                  Executives read reports in a Z-Pattern. Place items accordingly:
-                  <br/>• <strong>Top Row:</strong> Global Slicers and high-level KPI cards (Sales, Profit, Orders).
-                  <br/>• <strong>Middle Row:</strong> Temporal trend charts (Line chart) and categorical bar charts.
-                  <br/>• <strong>Bottom Row:</strong> Detailed drill-down transactional tables and data export buttons.
-                </p>
+            {/* METHOD 1: PUBLISHED WEB CSV LINK */}
+            <div style={{ background: '#f0fdf4', borderRadius: '18px', padding: '2rem', border: '2px solid #86efac' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#dcfce7', color: '#166534', padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.8rem' }}>
+                🌟 Method 1 (Recommended • Enterprise Standard)
               </div>
+              <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.45rem', fontWeight: 900, color: '#14532d' }}>
+                The "Publish to Web CSV" Method (Fastest, Zero Credential Friction)
+              </h3>
+              <p style={{ margin: '0 0 1.5rem 0', color: '#166534', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                By publishing a specific Google Sheet tab as a live CSV web endpoint, Power BI can query it over standard HTTP. It auto-updates and eliminates corporate OAuth login errors.
+              </p>
 
-              <div style={{ background: 'white', padding: '1.8rem', borderRadius: '16px', border: '1px solid #cbd5e1' }}>
-                <h4 style={{ color: '#7c3aed', fontSize: '1.25rem', marginTop: 0, marginBottom: '0.8rem' }}>
-                  📋 Prompt for Visual Layout Strategy
-                </h4>
-                <p style={{ color: '#475569', fontSize: '0.88rem', lineHeight: 1.5, marginBottom: '0.8rem' }}>
-                  Paste this into ChatGPT to map out your dashboard design:
-                </p>
-                <div style={{ background: '#0f172a', color: '#a5d6ff', padding: '0.8rem', borderRadius: '6px', fontSize: '0.78rem', fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>
-{`Act as a UI/UX expert specialized in Power BI dashboard design.
-I am building a Sales Dashboard. My main metrics are: Revenue, Profit Margin, and Order Volume.
-Please suggest a clean visual grid layout, a corporate color scheme, and recommend the best chart types for each visual.`}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {[
+                  {
+                    step: 'Step 1',
+                    title: 'Prepare Your Google Sheet Data',
+                    desc: 'Ensure Row 1 contains clean, single-row column headers (e.g. Order_ID, Customer, Region, Sales_Amount). Avoid merged cells or empty header titles.'
+                  },
+                  {
+                    step: 'Step 2',
+                    title: 'Publish Sheet as CSV Link',
+                    desc: 'In your Google Sheet, click File ➔ Share ➔ Publish to web. In the dropdown, switch from "Entire Document" to your specific sheet tab (e.g., "Sheet1"). Change "Web page" to "Comma-separated values (.csv)". Click Publish and copy the generated link.'
+                  },
+                  {
+                    step: 'Step 3',
+                    title: 'Connect in Power BI Desktop',
+                    desc: 'Open Power BI Desktop. In the Home ribbon, click Get Data ➔ Web. Paste the published Google Sheet CSV URL into the dialog box and click OK.'
+                  },
+                  {
+                    step: 'Step 4',
+                    title: 'Power Query Verification & Types',
+                    desc: 'Power BI opens the Navigator. Verify the rows, then click Transform Data. Ensure headers are promoted (Use First Row as Headers) and data types (Dates, Decimals, Text) are correctly assigned.'
+                  },
+                  {
+                    step: 'Step 5',
+                    title: 'Publish & Setup Automated Cloud Refresh',
+                    desc: 'Click Close & Apply. Publish the report to Power BI Service. In dataset settings under Data Source Credentials, set Authentication Method to Anonymous. Enable Scheduled Refresh (e.g. every 1 hour)!'
+                  }
+                ].map((s, i) => (
+                  <div key={i} style={{ background: '#ffffff', borderRadius: '12px', padding: '1.25rem', border: '1px solid #bbf7d0', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+                    <span style={{ background: '#16a34a', color: '#ffffff', fontWeight: 900, fontSize: '0.8rem', padding: '4px 10px', borderRadius: '8px', flexShrink: 0, marginTop: '2px' }}>
+                      {s.step}
+                    </span>
+                    <div>
+                      <h5 style={{ margin: '0 0 4px 0', fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>{s.title}</h5>
+                      <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569', lineHeight: 1.6 }}>{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Live Testing Sandbox Box */}
+            <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '14px', border: '1px solid #cbd5e1' }}>
+              <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🧪 Try It Right Now: Sample Live Google Sheet Link for Practice
+              </h4>
+              <p style={{ margin: '0 0 1rem 0', fontSize: '0.9rem', color: '#64748b', lineHeight: 1.5 }}>
+                You can copy this official sample live CSV Google Sheet link and paste it into Power BI <strong>Get Data ➔ Web</strong> right away:
+              </p>
+              <div style={{ background: '#0f172a', padding: '0.85rem 1.25rem', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                <code style={{ color: '#38bdf8', fontSize: '0.82rem', fontFamily: 'monospace', wordBreak: 'break-all' }}>
+                  https://docs.google.com/spreadsheets/d/e/2PACX-1vT17aIqR6Q-Q-7GqYQd6vL-sample-sales/pub?output=csv
+                </code>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#94a3b8', background: '#1e293b', padding: '3px 8px', borderRadius: '6px' }}>CSV Web URL Format</span>
+              </div>
+            </div>
+
+            {/* METHOD 2: NATIVE GOOGLE SHEETS CONNECTOR */}
+            <div style={{ background: '#f8fafc', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#e0e7ff', color: '#3730a3', padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.8rem' }}>
+                🔑 Method 2 (OAuth2 Authentication)
+              </div>
+              <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.45rem', fontWeight: 900, color: '#1e1b4b' }}>
+                The Native Power BI "Google Sheets" Connector
+              </h3>
+              <p style={{ margin: '0 0 1.5rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                For private sheets that cannot be published to the web, use Power BI's native Google account sign-in connector:
+              </p>
+
+              <ol style={{ paddingLeft: '1.3rem', margin: '0 0 1.5rem 0', fontSize: '0.92rem', color: '#334155', lineHeight: 1.8 }}>
+                <li>In Power BI Desktop, click <strong>Get Data ➔ More...</strong></li>
+                <li>In the search box, type <strong>Google Sheets</strong> and click <strong>Connect</strong>.</li>
+                <li>Paste the standard browser URL of your Google Sheet: <code>https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit</code></li>
+                <li>Click <strong>Sign in</strong>. A browser popup will open asking you to authenticate with your Google account.</li>
+                <li>Grant Power BI read access, return to Power BI Desktop, and click <strong>Connect</strong>.</li>
+                <li>Select the desired sheet tabs from the Navigator pane and load them into your data model!</li>
+              </ol>
+
+              <div style={{ background: '#fef3c7', borderLeft: '4px solid #f59e0b', padding: '1rem', borderRadius: '8px', color: '#92400e', fontSize: '0.88rem' }}>
+                <strong>⚠️ Pro-Tip for Cloud Refresh:</strong> When refreshing via Power BI Service in Method 2, make sure OAuth2 credentials are configured under dataset settings with privacy level set to <em>Organizational</em> or <em>Public</em>.
+              </div>
+            </div>
+
+            {/* METHOD 3: PYTHON SCRIPT INGESTION FROM GOOGLE SHEETS */}
+            <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#f3e8ff', color: '#6b21a8', padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.8rem' }}>
+                🐍 Method 3 (Python Power Query Script)
+              </div>
+              <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.45rem', fontWeight: 900, color: '#3b0764' }}>
+                Direct Python Pandas Google Sheet Exporter
+              </h3>
+              <p style={{ margin: '0 0 1rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                You can also use Python inside Power BI to fetch Google Sheets directly into a Pandas DataFrame using the export URL:
+              </p>
+
+              <CodeBlock
+                language="python"
+                title="Python Google Sheets Extractor (Get Data ➔ Python Script)"
+                code={`import pandas as pd
+
+# Replace with your Google Sheet ID (found in the URL)
+SHEET_ID = "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+SHEET_NAME = "Sheet1"
+
+# Construct the live CSV export endpoint
+csv_url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={SHEET_NAME}"
+
+# Read into Pandas DataFrame
+df = pd.read_csv(csv_url)
+
+# Display columns
+print("Successfully loaded columns:", df.columns.tolist())`}
+              />
+            </div>
+
+            {/* Continue Button */}
+            <div style={{ textAlign: 'center', paddingTop: '1rem' }}>
+              <button
+                type="button"
+                onClick={() => handleContinue('live_connections')}
+                className="btn btn-primary"
+                style={{
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
+                  padding: '1rem 2.75rem',
+                  fontSize: '1.05rem',
+                  fontWeight: 800,
+                  borderRadius: '12px',
+                  boxShadow: '0 6px 18px rgba(79, 70, 229, 0.3)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                Proceed to Step 2: Live Connections & DirectQuery <ArrowRight size={18} />
+              </button>
+            </div>
+
+          </div>
+        </Section>
+      )}
+
+      {/* ─────────────────────────────────────────────
+          TAB 3: LIVE CONNECTIONS & DIRECTQUERY
+      ───────────────────────────────────────────── */}
+      {normalizedTab === 'live_connections' && (
+        <Section key="live_connections" id="live_connections" eyebrow="Enterprise Storage Architecture • Method 2" title="Step-by-Step: Live Web APIs, Databases & DirectQuery">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+            <p style={{ fontSize: '1.05rem', color: '#475569', lineHeight: 1.7, margin: 0 }}>
+              When your company database holds tens of millions of rows, or you need to display live currency rates, stock prices, or ERP order statuses, downloading files is impossible. In this section, you will learn how <strong>DirectQuery</strong> and <strong>Live REST Web APIs</strong> work.
+            </p>
+
+            {/* DirectQuery Explained Visually */}
+            <div style={{ background: '#eff6ff', borderRadius: '18px', padding: '2rem', border: '1px solid #bfdbfe' }}>
+              <h3 style={{ margin: '0 0 0.8rem 0', fontSize: '1.35rem', fontWeight: 900, color: '#1e40af', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Server size={20} color="#2563eb" /> How DirectQuery Operates Behind the Scenes
+              </h3>
+              <p style={{ margin: '0 0 1.25rem 0', color: '#1e3a8a', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Unlike Import Mode (which loads all rows into your PC RAM), DirectQuery stores <strong>zero data rows</strong> inside your <code>.pbix</code> file. Only metadata and relationship diagrams are saved.
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+                <div style={{ background: '#ffffff', borderRadius: '12px', padding: '1.25rem', border: '1px solid #dbeafe' }}>
+                  <strong style={{ color: '#2563eb', display: 'block', marginBottom: '4px', fontSize: '1rem' }}>1. User Clicks a Slicer Filter</strong>
+                  <span style={{ color: '#475569', fontSize: '0.88rem', lineHeight: 1.5 }}>User selects "Region: South" and "Year: 2026" on the dashboard report canvas.</span>
+                </div>
+                <div style={{ background: '#ffffff', borderRadius: '12px', padding: '1.25rem', border: '1px solid #dbeafe' }}>
+                  <strong style={{ color: '#2563eb', display: 'block', marginBottom: '4px', fontSize: '1rem' }}>2. Power BI Generates SQL</strong>
+                  <span style={{ color: '#475569', fontSize: '0.88rem', lineHeight: 1.5 }}>Power BI automatically translates visual requirements into a native SQL query: <code>SELECT SUM(Amount) FROM Orders WHERE Region='South'...</code></span>
+                </div>
+                <div style={{ background: '#ffffff', borderRadius: '12px', padding: '1.25rem', border: '1px solid #dbeafe' }}>
+                  <strong style={{ color: '#2563eb', display: 'block', marginBottom: '4px', fontSize: '1rem' }}>3. Live Server Returns Answer</strong>
+                  <span style={{ color: '#475569', fontSize: '0.88rem', lineHeight: 1.5 }}>Your SQL Server / Oracle / PostgreSQL executes the query in milliseconds and returns only the final aggregated numbers!</span>
                 </div>
               </div>
-
             </div>
 
-            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', padding: '2rem', borderRadius: '16px', color: '#1e3a8a', marginBottom: '2.5rem' }}>
-              <h3 style={{ color: '#1e40af', margin: '0 0 1rem 0', fontWeight: 800 }}>⚡ Advanced Dashboard Interactivity</h3>
-              <p style={{ fontSize: '1rem', lineHeight: 1.6, margin: '0 0 1.2rem 0' }}>
-                Make your dashboards dynamic and engaging by configuring bookmarks, buttons, and synchronized slicers:
+            {/* STEP BY STEP: CONNECTING DIRECTQUERY TO SQL DATABASE */}
+            <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
+                Step-by-Step: Configuring DirectQuery to SQL Database
+              </h3>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {[
+                  {
+                    step: 'Step 1',
+                    action: 'Open Database Connector',
+                    detail: 'In Power BI Desktop ribbon, click Get Data ➔ SQL Server (or PostgreSQL / MySQL / Azure SQL).'
+                  },
+                  {
+                    step: 'Step 2',
+                    action: 'Select DirectQuery Radio Button',
+                    detail: 'Enter your Server hostname and Database name. Under "Data Connectivity mode", select DirectQuery (IMPORTANT: Do NOT select Import!).'
+                  },
+                  {
+                    step: 'Step 3',
+                    action: 'Specify Credentials & Encryption',
+                    detail: 'Authenticate with Windows Authentication or Database User/Password. Enable encrypted SSL connection for security.'
+                  },
+                  {
+                    step: 'Step 4',
+                    action: 'Verify Storage Mode in Status Bar',
+                    detail: 'Once loaded, glance at the bottom-right corner of Power BI Desktop. You will see: "Storage Mode: DirectQuery". Notice there is no "Data View" tab on the left sidebar because data stays in the server!'
+                  }
+                ].map((item, idx) => (
+                  <div key={idx} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start', background: '#f8fafc', padding: '1.2rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                    <span style={{ background: '#2563eb', color: '#ffffff', fontWeight: 900, fontSize: '0.78rem', padding: '4px 10px', borderRadius: '6px' }}>{item.step}</span>
+                    <div>
+                      <strong style={{ color: '#0f172a', fontSize: '0.98rem', display: 'block', marginBottom: '4px' }}>{item.action}</strong>
+                      <span style={{ color: '#475569', fontSize: '0.88rem', lineHeight: 1.6 }}>{item.detail}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* STEP BY STEP: CONNECTING LIVE REST API */}
+            <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
+                Step-by-Step: Connecting to Live Public REST APIs (Crypto & Financial Feeds)
+              </h3>
+              <p style={{ margin: '0 0 1.25rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                You can connect Power BI to live JSON REST APIs that broadcast live exchange rates and pricing updates every few seconds.
               </p>
-              <ul style={{ paddingLeft: '1.2rem', fontSize: '0.92rem', lineHeight: 1.7, margin: 0 }}>
-                <li><strong>Bookmarks & Buttons:</strong> Capture the state of your visual filters, hide/show specific charts, and map them to interactive buttons (e.g. creating a Toggle Button to switch between a Bar Chart and a Table View).</li>
-                <li><strong>Sync Slicers:</strong> Keep your filters synchronized across multiple pages of your report so the user does not have to re-select categories when navigating pages.</li>
-              </ul>
+
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '1.5rem' }}>
+                <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.5rem', fontSize: '0.95rem' }}>📡 Recommended Live API Endpoints for Practice:</strong>
+                <ul style={{ paddingLeft: '1.2rem', margin: 0, fontSize: '0.9rem', color: '#334155', lineHeight: 1.7 }}>
+                  <li><strong>Coinbase BTC Ticker:</strong> <code>https://api.exchange.coinbase.com/products/BTC-USD/ticker</code> (Real-time Bitcoin trades)</li>
+                  <li><strong>Binance Spot Ticker:</strong> <code>https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT</code> (Real-time live prices)</li>
+                  <li><strong>Open-Meteo Weather:</strong> <code>https://api.open-meteo.com/v1/forecast?latitude=9.92&longitude=77.47&current_weather=true</code> (Live temperature & weather)</li>
+                </ul>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                <div style={{ background: '#f1f5f9', padding: '1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155' }}>
+                  <strong>Step 1:</strong> In Power BI, click <strong>Get Data ➔ Web</strong>. Paste the API link and click OK.
+                </div>
+                <div style={{ background: '#f1f5f9', padding: '1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155' }}>
+                  <strong>Step 2:</strong> Power Query opens displaying a JSON <em>Record</em>. In the ribbon, click <strong>To Table</strong> to convert the record into a column.
+                </div>
+                <div style={{ background: '#f1f5f9', padding: '1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155' }}>
+                  <strong>Step 3:</strong> Click <strong>Transform ➔ Transpose</strong> so attributes become column headers. Promote headers (<em>Use First Row as Headers</em>).
+                </div>
+                <div style={{ background: '#f1f5f9', padding: '1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155' }}>
+                  <strong>Step 4:</strong> Change column data types (e.g. <code>price</code> ➔ Decimal Number, <code>time</code> ➔ Date/Time). Click <strong>Close & Apply</strong>!
+                </div>
+              </div>
             </div>
 
-            <div style={{ textAlign: 'center' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('ai_data_visualization')} style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
-                Next: AI Data Visualization &rarr;
+            {/* Continue Button */}
+            <div style={{ textAlign: 'center', paddingTop: '1rem' }}>
+              <button
+                type="button"
+                onClick={() => handleContinue('realtime_streaming')}
+                className="btn btn-primary"
+                style={{
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
+                  padding: '1rem 2.75rem',
+                  fontSize: '1.05rem',
+                  fontWeight: 800,
+                  borderRadius: '12px',
+                  boxShadow: '0 6px 18px rgba(79, 70, 229, 0.3)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                Proceed to Step 3: Real-Time Data Streaming <ArrowRight size={18} />
               </button>
             </div>
+
           </div>
         </Section>
       )}
 
-      {/* 5. AI DATA VISUALIZATION TAB */}
-      {activeTab === 'ai_data_visualization' && (
-        <Section key="ai_data_visualization" id="ai_data_visualization" eyebrow="AI Data Analytics • Pillar 4" title="Power BI Built-in AI Data Visualization Visuals">
-          <div className="panel">
-            <p style={{ fontSize: '1.1rem', color: '#475569', lineHeight: 1.7, marginBottom: '2.5rem' }}>
-              Power BI Desktop provides advanced, local machine learning calculations out-of-the-box. You don't need any Python code or premium Azure workspace to unlock these smart visuals:
+      {/* ─────────────────────────────────────────────
+          TAB 4: REAL-TIME DATA STREAMING (STEP-BY-STEP)
+      ───────────────────────────────────────────── */}
+      {normalizedTab === 'realtime_streaming' && (
+        <Section key="realtime_streaming" id="realtime_streaming" eyebrow="Sub-Second Telemetry • Method 3" title="Step-by-Step: Real-Time Data Streaming & Automatic Page Refresh">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+            <p style={{ fontSize: '1.05rem', color: '#475569', lineHeight: 1.7, margin: 0 }}>
+              Real-Time Streaming in Power BI is engineered for scenarios requiring <strong>instantaneous visibility</strong> (sub-second latency) — such as monitoring active factory IoT sensors, live hospital vitals, delivery vehicle GPS coordinates, or high-frequency trading rooms.
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
-              
-              <div style={{ background: 'white', padding: '1.8rem', borderRadius: '16px', border: '1px solid #cbd5e1' }}>
-                <h4 style={{ color: '#7c3aed', fontSize: '1.25rem', marginTop: 0, marginBottom: '0.8rem' }}>
-                  🔑 Key Influencers
-                </h4>
-                <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6, margin: 0 }}>
-                  Runs local regression models to explain correlation metrics (e.g., *what factors cause product sales to increase?*). Drag the target column to "Analyze" and potential driver fields to "Explain by" to automatically rank correlations.
-                </p>
-              </div>
+            {/* Interactive Simulator */}
+            <LiveStreamSimulator />
 
-              <div style={{ background: 'white', padding: '1.8rem', borderRadius: '16px', border: '1px solid #cbd5e1' }}>
-                <h4 style={{ color: '#7c3aed', fontSize: '1.25rem', marginTop: 0, marginBottom: '0.8rem' }}>
-                  🌳 Decomposition Tree
-                </h4>
-                <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6, margin: 0 }}>
-                  A root-cause tree analyzer. Click the lightbulb icon to find the dimension contributing the highest or lowest variance. Users can dynamically choose how they expand and drill down categories.
-                </p>
-              </div>
+            {/* 3 STREAMING DATASET FLAVORS */}
+            <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.35rem', fontWeight: 900, color: '#0f172a' }}>
+                The 3 Flavors of Real-Time Datasets in Power BI
+              </h3>
 
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #e2e8f0', borderTop: '4px solid #f59e0b' }}>
+                  <strong style={{ color: '#b45309', display: 'block', fontSize: '1.05rem', marginBottom: '6px' }}>1. Push Dataset</strong>
+                  <span style={{ color: '#475569', fontSize: '0.88rem', lineHeight: 1.6 }}>Data is pushed into an underlying Azure SQL database. It persists historical data, supports full DAX measures, and can be used in standard reports.</span>
+                </div>
+                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #e2e8f0', borderTop: '4px solid #10b981' }}>
+                  <strong style={{ color: '#047857', display: 'block', fontSize: '1.05rem', marginBottom: '6px' }}>2. Streaming Dataset</strong>
+                  <span style={{ color: '#475569', fontSize: '0.88rem', lineHeight: 1.6 }}>Stores data only in a 1-hour rolling RAM cache. Ultra-fast sub-second latency! Best for live dashboard tiles that show only the current minute's telemetry.</span>
+                </div>
+                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '14px', border: '1px solid #e2e8f0', borderTop: '4px solid #8b5cf6' }}>
+                  <strong style={{ color: '#6d28d9', display: 'block', fontSize: '1.05rem', marginBottom: '6px' }}>3. PubNub Streaming</strong>
+                  <span style={{ color: '#475569', fontSize: '0.88rem', lineHeight: 1.6 }}>Power BI connects directly to the PubNub messaging bus to stream third-party high-scale public data channels with zero server maintenance.</span>
+                </div>
+              </div>
             </div>
 
-            {/* Q&A Synonym Setup */}
-            <div style={{ background: '#f8fafc', padding: '2rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '2.5rem' }}>
-              <h3 style={{ color: '#0f172a', margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                💬 Q&A Visual & Data Model Synonym Settings
+            {/* STEP-BY-STEP GUIDE: CREATING STREAMING DATASET IN POWER BI SERVICE */}
+            <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <h3 style={{ margin: '0 0 1.25rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
+                Step-by-Step: Creating a Real-Time Streaming Dataset in Power BI Service
               </h3>
-              <p style={{ color: '#475569', fontSize: '1rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-                The Q&A Visual lets users ask natural language questions (e.g. <em>"Show total sales by category in a pie chart"</em>) and automatically generates that visual. To make it smart, map your data model's column names to common synonyms:
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {[
+                  {
+                    step: 'Step 1',
+                    title: 'Navigate to Your Workspace in Power BI Service',
+                    body: 'Log in to https://app.powerbi.com. In the left navigation bar, open your workspace (e.g. "My Workspace" or your company team workspace).'
+                  },
+                  {
+                    step: 'Step 2',
+                    title: 'Create New Streaming Dataset',
+                    body: 'Click the "+ New" button in the upper toolbar ➔ Select "Streaming dataset".'
+                  },
+                  {
+                    step: 'Step 3',
+                    title: 'Choose API Source & Define Schema',
+                    body: 'Select "API" and click Next. Name your dataset (e.g., "Live_Factory_Telemetry"). Define the schema fields: Timestamp (DateTime), Sensor_Name (Text), Temperature (Number), Pressure (Number), Units_Produced (Number).'
+                  },
+                  {
+                    step: 'Step 4',
+                    title: 'Enable Historic Data Analysis (Crucial!)',
+                    body: 'Toggle the switch labeled "Historic data analysis" to ON! This turns your streaming dataset into a hybrid Push Dataset so Power BI saves history and allows standard report visuals!'
+                  },
+                  {
+                    step: 'Step 5',
+                    title: 'Copy the Push URL Endpoint',
+                    body: 'Click "Create". Power BI will generate a unique HTTPS Push URL (e.g. https://api.powerbi.com/beta/YOUR_TENANT/datasets/.../rows?key=...). Copy this URL — your Python script will push data to it!'
+                  }
+                ].map((s, idx) => (
+                  <div key={idx} style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                    <span style={{ background: '#f59e0b', color: '#000000', fontWeight: 900, fontSize: '0.78rem', padding: '4px 10px', borderRadius: '6px' }}>{s.step}</span>
+                    <div>
+                      <strong style={{ color: '#0f172a', fontSize: '0.98rem', display: 'block', marginBottom: '4px' }}>{s.title}</strong>
+                      <span style={{ color: '#475569', fontSize: '0.88rem', lineHeight: 1.6 }}>{s.body}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* PYTHON STREAMING PRODUCER CODE */}
+            <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
+                Python Producer Script: Streaming Live Data into Power BI Every Second
+              </h3>
+              <p style={{ margin: '0 0 1.25rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Run this lightweight Python script on your machine. It continuously emits simulated live telemetry packets and pushes them to your Power BI streaming endpoint:
               </p>
-              <div style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', borderLeft: '4px solid #7c3aed', fontSize: '0.92rem', lineHeight: 1.6 }}>
-                <strong>How to configure synonyms:</strong>
-                <ol style={{ paddingLeft: '1.2rem', marginTop: '0.5rem', marginBottom: 0 }}>
-                  <li>Go to the **Model View** (left-hand sidebar panel in Power BI).</li>
-                  <li>Click on a table (e.g. `Customers`) and expand the **Properties Pane** on the right.</li>
-                  <li>Click **Synonyms** to expand the synonyms manager.</li>
-                  <li>Under the `CustomerName` field, type common equivalents: <code>client, buyer, subscriber, account</code>.</li>
-                  <li>Now, if a user types *"Sales by buyer"*, Q&A will map "buyer" to the `CustomerName` column and return the correct chart!</li>
+
+              <CodeBlock
+                language="python"
+                title="live_streaming_producer.py"
+                code={`import requests
+import time
+import random
+from datetime import datetime, timezone
+
+# 1. Paste your Power BI Service Streaming Dataset Push URL here:
+POWER_BI_PUSH_URL = "https://api.powerbi.com/beta/YOUR_TENANT_ID/datasets/YOUR_DATASET_ID/rows?key=YOUR_KEY"
+
+print("🚀 Starting Live Real-Time Stream to Power BI...")
+print("Press Ctrl + C to stop the producer at any time.\\n")
+
+try:
+    while True:
+        # 2. Generate simulated live telemetry payload
+        payload = [{
+            "Timestamp": datetime.now(timezone.utc).isoformat(),
+            "Sensor_Name": "Turbine_Alpha_01",
+            "Temperature": round(random.uniform(65.0, 95.0), 2),
+            "Pressure": round(random.uniform(100.0, 140.0), 2),
+            "Units_Produced": random.randint(10, 50)
+        }]
+        
+        # 3. HTTP POST request to Power BI REST API
+        response = requests.post(POWER_BI_PUSH_URL, json=payload)
+        
+        if response.status_code == 200:
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Streamed: Temp={payload[0]['Temperature']}°C | Units={payload[0]['Units_Produced']}")
+        else:
+            print(f"⚠️ Error {response.status_code}: {response.text}")
+            
+        # 4. Wait 1 second before emitting next telemetry packet
+        time.sleep(1)
+
+except KeyboardInterrupt:
+    print("\\n🛑 Live stream producer stopped gracefully.")`}
+              />
+            </div>
+
+            {/* AUTOMATIC PAGE REFRESH (APR) */}
+            <div style={{ background: '#f8fafc', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <h3 style={{ margin: '0 0 0.8rem 0', fontSize: '1.35rem', fontWeight: 900, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Clock size={20} color="#6366f1" /> Automatic Page Refresh (APR) in Power BI Desktop
+              </h3>
+              <p style={{ margin: '0 0 1.25rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                If you are using DirectQuery or live database connections, you can turn on <strong>Automatic Page Refresh (APR)</strong> so the entire report canvas redraws itself periodically:
+              </p>
+
+              <ol style={{ paddingLeft: '1.3rem', margin: 0, fontSize: '0.92rem', color: '#334155', lineHeight: 1.8 }}>
+                <li>Click anywhere on the blank canvas background (so no single chart is selected).</li>
+                <li>In the right-hand sidebar, open the <strong>Format page</strong> pane (paint roller icon).</li>
+                <li>Scroll down to find <strong>Page refresh</strong> and toggle it to <strong>On</strong>.</li>
+                <li>Choose refresh type: <strong>Auto page refresh</strong> and set the duration (e.g. <em>Every 5 seconds</em> or <em>10 seconds</em>).</li>
+                <li>Now watch your charts continuously poll the backend and refresh numbers live on screen!</li>
+              </ol>
+            </div>
+
+            {/* Continue Button */}
+            <div style={{ textAlign: 'center', paddingTop: '1rem' }}>
+              <button
+                type="button"
+                onClick={() => handleContinue('python_powerbi')}
+                className="btn btn-primary"
+                style={{
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
+                  padding: '1rem 2.75rem',
+                  fontSize: '1.05rem',
+                  fontWeight: 800,
+                  borderRadius: '12px',
+                  boxShadow: '0 6px 18px rgba(79, 70, 229, 0.3)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                Proceed to Step 4: Python in Power BI <ArrowRight size={18} />
+              </button>
+            </div>
+
+          </div>
+        </Section>
+      )}
+
+      {/* ─────────────────────────────────────────────
+          TAB 5: PYTHON IN POWER BI (STEP-BY-STEP)
+      ───────────────────────────────────────────── */}
+      {normalizedTab === 'python_powerbi' && (
+        <Section key="python_powerbi" id="python_powerbi" eyebrow="Advanced Scripting & Science Visuals • Method 4" title="Step-by-Step: Python Integration in Power BI">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+            <p style={{ fontSize: '1.05rem', color: '#475569', lineHeight: 1.7, margin: 0 }}>
+              Python expands Power BI with data science capabilities that native BI tools cannot replicate: advanced statistical modeling, natural language cleaning, and specialized scientific visuals like Seaborn correlation heatmaps, violin plots, and density curves.
+            </p>
+
+            {/* STEP 1: PREREQUISITES & SETUP */}
+            <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: '18px', padding: '2rem', color: '#ffffff' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '0.35rem 0.9rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.8rem' }}>
+                ⚙️ Step 1 • Local Python Setup
+              </div>
+              <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#f8fafc' }}>
+                Installing Python Libraries on Your Computer
+              </h3>
+              <p style={{ margin: '0 0 1.25rem 0', color: '#cbd5e1', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Before Power BI can run Python code, install Python (version 3.9 - 3.12) on your PC and install the standard data science trio:
+              </p>
+
+              <div style={{ background: '#090d16', padding: '1rem', borderRadius: '10px', border: '1px solid #334155', fontFamily: 'monospace', fontSize: '0.9rem', color: '#4ade80', marginBottom: '1.25rem' }}>
+                pip install pandas matplotlib seaborn scipy
+              </div>
+
+              <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '12px', padding: '1.2rem', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <strong style={{ color: '#38bdf8', display: 'block', marginBottom: '6px' }}>Configure Power BI Scripting Directory:</strong>
+                <ol style={{ paddingLeft: '1.2rem', margin: 0, fontSize: '0.88rem', color: '#cbd5e1', lineHeight: 1.7 }}>
+                  <li>In Power BI Desktop, open <strong>File ➔ Options and Settings ➔ Options</strong>.</li>
+                  <li>In the left panel, click <strong>Python scripting</strong>.</li>
+                  <li>Verify that <strong>Detected Python home directories</strong> points to your installed Python environment (e.g. <code>C:\Python311</code> or Anaconda). Click OK.</li>
                 </ol>
               </div>
             </div>
 
-            <div style={{ textAlign: 'center' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('ai_report_generation')} style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
-                Next: AI Report Generation &rarr;
-              </button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* 6. AI REPORT GENERATION TAB */}
-      {activeTab === 'ai_report_generation' && (
-        <Section key="ai_report_generation" id="ai_report_generation" eyebrow="AI Data Analytics • Pillar 5" title="AI Report Generation & Smart Narratives">
-          <div className="panel">
-            <p style={{ fontSize: '1.1rem', color: '#475569', lineHeight: 1.7, marginBottom: '2.5rem' }}>
-              Smart Narratives automatically build a text summary description of your dataset. To make it a true executive briefing tool, you can insert dynamic calculations directly inside the text paragraph.
-            </p>
-
-            {/* Smart Narratives Dynamic Value */}
-            <div style={{ background: '#f8fafc', padding: '2rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '2.5rem' }}>
-              <h3 style={{ color: '#0f172a', margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                📝 Inserting Dynamic Calculated Variables in Reports
+            {/* STEP 2: LOAD DATA VIA PYTHON SCRIPT */}
+            <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
+                Step 2: Python as a Data Source (Get Data ➔ Python Script)
               </h3>
-              <p style={{ color: '#475569', fontSize: '1rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-                Instead of just displaying static numbers, let the text change when a user clicks dashboard slicers:
-              </p>
-              <div style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', borderLeft: '4px solid #7c3aed', fontSize: '0.92rem', lineHeight: 1.6 }}>
-                <strong>Steps to add dynamic variables inside report text:</strong>
-                <ol style={{ paddingLeft: '1.2rem', marginTop: '0.5rem', marginBottom: 0 }}>
-                  <li>Double-click inside the Smart Narrative text block where you want to add a live number.</li>
-                  <li>Click the <strong style={{ color: '#7c3aed' }}>+ Value</strong> button in the formatting pop-up.</li>
-                  <li>In the query input box, write a simple question or a DAX measure name (e.g. <code>Total Sales MoM %</code>).</li>
-                  <li>Name the variable (e.g. <code>GrowthMetric</code>) and click **Save**.</li>
-                  <li>The value is now styled inside your text and updates dynamically whenever page filters or slicers are clicked!</li>
-                </ol>
-              </div>
-            </div>
-
-            {/* Enterprise Standards */}
-            <div style={{ background: '#f8fafc', padding: '2rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '2.5rem' }}>
-              <h3 style={{ color: '#0f172a', margin: '0 0 1rem 0' }}>🔒 Row-Level Security (RLS) & Sharing Standards</h3>
-              <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                Configure Row-Level Security (RLS) to ensure regional managers only view data relevant to their market:
-                <br/>• **Configure Roles:** Go to Modeling &rarr; Manage Roles, and define DAX filters (e.g. <code>[Region] = "East"</code>).
-                <br/>• **Test Security:** Click **View As** inside Desktop to view report as a specific role.
-                <br/>• **Publish to Cloud:** Share report via Power BI Service and map Active Directory groups to roles.
-              </p>
-            </div>
-
-            <div style={{ textAlign: 'center' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('ai_insight_generation')} style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
-                Next: AI Insight Generation &rarr;
-              </button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* 7. AI INSIGHT GENERATION TAB */}
-      {activeTab === 'ai_insight_generation' && (
-        <Section key="ai_insight_generation" id="ai_insight_generation" eyebrow="AI Data Analytics • Pillar 6" title="AI Insight Generation & Predictive Analytics">
-          <div className="panel">
-            <p style={{ fontSize: '1.1rem', color: '#475569', lineHeight: 1.7, marginBottom: '2.5rem' }}>
-              AI Insight Generation goes beyond describing what happened in the past. It automatically flags anomalies, details the root cause of spikes, and models predictions of future values.
-            </p>
-
-            <div style={{ background: '#f8fafc', padding: '2rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '3rem' }}>
-              <h3 style={{ color: '#0f172a', margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                📈 Outliers (Anomalies) & Forecasts via the Analytics Pane
-              </h3>
-              <p style={{ color: '#475569', fontSize: '1rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-                Create a <strong>Line Chart</strong> with a Date on the X-axis and Sales on the Y-axis, then open the **Analytics Pane** (represented by a magnifying glass icon next to formatting options):
+              <p style={{ margin: '0 0 1.25rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                You can write a Python script directly inside Power BI to generate test datasets, calculate simulations, or scrape web tables:
               </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
-                <div style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                  <strong style={{ color: '#1e3a8a', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>🎯 Find Outliers (Add Anomaly)</strong>
-                  <span style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6 }}>
-                    Toggle **Find Anomalies** to On. Power BI calculates expected standard deviations. Points outside the boundary are marked. Hovering over a dot shows an AI explanation box explaining what dimensions caused the spike (e.g. *"90% of the anomaly was driven by Product category 'Electronics'"*).
-                  </span>
-                </div>
-                <div style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-                  <strong style={{ color: '#1e3a8a', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>🔮 Run Predictive Models (Forecast)</strong>
-                  <span style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6 }}>
-                    Toggle **Forecast** to On. Select how many intervals to project (e.g. 14 Days), input seasonality adjustments (e.g. 7 days for weekly peaks), and set confidence intervals (e.g. 95%). Power BI draws a shaded range predicting future values.
-                  </span>
-                </div>
-              </div>
-            </div>
+              <CodeBlock
+                language="python"
+                title="Get Data ➔ Other ➔ Python script"
+                code={`import pandas as pd
+import numpy as np
 
-            <div style={{ textAlign: 'center' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('python_powerbi')} style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
-                Next: Python Scripting &rarr;
-              </button>
-            </div>
-          </div>
-        </Section>
-      )}
+# Set random seed for reproducible numbers
+np.random.seed(42)
 
-      {/* 8. PYTHON IN POWER BI TAB */}
-      {activeTab === 'python_powerbi' && (
-        <Section key="python_powerbi" id="python_powerbi" eyebrow="Advanced Scripting" title="Integrating Python with Power BI">
-          <div className="panel">
-            <p style={{ fontSize: '1.1rem', color: '#475569', lineHeight: 1.7, marginBottom: '2.5rem' }}>
-              Python can be integrated into Power BI to load, transform, and visualize data. Even without deep Python programming knowledge, you can use basic scripts to expand your dashboard capabilities.
-            </p>
+# Generate a synthetic retail dataset with 100 transactions
+n = 100
+categories = ['Electronics', 'Home & Kitchen', 'Apparel', 'Books']
 
-            {/* Beginner-friendly Python library foundations */}
-            <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', color: 'white', padding: '2.5rem', borderRadius: '20px', marginBottom: '3rem', boxShadow: '0 10px 25px rgba(15, 23, 42, 0.15)' }}>
-              <h3 style={{ color: '#38bdf8', fontSize: '1.5rem', marginTop: 0, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                🎓 Python Library Foundations (For Data Analysts)
-              </h3>
-              <p style={{ color: '#cbd5e1', fontSize: '1rem', lineHeight: 1.6, marginBottom: '2rem' }}>
-                If you have never coded in Python before, don't worry! Power BI uses Python behind the scenes to process spreadsheets and draw charts. To do this, it relies on two essential helper packages (called "libraries"):
-              </p>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <strong style={{ color: '#38bdf8', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>🐼 1. Pandas (The Spreadsheet Engine)</strong>
-                  <span style={{ color: '#cbd5e1', fontSize: '0.92rem', lineHeight: 1.6 }}>
-                    In Python, spreadsheets are called <strong>DataFrames</strong>. Pandas is the library that lets Python read, filter, and modify tables. Think of Pandas as an invisible Excel engine running inside your code.
-                  </span>
-                </div>
-
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <strong style={{ color: '#a855f7', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>📊 2. Matplotlib (The Drawing Canvas)</strong>
-                  <span style={{ color: '#cbd5e1', fontSize: '0.92rem', lineHeight: 1.6 }}>
-                    This is Python's charting library. It lets you plot points, lines, bars, and grids. Matplotlib acts as the virtual paint brush that draws the charts which Power BI displays on your report canvas.
-                  </span>
-                </div>
-
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <strong style={{ color: '#4ade80', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>✨ 3. Seaborn (The Visual Beautifier)</strong>
-                  <span style={{ color: '#cbd5e1', fontSize: '0.92rem', lineHeight: 1.6 }}>
-                    Seaborn is built on top of Matplotlib. It automatically adds clean color palettes, professional grid lines, and premium styling to your charts with zero extra effort.
-                  </span>
-                </div>
-              </div>
-
-              {/* Step-by-Step Installation */}
-              <div style={{ background: 'rgba(255, 255, 255, 0.08)', padding: '1.5rem', borderRadius: '12px', borderLeft: '4px solid #38bdf8' }}>
-                <strong style={{ color: '#38bdf8', display: 'block', marginBottom: '0.6rem', fontSize: '1.05rem' }}>⚡ Quick Setup: Installing Libraries on Your PC</strong>
-                <p style={{ color: '#cbd5e1', fontSize: '0.92rem', margin: '0 0 1rem 0', lineHeight: 1.5 }}>
-                  Before writing Python in Power BI, you must install Python on your computer and download these libraries.
-                </p>
-                <ol style={{ color: '#cbd5e1', fontSize: '0.9rem', paddingLeft: '1.2rem', margin: '0 0 1rem 0', lineHeight: 1.6 }}>
-                  <li>Open your computer's <strong>Command Prompt</strong> (on Windows, search for <code>cmd</code> in the start menu).</li>
-                  <li>Type or paste the following command and press Enter:</li>
-                </ol>
-                <div style={{ background: '#090d16', color: '#4ade80', padding: '0.8rem 1.2rem', borderRadius: '6px', fontFamily: 'monospace', fontSize: '0.85rem', marginBottom: '1rem', border: '1px solid #1e293b' }}>
-                  pip install pandas matplotlib seaborn
-                </div>
-                <p style={{ color: '#cbd5e1', fontSize: '0.9rem', margin: 0 }}>
-                  Once finished, open Power BI and ensure Python is enabled under <strong>File &rarr; Options and Settings &rarr; Options &rarr; Python scripting</strong>.
-                </p>
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '3rem' }}>
-              
-              {/* Load Data Section */}
-              <div style={{ background: 'white', padding: '2rem', borderRadius: '16px', border: '1px solid #cbd5e1', boxShadow: '0 4px 10px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <div>
-                  <h4 style={{ color: '#0f172a', fontSize: '1.3rem', marginTop: 0, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    🐍 1. Python as a Data Source (Load Data)
-                  </h4>
-                  <p style={{ color: '#475569', lineHeight: 1.6, fontSize: '0.95rem', marginBottom: '1.2rem' }}>
-                    Instead of importing an Excel or CSV file, you can write a simple Python script to create data. Power BI runs the script and loads the result as a standard table!
-                  </p>
-                  
-                  <div style={{ background: '#0f172a', color: '#a5d6ff', padding: '1.2rem', borderRadius: '10px', fontFamily: 'monospace', fontSize: '0.82rem', lineHeight: 1.6, overflowX: 'auto', whiteSpace: 'pre', marginBottom: '1.2rem' }}>
-{`# 1. Define raw data records (Python Dictionary)
-sales_records = {
-    'Product': ['Laptop', 'Mouse', 'Keyboard'],
-    'Sales': [1200, 25, 75],
-    'Quantity': [5, 12, 8]
+data = {
+    'Transaction_ID': range(1001, 1001 + n),
+    'Category': np.random.choice(categories, n),
+    'Units_Sold': np.random.randint(1, 15, n),
+    'Unit_Price': np.random.uniform(10.0, 450.0, n).round(2),
+    'Customer_Rating': np.random.uniform(2.5, 5.0, n).round(1)
 }
 
-# 2. Import the Pandas library
-import pandas as pd
+# Create the final Pandas DataFrame
+df_retail_sales = pd.DataFrame(data)
 
-# 3. Convert records into a spreadsheet-like table
-df = pd.DataFrame(sales_records)`}
-                  </div>
-                </div>
+# Add Total Revenue column
+df_retail_sales['Total_Revenue'] = (df_retail_sales['Units_Sold'] * df_retail_sales['Unit_Price']).round(2)`}
+              />
 
-                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', borderLeft: '4px solid #7c3aed', fontSize: '0.88rem', color: '#334155' }}>
-                  <strong>🔍 Line-by-Line Explanation:</strong>
-                  <ul style={{ paddingLeft: '1.2rem', margin: '0.5rem 0 0 0', lineHeight: 1.5 }}>
-                    <li><code>sales_records = ...</code>: Creates a structured set of columns and rows in Python memory.</li>
-                    <li><code>import pandas as pd</code>: Loads the Pandas library and nicknames it <code>pd</code> to save typing.</li>
-                    <li><code>df = pd.DataFrame(sales_records)</code>: Converts our raw data into a formatted table (DataFrame) called <code>df</code>. Power BI will detect <code>df</code> and load it as a table!</li>
-                  </ul>
-                </div>
+              <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', borderLeft: '4px solid #6366f1', fontSize: '0.88rem', color: '#334155' }}>
+                <strong>🔍 How Power BI Reads This:</strong> Power BI scans the execution environment. Any variable that is a <code>pandas.DataFrame</code> (in this case <code>df_retail_sales</code>) will appear in the Navigator window as an importable table!
               </div>
-
-              {/* Transformations Section */}
-              <div style={{ background: 'white', padding: '2rem', borderRadius: '16px', border: '1px solid #cbd5e1', boxShadow: '0 4px 10px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <div>
-                  <h4 style={{ color: '#0f172a', fontSize: '1.3rem', marginTop: 0, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    ⚙️ 2. Python for Transformations
-                  </h4>
-                  <p style={{ color: '#475569', lineHeight: 1.6, fontSize: '0.95rem', marginBottom: '1.2rem' }}>
-                    Inside Power Query, you can click <strong>Run Python Script</strong>. Power BI automatically feeds your current table into a variable named <code>dataset</code>.
-                  </p>
-                  
-                  <div style={{ background: '#0f172a', color: '#a5d6ff', padding: '1.2rem', borderRadius: '10px', fontFamily: 'monospace', fontSize: '0.82rem', lineHeight: 1.6, overflowX: 'auto', whiteSpace: 'pre', marginBottom: '1.2rem' }}>
-{`# Power BI automatically preloads:
-# dataset = pandas.DataFrame(...)
-
-# Create a new column named 'Double_Quantity'
-# by multiplying the 'Quantity' column by 2
-dataset['Double_Quantity'] = dataset['Quantity'] * 2`}
-                  </div>
-                </div>
-
-                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '10px', borderLeft: '4px solid #7c3aed', fontSize: '0.88rem', color: '#334155' }}>
-                  <strong>🔍 Line-by-Line Explanation:</strong>
-                  <ul style={{ paddingLeft: '1.2rem', margin: '0.5rem 0 0 0', lineHeight: 1.5 }}>
-                    <li><code>dataset</code>: The automatic name Power BI gives to your active table. It is already a Pandas DataFrame.</li>
-                    <li><code>dataset['Double_Quantity'] = ...</code>: Tells Python to create a brand new column named <code>Double_Quantity</code> in our spreadsheet.</li>
-                    <li><code>dataset['Quantity'] * 2</code>: Selects the existing <code>Quantity</code> column, multiplies every number by 2, and saves it into the new column.</li>
-                  </ul>
-                </div>
-              </div>
-
             </div>
 
-            {/* Python Visuals */}
-            <div style={{ background: '#f8fafc', padding: '2.5rem', borderRadius: '20px', border: '1px solid #cbd5e1', marginBottom: '3rem' }}>
-              <h3 style={{ color: '#0f172a', margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 800 }}>
-                📊 3. Building Python Visuals (Matplotlib & Seaborn)
+            {/* STEP 3: TRANSFORM DATA IN POWER QUERY WITH PYTHON */}
+            <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
+                Step 3: Transforming Data with Python in Power Query
               </h3>
-              <p style={{ color: '#475569', lineHeight: 1.7, fontSize: '1rem', marginBottom: '1.5rem' }}>
-                You can drag a <strong>Python Visual</strong> onto your report canvas. Drag the fields you want to plot (like Sales and Profit) into the values section, and write a simple script:
+              <p style={{ margin: '0 0 1.25rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Inside the Power Query Editor, click the <strong>Transform tab ➔ Run Python script</strong>. Power BI automatically feeds your current table into a DataFrame variable named <code>dataset</code>:
+              </p>
+
+              <CodeBlock
+                language="python"
+                title="Power Query ➔ Transform ➔ Run Python script"
+                code={`# Power BI automatically preloads:
+# dataset = pandas.DataFrame(...)
+
+# 1. Fill missing numerical values with column median
+dataset['Customer_Rating'] = dataset['Customer_Rating'].fillna(dataset['Customer_Rating'].median())
+
+# 2. Add an automated High-Value Order Flag
+dataset['High_Value_Flag'] = dataset['Total_Revenue'].apply(
+    lambda x: 'High Value' if x >= 1000 else 'Standard'
+)
+
+# 3. Create a normalized Revenue Score
+dataset['Revenue_ZScore'] = (
+    (dataset['Total_Revenue'] - dataset['Total_Revenue'].mean()) / dataset['Total_Revenue'].std()
+).round(2)`}
+              />
+            </div>
+
+            {/* STEP 4: SEABORN & MATPLOTLIB VISUALS ON CANVAS */}
+            <div style={{ background: '#ffffff', borderRadius: '18px', padding: '2rem', border: '1px solid #cbd5e1' }}>
+              <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>
+                Step 4: Building Advanced Data Science Visuals (Seaborn Heatmap & Distributions)
+              </h3>
+              <p style={{ margin: '0 0 1.25rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Native Power BI does not have correlation matrix heatmaps. You can build one in 10 seconds using a <strong>Python Visual</strong>:
               </p>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
-                <div style={{ background: '#0f172a', color: '#a5d6ff', padding: '1.5rem', borderRadius: '12px', fontFamily: 'monospace', fontSize: '0.82rem', lineHeight: 1.6, overflowX: 'auto', whiteSpace: 'pre' }}>
-{`# 1. Import drawing and styling libraries
-import matplotlib.pyplot as plt
+                <div>
+                  <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.5rem' }}>Correlation Matrix Heatmap:</strong>
+                  <CodeBlock
+                    language="python"
+                    title="Python Visual Canvas Code"
+                    code={`import matplotlib.pyplot as plt
 import seaborn as sns
 
-# 2. Apply a clean, modern Seaborn visual theme
+# dataset contains the fields dragged into Values
+# (Units_Sold, Unit_Price, Total_Revenue, Customer_Rating)
+
+plt.figure(figsize=(6, 4))
+sns.set_theme(style="white")
+
+# Calculate Pearson correlation matrix
+corr = dataset.corr(numeric_only=True)
+
+# Generate Heatmap with color gradient & annotations
+sns.heatmap(corr, annot=True, cmap='coolwarm', fmt=".2f", linewidths=1)
+
+plt.title('Feature Correlation Matrix', fontsize=12, fontweight='bold')
+plt.tight_layout()
+plt.show()`}
+                  />
+                </div>
+
+                <div>
+                  <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.5rem' }}>Violin Distribution Density Plot:</strong>
+                  <CodeBlock
+                    language="python"
+                    title="Python Visual Canvas Code"
+                    code={`import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.figure(figsize=(6, 4))
 sns.set_theme(style="whitegrid")
 
-# 3. Create a scatter plot comparing Sales vs Profit
-sns.scatterplot(data=dataset, x='Sales', y='Profit', color='purple', s=100)
+# Create Violin Plot comparing Category vs Revenue
+sns.violinplot(
+    data=dataset, 
+    x='Category', 
+    y='Total_Revenue', 
+    palette='muted',
+    inner="quartile"
+)
 
-# 4. Add customized labels and title
-plt.title('Sales vs Profit Analysis', fontsize=14, fontweight='bold')
-plt.xlabel('Total Sales ($)', fontsize=12)
-plt.ylabel('Net Profit ($)', fontsize=12)
-
-# 5. Tell Power BI to draw the plot on screen
+plt.title('Revenue Distribution by Category', fontsize=12, fontweight='bold')
+plt.xticks(rotation=20)
+plt.tight_layout()
 plt.show()`}
-                </div>
-
-                <div style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '0.92rem', color: '#334155' }}>
-                  <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.8rem' }}>🔍 Line-by-Line Visual Script Explanation:</strong>
-                  <ul style={{ paddingLeft: '1.2rem', margin: 0, lineHeight: 1.6 }}>
-                    <li><code>import matplotlib.pyplot as plt</code>: Loads the core Matplotlib graphing engine and nicknames it <code>plt</code>.</li>
-                    <li><code>import seaborn as sns</code>: Loads Seaborn for prettier, modern-looking charts and nicknames it <code>sns</code>.</li>
-                    <li><code>sns.set_theme(...)</code>: Changes the graph styling from default grey to a clean, executive white grid.</li>
-                    <li><code>sns.scatterplot(...)</code>: Plots our data points. <code>data=dataset</code> reads our columns, <code>x='Sales'</code> and <code>y='Profit'</code> set the axes, <code>color='purple'</code> sets dot colors, and <code>s=100</code> increases dot sizes.</li>
-                    <li><code>plt.title(...) / plt.xlabel(...)</code>: Customizes the labels with professional font sizing and weights.</li>
-                    <li><code>plt.show()</code>: <strong>Crucial final step!</strong> This command takes the drawing we built and renders it as an image inside our Power BI report canvas.</li>
-                  </ul>
+                  />
                 </div>
               </div>
 
-              <div style={{ background: '#fffbeb', borderLeft: '5px solid #d97706', padding: '1.2rem', borderRadius: '8px', color: '#b45309', fontSize: '0.95rem' }}>
-                <strong>⚠️ Note:</strong> To make Python scripting work, you must have Python installed on your PC. In Power BI, go to <strong>File &rarr; Options and Settings &rarr; Options &rarr; Python scripting</strong> and make sure the directory matches your local installation path.
+              <div style={{ background: '#fef3c7', borderLeft: '4px solid #f59e0b', padding: '1rem', borderRadius: '8px', color: '#92400e', fontSize: '0.88rem' }}>
+                <strong>⚠️ Golden Rule for Python Visuals in Power BI:</strong> Always end your script with <code>plt.show()</code>! Without <code>plt.show()</code>, the image cannot be rendered onto the report canvas.
               </div>
             </div>
 
-            <div style={{ textAlign: 'center' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('live_connections')} style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
-                Next: Live Connections &rarr;
+            {/* Continue Button */}
+            <div style={{ textAlign: 'center', paddingTop: '1rem' }}>
+              <button
+                type="button"
+                onClick={() => handleContinue('assignment_day8')}
+                className="btn btn-primary"
+                style={{
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
+                  padding: '1rem 2.75rem',
+                  fontSize: '1.05rem',
+                  fontWeight: 800,
+                  borderRadius: '12px',
+                  boxShadow: '0 6px 18px rgba(79, 70, 229, 0.3)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                Proceed to Day 8 Mini Project & Assignment <ArrowRight size={18} />
               </button>
             </div>
+
           </div>
         </Section>
       )}
 
-      {/* 9. LIVE CONNECTIONS & DIRECTQUERY TAB */}
-      {activeTab === 'live_connections' && (
-        <Section key="live_connections" id="live_connections" eyebrow="Enterprise Data Architecture" title="Storage Modes: Import, DirectQuery & Live Connection">
-          <div className="panel">
-            <p style={{ fontSize: '1.1rem', color: '#475569', lineHeight: 1.7, marginBottom: '2.5rem' }}>
-              When connecting to database servers or online web links, Power BI offers different <strong>Storage Modes</strong>. Selecting the right connection mode determines if your dashboard is static or updates live in real-time.
-            </p>
+      {/* ─────────────────────────────────────────────
+          TAB 6: DAY 8 MINI PROJECT & ASSIGNMENT
+      ───────────────────────────────────────────── */}
+      {normalizedTab === 'assignment_day8' && (
+        <Section key="assignment_day8" id="assignment_day8" eyebrow="Practical Capstone Challenge" title="Day 8 Mini Project: Live Dynamic Dashboard & Python Visuals">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
-            {/* Comparison Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
-              <div style={{ background: 'white', padding: '1.8rem', borderRadius: '16px', border: '1px solid #cbd5e1', borderTop: '5px solid #3b82f6' }}>
-                <h4 style={{ color: '#1e40af', fontSize: '1.25rem', marginTop: 0, marginBottom: '0.8rem' }}>📥 1. Import Mode</h4>
-                <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '1rem' }}>
-                  Loads a snapshot copy of the data directly into Power BI's memory. Fast visual speeds, but requires manual or scheduled refresh to update.
-                </p>
-                <ul style={{ paddingLeft: '1.2rem', fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
-                  <li>🚀 **Performance:** Fastest (data is inside RAM).</li>
-                  <li>🔄 **Freshness:** Static until refresh is triggered.</li>
-                  <li>⚖️ **Limits:** 1 GB file size limit for Pro accounts.</li>
-                </ul>
-              </div>
-
-              <div style={{ background: 'white', padding: '1.8rem', borderRadius: '16px', border: '1px solid #cbd5e1', borderTop: '5px solid #f59e0b' }}>
-                <h4 style={{ color: '#b45309', fontSize: '1.25rem', marginTop: 0, marginBottom: '0.8rem' }}>⚡ 2. DirectQuery Mode</h4>
-                <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '1rem' }}>
-                  No data is saved in Power BI. Every time a user interacts with a visual or clicks a filter, Power BI queries the live database source directly.
-                </p>
-                <ul style={{ paddingLeft: '1.2rem', fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
-                  <li>🚀 **Performance:** Depends on the backend database's speed.</li>
-                  <li>🔄 **Freshness:** 100% live and real-time.</li>
-                  <li>⚖️ **Limits:** Perfect for massive database datasets.</li>
-                </ul>
-              </div>
-
-              <div style={{ background: 'white', padding: '1.8rem', borderRadius: '16px', border: '1px solid #cbd5e1', borderTop: '5px solid #10b981' }}>
-                <h4 style={{ color: '#047857', fontSize: '1.25rem', marginTop: 0, marginBottom: '0.8rem' }}>🔗 3. Live Connection</h4>
-                <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '1rem' }}>
-                  Connects to a pre-built centralized semantic model already published in the cloud (Power BI Service) or Analysis Services.
-                </p>
-                <ul style={{ paddingLeft: '1.2rem', fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
-                  <li>🚀 **Performance:** Very fast (uses cloud server compute).</li>
-                  <li>🔄 **Freshness:** Live connection to central shared models.</li>
-                  <li>⚖️ **Limits:** Report layout only (no new table additions allowed).</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Comparison Table */}
-            <div style={{ background: 'white', border: '1px solid #cbd5e1', borderRadius: '16px', overflow: 'hidden', marginBottom: '3rem' }}>
-              <div style={{ background: '#f8fafc', padding: '1.2rem 1.5rem', borderBottom: '1px solid #cbd5e1' }}>
-                <h4 style={{ margin: 0, color: '#0f172a', fontWeight: 800 }}>Storage Mode Matrix</h4>
-              </div>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem', textAlign: 'left' }}>
-                <thead>
-                  <tr style={{ background: '#f1f5f9', borderBottom: '1px solid #cbd5e1' }}>
-                    <th style={{ padding: '12px 16px', fontWeight: 'bold', color: '#475569' }}>Feature</th>
-                    <th style={{ padding: '12px 16px', fontWeight: 'bold', color: '#1e40af' }}>Import Mode</th>
-                    <th style={{ padding: '12px 16px', fontWeight: 'bold', color: '#b45309' }}>DirectQuery</th>
-                    <th style={{ padding: '12px 16px', fontWeight: 'bold', color: '#047857' }}>Live Connection</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                    <td style={{ padding: '12px 16px', fontWeight: 600 }}>Data Location</td>
-                    <td style={{ padding: '12px 16px', color: '#1e40af' }}>Power BI Memory (RAM)</td>
-                    <td style={{ padding: '12px 16px', color: '#b45309' }}>Source Database Engine</td>
-                    <td style={{ padding: '12px 16px', color: '#047857' }}>Analysis Services / Cloud Model</td>
-                  </tr>
-                  <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                    <td style={{ padding: '12px 16px', fontWeight: 600 }}>Query Performance</td>
-                    <td style={{ padding: '12px 16px', color: '#1e40af' }}>⚡ Instantaneous (In-Memory)</td>
-                    <td style={{ padding: '12px 16px', color: '#b45309' }}>🐢 Variable (Depends on DB Server)</td>
-                    <td style={{ padding: '12px 16px', color: '#047857' }}>⚡ Fast (Offloaded Engine)</td>
-                  </tr>
-                  <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                    <td style={{ padding: '12px 16px', fontWeight: 600 }}>Max File Size</td>
-                    <td style={{ padding: '12px 16px', color: '#1e40af' }}>Limited (1GB / 100GB)</td>
-                    <td style={{ padding: '12px 16px', color: '#b45309' }}>Unlimited (Petabytes)</td>
-                    <td style={{ padding: '12px 16px', color: '#047857' }}>Unlimited (Central Server handles)</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            {/* How to Build Live Dashboard & Live Links */}
-            <div style={{ background: '#eff6ff', border: '2px solid #3b82f6', padding: '2rem', borderRadius: '20px', marginBottom: '3rem', color: '#1e3a8a' }}>
-              <h4 style={{ margin: '0 0 1rem 0', fontSize: '1.4rem', color: '#1d4ed8', fontWeight: 800 }}>
-                🔗 Step-by-Step: Build a Live Dashboard
-              </h4>
-              <p style={{ fontSize: '1rem', lineHeight: 1.7, marginBottom: '1.5rem', color: '#1e3a8a' }}>
-                Follow these exact steps to connect to a live dataset and configure it to auto-refresh dynamically without user interaction:
-              </p>
-
-              <div style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', color: '#334155', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', fontSize: '0.95rem', lineHeight: 1.7 }}>
-                <strong>Step 1: Obtain a Live Web Link</strong><br/>
-                We will use the following live links for practice (we have provided alternatives in case one is blocked by your local network):
-                <ul style={{ paddingLeft: '1.5rem', margin: '0.5rem 0 1rem 0' }}>
-                  <li>
-                    <strong>Standard File Live Link (Excel):</strong><br/>
-                    • Option A (Official MS Direct): <a href="https://go.microsoft.com/fwlink/?LinkID=521962" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', textDecoration: 'underline', fontWeight: 600 }}>Microsoft Financial Sample Link</a><br/>
-                    • Option B (Github Raw): <a href="https://raw.githubusercontent.com/pjfanning/excel-streaming-reader-sample/main/Sample-Sales-Data.xlsx" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', textDecoration: 'underline', fontWeight: 600 }}>Github Sample Sales Excel URL</a>
-                  </li>
-                  <li style={{ marginTop: '0.8rem' }}>
-                    <strong>Real-Time API Live Link (JSON):</strong><br/>
-                    • Option A (Coinbase Crypto Ticker): <a href="https://api.exchange.coinbase.com/products/BTC-USD/ticker" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', textDecoration: 'underline', fontWeight: 600 }}>Coinbase BTC Ticker API URL</a> (updates live!)<br/>
-                    • Option B (Binance Crypto Ticker): <a href="https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', textDecoration: 'underline', fontWeight: 600 }}>Binance BTC Price API URL</a> (updates live!)
-                  </li>
-                </ul>
-
-                <div style={{ background: '#fffbeb', borderLeft: '4px solid #f59e0b', padding: '1rem', borderRadius: '8px', marginTop: '1rem', color: '#92400e', fontSize: '0.9rem', lineHeight: 1.5 }}>
-                  📈 <strong>Share Market Style Real-Time Tickers:</strong> Unlike static Excel spreadsheets, the JSON API links above are live financial market feeds. They update <strong>second-by-second</strong> with live trades. Connecting Power BI to these URLs allows you to observe real-time chart movements whenever a page refresh is triggered!
-                </div>
-
-                <strong>Step 2: Connect Power BI to the Live Web Link</strong>
-                <ol style={{ paddingLeft: '1.2rem', marginTop: '0.5rem', marginBottom: '1rem' }}>
-                  <li>Open Power BI Desktop. In the Home tab ribbon, click <strong>Get Data &rarr; Web</strong>.</li>
-                  <li>Paste the live API link or file URL above, and click <strong>OK</strong>.</li>
-                  <li>Select the tables you wish to import, click <strong>Load</strong>.</li>
-                </ol>
-
-                <strong>Step 3: Turn on Automatic Page Refresh (APR)</strong>
-                <ol style={{ paddingLeft: '1.2rem', marginTop: '0.5rem', marginBottom: '1rem' }}>
-                  <li>Design your charts (e.g. Card visual representing Bitcoin price, and Bar chart for sales).</li>
-                  <li>Click on the empty canvas background so no visuals are selected.</li>
-                  <li>Open the <strong>Format Page Pane</strong> (the paint roller icon).</li>
-                  <li>Scroll down and toggle <strong>Page Refresh</strong> to <strong>On</strong>.</li>
-                  <li>Set the refresh frequency interval (e.g. <strong>Every 5 seconds</strong>). Now your dashboard will automatically query the live link and update in real-time on the screen!</li>
-                </ol>
-
-                <strong>Step 4: Publish to Power BI Service</strong>
-                <ol style={{ paddingLeft: '1.2rem', marginTop: '0.5rem', marginBottom: 0 }}>
-                  <li>Click <strong>Publish</strong> to upload the dashboard to your cloud workspace.</li>
-                  <li>In the Power BI Cloud Service, go to your dataset settings.</li>
-                  <li>Configure credentials and set up **Scheduled Refresh** (daily or hourly) so the dashboard continues to fetch data live in the cloud.</li>
-                </ol>
-              </div>
-            </div>
-
-            <div style={{ textAlign: 'center' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('assignment_day8')} style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
-                Next: Day 8 Mini Project &rarr;
-              </button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* 10. ASSIGNMENT TAB */}
-      {activeTab === 'assignment_day8' && (
-        <Section key="assignment_day8" id="assignment_day8" eyebrow="Day 8 Practice" title="Day 8 Mini Project: AI & Advanced Analytics">
-          <div className="panel">
-            <div style={{ background: '#f8fafc', padding: '2rem', borderRadius: '16px', border: '1px solid #cbd5e1', marginBottom: '2.5rem' }}>
-              <h3 style={{ color: '#0f172a', marginTop: 0, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                🏆 Your Day 8 Assignment Mission
+            <div style={{ background: '#f8fafc', padding: '2rem', borderRadius: '18px', border: '1px solid #cbd5e1' }}>
+              <h3 style={{ color: '#0f172a', margin: '0 0 0.8rem 0', fontSize: '1.4rem', fontWeight: 900 }}>
+                🏆 Day 8 Practical Assignment Mission
               </h3>
-              <p style={{ color: '#475569', fontSize: '1.05rem', lineHeight: 1.7 }}>
-                Take your interactive dashboard design to the next level by building advanced AI metrics, live stock-like connections, and diagnostics:
+              <p style={{ color: '#475569', fontSize: '1rem', lineHeight: 1.7, margin: '0 0 1.5rem 0' }}>
+                Build an executive-ready operational dashboard that integrates live cloud data and advanced statistical plotting:
               </p>
 
-              <div style={{ display: 'grid', gap: '1rem', marginTop: '1.5rem' }}>
-                <div style={{ background: 'white', padding: '1.2rem', borderRadius: '10px', border: '1px solid #e2e8f0', display: 'flex', gap: '12px', alignItems: 'center' }}>
-                  <CheckCircle size={22} color="#10b981" />
-                  <span style={{ color: '#334155', fontSize: '0.95rem' }}><strong>Step 1: Real-Time API Dashboard:</strong> Connect to Coinbase or Binance live ticker API using Get Data &rarr; Web, and configure Automatic Page Refresh (APR) to update every 5 seconds.</span>
-                </div>
-
-                <div style={{ background: 'white', padding: '1.2rem', borderRadius: '10px', border: '1px solid #e2e8f0', display: 'flex', gap: '12px', alignItems: 'center' }}>
-                  <CheckCircle size={22} color="#10b981" />
-                  <span style={{ color: '#334155', fontSize: '0.95rem' }}><strong>Step 2: Analytics Pane Features:</strong> Create a daily pricing line chart, go to the Analytics pane, and enable 14-day forecasting and anomaly markers.</span>
-                </div>
-
-                <div style={{ background: 'white', padding: '1.2rem', borderRadius: '10px', border: '1px solid #e2e8f0', display: 'flex', gap: '12px', alignItems: 'center' }}>
-                  <CheckCircle size={22} color="#10b981" />
-                  <span style={{ color: '#334155', fontSize: '0.95rem' }}><strong>Step 3: Smart Narrative Custom Metrics:</strong> Insert a Smart Narrative visual, click `+ Value`, and build custom calculated text variables.</span>
-                </div>
-
-                <div style={{ background: 'white', padding: '1.2rem', borderRadius: '10px', border: '1px solid #e2e8f0', display: 'flex', gap: '12px', alignItems: 'center' }}>
-                  <CheckCircle size={22} color="#10b981" />
-                  <span style={{ color: '#334155', fontSize: '0.95rem' }}><strong>Step 4: RLS Security:</strong> Set up a Role based on a specific territory (e.g. Region = "East") and test it using View As.</span>
-                </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {[
+                  {
+                    step: 'Task 1: Google Sheets Live Sync Pipeline',
+                    desc: 'Create or open a Google Sheet with at least 15 rows of sales, roster, or inventory data. Publish it as a CSV link, connect in Power BI via Get Data ➔ Web, and verify that edits in your Google Sheet refresh in Power BI.'
+                  },
+                  {
+                    step: 'Task 2: Live Public API Connection',
+                    desc: 'Connect to the live Coinbase or Binance crypto ticker (or Open-Meteo weather API) using Get Data ➔ Web. Parse the JSON tree in Power Query and create a real-time KPI card showing the current price.'
+                  },
+                  {
+                    step: 'Task 3: Automatic Page Refresh Configuration',
+                    desc: 'Format your report canvas to enable Automatic Page Refresh (APR) every 5 or 10 seconds so the API KPI card updates dynamically.'
+                  },
+                  {
+                    step: 'Task 4: Custom Python Seaborn Chart',
+                    desc: 'Insert a Python Visual into the report canvas and generate either a Correlation Matrix Heatmap or a Violin/Distribution plot comparing your metrics.'
+                  }
+                ].map((task, idx) => (
+                  <div key={idx} style={{ background: '#ffffff', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                    <CheckCircle size={22} color="#10b981" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <div>
+                      <strong style={{ color: '#0f172a', fontSize: '1rem', display: 'block', marginBottom: '4px' }}>{task.step}</strong>
+                      <span style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.6 }}>{task.desc}</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div style={{ textAlign: 'center', background: 'linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)', padding: '3rem', borderRadius: '24px', color: 'white', boxShadow: '0 15px 35px rgba(124, 58, 237, 0.25)' }}>
-              <h3 style={{ fontSize: '2rem', margin: '0 0 1rem 0', fontWeight: 800 }}>Ready for Your Final Capstone Projects?</h3>
-              <p style={{ color: '#e9d5ff', fontSize: '1.15rem', maxWidth: '700px', margin: '0 auto 2rem', lineHeight: 1.7 }}>
-                You have completed the entire Power BI software training! Now it's time to build your professional portfolio by working on the Day 9 real-world Capstone projects.
+            {/* Submission Form Card */}
+            <div style={{
+              background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)',
+              padding: '2.5rem',
+              borderRadius: '20px',
+              color: '#ffffff',
+              boxShadow: '0 12px 30px rgba(49, 46, 129, 0.25)',
+              textAlign: 'center'
+            }}>
+              <h3 style={{ fontSize: '1.8rem', fontWeight: 900, margin: '0 0 1rem 0' }}>
+                Ready to Submit Your Day 8 Homework?
+              </h3>
+              <p style={{ color: '#c7d2fe', fontSize: '1.05rem', maxWidth: '700px', margin: '0 auto 1.75rem', lineHeight: 1.7 }}>
+                Take a screenshot or record a quick demo of your live auto-refreshing dashboard with the embedded Python visual, upload your .pbix or link, and submit for instructor evaluation and unlock certification progress!
               </p>
-              <button className="btn btn-primary" onClick={() => onNavigate('powerbi_module9', 'ai_retail_capstone')} style={{ padding: '1.1rem 2.8rem', fontSize: '1.15rem', background: '#facc15', borderColor: '#facc15', color: '#0f172a', fontWeight: 800, borderRadius: '30px', boxShadow: '0 4px 15px rgba(250, 204, 21, 0.4)' }}>
-                Proceed to Day 9: Final AI Projects 🚀
-              </button>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('powerbi_module9', 'ai_retail_capstone')}
+                  style={{
+                    background: '#facc15',
+                    color: '#0f172a',
+                    border: 'none',
+                    padding: '1rem 2.2rem',
+                    fontSize: '1rem',
+                    fontWeight: 900,
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 15px rgba(250, 204, 21, 0.4)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  Proceed to Day 9: Final Capstone Projects 🚀
+                </button>
+              </div>
             </div>
+
           </div>
         </Section>
       )}
+
     </AnimatePresence>
   );
 }
