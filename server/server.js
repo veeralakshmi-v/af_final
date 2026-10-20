@@ -231,6 +231,19 @@ app.get('/api/students', async (req, res) => {
     const isDbConnected = await checkDbConnection();
     if (isDbConnected) {
       const students = await Student.find({});
+      students.forEach(s => {
+        let dirty = false;
+        (s.tasks || []).forEach(t => {
+          if (!t._id) {
+            t._id = new mongoose.Types.ObjectId().toString();
+            dirty = true;
+          }
+        });
+        if (dirty) {
+          s.markModified('tasks');
+          s.save().catch(err => console.warn('Auto-save task _id note:', err.message));
+        }
+      });
       return res.json(students);
     } else {
       const students = getLocalStudents();
@@ -665,6 +678,13 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
       if (!task && moduleId) {
         task = student.tasks.find(t => t.moduleId === moduleId);
       }
+      if (!task && taskId && taskId.includes('_')) {
+        const parts = taskId.split('_');
+        const candidateMod = parts.slice(2).join('_');
+        if (candidateMod) {
+          task = student.tasks.find(t => t.moduleId === candidateMod);
+        }
+      }
 
       if (!task) return res.status(404).json({ error: 'Task submission not found!' });
 
@@ -705,6 +725,13 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
       }
       if (!task && moduleId) {
         task = student.tasks.find(t => t.moduleId === moduleId);
+      }
+      if (!task && taskId && taskId.includes('_')) {
+        const parts = taskId.split('_');
+        const candidateMod = parts.slice(2).join('_');
+        if (candidateMod) {
+          task = student.tasks.find(t => t.moduleId === candidateMod);
+        }
       }
 
       if (!task) return res.status(404).json({ error: 'Task submission not found!' });

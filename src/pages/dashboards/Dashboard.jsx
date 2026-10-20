@@ -743,8 +743,12 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
   const pendingSubmissions = allSubmissions.filter(s => (s.status || '').toLowerCase() === 'pending');
   const pendingCount = pendingSubmissions.length;
+  const [actionLoadingId, setActionLoadingId] = useState(null);
 
   const handleQuickApprove = async (task) => {
+    const taskKey = task._id || task.id || `${task.studentId}_${task.moduleId}`;
+    setActionLoadingId(taskKey);
+
     if (task.isHtmlCss) {
       const rec = htmlCssValidations[task.moduleId] || {};
       const updatedRecord = {
@@ -756,9 +760,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       };
       saveAssignmentValidation(task.moduleId, updatedRecord);
       setHtmlCssValidations(getAssignmentValidations());
+      setActionLoadingId(null);
     } else {
       try {
-        const taskId = task._id || task.id;
+        const taskId = task._id || task.id || 'module_review';
         const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -780,6 +785,23 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               staffFeedback: 'Approved by staff'
             });
           }
+          // Optimistically update students state so pending count and badge update immediately
+          setStudents(prev => prev.map(s => {
+            if (s._id === task.studentId || s.id === task.studentId || s.accessCode === task.accessCode) {
+              const updatedTasks = (s.tasks || []).map(t => {
+                if ((task._id && (t._id === task._id || t.id === task._id)) || t.moduleId === task.moduleId) {
+                  return { ...t, status: 'Approved', feedback: 'Approved by staff', grade: 'A+' };
+                }
+                return t;
+              });
+              const completed = Array.isArray(s.completedLessons) ? [...s.completedLessons] : [];
+              if (task.moduleId && !completed.includes(task.moduleId)) {
+                completed.push(task.moduleId);
+              }
+              return { ...s, tasks: updatedTasks, completedLessons: completed };
+            }
+            return s;
+          }));
           await fetchStudents();
         } else {
           const err = await res.json().catch(() => ({}));
@@ -788,11 +810,16 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       } catch (err) {
         console.warn('API error approving task:', err);
         alert('Could not reach backend API server.');
+      } finally {
+        setActionLoadingId(null);
       }
     }
   };
 
   const handleQuickReject = async (task) => {
+    const taskKey = task._id || task.id || `${task.studentId}_${task.moduleId}`;
+    setActionLoadingId(taskKey);
+
     if (task.isHtmlCss) {
       const rec = htmlCssValidations[task.moduleId] || {};
       const updatedRecord = {
@@ -804,9 +831,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       };
       saveAssignmentValidation(task.moduleId, updatedRecord);
       setHtmlCssValidations(getAssignmentValidations());
+      setActionLoadingId(null);
     } else {
       try {
-        const taskId = task._id || task.id;
+        const taskId = task._id || task.id || 'module_review';
         const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -828,6 +856,19 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               staffFeedback: 'Revision requested by staff'
             });
           }
+          // Optimistically update students state
+          setStudents(prev => prev.map(s => {
+            if (s._id === task.studentId || s.id === task.studentId || s.accessCode === task.accessCode) {
+              const updatedTasks = (s.tasks || []).map(t => {
+                if ((task._id && (t._id === task._id || t.id === task._id)) || t.moduleId === task.moduleId) {
+                  return { ...t, status: 'Rejected', feedback: 'Revision requested by staff', grade: 'Needs Revision' };
+                }
+                return t;
+              });
+              return { ...s, tasks: updatedTasks };
+            }
+            return s;
+          }));
           await fetchStudents();
         } else {
           const err = await res.json().catch(() => ({}));
@@ -836,6 +877,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       } catch (err) {
         console.warn('API error requesting revision:', err);
         alert('Could not reach backend API server.');
+      } finally {
+        setActionLoadingId(null);
       }
     }
   };
@@ -1140,7 +1183,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         alert('Task evaluated successfully!');
         setGradingTask(null);
       } else {
-        const taskId = gradingTask._id || gradingTask.id;
+        const taskId = gradingTask._id || gradingTask.id || 'module_review';
         const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1162,6 +1205,23 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               staffFeedback: feedbackTrimmed
             });
           }
+          // Optimistically update students state
+          setStudents(prev => prev.map(s => {
+            if (s._id === (gradingStudentId || gradingTask.studentId) || s.id === (gradingStudentId || gradingTask.studentId) || s.accessCode === gradingTask.accessCode) {
+              const updatedTasks = (s.tasks || []).map(t => {
+                if ((gradingTask._id && (t._id === gradingTask._id || t.id === gradingTask._id)) || t.moduleId === gradingTask.moduleId) {
+                  return { ...t, status: statusTrimmed, feedback: feedbackTrimmed, grade: gradeTrimmed };
+                }
+                return t;
+              });
+              const completed = Array.isArray(s.completedLessons) ? [...s.completedLessons] : [];
+              if (statusTrimmed === 'Approved' && gradingTask.moduleId && !completed.includes(gradingTask.moduleId)) {
+                completed.push(gradingTask.moduleId);
+              }
+              return { ...s, tasks: updatedTasks, completedLessons: completed };
+            }
+            return s;
+          }));
           alert('Task graded successfully!');
           setGradingTask(null);
           await fetchStudents();
@@ -3621,6 +3681,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                             }}>
                               <button
                                 type="button"
+                                disabled={actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`)}
                                 onClick={() => handleQuickApprove(task)}
                                 style={{
                                   background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
@@ -3628,7 +3689,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                   color: '#ffffff',
                                   padding: '0.55rem 1.25rem',
                                   borderRadius: '10px',
-                                  cursor: 'pointer',
+                                  cursor: actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 'not-allowed' : 'pointer',
+                                  opacity: actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 0.7 : 1,
                                   fontSize: '0.82rem',
                                   fontWeight: 800,
                                   boxShadow: '0 3px 8px rgba(16, 185, 129, 0.25)',
@@ -3639,11 +3701,12 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                 }}
                                 title="Approve submission and unlock next content"
                               >
-                                <CheckCircle size={15} /> Approve &amp; Unlock Next Day
+                                <CheckCircle size={15} /> {actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 'Approving...' : 'Approve & Unlock Next Day'}
                               </button>
 
                               <button
                                 type="button"
+                                disabled={actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`)}
                                 onClick={() => handleQuickReject(task)}
                                 style={{
                                   background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
@@ -3651,7 +3714,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                   color: '#ffffff',
                                   padding: '0.55rem 1.1rem',
                                   borderRadius: '10px',
-                                  cursor: 'pointer',
+                                  cursor: actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 'not-allowed' : 'pointer',
+                                  opacity: actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 0.7 : 1,
                                   fontSize: '0.82rem',
                                   fontWeight: 800,
                                   boxShadow: '0 3px 8px rgba(239, 68, 68, 0.25)',
@@ -3662,7 +3726,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                 }}
                                 title="Request revision from student"
                               >
-                                <AlertTriangle size={15} /> Request Revision
+                                <AlertTriangle size={15} /> {actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 'Updating...' : 'Request Revision'}
                               </button>
 
                               <button
