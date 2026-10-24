@@ -16,9 +16,11 @@ export const day1Overview = {
   targetAudience: "Students, college freshers, job seekers, and beginners",
   objectives: [
     "Understand what logical thinking means in simple words (no confusing jargon).",
+    "Discover how Problem Solving, Logical Thinking, Critical Thinking, and Analysis are interconnected.",
+    "Understand why this thinking engine is your most valuable superpower in life and career.",
     "Easily tell the difference between a Fact, an Opinion, and an Assumption.",
     "Find the real problem first before trying to fix it.",
-    "Understand Cause and Effect: why two things happening together does not mean one caused the other.",
+    "Understand Cause and Effect: why correlation does not equal causation.",
     "Learn the simple 5-step framework: Observe → Identify → Analyse → Solve → Verify.",
     "Practice with 20 beginner-friendly questions with clear, simple explanations."
   ]
@@ -46,6 +48,103 @@ export const section1Content = {
       }
     ]
   },
+
+  // The 4 Interconnected Skills of Clear Thinking (Simple Words)
+  interconnectedThinking: {
+    title: "How These 4 Thinking Skills Work Together",
+    subtitle: "Analysis, Critical Thinking, Logic, and Problem Solving explained in plain English",
+    overview: "Think of your brain like a small team of 4 helpers solving a mystery. Each helper has one simple job. When they work together in order, any confusing problem becomes easy to understand and fix.",
+    loopFormula: "1. Break It Down ➔ 2. Check What's True ➔ 3. Connect the Clues ➔ 4. Fix It!",
+    pillars: [
+      {
+        id: "analysis",
+        name: "1. Analysis",
+        role: "Step 1: Break It Down",
+        coreQuestion: "What are the small pieces of this problem?",
+        tagline: "Split a big, confusing problem into small, easy pieces.",
+        definition: "Analysis simply means taking a big, messy problem and cutting it into small pieces so you can inspect each part one by one. It's like opening up a toy car to see which wheel is stuck.",
+        inAction: "Your phone won't turn on. Instead of crying or buying a new phone, you check 3 small things separately: (1) Is the battery dead? (2) Is the charger broken? (3) Did the screen freeze?",
+        withoutIt: "Without Analysis, the problem feels too big. You panic and try to guess randomly."
+      },
+      {
+        id: "critical",
+        name: "2. Critical Thinking",
+        role: "Step 2: Check What's True",
+        coreQuestion: "Is this really a true fact, or just a rumor?",
+        tagline: "Separate real facts from guesses, rumors, and lies.",
+        definition: "Critical Thinking means not believing everything you hear immediately. You ask for real proof and throw away fake rumors before making decisions.",
+        inAction: "A friend says: 'Don't charge your phone at night, it will explode!' Critical thinking stops you and asks: 'Is this really true? Let me check the phone manual and battery facts first.'",
+        withoutIt: "Without Critical Thinking, you believe fake news, scary rumors, and bad advice easily."
+      },
+      {
+        id: "logical",
+        name: "3. Logical Thinking",
+        role: "Step 3: Connect the Clues",
+        coreQuestion: "Does Step A really lead to Step B?",
+        tagline: "Connect real clues step-by-step like a chain.",
+        definition: "Logical Thinking means linking verified facts in the right order so they make clear sense, like puzzle pieces clicking together.",
+        inAction: "Clue 1: Your phone works fine all day. Clue 2: It only shuts down when playing heavy 3D games for 30 minutes. Logical conclusion: The phone shuts down because heavy gaming overheats the battery!",
+        withoutIt: "Without Logic, your thoughts jump randomly and you reach conclusions that make no sense."
+      },
+      {
+        id: "problem_solving",
+        name: "4. Problem Solving",
+        role: "Step 4: Fix It Permanently",
+        coreQuestion: "What is the best way to fix this right now?",
+        tagline: "Take action to fix the real problem so it never returns.",
+        definition: "Problem Solving means taking action. You use what you learned to pick the best fix, test it, and make sure the issue never happens again.",
+        inAction: "You close background apps while gaming and use a cool room. The phone stays cool and never shuts down again. Problem solved!",
+        withoutIt: "Without Problem Solving, you understand what is wrong, but you do nothing about it. You just complain."
+      }
+    ],
+    theFailureChain: [
+      { missing: "Skip Analysis", result: "You guess blindly and try to fix the wrong thing." },
+      { missing: "Skip Critical Thinking", result: "You believe fake rumors and make silly mistakes." },
+      { missing: "Skip Logical Thinking", result: "Your thoughts are messy and jump to false conclusions." },
+      { missing: "Skip Problem Solving", result: "You understand the problem, but never actually fix it." }
+    ],
+    lifeAndCareerImportance: {
+      title: "Why You Need This in Daily Life and Career",
+      summary: "When you know how to break down problems, check facts, connect clues, and fix issues, you stay calm and succeed much faster in both life and work.",
+      lifeReasons: [
+        {
+          title: "Saving Your Money",
+          desc: "You don't get tricked by fake '80% OFF' signs in shops. You check the real price first and buy only what you actually need."
+        },
+        {
+          title: "Peaceful Relationships",
+          desc: "When a friend doesn't reply to your text, you don't get angry. You think: 'Maybe their battery died or they are busy in class.'"
+        },
+        {
+          title: "Avoiding Online Scams",
+          desc: "You don't click dangerous lottery links or forward fake medical rumors on WhatsApp without checking if they are real."
+        },
+        {
+          title: "Beating Worry & Exam Stress",
+          desc: "When exams or problems feel scary, you don't panic. You break the syllabus into 3 small daily chapters and study calmly."
+        }
+      ],
+      careerReasons: [
+        {
+          title: "Passing Aptitude Tests",
+          desc: "Companies like TCS, Infosys, and Google test this to see if you can think calmly and solve puzzles on your own."
+        },
+        {
+          title: "Acing Job Interviews",
+          desc: "Interviewers love candidates who can explain: 'First I found the issue, then I checked the facts, and here is how I fixed it.'"
+        },
+        {
+          title: "Being Respected at Work",
+          desc: "When something breaks at work, you don't blame others. You find the real cause and fix it permanently."
+        },
+        {
+          title: "Staying Ahead in the AI Age",
+          desc: "AI can write text, but smart humans who can think clearly and solve real problems will always get hired and promoted."
+        }
+      ]
+    }
+  },
+
   importance: [
     {
       domain: "Daily Life",

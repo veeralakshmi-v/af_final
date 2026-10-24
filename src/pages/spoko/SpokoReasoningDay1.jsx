@@ -5,7 +5,7 @@ import {
   RotateCcw, Sparkles, BookOpen, Layers, Target, Zap, Clock,
   HelpCircle, ChevronRight, ChevronDown, ChevronUp, AlertCircle,
   Eye, CheckSquare, ShieldCheck, TrendingUp, Home, GraduationCap,
-  Briefcase, Filter, Info, FileText
+  Briefcase, Filter, Info, FileText, Search, RefreshCw, Shield
 } from 'lucide-react';
 import {
   day1Overview,
@@ -28,6 +28,10 @@ export default function SpokoReasoningDay1({
 
   // Current active sub-tab (driven by Sidebar or section progression)
   const [currentTab, setCurrentTab] = useState(activeTab || 'overview');
+
+  // Interconnected 4-Pillars & Life/Career Interactive State
+  const [activePillarId, setActivePillarId] = useState('analysis');
+  const [lifeCareerTab, setLifeCareerTab] = useState('both'); // 'both' | 'life' | 'career'
 
   useEffect(() => {
     if (activeTab) {
@@ -630,36 +634,356 @@ export default function SpokoReasoningDay1({
                 </div>
               </div>
 
-              {/* Why is it Important */}
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>
-                Why Logical Thinking Is Crucial Across Life & Career
-              </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
-                {section1Content.importance.map((item, idx) => (
-                  <div key={idx} style={{
-                    background: '#f8fafc',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '12px',
-                    padding: '1.25rem',
-                    transition: 'transform 0.15s ease'
+              {/* ========================================================== */}
+              {/* THE 4 INTERCONNECTED SKILLS OF CLEAR THINKING (SIMPLE WORDS) */}
+              {/* ========================================================== */}
+              <div style={{
+                background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+                border: '1px solid #cbd5e1',
+                borderRadius: '16px',
+                padding: '2rem',
+                marginBottom: '2.5rem',
+                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.03)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <span style={{
+                    background: '#6366f1',
+                    color: '#ffffff',
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    padding: '0.25rem 0.65rem',
+                    borderRadius: '6px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
                   }}>
-                    <div style={{
-                      fontWeight: 800,
-                      color: '#4338ca',
-                      fontSize: '1rem',
-                      marginBottom: '0.5rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem'
-                    }}>
-                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6366f1' }} />
-                      {item.domain}
-                    </div>
-                    <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.5 }}>
-                      {item.summary}
+                    Simple Guide
+                  </span>
+                  <span style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 600 }}>
+                    The 4 Steps to Solve Any Problem
+                  </span>
+                </div>
+
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+                  {section1Content.interconnectedThinking?.title || "How These 4 Thinking Skills Work Together"}
+                </h3>
+                <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 1.5rem 0', maxWidth: '850px' }}>
+                  {section1Content.interconnectedThinking?.overview}
+                </p>
+
+                {/* The Process Flow Sequence in Simple Words */}
+                <div style={{
+                  background: '#ffffff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '12px',
+                  padding: '1.25rem',
+                  marginBottom: '1.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '0.75rem'
+                }}>
+                  <div style={{ fontWeight: 700, color: '#334155', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <RefreshCw size={16} color="#6366f1" /> The 4-Step Solution Loop:
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    flexWrap: 'wrap',
+                    fontSize: '0.85rem',
+                    fontWeight: 700
+                  }}>
+                    <span style={{ background: '#e0f2fe', color: '#0284c7', padding: '0.35rem 0.75rem', borderRadius: '6px' }}>1. Break It Down</span>
+                    <span style={{ color: '#94a3b8' }}>➔</span>
+                    <span style={{ background: '#fef3c7', color: '#d97706', padding: '0.35rem 0.75rem', borderRadius: '6px' }}>2. Check What's True</span>
+                    <span style={{ color: '#94a3b8' }}>➔</span>
+                    <span style={{ background: '#ede9fe', color: '#4f46e5', padding: '0.35rem 0.75rem', borderRadius: '6px' }}>3. Connect the Clues</span>
+                    <span style={{ color: '#94a3b8' }}>➔</span>
+                    <span style={{ background: '#d1fae5', color: '#059669', padding: '0.35rem 0.75rem', borderRadius: '6px' }}>4. Fix It!</span>
+                  </div>
+                </div>
+
+                {/* Interactive Pillar Selector Tabs (Balanced 4-Col / 2x2 Grid) */}
+                <div style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '0.75rem',
+                  marginBottom: '1.5rem'
+                }}>
+                  {section1Content.interconnectedThinking?.pillars?.map((p) => {
+                    const isSelected = activePillarId === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => setActivePillarId(p.id)}
+                        style={{
+                          flex: '1 1 calc(25% - 0.75rem)',
+                          minWidth: '220px',
+                          background: isSelected ? '#ffffff' : '#f8fafc',
+                          border: isSelected ? `2px solid ${p.color}` : '1px solid #e2e8f0',
+                          borderRadius: '12px',
+                          padding: '1.1rem',
+                          textAlign: 'left',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                          boxShadow: isSelected ? '0 4px 12px -2px rgba(0,0,0,0.08)' : 'none',
+                          transform: isSelected ? 'translateY(-2px)' : 'none'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+                          <span style={{ fontSize: '0.75rem', fontWeight: 800, color: p.color, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                            {p.role}
+                          </span>
+                          {isSelected && <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: p.color }} />}
+                        </div>
+                        <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#1e293b', marginBottom: '0.3rem' }}>
+                          {p.name}
+                        </div>
+                        <div style={{ fontSize: '0.82rem', color: '#64748b', lineHeight: 1.4 }}>
+                          {p.tagline}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Active Pillar Deep-Dive Card in Simple Words */}
+                {(() => {
+                  const currentPillar = section1Content.interconnectedThinking?.pillars?.find(p => p.id === activePillarId) || section1Content.interconnectedThinking?.pillars?.[0];
+                  if (!currentPillar) return null;
+                  return (
+                    <motion.div
+                      key={currentPillar.id}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      style={{
+                        background: '#ffffff',
+                        border: `1.5px solid ${currentPillar.color}40`,
+                        borderRadius: '14px',
+                        padding: '1.5rem',
+                        boxShadow: '0 4px 12px -2px rgba(0,0,0,0.05)',
+                        marginBottom: '1.5rem'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
+                        <div>
+                          <span style={{ background: currentPillar.bgColor || '#f1f5f9', color: currentPillar.color, fontSize: '0.8rem', fontWeight: 800, padding: '0.2rem 0.6rem', borderRadius: '6px' }}>
+                            {currentPillar.role}
+                          </span>
+                          <h4 style={{ margin: '0.5rem 0 0 0', fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>
+                            Key Question: "{currentPillar.coreQuestion}"
+                          </h4>
+                        </div>
+                      </div>
+
+                      <p style={{ fontSize: '0.98rem', color: '#334155', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                        <strong>In Simple Words:</strong> {currentPillar.definition}
+                      </p>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+                        <div style={{
+                          background: '#f8fafc',
+                          border: '1px solid #e2e8f0',
+                          borderLeft: `4px solid ${currentPillar.color}`,
+                          padding: '1.1rem',
+                          borderRadius: '10px'
+                        }}>
+                          <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#1e293b', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            <CheckCircle2 size={16} color={currentPillar.color} /> Easy Everyday Example:
+                          </div>
+                          <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.55 }}>
+                            {currentPillar.inAction}
+                          </p>
+                        </div>
+
+                        <div style={{
+                          background: '#fff1f2',
+                          border: '1px solid #fecdd3',
+                          borderLeft: '4px solid #f43f5e',
+                          padding: '1.1rem',
+                          borderRadius: '10px'
+                        }}>
+                          <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#9f1239', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            <AlertCircle size={16} color="#e11d48" /> What Happens If You Skip This Step?
+                          </div>
+                          <p style={{ margin: 0, fontSize: '0.88rem', color: '#881337', lineHeight: 1.55 }}>
+                            {currentPillar.withoutIt}
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })()}
+
+                {/* The Failure Chain Alert Table */}
+                <div style={{
+                  background: '#ffffff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '12px',
+                  padding: '1.25rem'
+                }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#1e293b', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <AlertCircle size={16} color="#f59e0b" /> Why You Cannot Skip Any Step:
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem' }}>
+                    {section1Content.interconnectedThinking?.theFailureChain?.map((item, idx) => (
+                      <div key={idx} style={{
+                        background: '#f8fafc',
+                        border: '1px solid #f1f5f9',
+                        borderRadius: '8px',
+                        padding: '0.75rem'
+                      }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#b91c1c', marginBottom: '0.2rem' }}>
+                          ❌ {item.missing}
+                        </div>
+                        <div style={{ fontSize: '0.82rem', color: '#64748b', lineHeight: 1.4 }}>
+                          {item.result}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* ========================================================== */}
+              {/* WHY YOU NEED THIS IN LIFE AND CAREER (SIMPLE WORDS) */}
+              {/* ========================================================== */}
+              <div style={{ marginBottom: '2.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
+                  <div>
+                    <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.25rem 0' }}>
+                      Why You Need This in Daily Life & Career
+                    </h3>
+                    <p style={{ margin: 0, fontSize: '0.88rem', color: '#64748b' }}>
+                      {section1Content.interconnectedThinking?.lifeAndCareerImportance?.summary || "Thinking clearly protects you from silly mistakes and helps you grow fast."}
                     </p>
                   </div>
-                ))}
+
+                  <div style={{
+                    display: 'inline-flex',
+                    background: '#f1f5f9',
+                    padding: '0.25rem',
+                    borderRadius: '10px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <button
+                      onClick={() => setLifeCareerTab('both')}
+                      style={{
+                        background: lifeCareerTab === 'both' ? '#4f46e5' : 'transparent',
+                        color: lifeCareerTab === 'both' ? '#ffffff' : '#64748b',
+                        border: 'none',
+                        padding: '0.45rem 0.9rem',
+                        borderRadius: '8px',
+                        fontSize: '0.82rem',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      All Domains
+                    </button>
+                    <button
+                      onClick={() => setLifeCareerTab('life')}
+                      style={{
+                        background: lifeCareerTab === 'life' ? '#4f46e5' : 'transparent',
+                        color: lifeCareerTab === 'life' ? '#ffffff' : '#64748b',
+                        border: 'none',
+                        padding: '0.45rem 0.9rem',
+                        borderRadius: '8px',
+                        fontSize: '0.82rem',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      🌟 Daily Life
+                    </button>
+                    <button
+                      onClick={() => setLifeCareerTab('career')}
+                      style={{
+                        background: lifeCareerTab === 'career' ? '#4f46e5' : 'transparent',
+                        color: lifeCareerTab === 'career' ? '#ffffff' : '#64748b',
+                        border: 'none',
+                        padding: '0.45rem 0.9rem',
+                        borderRadius: '8px',
+                        fontSize: '0.82rem',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      🚀 Career & Jobs
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
+                  {/* Everyday Life Column */}
+                  {(lifeCareerTab === 'both' || lifeCareerTab === 'life') && (
+                    <div style={{
+                      background: '#ffffff',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '14px',
+                      padding: '1.5rem',
+                      boxShadow: '0 4px 6px -1px rgba(0,0,0,0.03)'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: '#4338ca', fontWeight: 800, fontSize: '1.05rem' }}>
+                        <Home size={20} color="#4f46e5" />
+                        <span>In Your Everyday Life</span>
+                      </div>
+                      <div style={{ display: 'grid', gap: '1rem' }}>
+                        {section1Content.interconnectedThinking?.lifeAndCareerImportance?.lifeReasons?.map((item, idx) => (
+                          <div key={idx} style={{
+                            background: '#f8fafc',
+                            border: '1px solid #f1f5f9',
+                            borderLeft: '3px solid #6366f1',
+                            padding: '0.9rem 1rem',
+                            borderRadius: '8px'
+                          }}>
+                            <div style={{ fontWeight: 700, fontSize: '0.92rem', color: '#1e293b', marginBottom: '0.25rem' }}>
+                              {item.title}
+                            </div>
+                            <div style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.5 }}>
+                              {item.desc}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Career & Workplace Column */}
+                  {(lifeCareerTab === 'both' || lifeCareerTab === 'career') && (
+                    <div style={{
+                      background: '#ffffff',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '14px',
+                      padding: '1.5rem',
+                      boxShadow: '0 4px 6px -1px rgba(0,0,0,0.03)'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: '#047857', fontWeight: 800, fontSize: '1.05rem' }}>
+                        <Briefcase size={20} color="#059669" />
+                        <span>In Your Career & Job Tests</span>
+                      </div>
+                      <div style={{ display: 'grid', gap: '1rem' }}>
+                        {section1Content.interconnectedThinking?.lifeAndCareerImportance?.careerReasons?.map((item, idx) => (
+                          <div key={idx} style={{
+                            background: '#f0fdf4',
+                            border: '1px solid #dcfce7',
+                            borderLeft: '3px solid #10b981',
+                            padding: '0.9rem 1rem',
+                            borderRadius: '8px'
+                          }}>
+                            <div style={{ fontWeight: 700, fontSize: '0.92rem', color: '#064e3b', marginBottom: '0.25rem' }}>
+                              {item.title}
+                            </div>
+                            <div style={{ fontSize: '0.85rem', color: '#166534', lineHeight: 1.5 }}>
+                              {item.desc}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Guessing vs Reasoning Comparison */}
@@ -2199,10 +2523,10 @@ export default function SpokoReasoningDay1({
           </button>
 
           <button
-            onClick={() => alert("Day 2: Deductive & Inductive Reasoning will unlock as you progress!")}
+            onClick={() => onNavigate && onNavigate('spoko_reasoning_l1_d2', 'overview')}
             style={{
-              background: savedProgress.completedDay ? '#4f46e5' : '#e2e8f0',
-              color: savedProgress.completedDay ? '#ffffff' : '#64748b',
+              background: '#4f46e5',
+              color: '#ffffff',
               border: 'none',
               padding: '0.65rem 1.25rem',
               borderRadius: '8px',
@@ -2214,7 +2538,7 @@ export default function SpokoReasoningDay1({
               gap: '0.4rem'
             }}
           >
-            Next: Day 2 Preview →
+            Next: Day 2 (Number Series) →
           </button>
         </div>
       </div>

@@ -3012,35 +3012,35 @@ export const spokoHrCourseData = [
   },
   {
     id: 'spoko_hr_day1',
-    title: 'Day 1: Personal Background (Q1–20)',
+    title: 'Day 1: Personal Background',
     items: [
       { id: 'questions', label: '20 Interview Questions', icon: <User size={18} /> }
     ]
   },
   {
     id: 'spoko_hr_day2',
-    title: 'Day 2: Career Goals & Change (Q21–40)',
+    title: 'Day 2: Career Goals & Change',
     items: [
       { id: 'questions', label: '20 Interview Questions', icon: <Compass size={18} /> }
     ]
   },
   {
     id: 'spoko_hr_day3',
-    title: 'Day 3: Behavioral & STAR (Q41–60)',
+    title: 'Day 3: Behavioral & STAR',
     items: [
       { id: 'questions', label: '20 Interview Questions', icon: <Users size={18} /> }
     ]
   },
   {
     id: 'spoko_hr_day4',
-    title: 'Day 4: Salary & Preferences (Q61–80)',
+    title: 'Day 4: Salary & Preferences',
     items: [
       { id: 'questions', label: '20 Interview Questions', icon: <Target size={18} /> }
     ]
   },
   {
     id: 'spoko_hr_day5',
-    title: 'Day 5: Experience & Final (Q81–100)',
+    title: 'Day 5: Experience & Final',
     items: [
       { id: 'questions', label: '20 Interview Questions', icon: <Briefcase size={18} /> }
     ]
@@ -3060,6 +3060,63 @@ export const spokoReasoningCourseData = [
       { id: 'section5', label: '5. The 5-Step Framework', icon: <Layers size={18} /> },
       { id: 'practice', label: 'Practice Quiz (20 Qs)', icon: <CheckCircle size={18} /> },
       { id: 'assessment', label: 'Day 1 Assessment Summary', icon: <Award size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l1_d2',
+    title: 'Level 1: Day 2 - Number Series & Pattern Recognition',
+    items: [
+      { id: 'overview', label: 'Day 2 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Intro to Number Series', icon: <Hash size={18} /> },
+      { id: 'section2', label: '2. Addition & Subtraction', icon: <CheckSquare size={18} /> },
+      { id: 'section3', label: '3. Multiplication & Division', icon: <Zap size={18} /> },
+      { id: 'section4', label: '4. Changing Differences', icon: <Activity size={18} /> },
+      { id: 'section5', label: '5. Alternating Patterns', icon: <Layers size={18} /> },
+      { id: 'section6', label: '6. Squares & Cubes', icon: <Target size={18} /> },
+      { id: 'section7', label: '7. Strategy Checklist', icon: <Shield size={18} /> },
+      { id: 'practice', label: 'Practice Quiz (20 Qs)', icon: <CheckCircle size={18} /> },
+      { id: 'assessment', label: 'Day 2 Assessment Summary', icon: <Award size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l1_d3',
+    title: 'Level 1: Day 3 - Alphabet & Symbol Patterns',
+    items: [
+      { id: 'overview', label: 'Day 3 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Alphabet Positions (A–Z)', icon: <LayoutGrid size={18} /> },
+      { id: 'section2', label: '2. Forward Patterns', icon: <FastForward size={18} /> },
+      { id: 'section3', label: '3. Backward Patterns', icon: <RefreshCw size={18} /> },
+      { id: 'section4', label: '4. Alternating Sequences', icon: <GitBranch size={18} /> },
+      { id: 'section5', label: '5. Missing Letters & Gaps', icon: <Eye size={18} /> },
+      { id: 'section6', label: '6. Symbol Patterns', icon: <Sparkles size={18} /> },
+      { id: 'section7', label: '7. Basic Letter Coding', icon: <Zap size={18} /> },
+      { id: 'revision', label: 'Revision & Checklist', icon: <CheckSquare size={18} /> },
+      { id: 'practice', label: 'Practice Quiz (20 Qs)', icon: <CheckCircle size={18} /> },
+      { id: 'assessment', label: 'Day 3 Assessment Summary', icon: <Award size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l1_d4',
+    title: 'Level 1: Day 4 - Classification & Odd One Out',
+    items: [
+      { id: 'overview', label: 'Day 4 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Intro to Classification', icon: <Filter size={18} /> },
+      { id: 'section2', label: '2. Word Classification', icon: <TypeIcon size={18} /> },
+      { id: 'section3', label: '3. Number Classification', icon: <Hash size={18} /> },
+      { id: 'section4', label: '4. Alphabet Classification', icon: <LayoutGrid size={18} /> },
+      { id: 'section5', label: '5. Shape & Symbol Classification', icon: <Box size={18} /> },
+      { id: 'section6', label: '6. Everyday Classification', icon: <Briefcase size={18} /> },
+      { id: 'section7', label: '7. 7-Step Solution Strategy', icon: <Shield size={18} /> },
+      { id: 'revision', label: 'Revision & Mental Checklist', icon: <CheckSquare size={18} /> },
+      { id: 'practice', label: 'Practice Quiz (20 Qs)', icon: <CheckCircle size={18} /> },
+      { id: 'assessment', label: 'Day 4 Assessment Summary', icon: <Award size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l1_d5',
+    title: 'Level 1: Day 5 - Analogies & Relationships',
+    items: [
+      { id: 'day5_preview', label: 'Day 5 (Coming Soon)', icon: <Clock size={18} /> }
     ]
   }
 ];

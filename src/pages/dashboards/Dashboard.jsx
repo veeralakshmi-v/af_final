@@ -379,12 +379,12 @@ const subCourses = [
     id: 'spoko_reasoning',
     mainCourseId: 'spoko_english',
     title: 'Logical Reasoning & Analytical Thinking',
-    desc: 'Master foundational logic, distinguish facts from opinions and assumptions, cause-and-effect reasoning, problem structuring, and 20 practice scenarios.',
+    desc: 'Master foundational logic, number series, alphabet positions, symbol patterns, classification & odd-one-out, and 80 aptitude practice questions.',
     icon: <Brain size={24} />,
     bgColor: 'rgba(139, 92, 246, 0.08)',
     borderColor: '#8b5cf6',
     shadowColor: 'rgba(139, 92, 246, 0.15)',
-    modulesCount: 'Level 1: Day 1 (20 Qs Practice)',
+    modulesCount: 'Level 1: Days 1–4 (80 Qs Practice)',
     enrolledKey: 'spoko_reasoning'
   }
 ];

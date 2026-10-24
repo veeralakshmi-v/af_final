@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, CheckCircle, Send } from 'lucide-react';
+import { Menu, CheckCircle, Send, Clock } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/dashboards/Dashboard';
 import Day1 from './pages/html-css/Day1';
@@ -246,6 +246,9 @@ import SpokoStoryDay6 from './pages/spoko/SpokoStoryDay6';
 import SpokoProTopic from './pages/spoko/SpokoProTopic';
 import SpokoHrCourse from './pages/spoko/SpokoHrCourse';
 import SpokoReasoningDay1 from './pages/spoko/SpokoReasoningDay1';
+import SpokoReasoningDay2 from './pages/spoko/SpokoReasoningDay2';
+import SpokoReasoningDay3 from './pages/spoko/SpokoReasoningDay3';
+import SpokoReasoningDay4 from './pages/spoko/SpokoReasoningDay4';
 import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData, spokoStoryCourseData, spokoProCourseData, spokoHrCourseData, spokoReasoningCourseData } from './courseData';
 import TallyCourseDay from './pages/tally/TallyCourseDay';
 import AssignmentSubmissionPage from './components/AssignmentSubmissionPage';
@@ -1096,14 +1099,98 @@ function App() {
                   />
                 )}
 
-                {/* Spoko Logical Reasoning & Analytical Thinking (Level 1, Day 1) Rendering */}
+                {/* Spoko Logical Reasoning & Analytical Thinking (Level 1: Day 1, Day 2, Day 3, Day 4) Rendering */}
                 {(activeCourse === 'spoko_reasoning' || activeNode.moduleId?.startsWith('spoko_reasoning_')) && (
-                  <SpokoReasoningDay1
-                    activeTab={activeNode.tabId}
-                    onNavigate={handleNavClick}
-                    session={session}
-                    completedLessons={completedLessons}
-                  />
+                  activeNode.moduleId === 'spoko_reasoning_l1_d2' ? (
+                    <SpokoReasoningDay2
+                      activeTab={activeNode.tabId}
+                      onNavigate={handleNavClick}
+                      session={session}
+                      completedLessons={completedLessons}
+                    />
+                  ) : activeNode.moduleId === 'spoko_reasoning_l1_d3' ? (
+                    <SpokoReasoningDay3
+                      activeTab={activeNode.tabId}
+                      onNavigate={handleNavClick}
+                      session={session}
+                      completedLessons={completedLessons}
+                    />
+                  ) : activeNode.moduleId === 'spoko_reasoning_l1_d4' ? (
+                    <SpokoReasoningDay4
+                      activeTab={activeNode.tabId}
+                      onNavigate={handleNavClick}
+                      session={session}
+                      completedLessons={completedLessons}
+                    />
+                  ) : activeNode.moduleId === 'spoko_reasoning_l1_d5' ? (
+                    <div style={{
+                      maxWidth: '800px',
+                      margin: '3rem auto',
+                      padding: '2.5rem 2rem',
+                      background: '#ffffff',
+                      borderRadius: '16px',
+                      border: '1px solid #e2e8f0',
+                      textAlign: 'center',
+                      boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)'
+                    }}>
+                      <div style={{
+                        width: '64px',
+                        height: '64px',
+                        borderRadius: '50%',
+                        background: '#ede9fe',
+                        color: '#6366f1',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        margin: '0 auto 1.25rem'
+                      }}>
+                        <Clock size={32} />
+                      </div>
+                      <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1e1b4b', marginBottom: '0.75rem' }}>
+                        Day 5: Analogies and Relationships
+                      </h2>
+                      <p style={{ color: '#64748b', fontSize: '1rem', lineHeight: 1.6, marginBottom: '2rem', maxWidth: '600px', margin: '0 auto 2rem' }}>
+                        This module covers word pairs, numerical analogies, functional relationships, and causal pairs. Complete Days 1, 2, 3, and 4 first!
+                      </p>
+                      <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                        <button
+                          onClick={() => handleNavClick('spoko_reasoning_l1_d4', 'overview')}
+                          style={{
+                            background: '#4f46e5',
+                            color: '#ffffff',
+                            border: 'none',
+                            padding: '0.75rem 1.5rem',
+                            borderRadius: '8px',
+                            fontWeight: 700,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          ← Go to Day 4: Classification
+                        </button>
+                        <button
+                          onClick={() => handleNavClick('spoko_reasoning_l1_d3', 'overview')}
+                          style={{
+                            background: '#f1f5f9',
+                            color: '#334155',
+                            border: '1px solid #cbd5e1',
+                            padding: '0.75rem 1.5rem',
+                            borderRadius: '8px',
+                            fontWeight: 700,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Go to Day 3: Alphabet & Symbols
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <SpokoReasoningDay1
+                      activeTab={activeNode.tabId}
+                      onNavigate={handleNavClick}
+                      session={session}
+                      completedLessons={completedLessons}
+                    />
+                  )
                 )}
               </>
             )}
