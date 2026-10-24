@@ -244,7 +244,8 @@ import SpokoStoryDay4 from './pages/spoko/SpokoStoryDay4';
 import SpokoStoryDay5 from './pages/spoko/SpokoStoryDay5';
 import SpokoStoryDay6 from './pages/spoko/SpokoStoryDay6';
 import SpokoProTopic from './pages/spoko/SpokoProTopic';
-import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData, spokoStoryCourseData, spokoProCourseData } from './courseData';
+import SpokoHrCourse from './pages/spoko/SpokoHrCourse';
+import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData, spokoStoryCourseData, spokoProCourseData, spokoHrCourseData } from './courseData';
 import TallyCourseDay from './pages/tally/TallyCourseDay';
 import AssignmentSubmissionPage from './components/AssignmentSubmissionPage';
 import { isModuleLocked, getLockReason } from './utils/htmlCssLocking';
@@ -446,7 +447,9 @@ function App() {
       web_design_20days: webDesignCourseData,
       spoko_story: spokoStoryCourseData,
       spoko_pro: spokoProCourseData,
-      softskills: spokoProCourseData
+      softskills: spokoProCourseData,
+      spoko_hr: spokoHrCourseData,
+      hr_interview_mastery: spokoHrCourseData
     };
     const modules = map[courseKey] || [];
     for (const m of modules) {
@@ -470,7 +473,14 @@ function App() {
 
   const handleSelectCourse = (course, startModuleId = null) => {
     const enrolledCoursesList = session?.enrolledCourse ? session.enrolledCourse.split(',') : [];
-    const isEnrolled = session?.enrolledCourse === 'all' || enrolledCoursesList.includes(course);
+    const isEnrolled = session?.enrolledCourse === 'all' ||
+      enrolledCoursesList.includes(course) ||
+      ((course === 'spoko_hr' || course === 'hr_interview_mastery') && (
+        enrolledCoursesList.includes('spoko_english') ||
+        enrolledCoursesList.includes('spoko_story') ||
+        enrolledCoursesList.includes('spoko_pro') ||
+        enrolledCoursesList.includes('softskills')
+      ));
     if (session?.role === 'student' && !isEnrolled && course !== 'induction') {
       return; // Block student access to non-enrolled courses
     }
@@ -486,7 +496,9 @@ function App() {
         }
       }
 
-      if (course === 'spoko_pro' || course === 'softskills') {
+      if (course === 'spoko_hr' || course === 'hr_interview_mastery') {
+        setActiveNode({ moduleId: 'spoko_hr_overview', tabId: 'dashboard' });
+      } else if (course === 'spoko_pro' || course === 'softskills') {
         setActiveNode({ moduleId: 'spoko_pro_topic1', tabId: 'pro_overview' });
       } else if (course === 'spoko_story') {
         setActiveNode({ moduleId: 'spoko_story_day1', tabId: 'story_reading' });
@@ -678,6 +690,7 @@ function App() {
   else if (activeCourse === 'web_design_20days') currentCourseData = webDesignCourseData;
   else if (activeCourse === 'spoko_story') currentCourseData = spokoStoryCourseData;
   else if (activeCourse === 'spoko_pro' || activeCourse === 'softskills') currentCourseData = spokoProCourseData;
+  else if (activeCourse === 'spoko_hr' || activeCourse === 'hr_interview_mastery') currentCourseData = spokoHrCourseData;
 
   if (!session) {
     return <LandingPage onLoginSuccess={handleLoginSuccess} />;
@@ -717,7 +730,7 @@ function App() {
             {/* Mobile Header — shown on tablet/mobile via responsive.css */}
             <div className="mobile-header">
               <h2 style={{ fontSize: '1.2rem', margin: 0, color: '#1E3A8A' }}>
-                {activeCourse === 'spoko_pro' || activeCourse === 'softskills' ? 'Professional Track (Soft Skills)' : activeCourse === 'spoko_story' ? 'Spoko Story-Based English' : activeCourse === 'tally_prime' ? 'AI powered Tally' : activeCourse === 'html_css' ? 'HTML, CSS & Bootstrap' : activeCourse === 'javascript_course' ? 'AI-Powered JavaScript' : activeCourse === 'core_js' ? 'Core JavaScript' : activeCourse === 'react_course' ? 'AI-Powered React JS' : activeCourse === 'powerbi' ? 'AI-Powered Data Analytics' : activeCourse === 'agentic_ai' ? 'Agentic AI Development' : activeCourse === 'induction' ? 'Free Induction & Demo Sessions' : activeCourse === 'devops' ? 'DevOps & CI/CD' : activeCourse === 'numpy_course' ? 'NumPy for Data Science' : activeCourse === 'pandas_course' ? 'Pandas for Data Science' : activeCourse === 'matplotlib_course' ? 'Matplotlib for Data Science' : activeCourse === 'seaborn_course' ? 'Seaborn for Data Science' : 'AI-Powered SQL'}
+                {activeCourse === 'spoko_hr' || activeCourse === 'hr_interview_mastery' ? 'HR Interview Mastery' : activeCourse === 'spoko_pro' || activeCourse === 'softskills' ? 'Professional Track (Soft Skills)' : activeCourse === 'spoko_story' ? 'Spoko Story-Based English' : activeCourse === 'tally_prime' ? 'AI powered Tally' : activeCourse === 'html_css' ? 'HTML, CSS & Bootstrap' : activeCourse === 'javascript_course' ? 'AI-Powered JavaScript' : activeCourse === 'core_js' ? 'Core JavaScript' : activeCourse === 'react_course' ? 'AI-Powered React JS' : activeCourse === 'powerbi' ? 'AI-Powered Data Analytics' : activeCourse === 'agentic_ai' ? 'Agentic AI Development' : activeCourse === 'induction' ? 'Free Induction & Demo Sessions' : activeCourse === 'devops' ? 'DevOps & CI/CD' : activeCourse === 'numpy_course' ? 'NumPy for Data Science' : activeCourse === 'pandas_course' ? 'Pandas for Data Science' : activeCourse === 'matplotlib_course' ? 'Matplotlib for Data Science' : activeCourse === 'seaborn_course' ? 'Seaborn for Data Science' : 'AI-Powered SQL'}
               </h2>
               <button
                 className="btn btn-outline"
@@ -1066,11 +1079,21 @@ function App() {
                     session={session}
                   />
                 )}
+
+                {/* Spoko HR Interview Mastery Course Rendering */}
+                {(activeCourse === 'spoko_hr' || activeCourse === 'hr_interview_mastery' || activeNode.moduleId?.startsWith('spoko_hr_')) && (
+                  <SpokoHrCourse
+                    activeNode={activeNode}
+                    onNavigate={handleNavClick}
+                    session={session}
+                    completedLessons={completedLessons}
+                  />
+                )}
               </>
             )}
 
             {/* 🔽 TOPIC PROGRESS BAR AT BOTTOM OF EACH TOPIC */}
-            {session?.role === 'student' && activeCourse !== 'spoko_pro' && activeNode.tabId !== 'ai_workflow' && !['assignment', 'assignment_work', 'assessment', 'submission', 'js_assignment', 'assignment_day7', 'assignment_day8'].includes(activeNode.tabId) && (
+            {session?.role === 'student' && activeCourse !== 'spoko_pro' && activeCourse !== 'spoko_hr' && activeCourse !== 'hr_interview_mastery' && activeNode.tabId !== 'ai_workflow' && !['assignment', 'assignment_work', 'assessment', 'submission', 'js_assignment', 'assignment_day7', 'assignment_day8'].includes(activeNode.tabId) && (
               <div style={{
                 background: '#ffffff',
                 border: '1px solid var(--surface-border)',

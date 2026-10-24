@@ -111,7 +111,8 @@ const studentSchema = new mongoose.Schema({
   deviceId: { type: String, default: null },
   completedLessons: { type: [String], default: [] },
   tasks: { type: [taskSubmissionSchema], default: [] },
-  certificate: { type: certificateSchema, default: () => ({}) }
+  certificate: { type: certificateSchema, default: () => ({}) },
+  mockInterviews: { type: [mongoose.Schema.Types.Mixed], default: [] }
 });
 
 const Student = mongoose.model('Student', studentSchema);
@@ -603,6 +604,101 @@ app.post('/api/students/:id/tasks', async (req, res) => {
       }
       saveLocalStudents(students);
       return res.json(student);
+    }
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// C-5B. Record AI Mock Interview Marks & Evaluation Report
+app.post('/api/students/:id/mock-interview', async (req, res) => {
+  const { id } = req.params;
+  const {
+    day,
+    topic,
+    totalScore,
+    percentage,
+    grade,
+    clarityScore,
+    contentScore,
+    confidenceScore,
+    structureScore,
+    overallFeedback,
+    strengths,
+    improvements,
+    questions,
+    attemptedAt
+  } = req.body;
+
+  if (!day) {
+    return res.status(400).json({ error: 'day is required for mock interview record!' });
+  }
+
+  const interviewRecord = {
+    id: `mock_${Date.now()}_day${day}`,
+    day: Number(day),
+    topic: topic || `Day ${day} HR Mock Interview`,
+    totalScore: Number(totalScore) || 0,
+    percentage: Number(percentage) || Math.round((Number(totalScore) || 0)),
+    grade: grade || 'B',
+    clarityScore: Number(clarityScore) || 0,
+    contentScore: Number(contentScore) || 0,
+    confidenceScore: Number(confidenceScore) || 0,
+    structureScore: Number(structureScore) || 0,
+    overallFeedback: overallFeedback || '',
+    strengths: Array.isArray(strengths) ? strengths : [],
+    improvements: Array.isArray(improvements) ? improvements : [],
+    questions: Array.isArray(questions) ? questions : [],
+    attemptedAt: attemptedAt || new Date().toISOString()
+  };
+
+  try {
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      const query = mongoose.Types.ObjectId.isValid(id)
+        ? { _id: id }
+        : { accessCode: String(id).trim() };
+
+      const student = await Student.findOne(query);
+      if (!student) return res.status(404).json({ error: 'Student not found!' });
+
+      if (!student.mockInterviews) student.mockInterviews = [];
+      student.mockInterviews.push(interviewRecord);
+      await student.save();
+      return res.json({ success: true, student, interviewRecord });
+    } else {
+      const students = getLocalStudents();
+      const idx = students.findIndex(s => s.id === id || s.accessCode === String(id).trim());
+      if (idx === -1) return res.status(404).json({ error: 'Student not found!' });
+
+      const student = students[idx];
+      if (!student.mockInterviews) student.mockInterviews = [];
+      student.mockInterviews.push(interviewRecord);
+      saveLocalStudents(students);
+      return res.json({ success: true, student, interviewRecord });
+    }
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// C-5C. Get Student AI Mock Interviews
+app.get('/api/students/:id/mock-interviews', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      const query = mongoose.Types.ObjectId.isValid(id)
+        ? { _id: id }
+        : { accessCode: String(id).trim() };
+      const student = await Student.findOne(query);
+      if (!student) return res.status(404).json({ error: 'Student not found!' });
+      return res.json(student.mockInterviews || []);
+    } else {
+      const students = getLocalStudents();
+      const student = students.find(s => s.id === id || s.accessCode === String(id).trim());
+      if (!student) return res.status(404).json({ error: 'Student not found!' });
+      return res.json(student.mockInterviews || []);
     }
   } catch (e) {
     return res.status(500).json({ error: e.message });

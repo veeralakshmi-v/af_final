@@ -2999,3 +2999,51 @@ export const spokoProCourseData = [
     ]
   }
 ];
+
+export const spokoHrCourseData = [
+  {
+    id: 'spoko_hr_overview',
+    title: 'HR Interview Mastery Overview',
+    items: [
+      { id: 'dashboard', label: 'Course Dashboard', icon: <BookOpen size={18} /> },
+      { id: 'bookmarks', label: 'Saved for Revision', icon: <CheckSquare size={18} /> },
+      { id: 'summary', label: 'Final Progress Summary', icon: <Award size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_hr_day1',
+    title: 'Day 1: Personal Background (Q1–20)',
+    items: [
+      { id: 'questions', label: '20 Interview Questions', icon: <User size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_hr_day2',
+    title: 'Day 2: Career Goals & Change (Q21–40)',
+    items: [
+      { id: 'questions', label: '20 Interview Questions', icon: <Compass size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_hr_day3',
+    title: 'Day 3: Behavioral & STAR (Q41–60)',
+    items: [
+      { id: 'questions', label: '20 Interview Questions', icon: <Users size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_hr_day4',
+    title: 'Day 4: Salary & Preferences (Q61–80)',
+    items: [
+      { id: 'questions', label: '20 Interview Questions', icon: <Target size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_hr_day5',
+    title: 'Day 5: Experience & Final (Q81–100)',
+    items: [
+      { id: 'questions', label: '20 Interview Questions', icon: <Briefcase size={18} /> }
+    ]
+  }
+];
+

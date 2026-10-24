@@ -5,7 +5,7 @@ import {
   Server, RefreshCw, Trash2, Key, Star, ShieldAlert, Award, Grid, HelpCircle,
   BookOpen, ExternalLink, Upload, Download, FileText, Lock, AlertTriangle, Menu, X,
   Search, ChevronLeft, ChevronRight, Copy, Receipt, Briefcase,
-  CreditCard, FileCheck2
+  CreditCard, FileCheck2, Eye, TrendingUp, MessageSquare
 } from 'lucide-react';
 import {
   getAssignmentValidations,
@@ -362,6 +362,18 @@ const subCourses = [
     shadowColor: 'rgba(5, 150, 105, 0.15)',
     modulesCount: '16 Topics (Professional Soft Skills Course)',
     enrolledKey: 'spoko_pro'
+  },
+  {
+    id: 'spoko_hr',
+    mainCourseId: 'spoko_english',
+    title: 'HR Interview Mastery (100 Questions & Answers)',
+    desc: 'Master the top 100 HR interview questions with structured sample answers for freshers and experienced candidates, STAR method, and practice timers.',
+    icon: <Users size={24} />,
+    bgColor: 'rgba(99, 102, 241, 0.08)',
+    borderColor: '#6366f1',
+    shadowColor: 'rgba(99, 102, 241, 0.15)',
+    modulesCount: '5 Days (100 Questions)',
+    enrolledKey: 'spoko_hr'
   }
 ];
 
@@ -418,7 +430,8 @@ const availableCourseOptions = [
   { value: "core_js", label: "Core JavaScript" },
   { value: "tally_prime", label: "AI powered Tally" },
   { value: "spoko_story", label: "Story-Based Learning (Spoko English)" },
-  { value: "spoko_pro", label: "Professional Track (Soft Skills)" }
+  { value: "spoko_pro", label: "Professional Track (Soft Skills)" },
+  { value: "spoko_hr", label: "HR Interview Mastery (100 Q&A)" }
 ];
 
 function getCourseLabel(courseKey) {
@@ -456,7 +469,9 @@ function getCourseLabel(courseKey) {
     tally_prime: 'AI powered Tally',
     spoko_story: 'Story-Based Learning (Spoko English)',
     spoko_pro: 'Professional Track (Soft Skills)',
-    softskills: 'Professional Track (Soft Skills)'
+    softskills: 'Professional Track (Soft Skills)',
+    spoko_hr: 'HR Interview Mastery (100 Q&A)',
+    hr_interview_mastery: 'HR Interview Mastery (100 Q&A)'
   };
   if (labels[courseKey]) return labels[courseKey];
   return courseKey.replace(/_/g, ' ').toUpperCase();
@@ -491,9 +506,81 @@ function getCourseDataList(courseKey) {
     web_design_20days: CourseData.webDesignCourseData,
     spoko_story: CourseData.spokoStoryCourseData,
     spoko_pro: CourseData.spokoProCourseData,
-    softskills: CourseData.spokoProCourseData
+    softskills: CourseData.spokoProCourseData,
+    spoko_hr: CourseData.spokoHrCourseData,
+    hr_interview_mastery: CourseData.spokoHrCourseData
   };
   return map[courseKey] || [];
+}
+
+// 🎙️ HR Mock Interview 5-Day Curriculum Configuration
+export const HR_MOCK_DAYS = [
+  { day: 1, title: 'Introduction & Personal Background', qCount: 10, range: 'Qs 1–20', badge: 'Self Pitch', color: '#4f46e5', bgLight: '#eef2ff' },
+  { day: 2, title: 'Career Goals, Motivation & Job Change', qCount: 10, range: 'Qs 21–40', badge: 'Ambition', color: '#059669', bgLight: '#ecfdf5' },
+  { day: 3, title: 'Behavioral, Situational & Teamwork (STAR)', qCount: 10, range: 'Qs 41–60', badge: 'STAR Method', color: '#d97706', bgLight: '#fffbeb' },
+  { day: 4, title: 'Salary, Work Preferences & Challenging Qs', qCount: 10, range: 'Qs 61–80', badge: 'Negotiation', color: '#dc2626', bgLight: '#fef2f2' },
+  { day: 5, title: 'Experience, Professionalism & Final Qs', qCount: 10, range: 'Qs 81–100', badge: 'Closing Mastery', color: '#7c3aed', bgLight: '#f5f3ff' }
+];
+
+export function getStudentMockInterviews(student) {
+  if (!student) return [];
+  if (Array.isArray(student.mockInterviews) && student.mockInterviews.length > 0) {
+    return student.mockInterviews;
+  }
+  try {
+    const userKey = student.accessCode || student.studentId || student._id || student.id;
+    if (userKey) {
+      const local = localStorage.getItem(`spoko_hr_mock_interviews_${userKey}`);
+      if (local) {
+        const parsed = JSON.parse(local);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    }
+  } catch (e) {}
+  return [];
+}
+
+export function calculateStudentMockSummary(mockList) {
+  const list = Array.isArray(mockList) ? mockList : [];
+  const completed = HR_MOCK_DAYS.filter(d => list.some(m => Number(m.day) === d.day));
+  const completedCount = completed.length;
+
+  if (completedCount === 0) {
+    return {
+      completedCount: 0,
+      totalDays: 5,
+      averageScore: 0,
+      grade: 'Not Attempted',
+      dayMap: {}
+    };
+  }
+
+  const dayMap = {};
+  let sum = 0;
+  HR_MOCK_DAYS.forEach(d => {
+    const records = list.filter(m => Number(m.day) === d.day);
+    if (records.length > 0) {
+      const latest = records[records.length - 1];
+      dayMap[d.day] = latest;
+      sum += Number(latest.totalScore || 0);
+    }
+  });
+
+  const avg = Math.round(sum / completedCount);
+  let grade = 'C';
+  if (avg >= 90) grade = 'S';
+  else if (avg >= 80) grade = 'A';
+  else if (avg >= 70) grade = 'B';
+  else if (avg >= 60) grade = 'C';
+  else grade = 'Needs Practice';
+
+  return {
+    completedCount,
+    totalDays: 5,
+    averageScore: avg,
+    grade,
+    dayMap
+  };
 }
 
 // Detailed Per-Course Progress breakdown for a student
@@ -508,7 +595,7 @@ function calculateDetailedCourseProgress(student) {
       'html_css', 'react_course', 'python_course', 'django_course', 'git_github',
       'core_js', 'web_design_20days', 'sql', 'powerbi', 'stats_course', 'devops',
       'json_course', 'numpy_course', 'pandas_course', 'matplotlib_course', 'seaborn_course',
-      'summer_sql', 'sql_da', 'python_da', 'agentic_ai', 'generative_ai_course', 'induction', 'tally', 'spoko_story', 'spoko_pro'
+      'summer_sql', 'sql_da', 'python_da', 'agentic_ai', 'generative_ai_course', 'induction', 'tally', 'spoko_story', 'spoko_pro', 'spoko_hr'
     ];
   } else if (Array.isArray(enrolledCourse)) {
     courseKeys = enrolledCourse;
@@ -584,7 +671,7 @@ function calculateStudentProgress(student) {
       'python_fullstack', 'python_course', 'python_da', 'generative_ai_course',
       'react_course', 'git_github', 'json_course', 'django_course', 'devops',
       'stats_course', 'numpy_course', 'pandas_course', 'matplotlib_course',
-      'seaborn_course', 'core_js', 'induction', 'tally', 'web_design_20days', 'spoko_story', 'spoko_pro'
+      'seaborn_course', 'core_js', 'induction', 'tally', 'web_design_20days', 'spoko_story', 'spoko_pro', 'spoko_hr'
     ];
     allKeys.forEach(k => {
       const data = getCourseDataList(k);
@@ -645,6 +732,44 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [viewingProgressStudent, setViewingProgressStudent] = useState(null);
   const [expandedCourseModule, setExpandedCourseModule] = useState({});
+
+  // 🎙️ AI Mock Interview Tracking States
+  const [studentMockInterviews, setStudentMockInterviews] = useState(() => {
+    try {
+      const userKey = session?.accessCode || session?.studentId || session?.username || 'guest';
+      const saved = localStorage.getItem(`spoko_hr_mock_interviews_${userKey}`);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [viewingMockReport, setViewingMockReport] = useState(null);
+  const [inspectingMockStudent, setInspectingMockStudent] = useState(null);
+  const [inspectingMockDay, setInspectingMockDay] = useState(1);
+  const [mockSearch, setMockSearch] = useState('');
+  const [mockDayFilter, setMockDayFilter] = useState('all');
+  const [mockGradeFilter, setMockGradeFilter] = useState('all');
+
+  // Sync student's mock interviews from backend
+  useEffect(() => {
+    if (session?.role === 'student') {
+      const studentId = session?.studentId || session?.accessCode;
+      if (studentId) {
+        fetch(`/api/students/${studentId}/mock-interviews`)
+          .then(res => res.ok ? res.json() : [])
+          .then(data => {
+            if (Array.isArray(data) && data.length > 0) {
+              setStudentMockInterviews(data);
+              try {
+                const userKey = session?.accessCode || session?.studentId || session?.username || 'guest';
+                localStorage.setItem(`spoko_hr_mock_interviews_${userKey}`, JSON.stringify(data));
+              } catch {}
+            }
+          })
+          .catch(() => {});
+      }
+    }
+  }, [session]);
 
   // Filtered Students for Live Database
   const filteredStudents = students.filter(s => {
@@ -989,7 +1114,12 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       induction: CourseData.inductionCourseData,
       tally: CourseData.tallyCourseData,
       web_design: CourseData.webDesignCourseData,
-      web_design_20days: CourseData.webDesignCourseData
+      web_design_20days: CourseData.webDesignCourseData,
+      spoko_story: CourseData.spokoStoryCourseData,
+      spoko_pro: CourseData.spokoProCourseData,
+      softskills: CourseData.spokoProCourseData,
+      spoko_hr: CourseData.spokoHrCourseData,
+      hr_interview_mastery: CourseData.spokoHrCourseData
     };
     return map[courseKey] || [];
   };
@@ -1563,6 +1693,20 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 >
                   <Receipt size={18} /> Fee Invoices
                 </button>
+
+                <button
+                  onClick={() => { setActiveTab('mock_interviews'); fetchStudents(); if (isMobile) setIsMobileMenuOpen(false); }}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem',
+                    fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
+                    background: activeTab === 'mock_interviews' ? 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)' : 'transparent',
+                    color: activeTab === 'mock_interviews' ? '#ffffff' : 'var(--text-secondary)',
+                    boxShadow: activeTab === 'mock_interviews' ? '0 4px 12px rgba(79, 70, 229, 0.35)' : 'none',
+                    transition: 'var(--transition)'
+                  }}
+                >
+                  <Bot size={18} /> AI Mock Interviews
+                </button>
               </>
             )}
 
@@ -1631,6 +1775,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 {activeTab === 'demos' && 'Alpha Fly Induction & Demo Classes'}
                 {activeTab === 'grading' && 'Review and Grade Assignments'}
                 {activeTab === 'certificates' && 'Certificate Upload'}
+                {activeTab === 'mock_interviews' && 'AI Mock Interviews & Student Progress'}
               </h1>
               <p style={{ fontSize: isMobile ? '0.85rem' : '0.95rem', color: 'var(--text-secondary)', margin: '0.2rem 0 0 0' }}>
                 {activeTab === 'overview' && 'Overview stats, role privileges, and quick configuration access.'}
@@ -1640,6 +1785,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 {activeTab === 'demos' && 'Review AI-Powered workspaces, job roadmaps, salaries, and masterclass sessions.'}
                 {activeTab === 'grading' && 'View, grade, and leave feedback on student task/homework submissions.'}
                 {activeTab === 'certificates' && 'Upload completion certificates for students. Students can download them from their dashboard.'}
+                {activeTab === 'mock_interviews' && 'Track and evaluate student marks across 5 days of one-to-one AI mock interview sessions (10 questions/day).'}
               </p>
             </div>
 
@@ -1768,6 +1914,260 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     >
                       <BookOpen size={16} /> Open Syllabus
                     </button>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* 🎙️ DAILY AI MOCK INTERVIEW PERFORMANCE & MARKS (1-ON-1 AI INTERVIEWER) */}
+            {(() => {
+              const summary = calculateStudentMockSummary(studentMockInterviews);
+              const gradeColors = {
+                'S': { bg: '#ecfdf5', text: '#059669', border: '#a7f3d0' },
+                'A': { bg: '#eff6ff', text: '#2563eb', border: '#bfdbfe' },
+                'B': { bg: '#f5f3ff', text: '#7c3aed', border: '#ddd6fe' },
+                'C': { bg: '#fffbeb', text: '#d97706', border: '#fde68a' },
+                'Needs Practice': { bg: '#fef2f2', text: '#dc2626', border: '#fecaca' },
+                'Not Attempted': { bg: '#f1f5f9', text: '#64748b', border: '#e2e8f0' }
+              };
+              const gCol = gradeColors[summary.grade] || gradeColors['Not Attempted'];
+
+              return (
+                <div style={{
+                  background: '#ffffff',
+                  border: '1px solid var(--surface-border)',
+                  borderRadius: '24px',
+                  padding: '2rem',
+                  boxShadow: 'var(--shadow-sm)'
+                }}>
+                  {/* Header Row */}
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    borderBottom: '1px solid var(--surface-border)',
+                    paddingBottom: '1.25rem',
+                    marginBottom: '1.5rem',
+                    flexWrap: 'wrap',
+                    gap: '1rem'
+                  }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                        <span style={{
+                          background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+                          color: '#ffffff',
+                          padding: '4px 10px',
+                          borderRadius: '8px',
+                          fontSize: '0.75rem',
+                          fontWeight: 800,
+                          textTransform: 'uppercase'
+                        }}>
+                          1-on-1 AI Interviewer
+                        </span>
+                        <span style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: 600 }}>
+                          10 Live Questions / Day • 100 Marks Rubric
+                        </span>
+                      </div>
+                      <h3 style={{ fontSize: '1.35rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0, fontFamily: 'system-ui' }}>
+                        Daily AI Mock Interview Marks &amp; Progress
+                      </h3>
+                      <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', margin: '4px 0 0 0', lineHeight: 1.4, fontFamily: 'system-ui' }}>
+                        Simulate realistic one-on-one HR interview rounds. Answer via voice or text with instant AI scoring across 4 evaluation rubrics.
+                      </p>
+                    </div>
+
+                    {/* Aggregate KPI pill */}
+                    <div style={{
+                      background: gCol.bg,
+                      border: `1px solid ${gCol.border}`,
+                      borderRadius: '16px',
+                      padding: '0.75rem 1.25rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '14px'
+                    }}>
+                      <div>
+                        <div style={{ fontSize: '0.72rem', fontWeight: 800, color: gCol.text, textTransform: 'uppercase' }}>
+                          Overall Average
+                        </div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 900, color: gCol.text }}>
+                          {summary.completedCount > 0 ? `${summary.averageScore}/100` : '--/100'}
+                        </div>
+                      </div>
+                      <div style={{ borderLeft: `1px solid ${gCol.border}`, paddingLeft: '12px' }}>
+                        <div style={{ fontSize: '0.72rem', fontWeight: 800, color: gCol.text, textTransform: 'uppercase' }}>
+                          Grade
+                        </div>
+                        <div style={{ fontSize: '1.3rem', fontWeight: 900, color: gCol.text }}>
+                          {summary.grade}
+                        </div>
+                      </div>
+                      <div style={{ borderLeft: `1px solid ${gCol.border}`, paddingLeft: '12px' }}>
+                        <div style={{ fontSize: '0.72rem', fontWeight: 800, color: gCol.text, textTransform: 'uppercase' }}>
+                          Completed
+                        </div>
+                        <div style={{ fontSize: '1.3rem', fontWeight: 900, color: gCol.text }}>
+                          {summary.completedCount} / 5 Days
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 5 Days Grid */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                    gap: '1.25rem'
+                  }}>
+                    {HR_MOCK_DAYS.map(dayCfg => {
+                      const dayRecord = summary.dayMap[dayCfg.day];
+                      const isDone = !!dayRecord;
+
+                      return (
+                        <div
+                          key={dayCfg.day}
+                          style={{
+                            background: isDone ? '#ffffff' : '#f8fafc',
+                            border: `1.5px solid ${isDone ? dayCfg.color : '#e2e8f0'}`,
+                            borderRadius: '16px',
+                            padding: '1.25rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            boxShadow: isDone ? '0 4px 14px rgba(0,0,0,0.05)' : 'none'
+                          }}
+                        >
+                          <div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                              <span style={{
+                                background: dayCfg.bgLight,
+                                color: dayCfg.color,
+                                padding: '3px 8px',
+                                borderRadius: '6px',
+                                fontSize: '0.75rem',
+                                fontWeight: 800,
+                                textTransform: 'uppercase'
+                              }}>
+                                Day {dayCfg.day} • {dayCfg.badge}
+                              </span>
+                              {isDone ? (
+                                <span style={{
+                                  background: '#10b981',
+                                  color: '#ffffff',
+                                  fontSize: '0.74rem',
+                                  fontWeight: 800,
+                                  padding: '2px 8px',
+                                  borderRadius: '999px'
+                                }}>
+                                  ✓ Score: {dayRecord.totalScore}/100
+                                </span>
+                              ) : (
+                                <span style={{
+                                  background: '#f1f5f9',
+                                  color: '#64748b',
+                                  fontSize: '0.72rem',
+                                  fontWeight: 700,
+                                  padding: '2px 8px',
+                                  borderRadius: '999px'
+                                }}>
+                                  Pending
+                                </span>
+                              )}
+                            </div>
+
+                            <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.35rem 0', lineHeight: 1.3 }}>
+                              {dayCfg.title}
+                            </h4>
+                            <div style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '0.75rem' }}>
+                              10 Live Interview Questions ({dayCfg.range})
+                            </div>
+
+                            {isDone ? (
+                              <div style={{ background: '#f8fafc', borderRadius: '10px', padding: '0.65rem 0.75rem', marginBottom: '0.85rem', border: '1px solid #f1f5f9' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '0.76rem', color: '#475569' }}>
+                                  <div>Clarity: <strong>{dayRecord.clarityScore || 0}/25</strong></div>
+                                  <div>Substance: <strong>{dayRecord.contentScore || 0}/30</strong></div>
+                                  <div>Confidence: <strong>{dayRecord.confidenceScore || 0}/25</strong></div>
+                                  <div>STAR Method: <strong>{dayRecord.structureScore || 0}/20</strong></div>
+                                </div>
+                                <div style={{ marginTop: 6, fontSize: '0.72rem', color: '#94a3b8' }}>
+                                  Completed on {new Date(dayRecord.attemptedAt || dayRecord.completedAt).toLocaleDateString()}
+                                </div>
+                              </div>
+                            ) : (
+                              <div style={{ background: '#f1f5f9', borderRadius: '10px', padding: '0.75rem', marginBottom: '0.85rem', fontSize: '0.8rem', color: '#64748b', lineHeight: 1.4 }}>
+                                🎙️ Test your verbal composure under realistic interview conditions. Marks sync automatically with staff/admin.
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                            {isDone ? (
+                              <>
+                                <button
+                                  onClick={() => setViewingMockReport(dayRecord)}
+                                  style={{
+                                    flex: 1,
+                                    background: '#e0e7ff',
+                                    color: '#3730a3',
+                                    border: 'none',
+                                    padding: '0.55rem 0.75rem',
+                                    borderRadius: '8px',
+                                    fontSize: '0.8rem',
+                                    fontWeight: 800,
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '4px'
+                                  }}
+                                >
+                                  <Eye size={13} /> View 10-Q Feedback
+                                </button>
+                                <button
+                                  onClick={() => onSelectCourse('spoko_hr')}
+                                  style={{
+                                    background: '#ffffff',
+                                    border: '1px solid #cbd5e1',
+                                    color: '#475569',
+                                    padding: '0.55rem 0.75rem',
+                                    borderRadius: '8px',
+                                    fontSize: '0.8rem',
+                                    fontWeight: 700,
+                                    cursor: 'pointer'
+                                  }}
+                                >
+                                  Retake
+                                </button>
+                              </>
+                            ) : (
+                              <button
+                                onClick={() => onSelectCourse('spoko_hr')}
+                                style={{
+                                  width: '100%',
+                                  background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                                  color: '#ffffff',
+                                  border: 'none',
+                                  padding: '0.6rem 1rem',
+                                  borderRadius: '8px',
+                                  fontSize: '0.82rem',
+                                  fontWeight: 800,
+                                  cursor: 'pointer',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  gap: '6px',
+                                  boxShadow: '0 3px 8px rgba(79, 70, 229, 0.25)'
+                                }}
+                              >
+                                <Bot size={15} /> Start Day {dayCfg.day} AI Mock
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -3801,6 +4201,441 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         {activeTab === 'invoices' && (session?.role === 'admin' || session?.role === 'staff') && (
           <InvoiceGenerator session={session} students={students} onBack={() => setActiveTab('overview')} />
         )}
+
+        {/* 🎙️ TAB 8: AI MOCK INTERVIEW PERFORMANCE & STUDENT MARKS (STAFF & ADMIN ONLY) */}
+        {activeTab === 'mock_interviews' && (session?.role === 'admin' || session?.role === 'staff') && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+            {(() => {
+              // Extract all mock summaries across students
+              const studentMockData = students.map(s => {
+                const mocks = getStudentMockInterviews(s);
+                const summary = calculateStudentMockSummary(mocks);
+                return {
+                  student: s,
+                  mocks,
+                  summary
+                };
+              });
+
+              // Compute overall stats
+              const totalSessions = studentMockData.reduce((acc, curr) => acc + curr.summary.completedCount, 0);
+              const studentsWithAttempts = studentMockData.filter(d => d.summary.completedCount > 0);
+              const totalScoreSum = studentsWithAttempts.reduce((acc, curr) => acc + (curr.summary.averageScore || 0), 0);
+              const platformAvg = studentsWithAttempts.length > 0 ? Math.round(totalScoreSum / studentsWithAttempts.length) : 0;
+              const topPerformersCount = studentsWithAttempts.filter(d => d.summary.grade === 'S' || d.summary.grade === 'A').length;
+              const needsPracticeCount = studentsWithAttempts.filter(d => d.summary.grade === 'Needs Practice' || (d.summary.averageScore && d.summary.averageScore < 60)).length;
+
+              // Filter students
+              const filteredMockData = studentMockData.filter(item => {
+                const s = item.student;
+                if (mockSearch.trim()) {
+                  const q = mockSearch.toLowerCase().trim();
+                  const nameMatch = (s.name || '').toLowerCase().includes(q);
+                  const codeMatch = (s.accessCode || '').toLowerCase().includes(q);
+                  const courseMatch = (s.enrolledCourse || '').toLowerCase().includes(q);
+                  if (!nameMatch && !codeMatch && !courseMatch) return false;
+                }
+
+                if (mockDayFilter !== 'all') {
+                  const targetDay = Number(mockDayFilter);
+                  if (!item.summary.dayMap[targetDay]) return false;
+                }
+
+                if (mockGradeFilter !== 'all') {
+                  if (item.summary.grade !== mockGradeFilter) return false;
+                }
+
+                return true;
+              });
+
+              return (
+                <>
+                  {/* KPI Cards Row */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                    gap: '1.25rem'
+                  }}>
+                    {/* Card 1: Total Completed Mock Sessions */}
+                    <div style={{
+                      background: '#ffffff',
+                      border: '1px solid var(--surface-border)',
+                      borderRadius: '20px',
+                      padding: '1.25rem 1.5rem',
+                      boxShadow: 'var(--shadow-sm)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <div>
+                        <span style={{ fontSize: '0.76rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          Total Sessions Completed
+                        </span>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#1e1b4b', marginTop: '4px' }}>
+                          {totalSessions}
+                        </div>
+                        <span style={{ fontSize: '0.75rem', color: '#6366f1', fontWeight: 700 }}>
+                          Across {studentsWithAttempts.length} active students
+                        </span>
+                      </div>
+                      <div style={{ width: 46, height: 46, borderRadius: '14px', background: '#eef2ff', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Bot size={24} />
+                      </div>
+                    </div>
+
+                    {/* Card 2: Platform Average Score */}
+                    <div style={{
+                      background: '#ffffff',
+                      border: '1px solid var(--surface-border)',
+                      borderRadius: '20px',
+                      padding: '1.25rem 1.5rem',
+                      boxShadow: 'var(--shadow-sm)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <div>
+                        <span style={{ fontSize: '0.76rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          Platform Average Score
+                        </span>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#059669', marginTop: '4px' }}>
+                          {platformAvg > 0 ? `${platformAvg} / 100` : '--'}
+                        </div>
+                        <span style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 700 }}>
+                          Evaluated by STAR AI Rubric
+                        </span>
+                      </div>
+                      <div style={{ width: 46, height: 46, borderRadius: '14px', background: '#ecfdf5', color: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <TrendingUp size={24} />
+                      </div>
+                    </div>
+
+                    {/* Card 3: Top Performers (Grade S / A) */}
+                    <div style={{
+                      background: '#ffffff',
+                      border: '1px solid var(--surface-border)',
+                      borderRadius: '20px',
+                      padding: '1.25rem 1.5rem',
+                      boxShadow: 'var(--shadow-sm)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <div>
+                        <span style={{ fontSize: '0.76rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          Top Performers (Grade S / A)
+                        </span>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#2563eb', marginTop: '4px' }}>
+                          {topPerformersCount}
+                        </div>
+                        <span style={{ fontSize: '0.75rem', color: '#2563eb', fontWeight: 700 }}>
+                          Score &gt;= 80 / 100
+                        </span>
+                      </div>
+                      <div style={{ width: 46, height: 46, borderRadius: '14px', background: '#eff6ff', color: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Award size={24} />
+                      </div>
+                    </div>
+
+                    {/* Card 4: Needs Practice (<60%) */}
+                    <div style={{
+                      background: '#ffffff',
+                      border: needsPracticeCount > 0 ? '1px solid #fecaca' : '1px solid var(--surface-border)',
+                      borderRadius: '20px',
+                      padding: '1.25rem 1.5rem',
+                      boxShadow: 'var(--shadow-sm)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <div>
+                        <span style={{ fontSize: '0.76rem', fontWeight: 800, color: needsPracticeCount > 0 ? '#dc2626' : '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          Needs Coaching (&lt;60%)
+                        </span>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: needsPracticeCount > 0 ? '#dc2626' : '#64748b', marginTop: '4px' }}>
+                          {needsPracticeCount}
+                        </div>
+                        <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 700 }}>
+                          Requires STAR practice
+                        </span>
+                      </div>
+                      <div style={{ width: 46, height: 46, borderRadius: '14px', background: needsPracticeCount > 0 ? '#fef2f2' : '#f1f5f9', color: needsPracticeCount > 0 ? '#dc2626' : '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <AlertTriangle size={24} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Filter & Search Bar */}
+                  <div style={{
+                    background: '#ffffff',
+                    border: '1px solid var(--surface-border)',
+                    borderRadius: '20px',
+                    padding: '1.25rem 1.5rem',
+                    boxShadow: 'var(--shadow-sm)',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '1rem'
+                  }}>
+                    {/* Search Input */}
+                    <div style={{ position: 'relative', flex: '1 1 280px', maxWidth: '420px' }}>
+                      <Search size={18} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                      <input
+                        type="text"
+                        value={mockSearch}
+                        onChange={e => setMockSearch(e.target.value)}
+                        placeholder="Search student by name or access code..."
+                        style={{
+                          width: '100%',
+                          padding: '0.65rem 1rem 0.65rem 2.4rem',
+                          borderRadius: '12px',
+                          border: '1px solid #cbd5e1',
+                          fontSize: '0.88rem',
+                          outline: 'none',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                      {/* Day Filter */}
+                      <select
+                        value={mockDayFilter}
+                        onChange={e => setMockDayFilter(e.target.value)}
+                        style={{
+                          padding: '0.65rem 1rem',
+                          borderRadius: '12px',
+                          border: '1px solid #cbd5e1',
+                          fontSize: '0.85rem',
+                          fontWeight: 700,
+                          color: '#334155',
+                          background: '#ffffff',
+                          outline: 'none',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <option value="all">All Days (1 to 5)</option>
+                        <option value="1">Day 1: Intro & Background</option>
+                        <option value="2">Day 2: Career Goals</option>
+                        <option value="3">Day 3: Behavioral (STAR)</option>
+                        <option value="4">Day 4: Salary & Negotiation</option>
+                        <option value="5">Day 5: Experience & Closing</option>
+                      </select>
+
+                      {/* Grade Filter */}
+                      <select
+                        value={mockGradeFilter}
+                        onChange={e => setMockGradeFilter(e.target.value)}
+                        style={{
+                          padding: '0.65rem 1rem',
+                          borderRadius: '12px',
+                          border: '1px solid #cbd5e1',
+                          fontSize: '0.85rem',
+                          fontWeight: 700,
+                          color: '#334155',
+                          background: '#ffffff',
+                          outline: 'none',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <option value="all">All Grades</option>
+                        <option value="S">Grade S (90-100)</option>
+                        <option value="A">Grade A (80-89)</option>
+                        <option value="B">Grade B (70-79)</option>
+                        <option value="C">Grade C (60-69)</option>
+                        <option value="Needs Practice">Needs Practice (&lt;60)</option>
+                      </select>
+
+                      <button
+                        onClick={fetchStudents}
+                        style={{
+                          background: '#f8fafc',
+                          border: '1px solid #cbd5e1',
+                          padding: '0.65rem 1rem',
+                          borderRadius: '12px',
+                          fontSize: '0.85rem',
+                          fontWeight: 700,
+                          color: '#475569',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
+                        }}
+                      >
+                        <RefreshCw size={14} /> Refresh Marks
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Main Registry Table */}
+                  <div style={{
+                    background: '#ffffff',
+                    border: '1px solid var(--surface-border)',
+                    borderRadius: '20px',
+                    padding: '1.5rem',
+                    boxShadow: 'var(--shadow-sm)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '8px' }}>
+                      <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                        Student Mock Performance Directory ({filteredMockData.length} Students)
+                      </h3>
+                      <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                        Click on any Day score pill to view that student's complete 10-Q response transcript
+                      </span>
+                    </div>
+
+                    {filteredMockData.length > 0 ? (
+                      <div style={{ overflowX: 'auto', borderRadius: '14px', border: '1px solid var(--surface-border)' }}>
+                        <table style={{ width: '100%', minWidth: '880px', borderCollapse: 'collapse', fontSize: '0.88rem', textAlign: 'left' }}>
+                          <thead>
+                            <tr style={{ background: '#f8fafc', borderBottom: '1px solid var(--surface-border)', color: '#475569', fontWeight: 800 }}>
+                              <th style={{ padding: '0.85rem 1rem' }}>Student Learner</th>
+                              <th style={{ padding: '0.85rem 0.75rem' }}>Track</th>
+                              <th style={{ padding: '0.85rem 0.75rem', textAlign: 'center' }}>Day 1 (Intro)</th>
+                              <th style={{ padding: '0.85rem 0.75rem', textAlign: 'center' }}>Day 2 (Goals)</th>
+                              <th style={{ padding: '0.85rem 0.75rem', textAlign: 'center' }}>Day 3 (STAR)</th>
+                              <th style={{ padding: '0.85rem 0.75rem', textAlign: 'center' }}>Day 4 (Salary)</th>
+                              <th style={{ padding: '0.85rem 0.75rem', textAlign: 'center' }}>Day 5 (Final)</th>
+                              <th style={{ padding: '0.85rem 0.75rem', textAlign: 'center' }}>Avg Score &amp; Grade</th>
+                              <th style={{ padding: '0.85rem 1rem', textAlign: 'center' }}>Evaluation Audit</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredMockData.map(({ student: s, summary }) => {
+                              return (
+                                <tr key={s._id || s.id} style={{ borderBottom: '1px solid var(--surface-border)', transition: 'background 0.15s' }}>
+                                  {/* Student Name */}
+                                  <td style={{ padding: '0.9rem 1rem' }}>
+                                    <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.92rem' }}>
+                                      {s.name}
+                                    </div>
+                                    <span style={{
+                                      fontSize: '0.74rem',
+                                      fontFamily: 'monospace',
+                                      color: '#4f46e5',
+                                      background: '#eef2ff',
+                                      padding: '1px 6px',
+                                      borderRadius: 4,
+                                      fontWeight: 700
+                                    }}>
+                                      {s.accessCode}
+                                    </span>
+                                  </td>
+
+                                  {/* Enrolled Track */}
+                                  <td style={{ padding: '0.9rem 0.75rem', fontSize: '0.82rem', color: '#64748b', maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={getCourseLabel(s.enrolledCourse)}>
+                                    {getCourseLabel(s.enrolledCourse)}
+                                  </td>
+
+                                  {/* Days 1 to 5 Scores */}
+                                  {[1, 2, 3, 4, 5].map(dayNum => {
+                                    const rec = summary.dayMap[dayNum];
+                                    return (
+                                      <td key={dayNum} style={{ padding: '0.9rem 0.75rem', textAlign: 'center' }}>
+                                        {rec ? (
+                                          <button
+                                            onClick={() => {
+                                              setInspectingMockStudent(s);
+                                              setInspectingMockDay(dayNum);
+                                            }}
+                                            style={{
+                                              background: rec.totalScore >= 80 ? '#ecfdf5' : rec.totalScore >= 60 ? '#eff6ff' : '#fef2f2',
+                                              border: `1px solid ${rec.totalScore >= 80 ? '#a7f3d0' : rec.totalScore >= 60 ? '#bfdbfe' : '#fecaca'}`,
+                                              color: rec.totalScore >= 80 ? '#059669' : rec.totalScore >= 60 ? '#2563eb' : '#dc2626',
+                                              padding: '3px 8px',
+                                              borderRadius: '6px',
+                                              fontSize: '0.76rem',
+                                              fontWeight: 800,
+                                              cursor: 'pointer',
+                                              whiteSpace: 'nowrap'
+                                            }}
+                                            title="Click to view 10-question transcript & AI score"
+                                          >
+                                            {rec.totalScore}/100 • {rec.grade}
+                                          </button>
+                                        ) : (
+                                          <span style={{ color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600 }}>
+                                            —
+                                          </span>
+                                        )}
+                                      </td>
+                                    );
+                                  })}
+
+                                  {/* Overall Average & Grade */}
+                                  <td style={{ padding: '0.9rem 0.75rem', textAlign: 'center' }}>
+                                    {summary.completedCount > 0 ? (
+                                      <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <span style={{ fontSize: '0.9rem', fontWeight: 900, color: '#1e1b4b' }}>
+                                          {summary.averageScore}/100
+                                        </span>
+                                        <span style={{
+                                          fontSize: '0.72rem',
+                                          fontWeight: 800,
+                                          color: summary.grade === 'S' || summary.grade === 'A' ? '#059669' : summary.grade === 'B' ? '#2563eb' : '#d97706',
+                                          background: summary.grade === 'S' || summary.grade === 'A' ? '#ecfdf5' : '#f8fafc',
+                                          padding: '1px 6px',
+                                          borderRadius: 4
+                                        }}>
+                                          Grade {summary.grade} ({summary.completedCount}/5 Days)
+                                        </span>
+                                      </div>
+                                    ) : (
+                                      <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontStyle: 'italic' }}>
+                                        Not attempted
+                                      </span>
+                                    )}
+                                  </td>
+
+                                  {/* Action button */}
+                                  <td style={{ padding: '0.9rem 1rem', textAlign: 'center' }}>
+                                    <button
+                                      onClick={() => {
+                                        setInspectingMockStudent(s);
+                                        const firstAttemptDay = [1, 2, 3, 4, 5].find(d => summary.dayMap[d]) || 1;
+                                        setInspectingMockDay(firstAttemptDay);
+                                      }}
+                                      style={{
+                                        background: summary.completedCount > 0 ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : '#f1f5f9',
+                                        color: summary.completedCount > 0 ? '#ffffff' : '#64748b',
+                                        border: 'none',
+                                        padding: '0.45rem 0.85rem',
+                                        borderRadius: '8px',
+                                        fontSize: '0.78rem',
+                                        fontWeight: 800,
+                                        cursor: 'pointer',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '5px'
+                                      }}
+                                    >
+                                      <Eye size={13} /> {summary.completedCount > 0 ? 'Inspect 10-Q Feedback' : 'Audit Profile'}
+                                    </button>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: '#64748b' }}>
+                        <Bot size={44} style={{ opacity: 0.3, marginBottom: '0.75rem' }} />
+                        <h4 style={{ margin: '0 0 4px 0', fontSize: '1.05rem', fontWeight: 800, color: '#1e293b' }}>
+                          No Student Mock Records Match Filters
+                        </h4>
+                        <p style={{ margin: 0, fontSize: '0.85rem' }}>
+                          Try clearing your search query or switching your Day/Grade filter.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+        )}
       </main>
 
       {/* 📝 GRADING / EVALUATION MODAL */}
@@ -4208,6 +5043,111 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
             {/* Modal Content - List of Courses */}
             <div style={{ padding: '1.75rem 2rem', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              {/* Daily AI Mock Interview Marks Summary */}
+              {(() => {
+                const mocks = getStudentMockInterviews(viewingProgressStudent);
+                const summary = calculateStudentMockSummary(mocks);
+                return (
+                  <div style={{
+                    background: '#ffffff',
+                    border: '1.5px solid #6366f1',
+                    borderRadius: '16px',
+                    padding: '1.25rem 1.5rem',
+                    boxShadow: '0 2px 10px rgba(99, 102, 241, 0.08)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem', flexWrap: 'wrap', gap: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '1.2rem' }}>🎙️</span>
+                        <div>
+                          <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#1e1b4b' }}>
+                            Daily AI Mock Interview Marks (HR Interview Mastery)
+                          </h4>
+                          <span style={{ fontSize: '0.76rem', color: '#64748b' }}>
+                            10 Live Questions / Day • Evaluated by AI with STAR Scoring Rubric
+                          </span>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <span style={{
+                          background: summary.completedCount > 0 ? '#dcfce7' : '#f1f5f9',
+                          color: summary.completedCount > 0 ? '#15803d' : '#64748b',
+                          padding: '3px 10px',
+                          borderRadius: '999px',
+                          fontSize: '0.78rem',
+                          fontWeight: 800
+                        }}>
+                          {summary.completedCount} / 5 Days Completed
+                        </span>
+                        {summary.completedCount > 0 && (
+                          <span style={{
+                            background: '#4f46e5',
+                            color: '#ffffff',
+                            padding: '3px 10px',
+                            borderRadius: '999px',
+                            fontSize: '0.78rem',
+                            fontWeight: 800
+                          }}>
+                            Avg: {summary.averageScore}/100 • Grade {summary.grade}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 5 Days pills */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px', marginBottom: '0.85rem' }}>
+                      {HR_MOCK_DAYS.map(d => {
+                        const r = summary.dayMap[d.day];
+                        return (
+                          <div
+                            key={d.day}
+                            style={{
+                              background: r ? '#f0fdf4' : '#f8fafc',
+                              border: `1px solid ${r ? '#86efac' : '#e2e8f0'}`,
+                              borderRadius: '10px',
+                              padding: '8px',
+                              textAlign: 'center'
+                            }}
+                          >
+                            <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#475569' }}>Day {d.day}</div>
+                            <div style={{ fontSize: '0.92rem', fontWeight: 900, color: r ? '#15803d' : '#94a3b8', margin: '2px 0' }}>
+                              {r ? `${r.totalScore}/100` : '--'}
+                            </div>
+                            <div style={{ fontSize: '0.68rem', fontWeight: 700, color: r ? '#16a34a' : '#94a3b8' }}>
+                              {r ? `Grade ${r.grade}` : 'Pending'}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {summary.completedCount > 0 && (
+                      <button
+                        onClick={() => {
+                          setInspectingMockStudent(viewingProgressStudent);
+                          const firstDoneDay = HR_MOCK_DAYS.find(d => summary.dayMap[d.day])?.day || 1;
+                          setInspectingMockDay(firstDoneDay);
+                        }}
+                        style={{
+                          background: '#4f46e5',
+                          color: '#ffffff',
+                          border: 'none',
+                          padding: '6px 14px',
+                          borderRadius: '8px',
+                          fontSize: '0.8rem',
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px'
+                        }}
+                      >
+                        <Eye size={13} /> View Complete 10-Q Transcript &amp; Feedback →
+                      </button>
+                    )}
+                  </div>
+                );
+              })()}
+
               {(() => {
                 const coursesList = calculateDetailedCourseProgress(viewingProgressStudent);
                 if (coursesList.length === 0) {
@@ -4383,6 +5323,570 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 Close Audit View
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* 🎙️ STUDENT MODAL: VIEW 10-QUESTION DETAILED AI MOCK REPORT */}
+      {viewingMockReport && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(15, 23, 42, 0.7)',
+          backdropFilter: 'blur(5px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '1.5rem'
+        }}>
+          <div style={{
+            background: '#ffffff',
+            borderRadius: '24px',
+            width: '100%',
+            maxWidth: '820px',
+            maxHeight: '90vh',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            border: '1px solid #cbd5e1',
+            overflow: 'hidden'
+          }}>
+            {/* Header */}
+            <div style={{
+              padding: '1.5rem 2rem',
+              borderBottom: '1px solid #e2e8f0',
+              background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)',
+              color: '#ffffff',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                  <span style={{
+                    background: 'rgba(255,255,255,0.2)',
+                    padding: '2px 8px',
+                    borderRadius: 4,
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    textTransform: 'uppercase'
+                  }}>
+                    Day {viewingMockReport.day} Evaluation
+                  </span>
+                  <span style={{ fontSize: '0.82rem', color: '#c7d2fe' }}>
+                    10 Live HR Questions
+                  </span>
+                </div>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 900, margin: 0, color: '#ffffff' }}>
+                  {viewingMockReport.topic || `Day ${viewingMockReport.day} AI Mock Interview`}
+                </h3>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fef08a' }}>
+                    {viewingMockReport.totalScore} / 100
+                  </div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#a7f3d0' }}>
+                    Grade {viewingMockReport.grade}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setViewingMockReport(null)}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    border: 'none',
+                    color: '#ffffff',
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Body */}
+            <div style={{ padding: '1.75rem 2rem', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              {/* Rubric Breakdown Grid */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+                gap: '10px'
+              }}>
+                <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '12px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#64748b' }}>Clarity &amp; Conciseness</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#4f46e5', marginTop: 2 }}>{viewingMockReport.clarityScore || 0} / 25</div>
+                </div>
+                <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '12px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#64748b' }}>Substance &amp; Relevance</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#059669', marginTop: 2 }}>{viewingMockReport.contentScore || 0} / 30</div>
+                </div>
+                <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '12px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#64748b' }}>Confidence &amp; Delivery</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#d97706', marginTop: 2 }}>{viewingMockReport.confidenceScore || 0} / 25</div>
+                </div>
+                <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '12px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#64748b' }}>STAR Structure &amp; Method</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#7c3aed', marginTop: 2 }}>{viewingMockReport.structureScore || 0} / 20</div>
+                </div>
+              </div>
+
+              {/* Strengths & Improvements */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '14px', padding: '1rem' }}>
+                  <h5 style={{ margin: '0 0 0.5rem 0', fontSize: '0.88rem', fontWeight: 800, color: '#166534' }}>
+                    ✓ Key Strengths
+                  </h5>
+                  <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.82rem', color: '#14532d', lineHeight: 1.5 }}>
+                    {(viewingMockReport.strengths || ['Thoughtful answers', 'Natural conversational flow']).map((s, idx) => (
+                      <li key={idx}>{s}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '14px', padding: '1rem' }}>
+                  <h5 style={{ margin: '0 0 0.5rem 0', fontSize: '0.88rem', fontWeight: 800, color: '#92400e' }}>
+                    💡 Key Areas to Polish
+                  </h5>
+                  <ul style={{ margin: 0, paddingLeft: '1.2rem', fontSize: '0.82rem', color: '#78350f', lineHeight: 1.5 }}>
+                    {(viewingMockReport.improvements || ['Add measurable project outcomes', 'Follow STAR framework strictly']).map((s, idx) => (
+                      <li key={idx}>{s}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* 10 Questions Detailed Transcript */}
+              <div>
+                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', margin: '0 0 1rem 0' }}>
+                  Complete 10-Question Transcript &amp; Marks
+                </h4>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {(viewingMockReport.questions || []).map((q, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        background: '#ffffff',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '12px',
+                        padding: '1rem 1.25rem',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.02)'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem', gap: '8px' }}>
+                        <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#1e293b' }}>
+                          Q{idx + 1}: {q.question || `Question #${idx + 1}`}
+                        </span>
+                        <span style={{
+                          background: (q.score || 0) >= 8 ? '#ecfdf5' : (q.score || 0) >= 6 ? '#eff6ff' : '#fef2f2',
+                          color: (q.score || 0) >= 8 ? '#059669' : (q.score || 0) >= 6 ? '#2563eb' : '#dc2626',
+                          border: `1px solid ${(q.score || 0) >= 8 ? '#a7f3d0' : (q.score || 0) >= 6 ? '#bfdbfe' : '#fecaca'}`,
+                          padding: '2px 8px',
+                          borderRadius: '6px',
+                          fontSize: '0.75rem',
+                          fontWeight: 800,
+                          flexShrink: 0
+                        }}>
+                          Score: {q.score || 0} / 10
+                        </span>
+                      </div>
+
+                      {/* Student's answer */}
+                      <div style={{
+                        background: '#f8fafc',
+                        borderLeft: '3px solid #6366f1',
+                        padding: '8px 12px',
+                        borderRadius: '0 8px 8px 0',
+                        fontSize: '0.82rem',
+                        color: '#334155',
+                        marginBottom: '0.5rem',
+                        lineHeight: 1.5,
+                        fontStyle: 'italic'
+                      }}>
+                        "{q.studentAnswer || q.answer || 'No response recorded'}"
+                      </div>
+
+                      {/* AI Feedback */}
+                      {q.feedback && (
+                        <div style={{ fontSize: '0.78rem', color: '#059669', background: '#f0fdf4', padding: '6px 10px', borderRadius: '6px' }}>
+                          💬 <strong>AI Coach:</strong> {q.feedback}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div style={{ padding: '1rem 2rem', borderTop: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setViewingMockReport(null)}
+                style={{
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.65rem 1.5rem',
+                  borderRadius: '10px',
+                  fontWeight: 800,
+                  fontSize: '0.88rem',
+                  cursor: 'pointer'
+                }}
+              >
+                Close Report
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 🎙️ STAFF & ADMIN MODAL: INSPECT STUDENT 10-QUESTION AI MOCK INTERVIEW EVALUATION */}
+      {inspectingMockStudent && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(15, 23, 42, 0.75)',
+          backdropFilter: 'blur(5px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '1.5rem'
+        }}>
+          <div style={{
+            background: '#ffffff',
+            borderRadius: '24px',
+            width: '100%',
+            maxWidth: '880px',
+            maxHeight: '92vh',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            border: '1px solid #cbd5e1',
+            overflow: 'hidden'
+          }}>
+            {/* Modal Header */}
+            {(() => {
+              const studentMocks = getStudentMockInterviews(inspectingMockStudent);
+              const summary = calculateStudentMockSummary(studentMocks);
+              const currentDayRecord = summary.dayMap[inspectingMockDay];
+
+              return (
+                <>
+                  <div style={{
+                    padding: '1.5rem 2rem',
+                    borderBottom: '1px solid #e2e8f0',
+                    background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+                    color: '#ffffff',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <span style={{
+                          background: 'rgba(255,255,255,0.15)',
+                          padding: '2px 8px',
+                          borderRadius: 4,
+                          fontSize: '0.75rem',
+                          fontWeight: 800,
+                          textTransform: 'uppercase'
+                        }}>
+                          Staff / Admin Evaluation Audit
+                        </span>
+                        <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontFamily: 'monospace' }}>
+                          Key: {inspectingMockStudent.accessCode}
+                        </span>
+                      </div>
+                      <h3 style={{ fontSize: '1.3rem', fontWeight: 900, margin: 0, color: '#ffffff' }}>
+                        {inspectingMockStudent.name} — AI Mock Interview Marks
+                      </h3>
+                      <span style={{ fontSize: '0.78rem', color: '#a5b4fc' }}>
+                        Track: {getCourseLabel(inspectingMockStudent.enrolledCourse)} • Overall Avg: {summary.completedCount > 0 ? `${summary.averageScore}/100 (Grade ${summary.grade})` : 'No attempts'}
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={() => setInspectingMockStudent(null)}
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.15)',
+                        border: 'none',
+                        color: '#ffffff',
+                        width: 36,
+                        height: 36,
+                        borderRadius: '50%',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+
+                  {/* Day Navigation Tabs */}
+                  <div style={{
+                    display: 'flex',
+                    background: '#f8fafc',
+                    borderBottom: '1px solid #e2e8f0',
+                    padding: '0.5rem 1.5rem',
+                    gap: '8px',
+                    overflowX: 'auto'
+                  }}>
+                    {HR_MOCK_DAYS.map(dayCfg => {
+                      const dayRec = summary.dayMap[dayCfg.day];
+                      const isActive = inspectingMockDay === dayCfg.day;
+
+                      return (
+                        <button
+                          key={dayCfg.day}
+                          onClick={() => setInspectingMockDay(dayCfg.day)}
+                          style={{
+                            background: isActive ? '#ffffff' : 'transparent',
+                            color: isActive ? '#4f46e5' : '#64748b',
+                            border: `1px solid ${isActive ? '#6366f1' : 'transparent'}`,
+                            borderRadius: '10px',
+                            padding: '6px 12px',
+                            fontSize: '0.8rem',
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            boxShadow: isActive ? '0 2px 4px rgba(0,0,0,0.05)' : 'none',
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
+                          <span>Day {dayCfg.day}</span>
+                          <span style={{
+                            background: dayRec ? '#10b981' : '#cbd5e1',
+                            color: '#ffffff',
+                            fontSize: '0.68rem',
+                            padding: '1px 6px',
+                            borderRadius: 4
+                          }}>
+                            {dayRec ? `${dayRec.totalScore}/100` : 'Pending'}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Modal Body */}
+                  <div style={{ padding: '1.75rem 2rem', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    {currentDayRecord ? (
+                      <>
+                        {/* Day Top Bar */}
+                        <div style={{
+                          background: '#f8fafc',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '16px',
+                          padding: '1.25rem 1.5rem',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          flexWrap: 'wrap',
+                          gap: '1rem'
+                        }}>
+                          <div>
+                            <span style={{
+                              background: '#eef2ff',
+                              color: '#4f46e5',
+                              padding: '2px 8px',
+                              borderRadius: 4,
+                              fontSize: '0.74rem',
+                              fontWeight: 800,
+                              textTransform: 'uppercase'
+                            }}>
+                              Day {currentDayRecord.day} of 5
+                            </span>
+                            <h4 style={{ margin: '4px 0 2px 0', fontSize: '1.15rem', fontWeight: 900, color: '#1e1b4b' }}>
+                              {currentDayRecord.topic || `Day ${currentDayRecord.day} AI Mock Interview`}
+                            </h4>
+                            <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                              Attempted: {new Date(currentDayRecord.attemptedAt || currentDayRecord.completedAt).toLocaleString()}
+                            </span>
+                          </div>
+
+                          <div style={{ textAlign: 'right' }}>
+                            <div style={{ fontSize: '1.8rem', fontWeight: 900, color: currentDayRecord.totalScore >= 80 ? '#059669' : currentDayRecord.totalScore >= 60 ? '#2563eb' : '#dc2626' }}>
+                              {currentDayRecord.totalScore} / 100
+                            </div>
+                            <span style={{
+                              background: currentDayRecord.totalScore >= 80 ? '#ecfdf5' : '#eff6ff',
+                              color: currentDayRecord.totalScore >= 80 ? '#059669' : '#2563eb',
+                              padding: '2px 10px',
+                              borderRadius: 999,
+                              fontSize: '0.75rem',
+                              fontWeight: 800
+                            }}>
+                              Grade {currentDayRecord.grade}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* 4 Rubric Metric Pillars */}
+                        <div style={{
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                          gap: '10px'
+                        }}>
+                          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '10px', textAlign: 'center' }}>
+                            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b' }}>Clarity &amp; Delivery</div>
+                            <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#4f46e5', marginTop: 2 }}>
+                              {currentDayRecord.clarityScore || 0} / 25
+                            </div>
+                          </div>
+                          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '10px', textAlign: 'center' }}>
+                            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b' }}>Content Substance</div>
+                            <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#059669', marginTop: 2 }}>
+                              {currentDayRecord.contentScore || 0} / 30
+                            </div>
+                          </div>
+                          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '10px', textAlign: 'center' }}>
+                            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b' }}>Confidence &amp; Tone</div>
+                            <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#d97706', marginTop: 2 }}>
+                              {currentDayRecord.confidenceScore || 0} / 25
+                            </div>
+                          </div>
+                          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '10px', textAlign: 'center' }}>
+                            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b' }}>STAR Framework</div>
+                            <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#7c3aed', marginTop: 2 }}>
+                              {currentDayRecord.structureScore || 0} / 20
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Strengths & Improvements */}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+                          <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '12px', padding: '10px 14px' }}>
+                            <h5 style={{ margin: '0 0 4px 0', fontSize: '0.84rem', fontWeight: 800, color: '#166534' }}>
+                              ✓ Strengths Noted by AI
+                            </h5>
+                            <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.78rem', color: '#14532d', lineHeight: 1.4 }}>
+                              {(currentDayRecord.strengths || ['Good attempt', 'Natural phrasing']).map((s, idx) => (
+                                <li key={idx}>{s}</li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '12px', padding: '10px 14px' }}>
+                            <h5 style={{ margin: '0 0 4px 0', fontSize: '0.84rem', fontWeight: 800, color: '#92400e' }}>
+                              💡 Actionable Coaching Advice
+                            </h5>
+                            <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.78rem', color: '#78350f', lineHeight: 1.4 }}>
+                              {(currentDayRecord.improvements || ['Add measurable metrics', 'Use STAR method']).map((s, idx) => (
+                                <li key={idx}>{s}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+
+                        {/* All 10 Questions Audit Table */}
+                        <div>
+                          <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.85rem 0' }}>
+                            10 Live Questions Detailed Answers &amp; Marks
+                          </h4>
+
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            {(currentDayRecord.questions || []).map((q, idx) => (
+                              <div
+                                key={idx}
+                                style={{
+                                  background: '#ffffff',
+                                  border: '1px solid #e2e8f0',
+                                  borderRadius: '12px',
+                                  padding: '0.9rem 1.1rem',
+                                  boxShadow: '0 1px 4px rgba(0,0,0,0.02)'
+                                }}
+                              >
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.4rem', gap: '8px' }}>
+                                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#1e293b' }}>
+                                    Q{idx + 1}: {q.question || `Question #${idx + 1}`}
+                                  </span>
+                                  <span style={{
+                                    background: (q.score || 0) >= 8 ? '#ecfdf5' : (q.score || 0) >= 6 ? '#eff6ff' : '#fef2f2',
+                                    color: (q.score || 0) >= 8 ? '#059669' : (q.score || 0) >= 6 ? '#2563eb' : '#dc2626',
+                                    border: `1px solid ${(q.score || 0) >= 8 ? '#a7f3d0' : (q.score || 0) >= 6 ? '#bfdbfe' : '#fecaca'}`,
+                                    padding: '2px 8px',
+                                    borderRadius: '6px',
+                                    fontSize: '0.74rem',
+                                    fontWeight: 800,
+                                    flexShrink: 0
+                                  }}>
+                                    Score: {q.score || 0} / 10
+                                  </span>
+                                </div>
+
+                                {/* Student Answer Transcript */}
+                                <div style={{
+                                  background: '#f8fafc',
+                                  borderLeft: '3px solid #6366f1',
+                                  padding: '8px 12px',
+                                  borderRadius: '0 8px 8px 0',
+                                  fontSize: '0.8rem',
+                                  color: '#334155',
+                                  marginBottom: '0.4rem',
+                                  lineHeight: 1.5,
+                                  fontStyle: 'italic'
+                                }}>
+                                  "{q.studentAnswer || q.answer || 'No response recorded'}"
+                                </div>
+
+                                {/* AI Evaluator Feedback */}
+                                {q.feedback && (
+                                  <div style={{ fontSize: '0.76rem', color: '#059669', background: '#f0fdf4', padding: '5px 10px', borderRadius: '6px' }}>
+                                    💬 <strong>AI Feedback:</strong> {q.feedback}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div style={{ textAlign: 'center', padding: '4rem 1.5rem', color: '#64748b' }}>
+                        <Bot size={48} style={{ opacity: 0.3, marginBottom: '0.75rem' }} />
+                        <h4 style={{ margin: '0 0 6px 0', fontSize: '1.1rem', fontWeight: 800, color: '#1e293b' }}>
+                          Day {inspectingMockDay} Mock Round Not Attempted Yet
+                        </h4>
+                        <p style={{ margin: 0, fontSize: '0.88rem' }}>
+                          The student has not yet completed the 10 live questions for Day {inspectingMockDay} ({HR_MOCK_DAYS.find(d => d.day === inspectingMockDay)?.title}).
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Modal Footer */}
+                  <div style={{ padding: '1rem 2rem', borderTop: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', justifyContent: 'flex-end' }}>
+                    <button
+                      onClick={() => setInspectingMockStudent(null)}
+                      style={{
+                        background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                        color: '#ffffff',
+                        border: 'none',
+                        padding: '0.65rem 1.75rem',
+                        borderRadius: '10px',
+                        fontWeight: 800,
+                        fontSize: '0.88rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Close Evaluation Audit
+                    </button>
+                  </div>
+                </>
+              );
+            })()}
           </div>
         </div>
       )}

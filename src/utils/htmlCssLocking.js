@@ -4,7 +4,7 @@ import {
   pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, 
   djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, 
   pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData,
-  spokoStoryCourseData, spokoProCourseData
+  spokoStoryCourseData, spokoProCourseData, spokoHrCourseData
 } from '../courseData';
 
 export const COURSE_DATA_MAP = {
@@ -36,7 +36,9 @@ export const COURSE_DATA_MAP = {
   spoko_story: spokoStoryCourseData,
   spoko_course: spokoStoryCourseData,
   spoko_pro: spokoProCourseData,
-  softskills: spokoProCourseData
+  softskills: spokoProCourseData,
+  spoko_hr: spokoHrCourseData,
+  hr_interview_mastery: spokoHrCourseData
 };
 
 export const HTML_CSS_MODULE_ORDER = [
@@ -548,6 +550,7 @@ export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations,
   })();
 
   if (isStaff) return false;
+  if (courseKey === 'spoko_hr' || courseKey === 'hr_interview_mastery') return false;
 
   // 2. Student locking rules:
   const order = getCourseModuleOrder(courseKey, targetModuleId);
