@@ -374,6 +374,18 @@ const subCourses = [
     shadowColor: 'rgba(99, 102, 241, 0.15)',
     modulesCount: '5 Days (100 Questions)',
     enrolledKey: 'spoko_hr'
+  },
+  {
+    id: 'spoko_reasoning',
+    mainCourseId: 'spoko_english',
+    title: 'Logical Reasoning & Analytical Thinking',
+    desc: 'Master foundational logic, distinguish facts from opinions and assumptions, cause-and-effect reasoning, problem structuring, and 20 practice scenarios.',
+    icon: <Brain size={24} />,
+    bgColor: 'rgba(139, 92, 246, 0.08)',
+    borderColor: '#8b5cf6',
+    shadowColor: 'rgba(139, 92, 246, 0.15)',
+    modulesCount: 'Level 1: Day 1 (20 Qs Practice)',
+    enrolledKey: 'spoko_reasoning'
   }
 ];
 
@@ -431,7 +443,8 @@ const availableCourseOptions = [
   { value: "tally_prime", label: "AI powered Tally" },
   { value: "spoko_story", label: "Story-Based Learning (Spoko English)" },
   { value: "spoko_pro", label: "Professional Track (Soft Skills)" },
-  { value: "spoko_hr", label: "HR Interview Mastery (100 Q&A)" }
+  { value: "spoko_hr", label: "HR Interview Mastery (100 Q&A)" },
+  { value: "spoko_reasoning", label: "Logical Reasoning & Analytical Thinking" }
 ];
 
 function getCourseLabel(courseKey) {
@@ -471,7 +484,8 @@ function getCourseLabel(courseKey) {
     spoko_pro: 'Professional Track (Soft Skills)',
     softskills: 'Professional Track (Soft Skills)',
     spoko_hr: 'HR Interview Mastery (100 Q&A)',
-    hr_interview_mastery: 'HR Interview Mastery (100 Q&A)'
+    hr_interview_mastery: 'HR Interview Mastery (100 Q&A)',
+    spoko_reasoning: 'Logical Reasoning & Analytical Thinking'
   };
   if (labels[courseKey]) return labels[courseKey];
   return courseKey.replace(/_/g, ' ').toUpperCase();
@@ -508,7 +522,8 @@ function getCourseDataList(courseKey) {
     spoko_pro: CourseData.spokoProCourseData,
     softskills: CourseData.spokoProCourseData,
     spoko_hr: CourseData.spokoHrCourseData,
-    hr_interview_mastery: CourseData.spokoHrCourseData
+    hr_interview_mastery: CourseData.spokoHrCourseData,
+    spoko_reasoning: CourseData.spokoReasoningCourseData
   };
   return map[courseKey] || [];
 }
@@ -595,7 +610,7 @@ function calculateDetailedCourseProgress(student) {
       'html_css', 'react_course', 'python_course', 'django_course', 'git_github',
       'core_js', 'web_design_20days', 'sql', 'powerbi', 'stats_course', 'devops',
       'json_course', 'numpy_course', 'pandas_course', 'matplotlib_course', 'seaborn_course',
-      'summer_sql', 'sql_da', 'python_da', 'agentic_ai', 'generative_ai_course', 'induction', 'tally', 'spoko_story', 'spoko_pro', 'spoko_hr'
+      'summer_sql', 'sql_da', 'python_da', 'agentic_ai', 'generative_ai_course', 'induction', 'tally', 'spoko_story', 'spoko_pro', 'spoko_hr', 'spoko_reasoning'
     ];
   } else if (Array.isArray(enrolledCourse)) {
     courseKeys = enrolledCourse;
@@ -671,7 +686,7 @@ function calculateStudentProgress(student) {
       'python_fullstack', 'python_course', 'python_da', 'generative_ai_course',
       'react_course', 'git_github', 'json_course', 'django_course', 'devops',
       'stats_course', 'numpy_course', 'pandas_course', 'matplotlib_course',
-      'seaborn_course', 'core_js', 'induction', 'tally', 'web_design_20days', 'spoko_story', 'spoko_pro', 'spoko_hr'
+      'seaborn_course', 'core_js', 'induction', 'tally', 'web_design_20days', 'spoko_story', 'spoko_pro', 'spoko_hr', 'spoko_reasoning'
     ];
     allKeys.forEach(k => {
       const data = getCourseDataList(k);
@@ -1119,7 +1134,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       spoko_pro: CourseData.spokoProCourseData,
       softskills: CourseData.spokoProCourseData,
       spoko_hr: CourseData.spokoHrCourseData,
-      hr_interview_mastery: CourseData.spokoHrCourseData
+      hr_interview_mastery: CourseData.spokoHrCourseData,
+      spoko_reasoning: CourseData.spokoReasoningCourseData
     };
     return map[courseKey] || [];
   };

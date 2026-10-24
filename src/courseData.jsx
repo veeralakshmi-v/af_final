@@ -3047,3 +3047,19 @@ export const spokoHrCourseData = [
   }
 ];
 
+export const spokoReasoningCourseData = [
+  {
+    id: 'spoko_reasoning_l1_d1',
+    title: 'Level 1: Day 1 - Intro to Logical Thinking',
+    items: [
+      { id: 'overview', label: 'Day 1 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. What Is Logical Thinking?', icon: <Brain size={18} /> },
+      { id: 'section2', label: '2. Facts, Opinions & Assumptions', icon: <CheckSquare size={18} /> },
+      { id: 'section3', label: '3. Understanding Problems', icon: <Target size={18} /> },
+      { id: 'section4', label: '4. Cause & Effect Reasoning', icon: <Zap size={18} /> },
+      { id: 'section5', label: '5. The 5-Step Framework', icon: <Layers size={18} /> },
+      { id: 'practice', label: 'Practice Quiz (20 Qs)', icon: <CheckCircle size={18} /> },
+      { id: 'assessment', label: 'Day 1 Assessment Summary', icon: <Award size={18} /> }
+    ]
+  }
+];

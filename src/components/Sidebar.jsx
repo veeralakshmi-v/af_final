@@ -48,6 +48,8 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
 
   const getCourseDuration = () => {
     const firstId = courseStructure?.[0]?.id || '';
+    if (firstId.includes('spoko_reasoning')) return 180; // 3h
+    if (firstId.includes('spoko_hr')) return 300; // 5h
     if (firstId.includes('spoko_pro') || firstId.includes('softskills')) return 450; // 7h 30m
     if (firstId.includes('spoko_story')) return 180; // 3h
     if (courseStructure?.some(m => m.id?.includes('sql_da'))) return 540; // 9h
@@ -101,7 +103,9 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
       {/* Course Title (Dynamic) */}
       <div style={{ padding: '1rem 1.5rem 0' }}>
         <h2 style={{ fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: 0 }}>
-          {courseStructure?.[0]?.id?.includes('spoko_pro') ? 'Spoko Professional Track' :
+          {courseStructure?.[0]?.id?.includes('spoko_reasoning') ? 'Logical Reasoning' :
+           courseStructure?.[0]?.id?.includes('spoko_hr') ? 'HR Interview Mastery' :
+           courseStructure?.[0]?.id?.includes('spoko_pro') ? 'Spoko Professional Track' :
            courseStructure?.[0]?.id?.includes('spoko_story') ? 'Spoko Story English' :
            courseStructure?.[0]?.id?.includes('web_design') ? 'AI-Powered Web Design' :
            courseStructure?.some(m => m.id?.includes('sql_da')) ? 'SQL for Data Analytics' :
