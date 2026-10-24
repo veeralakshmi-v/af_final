@@ -418,7 +418,7 @@ export default function SpokoReasoningDay1({
             lineHeight: 1.6,
             margin: '0 0 1.5rem 0'
           }}>
-            Master the core art of reasoned deduction, distinguish verifiable facts from opinions and assumptions, structure everyday problems, evaluate causation, and apply the 5-step thinking framework.
+            Learn how to think step-by-step using real facts, tell facts from opinions and guesses, solve everyday problems calmly, and practice with 20 beginner-friendly questions.
           </p>
 
           {/* Quick Stats Bar */}
@@ -499,7 +499,7 @@ export default function SpokoReasoningDay1({
                 lineHeight: 1.6,
                 color: '#334155'
               }}>
-                <strong>Why This Course Exists:</strong> In everyday life, academics, competitive exams, and job interviews, people frequently jump to conclusions based on emotions, cognitive biases, or incomplete assumptions. This course equips you with an objective toolkit to dissect statements, structure complex problems, and make airtight decisions.
+                <strong>Why This Course Exists:</strong> In daily life, college, and job interviews, it is very common to jump to conclusions based on anger, panic, or wild guesses. This course teaches you a simple, practical way to think clearly, look at real facts, and make smart, confident choices.
               </div>
 
               <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>
@@ -801,7 +801,7 @@ export default function SpokoReasoningDay1({
               </h2>
 
               <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '2rem' }}>
-                Logical clarity begins by classifying statements correctly. Confusing an opinion with a fact leads to flawed arguments; treating an unverified assumption as fact leads to catastrophic decisions.
+                Clear thinking starts by knowing what is real proof, what is just a personal feeling, and what is a wild guess. Mixing them up leads to confusion and bad decisions.
               </p>
 
               {/* Definitions Grid */}
@@ -1251,7 +1251,7 @@ export default function SpokoReasoningDay1({
                     Golden Rule of Logic: Correlation Does NOT Equal Causation!
                   </div>
                   <p style={{ margin: 0, fontSize: '0.88rem', color: '#be123c', lineHeight: 1.5 }}>
-                    {section4Content.concepts.correlationWarning} Never claim a possible cause is definitely responsible unless you have isolated the variables and verified the physical mechanism!
+                    {section4Content.concepts.correlationWarning} Never assume one event caused another just because they happened together. Always check if a hidden reason or simple coincidence is at work!
                   </p>
                 </div>
               </div>
@@ -2000,10 +2000,10 @@ export default function SpokoReasoningDay1({
                    '⚠️ Below 50%: Review the Learning Material & Try Again.'}
                 </div>
                 <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569' }}>
-                  {percentage >= 90 ? 'You demonstrated sharp analytical discipline, accurate causation distinction, and strong problem diagnosis.' :
-                   percentage >= 70 ? 'You have cleared the recommended 70% benchmark and grasped the foundation of structured deduction.' :
-                   percentage >= 50 ? 'You understand the basics, but review cause-and-effect traps and fact/opinion tests before advancing.' :
-                   'Review Sections 1 to 5 carefully. Focus on isolating facts from assumptions, then retry the assessment.'}
+                  {percentage >= 90 ? 'Outstanding work! You have mastered the basics of logical thinking, facts, and causes.' :
+                   percentage >= 70 ? 'Great job! You cleared the 70% passing mark. You understand how to think step-by-step using facts.' :
+                   percentage >= 50 ? 'Good effort! You understand the basics, but review the difference between facts and guesses before moving to Day 2.' :
+                   'Take your time to re-read Sections 1 to 5. Focus on the simple clues and facts, then give the quiz another try!'}
                 </p>
               </div>
 
