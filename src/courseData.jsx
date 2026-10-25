@@ -4,7 +4,7 @@ import {
   Code, CheckCircle, LayoutGrid, Layers, MonitorPlay, MousePointerClick,
   Video, Edit3, Palette, Layout, Brush, FileCode2, Target, Type as TypeIcon,
   Wand2, FastForward, Move3d, Clapperboard, Smartphone, Database, Table, Columns, List, Terminal, ShieldAlert, PenTool, Settings, PieChart, Link, Activity, Store,
-  Briefcase, Map, Zap, Brain, Bot, Cpu, GitBranch, Rocket, Eye, Sliders, Filter, Trophy, Shield, FileSpreadsheet, Music, RefreshCw, Sparkles, Hash, Globe, Wifi, AlertTriangle, AlertCircle, Award, Send, Home, Compass, User, Lock, ShoppingCart, Folder, Server, Trash2, Plus, LogIn, LogOut, UserPlus, Users, UserCheck, BarChart2, GitMerge, Radio, Key, Copy, CheckSquare, Play, Percent, MessageCircle, Presentation, MessageSquare, Scale, Clock
+  Briefcase, Map, Zap, Brain, Bot, Cpu, GitBranch, Rocket, Eye, Sliders, Filter, Trophy, Shield, FileSpreadsheet, Music, RefreshCw, Sparkles, Hash, Globe, Wifi, AlertTriangle, AlertCircle, Award, Send, Home, Compass, User, Lock, ShoppingCart, Folder, Server, Trash2, Plus, LogIn, LogOut, UserPlus, Users, UserCheck, BarChart2, GitMerge, Radio, Key, Copy, CheckSquare, Play, Percent, MessageCircle, Presentation, MessageSquare, Scale, Clock, HelpCircle, CircleDot
 } from 'lucide-react';
 
 
@@ -3273,5 +3273,147 @@ export const spokoReasoningCourseData = [
       { id: 'assessment', label: 'Final Assessment (20 Qs)', icon: <Award size={18} /> },
       { id: 'summary', label: 'Revision & Checklist', icon: <FileText size={18} /> }
     ]
+  },
+  {
+    id: 'spoko_reasoning_l3_d14',
+    title: 'Day 14 - Advanced Coding-Decoding & Symbolic Logic',
+    items: [
+      { id: 'overview', label: 'Day 14 Overview & Warm-Up', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Advanced Letter Shifting', icon: <FastForward size={18} /> },
+      { id: 'section2', label: '2. Reverse & Rearrangement Coding', icon: <RefreshCw size={18} /> },
+      { id: 'section3', label: '3. Multiple-Rule Coding', icon: <Layers size={18} /> },
+      { id: 'section4', label: '4. Number-Based Coding', icon: <Hash size={18} /> },
+      { id: 'section5', label: '5. Artificial Languages', icon: <Compass size={18} /> },
+      { id: 'section6', label: '6. Symbol Substitution', icon: <Sparkles size={18} /> },
+      { id: 'section7', label: '7. Conditional & Rule Coding', icon: <Shield size={18} /> },
+      { id: 'section8', label: '8. Multi-Step Symbolic Logic', icon: <GitBranch size={18} /> },
+      { id: 'examples', label: '20 Solved Master Examples', icon: <CheckCircle size={18} /> },
+      { id: 'practice', label: '3 Timed Practice Sets', icon: <Clock size={18} /> },
+      { id: 'challenge', label: 'Decode the Hidden Message', icon: <Target size={18} /> },
+      { id: 'mistakes', label: 'Common Mistakes & Strategy', icon: <ShieldAlert size={18} /> },
+      { id: 'assessment', label: 'Final Assessment (20 Qs)', icon: <Award size={18} /> },
+      { id: 'summary', label: 'Revision & Reference Sheet', icon: <FileText size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l3_d15',
+    title: 'Day 15 - Advanced Seating & Complex Logic Puzzles',
+    items: [
+      { id: 'overview', label: 'Day 15 Overview & Warm-Up', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Complex Logic Puzzles Intro', icon: <Brain size={18} /> },
+      { id: 'section2', label: '2. Linear Seating Arrangements', icon: <Columns size={18} /> },
+      { id: 'section3', label: '3. Circular Seating Arrangements', icon: <RefreshCw size={18} /> },
+      { id: 'section4', label: '4. Multi-Condition Logic Puzzles', icon: <Layers size={18} /> },
+      { id: 'section5', label: '5. Floor, Ordering & Scheduling', icon: <Table size={18} /> },
+      { id: 'mistakes', label: '6. Mistakes & Exam Strategies', icon: <ShieldAlert size={18} /> },
+      { id: 'practice', label: '7. 3 Interactive Practice Sets', icon: <Clock size={18} /> },
+      { id: 'challenge', label: '8. Lab Planning Challenge', icon: <Target size={18} /> },
+      { id: 'assessment', label: '9. Final Assessment (20 Qs)', icon: <Award size={18} /> },
+      { id: 'summary', label: '10. Revision Sheet & Rapid-Fire', icon: <FileText size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l3_d16',
+    title: 'Day 16 - Advanced Blood Relations & Family-Tree Logic',
+    items: [
+      { id: 'overview', label: 'Day 16 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Fundamentals & Warm-Up', icon: <Brain size={18} /> },
+      { id: 'section2', label: '2. Multi-Gen Family Trees', icon: <GitBranch size={18} /> },
+      { id: 'section3', label: '3. Maternal vs Paternal', icon: <Users size={18} /> },
+      { id: 'section4', label: '4. Coded Relations', icon: <Hash size={18} /> },
+      { id: 'section5', label: '5. Complex Puzzles', icon: <Layers size={18} /> },
+      { id: 'section6', label: '6. Deduction & Unknowns', icon: <HelpCircle size={18} /> },
+      { id: 'practice', label: '7. 3 Interactive Practice Sets', icon: <Clock size={18} /> },
+      { id: 'challenge', label: '8. Real-World Challenge', icon: <Target size={18} /> },
+      { id: 'assessment', label: '9. Final Assessment (20 Qs)', icon: <Award size={18} /> },
+      { id: 'summary', label: '10. Revision & Rapid-Fire', icon: <FileText size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l3_d17',
+    title: 'Day 17 - Advanced Syllogisms & Logical Conclusions',
+    items: [
+      { id: 'overview', label: 'Day 17 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Fundamentals Refresher', icon: <Brain size={18} /> },
+      { id: 'section2', label: '2. Advanced Syllogisms', icon: <Layers size={18} /> },
+      { id: 'section3', label: '3. Possibility vs Definite', icon: <Compass size={18} /> },
+      { id: 'section4', label: '4. Venn Elimination', icon: <CircleDot size={18} /> },
+      { id: 'section5', label: '5. Hidden Assumptions', icon: <Target size={18} /> },
+      { id: 'section6', label: '6. Strong & Weak Arguments', icon: <Scale size={18} /> },
+      { id: 'practice', label: '7. 3 Interactive Practice Sets', icon: <Clock size={18} /> },
+      { id: 'challenge', label: '8. Case Study Challenge', icon: <Briefcase size={18} /> },
+      { id: 'assessment', label: '9. Final Assessment (20 Qs)', icon: <Award size={18} /> },
+      { id: 'summary', label: '10. Revision & Rapid-Fire', icon: <FileText size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l3_d18',
+    title: 'Day 18 - Advanced Data Interpretation & Decision-Making',
+    items: [
+      { id: 'overview', label: 'Day 18 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. DI Fundamentals', icon: <BarChart2 size={18} /> },
+      { id: 'section2', label: '2. Math Reasoning with Data', icon: <Percent size={18} /> },
+      { id: 'section3', label: '3. Complex Tables & Charts', icon: <Table size={18} /> },
+      { id: 'section4', label: '4. Multi-Step Analysis', icon: <Activity size={18} /> },
+      { id: 'section5', label: '5. Critical Data Analysis', icon: <Eye size={18} /> },
+      { id: 'section6', label: '6. Decision-Making Matrices', icon: <Scale size={18} /> },
+      { id: 'practice', label: '7. 3 Interactive Practice Sets', icon: <Clock size={18} /> },
+      { id: 'challenge', label: '8. Case Study Challenge', icon: <Briefcase size={18} /> },
+      { id: 'assessment', label: '9. Final Assessment (20 Qs)', icon: <Award size={18} /> },
+      { id: 'summary', label: '10. Revision & Rapid-Fire', icon: <FileText size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l3_d19',
+    title: 'Day 19 - Advanced Root Cause Analysis & Decision Trees',
+    items: [
+      { id: 'overview', label: 'Day 19 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Problem Types & Warm-up', icon: <AlertTriangle size={18} /> },
+      { id: 'section2', label: '2. 5 Whys Analysis', icon: <GitBranch size={18} /> },
+      { id: 'section3', label: '3. Fishbone Diagrams', icon: <Layers size={18} /> },
+      { id: 'section4', label: '4. Cause Prioritization', icon: <Sliders size={18} /> },
+      { id: 'section5', label: '5. Strategic Problem Solving', icon: <Target size={18} /> },
+      { id: 'section6', label: '6. Decision Trees & EV', icon: <Scale size={18} /> },
+      { id: 'practice', label: '7. 3 Interactive Practice Sets', icon: <Clock size={18} /> },
+      { id: 'challenge', label: '8. Real-World Challenge', icon: <Briefcase size={18} /> },
+      { id: 'assessment', label: '9. Final Assessment (20 Qs)', icon: <Award size={18} /> },
+      { id: 'summary', label: '10. Revision & Drills', icon: <FileText size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l3_d20',
+    title: 'Day 20 - Advanced Pattern Recognition & Non-Verbal Logic',
+    items: [
+      { id: 'overview', label: 'Day 20 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Abstract Fundamentals', icon: <Eye size={18} /> },
+      { id: 'section2', label: '2. Rotation & Reflection', icon: <RefreshCw size={18} /> },
+      { id: 'section3', label: '3. Shape & Shading Patterns', icon: <Layers size={18} /> },
+      { id: 'section4', label: '4. Matrix Reasoning (2x2, 3x3)', icon: <Table size={18} /> },
+      { id: 'section5', label: '5. Odd Figure Out', icon: <Filter size={18} /> },
+      { id: 'section6', label: '6. Combined Patterns', icon: <Sparkles size={18} /> },
+      { id: 'practice', label: '7. 3 Interactive Practice Sets', icon: <Clock size={18} /> },
+      { id: 'challenge', label: '8. Real-World Challenge', icon: <Briefcase size={18} /> },
+      { id: 'assessment', label: '9. Final Assessment (20 Qs)', icon: <Award size={18} /> },
+      { id: 'summary', label: '10. Revision & Drills', icon: <FileText size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l3_d21',
+    title: 'Day 21 - Comprehensive Challenge & Final Assessment',
+    items: [
+      { id: 'overview', label: 'Day 21 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Course-Wide Revision', icon: <RefreshCw size={18} /> },
+      { id: 'section2', label: '2. 6-Step Framework', icon: <Target size={18} /> },
+      { id: 'section3', label: '3. Mixed Practice Challenge', icon: <Layers size={18} /> },
+      { id: 'section4', label: '4. Integrated Case Study', icon: <Briefcase size={18} /> },
+      { id: 'section5', label: '5. Exam Strategy & Timing', icon: <Clock size={18} /> },
+      { id: 'assessment', label: '6. Final Assessment (50 Qs)', icon: <Award size={18} /> },
+      { id: 'review', label: '7. Diagnostic Performance Review', icon: <Activity size={18} /> },
+      { id: 'summary', label: '8. Revision Sheet & Drills', icon: <FileText size={18} /> },
+      { id: 'graduation', label: '9. Course Completion & Graduation 🎉', icon: <Sparkles size={18} /> }
+    ]
   }
 ];
+
+
+

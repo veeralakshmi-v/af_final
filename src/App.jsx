@@ -258,6 +258,14 @@ import SpokoReasoningDay10 from './pages/spoko/SpokoReasoningDay10';
 import SpokoReasoningDay11 from './pages/spoko/SpokoReasoningDay11';
 import SpokoReasoningLevel3Day12 from './pages/spoko/SpokoReasoningLevel3Day12';
 import SpokoReasoningLevel3Day13 from './pages/spoko/SpokoReasoningLevel3Day13';
+import SpokoReasoningLevel3Day14 from './pages/spoko/SpokoReasoningLevel3Day14';
+import SpokoReasoningLevel3Day15 from './pages/spoko/SpokoReasoningLevel3Day15';
+import SpokoReasoningLevel3Day16 from './pages/spoko/SpokoReasoningLevel3Day16';
+import SpokoReasoningLevel3Day17 from './pages/spoko/SpokoReasoningLevel3Day17';
+import SpokoReasoningLevel3Day18 from './pages/spoko/SpokoReasoningLevel3Day18';
+import SpokoReasoningLevel3Day19 from './pages/spoko/SpokoReasoningLevel3Day19';
+import SpokoReasoningLevel3Day20 from './pages/spoko/SpokoReasoningLevel3Day20';
+import SpokoReasoningLevel3Day21 from './pages/spoko/SpokoReasoningLevel3Day21';
 import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData, spokoStoryCourseData, spokoProCourseData, spokoHrCourseData, spokoReasoningCourseData } from './courseData';
 import TallyCourseDay from './pages/tally/TallyCourseDay';
 import AssignmentSubmissionPage from './components/AssignmentSubmissionPage';
@@ -1189,6 +1197,62 @@ function App() {
                     />
                   ) : activeNode.moduleId === 'spoko_reasoning_l3_d13' ? (
                     <SpokoReasoningLevel3Day13
+                      activeTab={activeNode.tabId}
+                      onNavigate={handleNavClick}
+                      session={session}
+                      completedLessons={completedLessons}
+                    />
+                  ) : (activeNode.moduleId === 'spoko_reasoning_l3_d14' || activeNode.moduleId === 'spoko_reasoning_l3_d3') ? (
+                    <SpokoReasoningLevel3Day14
+                      activeTab={activeNode.tabId}
+                      onNavigate={handleNavClick}
+                      session={session}
+                      completedLessons={completedLessons}
+                    />
+                  ) : (activeNode.moduleId === 'spoko_reasoning_l3_d15' || activeNode.moduleId === 'spoko_reasoning_l3_d4') ? (
+                    <SpokoReasoningLevel3Day15
+                      activeTab={activeNode.tabId}
+                      onNavigate={handleNavClick}
+                      session={session}
+                      completedLessons={completedLessons}
+                    />
+                  ) : (activeNode.moduleId === 'spoko_reasoning_l3_d16' || activeNode.moduleId === 'spoko_reasoning_l3_d5') ? (
+                    <SpokoReasoningLevel3Day16
+                      activeTab={activeNode.tabId}
+                      onNavigate={handleNavClick}
+                      session={session}
+                      completedLessons={completedLessons}
+                    />
+                  ) : (activeNode.moduleId === 'spoko_reasoning_l3_d17' || activeNode.moduleId === 'spoko_reasoning_l3_d6') ? (
+                    <SpokoReasoningLevel3Day17
+                      activeTab={activeNode.tabId}
+                      onNavigate={handleNavClick}
+                      session={session}
+                      completedLessons={completedLessons}
+                    />
+                  ) : (activeNode.moduleId === 'spoko_reasoning_l3_d18' || activeNode.moduleId === 'spoko_reasoning_l3_d7') ? (
+                    <SpokoReasoningLevel3Day18
+                      activeTab={activeNode.tabId}
+                      onNavigate={handleNavClick}
+                      session={session}
+                      completedLessons={completedLessons}
+                    />
+                  ) : (activeNode.moduleId === 'spoko_reasoning_l3_d19' || activeNode.moduleId === 'spoko_reasoning_l3_d8') ? (
+                    <SpokoReasoningLevel3Day19
+                      activeTab={activeNode.tabId}
+                      onNavigate={handleNavClick}
+                      session={session}
+                      completedLessons={completedLessons}
+                    />
+                  ) : (activeNode.moduleId === 'spoko_reasoning_l3_d20' || activeNode.moduleId === 'spoko_reasoning_l3_d9') ? (
+                    <SpokoReasoningLevel3Day20
+                      activeTab={activeNode.tabId}
+                      onNavigate={handleNavClick}
+                      session={session}
+                      completedLessons={completedLessons}
+                    />
+                  ) : (activeNode.moduleId === 'spoko_reasoning_l3_d21' || activeNode.moduleId === 'spoko_reasoning_l3_d10') ? (
+                    <SpokoReasoningLevel3Day21
                       activeTab={activeNode.tabId}
                       onNavigate={handleNavClick}
                       session={session}

@@ -2012,6 +2012,25 @@ export default function SpokoReasoningLevel3Day13({
                   <button
                     onClick={() => handleTabChange('assessment')}
                     style={{
+                      background: 'rgba(255,255,255,0.15)',
+                      color: '#ffffff',
+                      border: '1px solid rgba(255,255,255,0.3)',
+                      padding: '0.75rem 1.5rem',
+                      borderRadius: '10px',
+                      fontWeight: 700,
+                      fontSize: '0.95rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Review Day 13 Assessment
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (typeof onNavigate === 'function') {
+                        onNavigate('spoko_reasoning_l3_d14', 'overview');
+                      }
+                    }}
+                    style={{
                       background: '#ffffff',
                       color: '#4c1d95',
                       border: 'none',
@@ -2022,7 +2041,7 @@ export default function SpokoReasoningLevel3Day13({
                       cursor: 'pointer'
                     }}
                   >
-                    Review Day 13 Assessment
+                    Next: Day 14 (Level 3 Day 3) →
                   </button>
                 </div>
               </div>
