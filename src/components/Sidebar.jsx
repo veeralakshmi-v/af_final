@@ -35,13 +35,13 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
   const allItems = courseStructure ? courseStructure.flatMap(m => m.items || []) : [];
   const activeIndex = allItems.findIndex(item => item.id === activeNode?.tabId);
   const totalItems = allItems.length || 1;
-  
+
   // Calculate completed count for the current course
   const completedInThisCourse = allItems.filter(item => {
     const key = `${activeCourse}:${activeNode?.moduleId || ''}:${item.id}`;
     // Support multiple matches (with course prepended or legacy module:tab format)
-    return completedLessons.includes(key) || 
-           completedLessons.includes(`${activeNode?.moduleId || ''}:${item.id}`);
+    return completedLessons.includes(key) ||
+      completedLessons.includes(`${activeNode?.moduleId || ''}:${item.id}`);
   }).length;
 
   const progressPercent = totalItems > 0 ? Math.min(100, Math.round((completedInThisCourse / totalItems) * 100)) : 0;
@@ -74,18 +74,18 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
 
   const totalMins = getCourseDuration();
   const completedMinsTotal = Math.round((progressPercent / 100) * totalMins);
-  
+
   const totalHours = Math.floor(totalMins / 60);
   const totalRemainingMins = totalMins % 60;
-  
+
   const completedHours = Math.floor(completedMinsTotal / 60);
   const completedRemainingMins = completedMinsTotal % 60;
 
   return (
     <nav className={`sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`} style={{ backgroundColor: '#f8fafc', borderRight: '1px solid var(--surface-border)', display: 'flex', flexDirection: 'column', position: 'sticky', top: 0, height: '100vh', paddingTop: 0 }}>
-      
+
       {/* Back to Dashboard */}
-      <div 
+      <div
         onClick={onBackToDashboard}
         style={{ padding: '1.5rem 1.5rem 0', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#64748b', fontSize: '0.9rem', fontWeight: 600, transition: 'color 0.2s' }}
         onMouseEnter={(e) => e.currentTarget.style.color = '#0f172a'}
@@ -104,29 +104,29 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
       <div style={{ padding: '1rem 1.5rem 0' }}>
         <h2 style={{ fontSize: '1.6rem', fontWeight: '800', color: '#0f172a', margin: 0 }}>
           {courseStructure?.[0]?.id?.includes('spoko_reasoning') ? 'Logical Reasoning' :
-           courseStructure?.[0]?.id?.includes('spoko_hr') ? 'HR Interview Mastery' :
-           courseStructure?.[0]?.id?.includes('spoko_pro') ? 'Spoko Professional Track' :
-           courseStructure?.[0]?.id?.includes('spoko_story') ? 'Spoko Story English' :
-           courseStructure?.[0]?.id?.includes('web_design') ? 'AI-Powered Web Design' :
-           courseStructure?.some(m => m.id?.includes('sql_da')) ? 'SQL for Data Analytics' :
-           courseStructure?.[0]?.id?.includes('sql') ? 'Databases & SQL' : 
-           courseStructure?.[0]?.id?.includes('powerbi') ? 'Data Analytics (Power BI)' : 
-           (courseStructure?.[0]?.id?.includes('python') && courseStructure?.length === 10) ? 'Python for Data Analytics' :
-           courseStructure?.[0]?.id?.includes('python') ? 'Core Python & OOPs' : 
-           courseStructure?.[0]?.id?.includes('agentic') ? 'Agentic AI Development' : 
-           courseStructure?.[0]?.id?.includes('genai') ? 'Generative AI' : 
-           courseStructure?.[0]?.id?.includes('core_js') ? 'Vanilla JS' : 
-           courseStructure?.[0]?.id?.includes('react') ? 'AI powered React JS' :
-           courseStructure?.[0]?.id?.includes('js') ? 'AI-Powered JavaScript' : 
-           courseStructure?.[0]?.id?.includes('git') ? 'Git & GitHub' :
-           courseStructure?.[0]?.id?.includes('json') ? 'JSON Essentials' :
-           courseStructure?.[0]?.id?.includes('django') ? 'Django Framework' :
-           courseStructure?.[0]?.id?.includes('devops') ? 'DevOps Framework' :
-           courseStructure?.[0]?.id?.includes('pandas') ? 'Pandas for Data Science' :
-           courseStructure?.[0]?.id?.includes('matplotlib') ? 'Matplotlib for Data Science' :
-           courseStructure?.[0]?.id?.includes('seaborn') ? 'Seaborn for Data Science' :
-           courseStructure?.[0]?.id?.includes('tally') ? 'AI powered Tally' :
-           'HTML, CSS & Bootstrap'}
+            courseStructure?.[0]?.id?.includes('spoko_hr') ? 'HR Interview Mastery' :
+              courseStructure?.[0]?.id?.includes('spoko_pro') ? 'Spoko Professional Track' :
+                courseStructure?.[0]?.id?.includes('spoko_story') ? 'Spoko Story English' :
+                  courseStructure?.[0]?.id?.includes('web_design') ? 'AI-Powered Web Design' :
+                    courseStructure?.some(m => m.id?.includes('sql_da')) ? 'SQL for Data Analytics' :
+                      courseStructure?.[0]?.id?.includes('sql') ? 'Databases & SQL' :
+                        courseStructure?.[0]?.id?.includes('powerbi') ? 'Data Analytics (Power BI)' :
+                          (courseStructure?.[0]?.id?.includes('python') && courseStructure?.length === 10) ? 'Python for Data Analytics' :
+                            courseStructure?.[0]?.id?.includes('python') ? 'Core Python & OOPs' :
+                              courseStructure?.[0]?.id?.includes('agentic') ? 'Agentic AI Development' :
+                                courseStructure?.[0]?.id?.includes('genai') ? 'Generative AI' :
+                                  courseStructure?.[0]?.id?.includes('core_js') ? 'Vanilla JS' :
+                                    courseStructure?.[0]?.id?.includes('react') ? 'AI powered React JS' :
+                                      courseStructure?.[0]?.id?.includes('js') ? 'AI-Powered JavaScript' :
+                                        courseStructure?.[0]?.id?.includes('git') ? 'Git & GitHub' :
+                                          courseStructure?.[0]?.id?.includes('json') ? 'JSON Essentials' :
+                                            courseStructure?.[0]?.id?.includes('django') ? 'Django Framework' :
+                                              courseStructure?.[0]?.id?.includes('devops') ? 'DevOps Framework' :
+                                                courseStructure?.[0]?.id?.includes('pandas') ? 'Pandas for Data Science' :
+                                                  courseStructure?.[0]?.id?.includes('matplotlib') ? 'Matplotlib for Data Science' :
+                                                    courseStructure?.[0]?.id?.includes('seaborn') ? 'Seaborn for Data Science' :
+                                                      courseStructure?.[0]?.id?.includes('tally') ? 'AI powered Tally' :
+                                                        'HTML, CSS & Bootstrap'}
         </h2>
       </div>
 
@@ -142,25 +142,55 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
 
       {/* Accordion Modules */}
       <div className="sidebar-links-container" style={{ flex: 1, overflowY: 'auto', padding: '1rem 0' }}>
-        {courseStructure?.map((module) => {
+        {courseStructure?.map((module, mIdx) => {
           const isExpanded = expandedModules[module.id];
           const isLocked = isModuleLocked(activeCourse, module.id, validations, session, completedLessons, taskSubmissions);
           const isSingleItem = module.items?.length === 1;
           const isModuleActive = activeNode?.moduleId === module.id;
 
           return (
-            <div key={module.id} style={{ marginBottom: '0.5rem' }}>
-              {/* Accordion Header */}
-              <div 
+            <React.Fragment key={module.id}>
+              {module.levelHeader && (
+                <div style={{
+                  margin: mIdx === 0 ? '0 1rem 0.85rem' : '1.25rem 1rem 0.85rem',
+                  padding: '0.65rem 0.9rem',
+                  background: module.levelHeader.includes('Level 3')
+                    ? 'linear-gradient(135deg, #fdf4ff 0%, #ede9fe 100%)'
+                    : module.levelHeader.includes('Level 2')
+                    ? 'linear-gradient(135deg, #ecfdf5 0%, #e0e7ff 100%)'
+                    : 'linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%)',
+                  border: `1.5px solid ${module.levelHeader.includes('Level 3') ? '#d8b4fe' : module.levelHeader.includes('Level 2') ? '#86efac' : '#c7d2fe'}`,
+                  borderRadius: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  boxShadow: module.levelHeader.includes('Level 3')
+                    ? '0 2px 6px rgba(126, 34, 206, 0.08)'
+                    : '0 2px 4px rgba(79, 70, 229, 0.05)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{
+                      fontSize: '0.9rem',
+                      fontWeight: 800,
+                      color: module.levelHeader.includes('Level 3') ? '#581c87' : '#1e1b4b'
+                    }}>
+                      {module.levelHeader}
+                    </span>
+                  </div>
+                </div>
+              )}
+              <div style={{ marginBottom: '0.5rem' }}>
+                {/* Accordion Header */}
+              <div
                 onClick={() => {
                   toggleModule(module.id);
                   if (isSingleItem && !isLocked && typeof onNavClick === 'function') {
                     onNavClick(module.id, module.items[0].id);
                   }
                 }}
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
                   gap: '0.5rem',
                   padding: '0.75rem 1.5rem',
                   cursor: 'pointer',
@@ -193,8 +223,8 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
                       {module.items.map((item) => {
                         const isActive = activeNode?.moduleId === module.id && activeNode?.tabId === item.id;
                         const itemKey = `${activeCourse}:${module.id}:${item.id}`;
-                        const isCompleted = completedLessons.includes(itemKey) || 
-                                            completedLessons.includes(`${module.id}:${item.id}`);
+                        const isCompleted = completedLessons.includes(itemKey) ||
+                          completedLessons.includes(`${module.id}:${item.id}`);
 
                         return (
                           <div
@@ -213,7 +243,7 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
                               opacity: isLocked ? 0.7 : 1
                             }}
                           >
-                            <div style={{ 
+                            <div style={{
                               color: isLocked ? '#94a3b8' : isActive ? '#2563eb' : '#64748b',
                               display: 'flex',
                               alignItems: 'center',
@@ -221,7 +251,7 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
                             }}>
                               {isLocked ? <Lock size={16} color="#ea580c" /> : item.icon}
                             </div>
-                            <span style={{ 
+                            <span style={{
                               fontWeight: isActive ? '600' : '500',
                               fontSize: '0.95rem',
                               flex: 1
@@ -242,6 +272,7 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
                 )}
               </AnimatePresence>
             </div>
+          </React.Fragment>
           );
         })}
       </div>

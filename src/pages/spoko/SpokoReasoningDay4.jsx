@@ -1449,7 +1449,7 @@ export default function SpokoReasoningDay4({
 
                 {savedProgress.quizPassed && (
                   <button
-                    onClick={() => setShowDay5Modal(true)}
+                    onClick={() => onNavigate && onNavigate('spoko_reasoning_l1_d5', 'overview')}
                     style={{
                       background: '#10b981',
                       color: '#ffffff',
@@ -1465,7 +1465,7 @@ export default function SpokoReasoningDay4({
                       boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
                     }}
                   >
-                    Proceed to Day 5 Preview →
+                    Proceed to Day 5: Analogies & Relationships →
                   </button>
                 )}
               </div>
@@ -1679,11 +1679,11 @@ export default function SpokoReasoningDay4({
                 <button
                   onClick={() => {
                     setShowDay5Modal(false);
-                    if (onNavigate) onNavigate('dashboard');
+                    if (onNavigate) onNavigate('spoko_reasoning_l1_d5', 'overview');
                   }}
                   style={{ background: '#4f46e5', color: '#ffffff', border: 'none', padding: '0.65rem 1.25rem', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}
                 >
-                  Back to Dashboard
+                  Start Day 5 Lesson →
                 </button>
               </div>
             </div>
@@ -1739,9 +1739,9 @@ export default function SpokoReasoningDay4({
             </button>
 
             <button
-              onClick={() => setShowDay5Modal(true)}
+              onClick={() => onNavigate && onNavigate('spoko_reasoning_l1_d5', 'overview')}
               style={{
-                background: savedProgress.completedDay ? '#4f46e5' : '#64748b',
+                background: '#4f46e5',
                 color: '#ffffff',
                 border: 'none',
                 padding: '0.65rem 1.25rem',
@@ -1754,7 +1754,7 @@ export default function SpokoReasoningDay4({
                 gap: '0.4rem'
               }}
             >
-              Next: Day 5 Preview →
+              Next: Day 5 (Analogies) →
             </button>
           </div>
         </div>

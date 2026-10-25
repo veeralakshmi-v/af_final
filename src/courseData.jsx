@@ -3050,7 +3050,8 @@ export const spokoHrCourseData = [
 export const spokoReasoningCourseData = [
   {
     id: 'spoko_reasoning_l1_d1',
-    title: 'Level 1: Day 1 - Intro to Logical Thinking',
+    levelHeader: 'Level 1: Beginner',
+    title: 'Day 1 - Intro to Logical Thinking',
     items: [
       { id: 'overview', label: 'Day 1 Overview & Objectives', icon: <BookOpen size={18} /> },
       { id: 'section1', label: '1. What Is Logical Thinking?', icon: <Brain size={18} /> },
@@ -3064,7 +3065,7 @@ export const spokoReasoningCourseData = [
   },
   {
     id: 'spoko_reasoning_l1_d2',
-    title: 'Level 1: Day 2 - Number Series & Pattern Recognition',
+    title: 'Day 2 - Number Series & Pattern Recognition',
     items: [
       { id: 'overview', label: 'Day 2 Overview & Objectives', icon: <BookOpen size={18} /> },
       { id: 'section1', label: '1. Intro to Number Series', icon: <Hash size={18} /> },
@@ -3080,7 +3081,7 @@ export const spokoReasoningCourseData = [
   },
   {
     id: 'spoko_reasoning_l1_d3',
-    title: 'Level 1: Day 3 - Alphabet & Symbol Patterns',
+    title: 'Day 3 - Alphabet & Symbol Patterns',
     items: [
       { id: 'overview', label: 'Day 3 Overview & Objectives', icon: <BookOpen size={18} /> },
       { id: 'section1', label: '1. Alphabet Positions (A–Z)', icon: <LayoutGrid size={18} /> },
@@ -3097,7 +3098,7 @@ export const spokoReasoningCourseData = [
   },
   {
     id: 'spoko_reasoning_l1_d4',
-    title: 'Level 1: Day 4 - Classification & Odd One Out',
+    title: 'Day 4 - Classification & Odd One Out',
     items: [
       { id: 'overview', label: 'Day 4 Overview & Objectives', icon: <BookOpen size={18} /> },
       { id: 'section1', label: '1. Intro to Classification', icon: <Filter size={18} /> },
@@ -3114,9 +3115,163 @@ export const spokoReasoningCourseData = [
   },
   {
     id: 'spoko_reasoning_l1_d5',
-    title: 'Level 1: Day 5 - Analogies & Relationships',
+    title: 'Day 5 - Analogies & Relationships',
     items: [
-      { id: 'day5_preview', label: 'Day 5 (Coming Soon)', icon: <Clock size={18} /> }
+      { id: 'overview', label: 'Day 5 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Intro to Analogies', icon: <Sparkles size={18} /> },
+      { id: 'section2', label: '2. Word Analogies', icon: <TypeIcon size={18} /> },
+      { id: 'section3', label: '3. Object, Function & Part-Whole', icon: <Layers size={18} /> },
+      { id: 'section4', label: '4. Number Analogies', icon: <Hash size={18} /> },
+      { id: 'section5', label: '5. Alphabet & Letter Analogies', icon: <LayoutGrid size={18} /> },
+      { id: 'section6', label: '6. Cause-Effect Relationships', icon: <Zap size={18} /> },
+      { id: 'section7', label: '7. Step-by-Step Solving Guide', icon: <Shield size={18} /> },
+      { id: 'revision', label: 'Revision & Relationship Checklist', icon: <CheckSquare size={18} /> },
+      { id: 'practice', label: 'Practice Quiz (20 Qs)', icon: <CheckCircle size={18} /> },
+      { id: 'assessment', label: 'Day 5 Assessment Summary', icon: <Award size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l1_d6',
+    title: 'Day 6 - Basic Deductive Reasoning',
+    items: [
+      { id: 'overview', label: 'Day 6 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Intro to Deductive Reasoning', icon: <Brain size={18} /> },
+      { id: 'section2', label: '2. Facts, Statements & Assumptions', icon: <CheckSquare size={18} /> },
+      { id: 'section3', label: '3. All, Some, and None', icon: <Layers size={18} /> },
+      { id: 'section4', label: '4. Drawing Logical Conclusions', icon: <Target size={18} /> },
+      { id: 'section5', label: '5. Identifying Contradictions', icon: <ShieldAlert size={18} /> },
+      { id: 'section6', label: '6. Everyday & Workplace Scenarios', icon: <Briefcase size={18} /> },
+      { id: 'section7', label: '7. Step-by-Step Deductive Method', icon: <Shield size={18} /> },
+      { id: 'revision', label: 'Revision & Deductive Checklist', icon: <CheckSquare size={18} /> },
+      { id: 'practice', label: 'Practice Quiz (20 Qs)', icon: <CheckCircle size={18} /> },
+      { id: 'assessment', label: 'Day 6 Assessment Summary', icon: <Award size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l1_d7',
+    title: 'Day 7 - Everyday Problem Solving',
+    items: [
+      { id: 'overview', label: 'Day 7 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Understanding a Problem', icon: <Brain size={18} /> },
+      { id: 'section2', label: '2. Facts vs Assumptions', icon: <CheckSquare size={18} /> },
+      { id: 'section3', label: '3. Finding the Root Cause', icon: <Target size={18} /> },
+      { id: 'section4', label: '4. Comparing Possible Solutions', icon: <Scale size={18} /> },
+      { id: 'section5', label: '5. Everyday Problem-Solving', icon: <Briefcase size={18} /> },
+      { id: 'section6', label: '6. Decision-Making & Verification', icon: <Shield size={18} /> },
+      { id: 'section7', label: '7. Level 1 Integrated Challenges', icon: <Zap size={18} /> },
+      { id: 'revision', label: 'Revision & Master Checklist', icon: <Sparkles size={18} /> },
+      { id: 'practice', label: 'Graduation Quiz (20 Qs)', icon: <CheckCircle size={18} /> },
+      { id: 'assessment', label: 'Level 1 Final Graduation', icon: <Award size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l2_d8',
+    levelHeader: 'Level 2: Intermediate',
+    title: 'Day 8 - Data Interpretation',
+    items: [
+      { id: 'overview', label: 'Day 8 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Reading Tables & Data Basics', icon: <Table size={18} /> },
+      { id: 'section2', label: '2. Bar Charts & Comparisons', icon: <BarChart2 size={18} /> },
+      { id: 'section3', label: '3. Pie Charts & Proportions', icon: <PieChart size={18} /> },
+      { id: 'section4', label: '4. % and Percentage Change', icon: <Percent size={18} /> },
+      { id: 'section5', label: '5. Ratios and Averages', icon: <Scale size={18} /> },
+      { id: 'section6', label: '6. Line Charts & Trends', icon: <Activity size={18} /> },
+      { id: 'section7', label: '7. Drawing Valid Conclusions', icon: <Target size={18} /> },
+      { id: 'examples', label: '8 Solved Master Examples', icon: <Layers size={18} /> },
+      { id: 'practice', label: '3 Timed Practice Sets', icon: <CheckCircle size={18} /> },
+      { id: 'casestudy', label: 'MedTech Product Sales Study', icon: <Activity size={18} /> },
+      { id: 'mistakes', label: 'Mistakes & Time Shortcuts', icon: <ShieldAlert size={18} /> },
+      { id: 'assessment', label: 'Final Assessment (20 Qs)', icon: <Award size={18} /> },
+      { id: 'summary', label: 'Revision & Formula Sheet', icon: <FileText size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l2_d9',
+    title: 'Day 9 - Root Cause Analysis',
+    items: [
+      { id: 'overview', label: 'Day 9 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Symptoms vs Root Causes', icon: <Target size={18} /> },
+      { id: 'section2', label: '2. The 5 Whys Technique', icon: <Layers size={18} /> },
+      { id: 'section3', label: '3. Cause & Effect Relations', icon: <Zap size={18} /> },
+      { id: 'section4', label: '4. Fishbone Diagram (Ishikawa)', icon: <GitBranch size={18} /> },
+      { id: 'section5', label: '5. Evidence-Based Diagnosis', icon: <CheckSquare size={18} /> },
+      { id: 'section6', label: '6. Prioritizing Root Causes', icon: <Activity size={18} /> },
+      { id: 'section7', label: '7. Actions & Prevention', icon: <Shield size={18} /> },
+      { id: 'examples', label: '8 Solved Master Examples', icon: <CheckCircle size={18} /> },
+      { id: 'practice', label: '3 Timed Practice Sets', icon: <Clock size={18} /> },
+      { id: 'casestudy', label: 'Real-World Case Study', icon: <Briefcase size={18} /> },
+      { id: 'mistakes', label: 'Mistakes & Checklist', icon: <ShieldAlert size={18} /> },
+      { id: 'assessment', label: 'Final Assessment (15 Qs)', icon: <Award size={18} /> },
+      { id: 'summary', label: 'Revision & Diagnostic Sheet', icon: <FileText size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l2_d10',
+    title: 'Day 10 - Structured Problem Solving (Part 1)',
+    items: [
+      { id: 'overview', label: 'Day 10 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Problem Definition vs Symptoms', icon: <Target size={18} /> },
+      { id: 'section2', label: '2. Problem Decomposition & Trees', icon: <GitBranch size={18} /> },
+      { id: 'section3', label: '3. Gathering Info & Constraints', icon: <Layers size={18} /> },
+      { id: 'section4', label: '4. Generating Alternatives', icon: <Zap size={18} /> },
+      { id: 'examples', label: '4 Solved Master Examples', icon: <CheckCircle size={18} /> },
+      { id: 'practice', label: '3 Timed Practice Sets', icon: <Clock size={18} /> },
+      { id: 'casestudy', label: 'Real-World Case Study (Part 1)', icon: <Briefcase size={18} /> },
+      { id: 'mistakes', label: 'Mistakes & Framing Traps', icon: <ShieldAlert size={18} /> },
+      { id: 'assessment', label: 'Final Assessment (20 Qs)', icon: <Award size={18} /> },
+      { id: 'summary', label: 'Revision & Framework Sheet', icon: <FileText size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l2_d11',
+    title: 'Day 11 - Structured Problem Solving (Part 2)',
+    items: [
+      { id: 'overview', label: 'Day 11 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Decision Criteria & Matrices', icon: <Scale size={18} /> },
+      { id: 'section2', label: '2. Risks, Trade-offs & Costs', icon: <ShieldAlert size={18} /> },
+      { id: 'section3', label: '3. Selection & Justification', icon: <CheckSquare size={18} /> },
+      { id: 'section4', label: '4. Action Plan & Results', icon: <Activity size={18} /> },
+      { id: 'examples', label: '4 Solved Master Examples', icon: <CheckCircle size={18} /> },
+      { id: 'practice', label: '3 Timed Practice Sets', icon: <Clock size={18} /> },
+      { id: 'casestudy', label: 'Real-World Case Study (Part 2)', icon: <Briefcase size={18} /> },
+      { id: 'mistakes', label: 'Mistakes & Decision Traps', icon: <ShieldAlert size={18} /> },
+      { id: 'assessment', label: 'Final Assessment (20 Qs)', icon: <Award size={18} /> },
+      { id: 'summary', label: 'Revision & Framework Sheet', icon: <FileText size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l3_d12',
+    levelHeader: 'Level 3: Advanced',
+    title: 'Day 12 - Critical Thinking & Deduction (Part 1)',
+    items: [
+      { id: 'overview', label: 'Day 12 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Facts, Opinions & Assumptions', icon: <Target size={18} /> },
+      { id: 'section2', label: '2. Identifying Hidden Assumptions', icon: <Layers size={18} /> },
+      { id: 'section3', label: '3. Evaluating Arguments & Validity', icon: <Scale size={18} /> },
+      { id: 'section4', label: '4. Multi-Statement Deductions', icon: <GitBranch size={18} /> },
+      { id: 'examples', label: '5 Solved Master Examples', icon: <CheckCircle size={18} /> },
+      { id: 'practice', label: '3 Timed Practice Sets', icon: <Clock size={18} /> },
+      { id: 'casestudy', label: 'Real-World Case Study (Part 1)', icon: <Briefcase size={18} /> },
+      { id: 'mistakes', label: 'Mistakes & Traps', icon: <ShieldAlert size={18} /> },
+      { id: 'assessment', label: 'Final Assessment (20 Qs)', icon: <Award size={18} /> },
+      { id: 'summary', label: 'Revision & Checklist', icon: <FileText size={18} /> }
+    ]
+  },
+  {
+    id: 'spoko_reasoning_l3_d13',
+    title: 'Day 13 - Fallacies & Evidence Analysis (Part 2)',
+    items: [
+      { id: 'overview', label: 'Day 13 Overview & Objectives', icon: <BookOpen size={18} /> },
+      { id: 'section1', label: '1. Necessary vs Sufficient Conditions', icon: <CheckSquare size={18} /> },
+      { id: 'section2', label: '2. Contradictions & Conflict', icon: <ShieldAlert size={18} /> },
+      { id: 'section3', label: '3. 8 Classic Logical Fallacies', icon: <Zap size={18} /> },
+      { id: 'section4', label: '4. Evidence & Causation vs Correlation', icon: <Activity size={18} /> },
+      { id: 'examples', label: '5 Solved Master Examples', icon: <CheckCircle size={18} /> },
+      { id: 'practice', label: '3 Timed Practice Sets', icon: <Clock size={18} /> },
+      { id: 'casestudy', label: 'Real-World Case Study (Part 2)', icon: <Briefcase size={18} /> },
+      { id: 'mistakes', label: 'Mistakes & Traps', icon: <ShieldAlert size={18} /> },
+      { id: 'assessment', label: 'Final Assessment (20 Qs)', icon: <Award size={18} /> },
+      { id: 'summary', label: 'Revision & Checklist', icon: <FileText size={18} /> }
     ]
   }
 ];

@@ -84,7 +84,7 @@ const subCourses = [
     bgColor: 'rgba(99, 102, 241, 0.08)',
     borderColor: '#6366f1',
     shadowColor: 'rgba(99,102,241,0.15)',
-    modulesCount: '20 Days (20 Hours)',
+    modulesCount: '20 Modules',
     enrolledKey: 'web_design_20days'
   },
   {
@@ -132,7 +132,7 @@ const subCourses = [
     bgColor: 'rgba(234, 179, 8, 0.08)',
     borderColor: '#eab308',
     shadowColor: 'rgba(234,179,8,0.15)',
-    modulesCount: '10 Days + Capstone & AI Tools (12 Modules)',
+    modulesCount: '10 Modules',
     enrolledKey: 'core_js'
   },
   {
@@ -204,7 +204,7 @@ const subCourses = [
     bgColor: 'rgba(16, 185, 129, 0.08)',
     borderColor: '#10b981',
     shadowColor: 'rgba(16,185,129,0.15)',
-    modulesCount: '7 Days (7 Modules)',
+    modulesCount: '7 Modules',
     enrolledKey: 'summer_sql'
   },
   {
@@ -216,7 +216,7 @@ const subCourses = [
     bgColor: 'rgba(219, 39, 119, 0.08)',
     borderColor: '#ec4899',
     shadowColor: 'rgba(219,39,119,0.15)',
-    modulesCount: '20 Days (4 Modules)',
+    modulesCount: '20 Modules',
     enrolledKey: 'generative_ai_course'
   },
   {
@@ -228,7 +228,7 @@ const subCourses = [
     bgColor: 'rgba(124, 58, 237, 0.08)',
     borderColor: '#818cf8',
     shadowColor: 'rgba(124,58,237,0.15)',
-    modulesCount: '40 Days (8 Modules)',
+    modulesCount: '40 Modules',
     enrolledKey: 'agentic_ai'
   },
   {
@@ -240,7 +240,7 @@ const subCourses = [
     bgColor: 'rgba(234, 179, 8, 0.08)',
     borderColor: '#eab308',
     shadowColor: 'rgba(234,179,8,0.15)',
-    modulesCount: '8 Days + Capstone (9 Modules)',
+    modulesCount: '8 Modules',
     enrolledKey: 'powerbi'
   },
   {
@@ -252,7 +252,7 @@ const subCourses = [
     bgColor: 'rgba(219, 39, 119, 0.08)',
     borderColor: '#ec4899',
     shadowColor: 'rgba(219,39,119,0.15)',
-    modulesCount: '17 Days',
+    modulesCount: '17 Modules',
     enrolledKey: 'stats_course'
   },
   {
@@ -264,7 +264,7 @@ const subCourses = [
     bgColor: 'rgba(14, 165, 233, 0.08)',
     borderColor: '#0ea5e9',
     shadowColor: 'rgba(14,165,233,0.15)',
-    modulesCount: '1 Day (Module 1)',
+    modulesCount: '5 Modules',
     enrolledKey: 'numpy_course'
   },
   {
@@ -276,7 +276,7 @@ const subCourses = [
     bgColor: 'rgba(16, 185, 129, 0.08)',
     borderColor: '#10b981',
     shadowColor: 'rgba(16,185,129,0.15)',
-    modulesCount: '6 Days (6 Modules)',
+    modulesCount: '6 Modules',
     enrolledKey: 'pandas_course'
   },
   {
@@ -288,7 +288,7 @@ const subCourses = [
     bgColor: 'rgba(249, 115, 22, 0.08)',
     borderColor: '#f97316',
     shadowColor: 'rgba(249,115,22,0.15)',
-    modulesCount: '5 Days (5 Modules)',
+    modulesCount: '5 Modules',
     enrolledKey: 'matplotlib_course'
   },
   {
@@ -300,7 +300,7 @@ const subCourses = [
     bgColor: 'rgba(99, 102, 241, 0.08)',
     borderColor: '#6366f1',
     shadowColor: 'rgba(99,102,241,0.15)',
-    modulesCount: '4 Days (4 Modules)',
+    modulesCount: '4 Modules',
     enrolledKey: 'seaborn_course'
   },
   {
@@ -312,7 +312,7 @@ const subCourses = [
     bgColor: 'rgba(14, 165, 233, 0.08)',
     borderColor: '#0ea5e9',
     shadowColor: 'rgba(14,165,233,0.15)',
-    modulesCount: '8 Modules + Capstone',
+    modulesCount: '8 Modules',
     enrolledKey: 'sql_da'
   },
   {
@@ -348,7 +348,7 @@ const subCourses = [
     bgColor: 'rgba(234, 88, 12, 0.08)',
     borderColor: '#f97316',
     shadowColor: 'rgba(234, 88, 12, 0.15)',
-    modulesCount: '6 Days Active (Story-Based English Course)',
+    modulesCount: '30 Modules',
     enrolledKey: 'spoko_story'
   },
   {
@@ -372,7 +372,7 @@ const subCourses = [
     bgColor: 'rgba(99, 102, 241, 0.08)',
     borderColor: '#6366f1',
     shadowColor: 'rgba(99, 102, 241, 0.15)',
-    modulesCount: '5 Days (100 Questions)',
+    modulesCount: '5 Modules',
     enrolledKey: 'spoko_hr'
   },
   {
@@ -384,7 +384,7 @@ const subCourses = [
     bgColor: 'rgba(139, 92, 246, 0.08)',
     borderColor: '#8b5cf6',
     shadowColor: 'rgba(139, 92, 246, 0.15)',
-    modulesCount: 'Level 1: Days 1–4 (80 Qs Practice)',
+    modulesCount: '3 Levels',
     enrolledKey: 'spoko_reasoning'
   }
 ];
@@ -551,7 +551,7 @@ export function getStudentMockInterviews(student) {
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
     }
-  } catch (e) {}
+  } catch (e) { }
   return [];
 }
 
@@ -778,10 +778,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               try {
                 const userKey = session?.accessCode || session?.studentId || session?.username || 'guest';
                 localStorage.setItem(`spoko_hr_mock_interviews_${userKey}`, JSON.stringify(data));
-              } catch {}
+              } catch { }
             }
           })
-          .catch(() => {});
+          .catch(() => { });
       }
     }
   }, [session]);
@@ -4200,16 +4200,16 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
         {/* 🎓 TAB 6.5: CERTIFICATES & ID CARD MANAGEMENT (STAFF & ADMIN ONLY) */}
         {(activeTab === 'prepare_certs' || activeTab === 'af_certificates' || activeTab === 'idcards' || activeTab === 'foclen') && (session?.role === 'admin' || session?.role === 'staff') && (
-          <CertificateManager 
-            session={session} 
-            students={students} 
+          <CertificateManager
+            session={session}
+            students={students}
             initialModule={activeTab === 'idcards' ? 'idcards' : activeTab === 'foclen' ? 'foclen' : 'certificates'}
             onSelectModule={(mod) => {
               if (mod === 'certificates') setActiveTab('af_certificates');
               else if (mod === 'idcards') setActiveTab('idcards');
               else if (mod === 'foclen') setActiveTab('foclen');
             }}
-            onBack={() => setActiveTab('overview')} 
+            onBack={() => setActiveTab('overview')}
           />
         )}
 
