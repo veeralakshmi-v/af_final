@@ -83,23 +83,47 @@ export default function SpokoReasoningDay1({
     }
   }, [savedProgress, storageKey]);
 
-  // Sync completedDay with LMS backend if logged in
+  // Sync completedDay & quiz assessment score with LMS backend if logged in
   useEffect(() => {
     const studentId = session?.studentId || session?.accessCode;
-    if (studentId && savedProgress.completedDay) {
+    if (studentId && (savedProgress.quizFinished || savedProgress.completedDay || typeof savedProgress.quizScore === 'number')) {
       const lessonKey = 'spoko_reasoning:spoko_reasoning_l1_d1:day1';
+      const qScore = Number(savedProgress.quizScore) || 0;
+      const pct = Math.round((qScore / 20) * 100);
+      const band = pct >= 90 ? '🌟 90–100%: Excellent Understanding!' :
+                   pct >= 70 ? '🎉 70–89%: Good Progress!' :
+                   pct >= 50 ? '📚 50–69%: Keep Practising!' :
+                   '⚠️ Below 50%: Review the Learning Material & Try Again.';
+
+      // 1. Send dedicated assessment report to backend
+      fetch(`/api/students/${studentId}/logical-reasoning-assessment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          day: 1,
+          score: qScore,
+          total: 20,
+          percentage: pct,
+          correct: qScore,
+          incorrect: Math.max(0, 20 - qScore),
+          feedbackBand: band,
+          level: 'Level 1 Beginner'
+        })
+      }).catch(() => {});
+
+      // 2. Also record lesson completion
       fetch(`/api/students/${studentId}/lessons`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           lessonId: lessonKey,
           course: 'spoko_reasoning',
-          score: savedProgress.quizScore,
+          score: qScore,
           total: 20
         })
       }).catch(() => {});
     }
-  }, [savedProgress.completedDay, savedProgress.quizScore, session]);
+  }, [savedProgress.completedDay, savedProgress.quizFinished, savedProgress.quizScore, session]);
 
   // Mark a section as completed
   const markSectionCompleted = (sectionId) => {
@@ -255,6 +279,30 @@ export default function SpokoReasoningDay1({
       lastActivity: new Date().toISOString()
     }));
     handleTabChange('assessment');
+
+    const studentId = session?.studentId || session?.accessCode;
+    if (studentId) {
+      const qScore = Number(totalCorrect) || 0;
+      const pct = Math.round((qScore / 20) * 100);
+      const band = pct >= 90 ? '🌟 90–100%: Excellent Understanding!' :
+                   pct >= 70 ? '🎉 70–89%: Good Progress!' :
+                   pct >= 50 ? '📚 50–69%: Keep Practising!' :
+                   '⚠️ Below 50%: Review the Learning Material & Try Again.';
+      fetch(`/api/students/${studentId}/logical-reasoning-assessment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          day: 1,
+          score: qScore,
+          total: 20,
+          percentage: pct,
+          correct: qScore,
+          incorrect: Math.max(0, 20 - qScore),
+          feedbackBand: band,
+          level: 'Level 1 Beginner'
+        })
+      }).catch(() => {});
+    }
   };
 
   const handleRetryQuiz = () => {

@@ -1239,29 +1239,250 @@ app.post('/api/students/:id/logical-thinking-score', async (req, res) => {
     updatedAt: new Date()
   };
 
+  const taskText = `[Logical Reasoning Benchmark]: Score: ${scoreVal}/${totalVal} (${percentage}%) • Grade: ${gradeVal}${feedback ? `\nEvaluator Notes: ${feedback}` : ''}`;
+
   try {
     const isDbConnected = await checkDbConnection();
     if (isDbConnected) {
       const query = mongoose.Types.ObjectId.isValid(id) 
         ? { _id: id } 
         : { accessCode: id.trim() };
-      const student = await Student.findOneAndUpdate(
-        query, 
-        { logicalThinkingScore: scoreObj }, 
-        { new: true }
-      );
+      const student = await Student.findOne(query);
       if (!student) return res.status(404).json({ error: 'Student not found!' });
+
+      student.logicalThinkingScore = scoreObj;
+      if (!student.tasks) student.tasks = [];
+      let existingTask = student.tasks.find(t => t.moduleId === 'spoko_reasoning_benchmark');
+      if (existingTask) {
+        existingTask.score = scoreVal;
+        existingTask.total = totalVal;
+        existingTask.percentage = percentage;
+        existingTask.grade = gradeVal;
+        existingTask.status = 'Approved';
+        existingTask.feedback = feedback || '';
+        existingTask.taskText = taskText;
+        existingTask.submittedAt = new Date();
+      } else {
+        student.tasks.push({
+          _id: new mongoose.Types.ObjectId().toString(),
+          moduleId: 'spoko_reasoning_benchmark',
+          moduleTitle: 'Logical Thinking & Analytical Reasoning Assessment',
+          tabId: 'logical_reasoning',
+          score: scoreVal,
+          total: totalVal,
+          percentage,
+          grade: gradeVal,
+          status: 'Approved',
+          feedback: feedback || '',
+          taskText,
+          submittedAt: new Date()
+        });
+      }
+      student.markModified('tasks');
+      student.markModified('logicalThinkingScore');
+      await student.save();
       return res.json(student);
     } else {
       const students = getLocalStudents();
       const idx = students.findIndex(s => s.id === id || s._id === id || s.accessCode === id.trim());
       if (idx === -1) return res.status(404).json({ error: 'Student not found!' });
-      students[idx] = {
-        ...students[idx],
-        logicalThinkingScore: scoreObj
-      };
+      
+      const student = students[idx];
+      student.logicalThinkingScore = scoreObj;
+      if (!student.tasks) student.tasks = [];
+      let existingTask = student.tasks.find(t => t.moduleId === 'spoko_reasoning_benchmark');
+      if (existingTask) {
+        existingTask.score = scoreVal;
+        existingTask.total = totalVal;
+        existingTask.percentage = percentage;
+        existingTask.grade = gradeVal;
+        existingTask.status = 'Approved';
+        existingTask.feedback = feedback || '';
+        existingTask.taskText = taskText;
+        existingTask.submittedAt = new Date();
+      } else {
+        student.tasks.push({
+          _id: 'task-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+          moduleId: 'spoko_reasoning_benchmark',
+          moduleTitle: 'Logical Thinking & Analytical Reasoning Assessment',
+          tabId: 'logical_reasoning',
+          score: scoreVal,
+          total: totalVal,
+          percentage,
+          grade: gradeVal,
+          status: 'Approved',
+          feedback: feedback || '',
+          taskText,
+          submittedAt: new Date()
+        });
+      }
       saveLocalStudents(students);
-      return res.json(students[idx]);
+      return res.json(student);
+    }
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// D-2c. Update or save student logical reasoning daily assessment report
+app.post('/api/students/:id/logical-reasoning-assessment', async (req, res) => {
+  const { id } = req.params;
+  const { day = 1, score = 0, total = 20, percentage, correct, incorrect, feedbackBand = '', level = 'Level 1 Beginner' } = req.body;
+
+  const scoreNum = Number(score) || 0;
+  const totalNum = Number(total) || 20;
+  const correctNum = correct !== undefined ? Number(correct) : scoreNum;
+  const incorrectNum = incorrect !== undefined ? Number(incorrect) : Math.max(0, totalNum - correctNum);
+  const pct = percentage !== undefined ? Number(percentage) : (totalNum > 0 ? Math.round((scoreNum / totalNum) * 100) : 0);
+  let gradeVal = pct >= 90 ? 'A+' : pct >= 80 ? 'A' : pct >= 70 ? 'B' : pct >= 60 ? 'C' : 'Needs Practice';
+  const band = feedbackBand || (pct >= 90 ? '🌟 90–100%: Excellent Understanding!' :
+                                pct >= 70 ? '🎉 70–89%: Good Progress!' :
+                                pct >= 50 ? '📚 50–69%: Keep Practising!' :
+                                '⚠️ Below 50%: Review the Learning Material & Try Again.');
+
+  const modId = `spoko_reasoning_day${day}`;
+  const modTitle = `Day ${day} Assessment Report: Logical Reasoning & Analytical Thinking (${level})`;
+  const taskText = `[Day ${day} Assessment Report]\nLogical Reasoning & Analytical Thinking • ${level}\nTotal Questions: ${totalNum} • Correct Answers: ${correctNum} • Incorrect Answers: ${incorrectNum} • Final Percentage: ${pct}%\nPerformance: ${band}`;
+
+  try {
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      const query = mongoose.Types.ObjectId.isValid(id) ? { _id: id } : { accessCode: id.trim() };
+      const student = await Student.findOne(query);
+      if (!student) return res.status(404).json({ error: 'Student not found!' });
+
+      if (!student.tasks) student.tasks = [];
+      let existingTask = student.tasks.find(t => t.moduleId === modId);
+      if (existingTask) {
+        existingTask.score = scoreNum;
+        existingTask.total = totalNum;
+        existingTask.percentage = pct;
+        existingTask.correct = correctNum;
+        existingTask.incorrect = incorrectNum;
+        existingTask.grade = gradeVal;
+        existingTask.status = pct >= 70 ? 'Approved' : 'Pending';
+        existingTask.feedback = band;
+        existingTask.taskText = taskText;
+        existingTask.submittedAt = new Date();
+      } else {
+        student.tasks.push({
+          _id: new mongoose.Types.ObjectId().toString(),
+          moduleId: modId,
+          moduleTitle: modTitle,
+          tabId: 'assessment',
+          score: scoreNum,
+          total: totalNum,
+          percentage: pct,
+          correct: correctNum,
+          incorrect: incorrectNum,
+          grade: gradeVal,
+          status: pct >= 70 ? 'Approved' : 'Pending',
+          feedback: band,
+          taskText,
+          submittedAt: new Date()
+        });
+      }
+
+      if (!student.logicalThinkingScore || pct >= (student.logicalThinkingScore.percentage || 0)) {
+        student.logicalThinkingScore = {
+          score: pct,
+          total: 100,
+          percentage: pct,
+          grade: gradeVal,
+          feedback: band,
+          updatedAt: new Date()
+        };
+      }
+
+      student.markModified('tasks');
+      student.markModified('logicalThinkingScore');
+      await student.save();
+      return res.json(student);
+    } else {
+      const students = getLocalStudents();
+      const idx = students.findIndex(s => s.id === id || s._id === id || s.accessCode === id.trim());
+      if (idx === -1) return res.status(404).json({ error: 'Student not found!' });
+
+      const student = students[idx];
+      if (!student.tasks) student.tasks = [];
+      let existingTask = student.tasks.find(t => t.moduleId === modId);
+      if (existingTask) {
+        existingTask.score = scoreNum;
+        existingTask.total = totalNum;
+        existingTask.percentage = pct;
+        existingTask.correct = correctNum;
+        existingTask.incorrect = incorrectNum;
+        existingTask.grade = gradeVal;
+        existingTask.status = pct >= 70 ? 'Approved' : 'Pending';
+        existingTask.feedback = band;
+        existingTask.taskText = taskText;
+        existingTask.submittedAt = new Date();
+      } else {
+        student.tasks.push({
+          _id: 'task-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+          moduleId: modId,
+          moduleTitle: modTitle,
+          tabId: 'assessment',
+          score: scoreNum,
+          total: totalNum,
+          percentage: pct,
+          correct: correctNum,
+          incorrect: incorrectNum,
+          grade: gradeVal,
+          status: pct >= 70 ? 'Approved' : 'Pending',
+          feedback: band,
+          taskText,
+          submittedAt: new Date()
+        });
+      }
+
+      if (!student.logicalThinkingScore || pct >= (student.logicalThinkingScore.percentage || 0)) {
+        student.logicalThinkingScore = {
+          score: pct,
+          total: 100,
+          percentage: pct,
+          grade: gradeVal,
+          feedback: band,
+          updatedAt: new Date()
+        };
+      }
+
+      saveLocalStudents(students);
+      return res.json(student);
+    }
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// D-2d. Update student lesson completion & score
+app.post('/api/students/:id/lessons', async (req, res) => {
+  const { id } = req.params;
+  const { lessonId, course, score, total } = req.body;
+  try {
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      const query = mongoose.Types.ObjectId.isValid(id) ? { _id: id } : { accessCode: id.trim() };
+      const student = await Student.findOne(query);
+      if (!student) return res.status(404).json({ error: 'Student not found!' });
+      if (!student.completedLessons) student.completedLessons = [];
+      if (!student.completedLessons.includes(lessonId)) {
+        student.completedLessons.push(lessonId);
+      }
+      student.markModified('completedLessons');
+      await student.save();
+      return res.json(student);
+    } else {
+      const students = getLocalStudents();
+      const idx = students.findIndex(s => s.id === id || s._id === id || s.accessCode === id.trim());
+      if (idx === -1) return res.status(404).json({ error: 'Student not found!' });
+      const student = students[idx];
+      if (!student.completedLessons) student.completedLessons = [];
+      if (!student.completedLessons.includes(lessonId)) {
+        student.completedLessons.push(lessonId);
+      }
+      saveLocalStudents(students);
+      return res.json(student);
     }
   } catch (e) {
     return res.status(500).json({ error: e.message });

@@ -1121,31 +1121,132 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     });
   });
 
-  // 2) Logical Reasoning Score Submissions (Benchmark assessments & daily reasoning tests)
-  const logicalReasoningScoreSubmissions = students.map(s => {
+  // 2) Logical Reasoning Score Submissions (Benchmark assessments, daily reasoning quiz reports & evaluator scores)
+  const logicalReasoningScoreSubmissions = students.flatMap(s => {
+    const list = [];
+    const studentId = s._id || s.id;
+    const accessCode = s.accessCode;
+
+    // A. Explicit benchmark or evaluator score on student
     const lt = getStudentLogicalThinkingScore(s);
-    if (!lt || !lt.isEvaluated) return null;
-    return {
-      _id: `logical_score_${s._id || s.id}`,
-      id: `logical_score_${s._id || s.id}`,
-      isSpoko: false,
-      isLogicalReasoning: true,
-      trackType: 'logical_reasoning',
-      studentName: s.name,
-      studentId: s._id || s.id,
-      accessCode: s.accessCode,
-      moduleId: 'spoko_reasoning_benchmark',
-      moduleTitle: 'Logical Thinking & Analytical Reasoning Assessment',
-      tabId: 'logical_reasoning',
-      score: lt.score,
-      total: lt.total || 100,
-      grade: lt.grade || 'A',
-      submittedAt: lt.updatedAt || s.updatedAt || 'Recently',
-      status: 'Approved',
-      taskText: `[Logical Reasoning Benchmark]: Score: ${lt.score}/100 • Grade: ${lt.grade} • Status: ${lt.status}\nCurriculum: Pattern Recognition, Deductive Syllogisms, Epistemic Boundary Testing & Critical Fallacies.\n${lt.feedback ? `Evaluator Feedback: ${lt.feedback}` : ''}`,
-      staffFeedback: lt.feedback || 'Benchmarked across Deductive Logic, Pattern Series, and Fallacy Audits.'
-    };
-  }).filter(Boolean);
+    if (lt && lt.isEvaluated) {
+      list.push({
+        _id: `logical_score_${studentId}`,
+        id: `logical_score_${studentId}`,
+        isSpoko: false,
+        isLogicalReasoning: true,
+        trackType: 'logical_reasoning',
+        studentName: s.name,
+        studentId,
+        accessCode,
+        moduleId: 'spoko_reasoning_benchmark',
+        moduleTitle: 'Logical Thinking & Analytical Reasoning Assessment',
+        tabId: 'logical_reasoning',
+        totalQuestions: lt.total || 100,
+        correctAnswers: lt.score,
+        incorrectAnswers: lt.total ? Math.max(0, lt.total - lt.score) : 0,
+        score: lt.score,
+        total: lt.total || 100,
+        percentage: lt.percentage !== undefined ? lt.percentage : (lt.total ? Math.round((lt.score / lt.total) * 100) : lt.score),
+        grade: lt.grade || computeLogicalGrade(lt.score),
+        submittedAt: lt.updatedAt || s.updatedAt || 'Recently',
+        status: (lt.score >= 70 || (s.logicalThinkingScore?.score !== undefined && Number(s.logicalThinkingScore.score) > 0)) ? 'Approved' : 'Pending',
+        taskText: lt.feedback ? `[Logical Reasoning Evaluator Score]: ${lt.score}/100 • Grade: ${lt.grade} • Notes: ${lt.feedback}` : `[Logical Reasoning Score Result]: Score: ${lt.score}/100 • Grade: ${lt.grade} • Status: ${lt.status}`,
+        staffFeedback: lt.feedback || 'Evaluated across Deductive Logic, Pattern Series, and Fallacy Audits.'
+      });
+    }
+
+    // B. Daily Reasoning Assessments in student.tasks
+    (s.tasks || []).forEach((t, idx) => {
+      const modLower = (t.moduleId || '').toLowerCase();
+      if (modLower.includes('reasoning') || modLower.includes('logical') || t.tabId === 'assessment') {
+        const scoreVal = t.score !== undefined ? Number(t.score) : undefined;
+        const totalVal = t.total !== undefined ? Number(t.total) : 20;
+        const pctVal = t.percentage !== undefined ? Number(t.percentage) : (scoreVal !== undefined && totalVal ? Math.round((scoreVal / totalVal) * 100) : undefined);
+        const correctVal = t.correct !== undefined ? Number(t.correct) : scoreVal;
+        const incorrectVal = t.incorrect !== undefined ? Number(t.incorrect) : (scoreVal !== undefined ? Math.max(0, totalVal - scoreVal) : undefined);
+        const rawStatus = (t.status || 'Pending').toLowerCase();
+        const normalizedStatus = rawStatus === 'approved' ? 'Approved' : rawStatus === 'rejected' ? 'Rejected' : 'Pending';
+
+        list.push({
+          _id: t._id || t.id || `logical_task_${studentId}_${t.moduleId || idx}`,
+          id: t._id || t.id || `logical_task_${studentId}_${t.moduleId || idx}`,
+          isSpoko: false,
+          isLogicalReasoning: true,
+          trackType: 'logical_reasoning',
+          studentName: s.name,
+          studentId,
+          accessCode,
+          moduleId: t.moduleId,
+          moduleTitle: t.moduleTitle || (t.moduleId.startsWith('spoko_reasoning_day') ? `Day ${t.moduleId.replace('spoko_reasoning_day', '')} Assessment Report: Logical Reasoning & Analytical Thinking (Level 1 Beginner)` : formatTaskTitle(t)),
+          tabId: t.tabId || 'assessment',
+          totalQuestions: totalVal,
+          correctAnswers: correctVal,
+          incorrectAnswers: incorrectVal,
+          score: scoreVal,
+          total: totalVal,
+          percentage: pctVal,
+          grade: t.grade || (pctVal !== undefined ? computeLogicalGrade(pctVal) : 'A'),
+          feedbackBand: t.feedback || t.feedbackBand || '',
+          submittedAt: t.submittedAt || s.updatedAt || 'Recently',
+          status: normalizedStatus,
+          taskText: t.taskText || `[Assessment Report]: Score: ${scoreVal}/${totalVal} (${pctVal}%)`,
+          staffFeedback: t.feedback || ''
+        });
+      }
+    });
+
+    // C. Check local storage for any completed reasoning assessments (Days 1 to 21)
+    const uKeys = [accessCode, studentId, s._id, s.id].filter(Boolean);
+    if (typeof localStorage !== 'undefined') {
+      for (const uKey of uKeys) {
+        for (let day = 1; day <= 21; day++) {
+          try {
+            const raw = localStorage.getItem(`spoko_reasoning_d${day}_progress_${uKey}`);
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              if (parsed && (parsed.quizFinished || typeof parsed.quizScore === 'number' || (parsed.quizAnswers && Object.keys(parsed.quizAnswers).length > 0))) {
+                const qScore = Number(parsed.quizScore) || 0;
+                const qPct = Math.round((qScore / 20) * 100);
+                const qGrade = qPct >= 90 ? 'A+' : qPct >= 80 ? 'A' : qPct >= 70 ? 'B' : qPct >= 60 ? 'C' : 'Needs Practice';
+                const bandText = qPct >= 90 ? '🌟 90–100%: Excellent Understanding!' :
+                                 qPct >= 70 ? '🎉 70–89%: Good Progress!' :
+                                 qPct >= 50 ? '📚 50–69%: Keep Practising!' :
+                                 '⚠️ Below 50%: Review the Learning Material & Try Again.';
+                list.push({
+                  _id: `logical_day_${day}_${studentId}`,
+                  id: `logical_day_${day}_${studentId}`,
+                  isSpoko: false,
+                  isLogicalReasoning: true,
+                  trackType: 'logical_reasoning',
+                  studentName: s.name,
+                  studentId,
+                  accessCode,
+                  moduleId: `spoko_reasoning_day${day}`,
+                  moduleTitle: `Day ${day} Assessment Report: Logical Reasoning & Analytical Thinking (Level 1 Beginner)`,
+                  tabId: 'assessment',
+                  totalQuestions: 20,
+                  correctAnswers: qScore,
+                  incorrectAnswers: Math.max(0, 20 - qScore),
+                  score: qScore,
+                  total: 20,
+                  percentage: qPct,
+                  grade: qGrade,
+                  feedbackBand: bandText,
+                  submittedAt: parsed.lastActivity || s.updatedAt || 'Recently',
+                  status: qPct >= 70 ? 'Approved' : 'Pending',
+                  taskText: `[Day ${day} Assessment Report]: Total Questions: 20 • Correct: ${qScore} • Incorrect: ${Math.max(0, 20 - qScore)} • Final Percentage: ${qPct}%\n${bandText}`,
+                  staffFeedback: bandText
+                });
+              }
+            }
+          } catch {}
+        }
+      }
+    }
+
+    return list;
+  });
 
   // 3) HTML & CSS Course Day Submissions
   const htmlCssSubmissions = Object.keys(htmlCssValidations).map(modId => {
@@ -1185,7 +1286,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       const normalizedStatus = rawStatus === 'approved' ? 'Approved' : rawStatus === 'rejected' ? 'Rejected' : 'Pending';
       const taskId = t._id || t.id || `task_${s._id || s.id}_${t.moduleId || idx}`;
       const modIdLower = (t.moduleId || '').toLowerCase();
-      const isSpoko = modIdLower.includes('spoko');
+      const isSpoko = modIdLower.includes('spoko') && !modIdLower.includes('reasoning') && !modIdLower.includes('logical');
       const isReasoning = modIdLower.includes('reasoning') || modIdLower.includes('logical');
       return {
         ...t,
@@ -1205,19 +1306,27 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     })
   );
 
-  // Combined Chronological Submissions
-  const allSubmissions = [
+  // Combined Chronological Submissions with clean key deduplication
+  const rawSubmissions = [
     ...spokoMockSubmissions,
     ...logicalReasoningScoreSubmissions,
     ...htmlCssSubmissions,
     ...topicSubmissions
-  ].sort((a, b) => {
+  ];
+
+  const seenSubKeys = new Set();
+  const allSubmissions = rawSubmissions.filter(item => {
+    const key = (item._id || item.id) || `${item.studentId}_${item.moduleId}`;
+    if (seenSubKeys.has(key)) return false;
+    seenSubKeys.add(key);
+    return true;
+  }).sort((a, b) => {
     const da = new Date(a.submittedAt).getTime() || 0;
     const db = new Date(b.submittedAt).getTime() || 0;
     return db - da;
   });
 
-  const spokoSubmissions = allSubmissions.filter(s => s.isSpoko || s.trackType === 'spoko' || (s.moduleId || '').toLowerCase().includes('spoko'));
+  const spokoSubmissions = allSubmissions.filter(s => s.isSpoko || s.trackType === 'spoko' || ((s.moduleId || '').toLowerCase().includes('spoko') && !(s.moduleId || '').toLowerCase().includes('reasoning')));
   const logicalReasoningSubmissions = allSubmissions.filter(s => s.isLogicalReasoning || s.trackType === 'logical_reasoning' || (s.moduleId || '').toLowerCase().includes('reasoning') || (s.moduleId || '').toLowerCase().includes('logical'));
 
   const pendingSubmissions = allSubmissions.filter(s => (s.status || '').toLowerCase() === 'pending');
@@ -5601,87 +5710,210 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                               </div>
                             </div>
 
-                            {/* Middle Body: Submission Content & Student Reflection */}
+                            {/* Middle Body: Submission Content & Logical Reasoning Score Result Report */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                              {/* URL Button */}
-                              {task.submissionUrl && (
-                                <div>
-                                  <a
-                                    href={task.submissionUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    style={{
-                                      color: '#2563eb',
-                                      textDecoration: 'none',
-                                      fontWeight: 800,
-                                      display: 'inline-flex',
-                                      alignItems: 'center',
-                                      gap: '6px',
-                                      background: '#eff6ff',
-                                      border: '1px solid #bfdbfe',
-                                      padding: '6px 14px',
+                              {/* 🧠 Special Score Result Report Layout for Logical Reasoning */}
+                              {task.isLogicalReasoning ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                                  {/* Performance Cards Grid matching Assessment Report */}
+                                  <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+                                    gap: '0.75rem'
+                                  }}>
+                                    <div style={{ background: '#f8fafc', padding: '0.85rem 1rem', borderRadius: '12px', textAlign: 'center', border: '1px solid #e2e8f0' }}>
+                                      <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Questions</div>
+                                      <div style={{ fontSize: '1.45rem', fontWeight: 900, color: '#0f172a', marginTop: '2px' }}>
+                                        {task.totalQuestions || task.total || 20}
+                                      </div>
+                                    </div>
+                                    <div style={{ background: '#f0fdf4', padding: '0.85rem 1rem', borderRadius: '12px', textAlign: 'center', border: '1px solid #bbf7d0' }}>
+                                      <div style={{ fontSize: '0.72rem', color: '#166534', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Correct Answers</div>
+                                      <div style={{ fontSize: '1.45rem', fontWeight: 900, color: '#16a34a', marginTop: '2px' }}>
+                                        {task.correctAnswers !== undefined ? task.correctAnswers : (task.score !== undefined ? task.score : '—')}
+                                      </div>
+                                    </div>
+                                    <div style={{ background: '#fff5f5', padding: '0.85rem 1rem', borderRadius: '12px', textAlign: 'center', border: '1px solid #fecaca' }}>
+                                      <div style={{ fontSize: '0.72rem', color: '#991b1b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Incorrect Answers</div>
+                                      <div style={{ fontSize: '1.45rem', fontWeight: 900, color: '#dc2626', marginTop: '2px' }}>
+                                        {task.incorrectAnswers !== undefined
+                                          ? task.incorrectAnswers
+                                          : (task.total && task.score !== undefined ? Math.max(0, task.total - task.score) : '—')}
+                                      </div>
+                                    </div>
+                                    <div style={{ background: '#eef2ff', padding: '0.85rem 1rem', borderRadius: '12px', textAlign: 'center', border: '1px solid #c7d2fe' }}>
+                                      <div style={{ fontSize: '0.72rem', color: '#4338ca', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Final Percentage</div>
+                                      <div style={{ fontSize: '1.45rem', fontWeight: 900, color: '#4f46e5', marginTop: '2px' }}>
+                                        {task.percentage !== undefined
+                                          ? `${task.percentage}%`
+                                          : (task.total ? `${Math.round(((task.score || 0) / task.total) * 100)}%` : `${task.score || 0}%`)}
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Performance Feedback Band Banner */}
+                                  {(() => {
+                                    const pct = task.percentage !== undefined
+                                      ? task.percentage
+                                      : (task.total ? Math.round(((task.score || 0) / task.total) * 100) : (task.score || 0));
+
+                                    const bandTitle = pct >= 90 ? '🌟 90–100%: Excellent Understanding!' :
+                                                      pct >= 70 ? '🎉 70–89%: Good Progress!' :
+                                                      pct >= 50 ? '📚 50–69%: Keep Practising!' :
+                                                      '⚠️ Below 50%: Review the Learning Material & Try Again.';
+                                    const bandDesc = pct >= 90 ? 'Outstanding work! Mastered the core tenets of logical thinking, deduction, and cause-effect analysis.' :
+                                                     pct >= 70 ? 'Great job! Cleared the 70% passing threshold with solid step-by-step reasoning.' :
+                                                     pct >= 50 ? 'Good effort! Grasping core concepts, but recommended to review difference between facts and assumptions.' :
+                                                     'Take your time to re-read the reasoning sections. Focus on the simple clues and facts, then retry the assessment!';
+
+                                    return (
+                                      <div style={{
+                                        background: pct >= 90 ? '#ecfdf5' : pct >= 70 ? '#f0fdf4' : pct >= 50 ? '#fffbeb' : '#fff1f2',
+                                        border: `1.5px solid ${pct >= 90 ? '#a7f3d0' : pct >= 70 ? '#bbf7d0' : pct >= 50 ? '#fde68a' : '#fecdd3'}`,
+                                        borderRadius: '12px',
+                                        padding: '0.85rem 1.15rem'
+                                      }}>
+                                        <div style={{
+                                          fontSize: '0.92rem',
+                                          fontWeight: 800,
+                                          color: pct >= 90 ? '#065f46' : pct >= 70 ? '#166534' : pct >= 50 ? '#92400e' : '#9f1239',
+                                          marginBottom: '0.2rem'
+                                        }}>
+                                          {task.feedbackBand || bandTitle}
+                                        </div>
+                                        <p style={{ margin: 0, fontSize: '0.82rem', color: '#475569' }}>
+                                          {bandDesc}
+                                        </p>
+                                      </div>
+                                    );
+                                  })()}
+
+                                  {/* Staff Remarks Display */}
+                                  {task.staffFeedback && (
+                                    <div style={{
+                                      background: '#f8fafc',
+                                      borderLeft: '4px solid #4f46e5',
+                                      padding: '8px 12px',
+                                      borderRadius: '0 10px 10px 0',
+                                      fontSize: '0.84rem',
+                                      color: '#1e1b4b',
+                                      fontWeight: 600
+                                    }}>
+                                      💬 Evaluator Remarks &amp; Notes: "{task.staffFeedback}" {task.validatedBy ? `— by ${task.validatedBy}` : ''}
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
+                                <>
+                                  {/* URL Button */}
+                                  {task.submissionUrl && (
+                                    <div>
+                                      <a
+                                        href={task.submissionUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{
+                                          color: '#2563eb',
+                                          textDecoration: 'none',
+                                          fontWeight: 800,
+                                          display: 'inline-flex',
+                                          alignItems: 'center',
+                                          gap: '6px',
+                                          background: '#eff6ff',
+                                          border: '1px solid #bfdbfe',
+                                          padding: '6px 14px',
+                                          borderRadius: '10px',
+                                          fontSize: '0.85rem',
+                                          boxShadow: '0 2px 4px rgba(37, 99, 235, 0.06)'
+                                        }}
+                                      >
+                                        🔗 Open Student Project Link <ExternalLink size={13} />
+                                      </a>
+                                    </div>
+                                  )}
+
+                                  {/* Student Feedback Reflection Quote */}
+                                  {(task.studentFeedback || task.taskText || task.submissionNotes) && (
+                                    <div style={{
+                                      background: '#f8fafc',
+                                      borderLeft: '4px solid #3b82f6',
+                                      padding: '10px 14px',
+                                      borderRadius: '0 10px 10px 0',
+                                      fontSize: '0.88rem',
+                                      color: '#334155',
+                                      lineHeight: 1.6,
+                                      fontStyle: 'italic'
+                                    }}>
+                                      <span style={{ fontWeight: 800, color: '#2563eb', fontStyle: 'normal', display: 'block', fontSize: '0.75rem', marginBottom: 2 }}>
+                                        💬 Student Reflection &amp; Learner Feedback:
+                                      </span>
+                                      "{task.studentFeedback || task.taskText || task.submissionNotes}"
+                                    </div>
+                                  )}
+
+                                  {/* Default fallback notice when no feedback/link attached */}
+                                  {!task.submissionUrl && !task.studentFeedback && !task.taskText && !task.submissionNotes && (
+                                    <div style={{ fontSize: '0.82rem', color: '#94a3b8', fontStyle: 'italic', background: '#fafafa', padding: '8px 12px', borderRadius: 8 }}>
+                                      📝 Practical topic homework exercise submission record.
+                                    </div>
+                                  )}
+
+                                  {/* Staff Remarks Display */}
+                                  {task.staffFeedback && (
+                                    <div style={{
+                                      background: '#f0fdf4',
+                                      border: '1px solid #bbf7d0',
+                                      padding: '8px 12px',
                                       borderRadius: '10px',
-                                      fontSize: '0.85rem',
-                                      boxShadow: '0 2px 4px rgba(37, 99, 235, 0.06)'
-                                    }}
-                                  >
-                                    🔗 Open Student Project Link <ExternalLink size={13} />
-                                  </a>
-                                </div>
-                              )}
-
-                              {/* Student Feedback Reflection Quote */}
-                              {(task.studentFeedback || task.taskText || task.submissionNotes) && (
-                                <div style={{
-                                  background: '#f8fafc',
-                                  borderLeft: '4px solid #3b82f6',
-                                  padding: '10px 14px',
-                                  borderRadius: '0 10px 10px 0',
-                                  fontSize: '0.88rem',
-                                  color: '#334155',
-                                  lineHeight: 1.6,
-                                  fontStyle: 'italic'
-                                }}>
-                                  <span style={{ fontWeight: 800, color: '#2563eb', fontStyle: 'normal', display: 'block', fontSize: '0.75rem', marginBottom: 2 }}>
-                                    💬 Student Reflection &amp; Learner Feedback:
-                                  </span>
-                                  "{task.studentFeedback || task.taskText || task.submissionNotes}"
-                                </div>
-                              )}
-
-                              {/* Default fallback notice when no feedback/link attached */}
-                              {!task.submissionUrl && !task.studentFeedback && !task.taskText && !task.submissionNotes && (
-                                <div style={{ fontSize: '0.82rem', color: '#94a3b8', fontStyle: 'italic', background: '#fafafa', padding: '8px 12px', borderRadius: 8 }}>
-                                  📝 Practical topic homework exercise submission record.
-                                </div>
-                              )}
-
-                              {/* Staff Remarks Display */}
-                              {task.staffFeedback && (
-                                <div style={{
-                                  background: '#f0fdf4',
-                                  border: '1px solid #bbf7d0',
-                                  padding: '8px 12px',
-                                  borderRadius: '10px',
-                                  fontSize: '0.82rem',
-                                  color: '#15803d',
-                                  fontWeight: 700
-                                }}>
-                                  💬 Staff Evaluation Remarks: "{task.staffFeedback}" {task.validatedBy ? `— by ${task.validatedBy}` : ''}
-                                </div>
+                                      fontSize: '0.82rem',
+                                      color: '#15803d',
+                                      fontWeight: 700
+                                    }}>
+                                      💬 Staff Evaluation Remarks: "{task.staffFeedback}" {task.validatedBy ? `— by ${task.validatedBy}` : ''}
+                                    </div>
+                                  )}
+                                </>
                               )}
                             </div>
 
                             {/* Footer Actions Bar */}
                             <div style={{
                               display: 'flex',
-                              justify: 'flex-end',
+                              justifyContent: 'flex-end',
                               alignItems: 'center',
                               gap: '8px',
                               borderTop: '1px solid #f1f5f9',
                               paddingTop: '0.88rem',
                               flexWrap: 'wrap'
                             }}>
+                              {task.isLogicalReasoning && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const st = students.find(s => s._id === task.studentId || s.id === task.studentId || s.accessCode === task.accessCode);
+                                    if (st) handleOpenQuickLogicalModal(st);
+                                  }}
+                                  style={{
+                                    background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                                    border: 'none',
+                                    color: '#ffffff',
+                                    padding: '0.55rem 1.1rem',
+                                    borderRadius: '10px',
+                                    cursor: 'pointer',
+                                    fontSize: '0.82rem',
+                                    fontWeight: 800,
+                                    boxShadow: '0 3px 8px rgba(79, 70, 229, 0.25)',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: 6,
+                                    transition: 'all 0.2s'
+                                  }}
+                                  title="Enter or update evaluator score &amp; notes"
+                                >
+                                  <Brain size={15} /> Evaluator Score Modal
+                                </button>
+                              )}
+
                               <button
                                 type="button"
                                 disabled={actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`)}
