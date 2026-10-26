@@ -411,6 +411,7 @@ const formatSubmittedDate = (dateStr) => {
 const formatTaskTitle = (task) => {
   if (task.moduleTitle && task.moduleTitle !== task.moduleId) return task.moduleTitle;
   const id = task.moduleId || task.tabId || '';
+  if (id.startsWith('spoko_story_day')) return `Spoko English: Story Day ${id.replace('spoko_story_day', '')}`;
   if (id.startsWith('python_day')) return `Python Day ${id.replace('python_day', '')}`;
   if (id === 'python_games') return 'Python Game Projects Capstone';
   if (id === 'python_apps') return 'Python Desktop & Utility Apps';
@@ -1316,7 +1317,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         accessCode: s.accessCode,
         moduleId: t.moduleId,
         tabId: t.tabId || 'assignment',
-        moduleTitle: t.moduleId,
+        moduleTitle: formatTaskTitle(t),
         status: normalizedStatus
       };
     })
@@ -5336,7 +5337,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
         {/* 📝 TAB 6: UNIFIED REVIEW AND EVALUATION CENTER (STAFF/ADMIN ONLY) */}
         {activeTab === 'grading' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', width: '100%', boxSizing: 'border-box' }}>
 
             {/* 📊 1) KPI Metrics Summary Bar */}
             {(() => {
@@ -5656,7 +5657,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   )}
 
                   {/* 📋 3) Submission Cards List */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%', boxSizing: 'border-box' }}>
                     {filteredSubmissions.length > 0 ? (
                       filteredSubmissions.map(task => {
                         const statusColors = {
@@ -5679,11 +5680,13 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                               display: 'flex',
                               flexDirection: 'column',
                               gap: '1rem',
-                              transition: 'all 0.2s ease'
+                              transition: 'all 0.2s ease',
+                              width: '100%',
+                              boxSizing: 'border-box'
                             }}
                           >
                             {/* Top Header Row */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', width: '100%' }}>
                               {/* Student Info */}
                               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                 <div style={{
@@ -5692,7 +5695,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                   borderRadius: '50%',
                                   background: task.isLogicalReasoning
                                     ? 'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)'
-                                    : task.isSpoko
+                                    : (task.isSpoko || isSpokoItem(task))
                                     ? 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)'
                                     : task.isHtmlCss
                                     ? 'linear-gradient(135deg, #a855f7 0%, #7e22ce 100%)'
@@ -5735,7 +5738,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                   }}>
                                     <Brain size={12} /> Logical Reasoning Score
                                   </span>
-                                ) : task.isSpoko ? (
+                                ) : (task.isSpoko || isSpokoItem(task)) ? (
                                   <span style={{
                                     fontSize: '0.75rem',
                                     fontWeight: 800,
@@ -5748,7 +5751,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                     alignItems: 'center',
                                     gap: 5
                                   }}>
-                                    <MessageSquare size={12} /> Spoko Score Track
+                                    <MessageSquare size={12} /> Spoko English Track
                                   </span>
                                 ) : (
                                   <span style={{
@@ -5796,7 +5799,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                             </div>
 
                             {/* Module Title Banner */}
-                            <div style={{ background: '#f8fafc', borderRadius: '12px', padding: '0.75rem 1rem', border: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
+                            <div style={{ background: '#f8fafc', borderRadius: '12px', padding: '0.75rem 1rem', border: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 6, width: '100%', boxSizing: 'border-box' }}>
                               <div style={{ fontWeight: 800, fontSize: '0.98rem', color: '#1e293b' }}>
                                 {formatTaskTitle(task)}
                               </div>
@@ -5979,7 +5982,9 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                               gap: '8px',
                               borderTop: '1px solid #f1f5f9',
                               paddingTop: '0.88rem',
-                              flexWrap: 'wrap'
+                              flexWrap: 'wrap',
+                              width: '100%',
+                              boxSizing: 'border-box'
                             }}>
                               {task.isLogicalReasoning && (
                                 <button
@@ -6009,55 +6014,94 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                 </button>
                               )}
 
-                              <button
-                                type="button"
-                                disabled={actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`)}
-                                onClick={() => handleQuickApprove(task)}
-                                style={{
-                                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                                  border: 'none',
-                                  color: '#ffffff',
-                                  padding: '0.55rem 1.25rem',
-                                  borderRadius: '10px',
-                                  cursor: actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 'not-allowed' : 'pointer',
-                                  opacity: actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 0.7 : 1,
-                                  fontSize: '0.82rem',
-                                  fontWeight: 800,
-                                  boxShadow: '0 3px 8px rgba(16, 185, 129, 0.25)',
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: 6,
-                                  transition: 'all 0.2s'
-                                }}
-                                title="Approve submission and unlock next content"
-                              >
-                                <CheckCircle size={15} /> {actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 'Approving...' : 'Approve & Unlock Next Day'}
-                              </button>
+                              {((task.status || '').toLowerCase() === 'approved') ? (
+                                <span
+                                  style={{
+                                    background: '#f0fdf4',
+                                    border: '1.5px solid #bbf7d0',
+                                    color: '#15803d',
+                                    padding: '0.55rem 1.15rem',
+                                    borderRadius: '10px',
+                                    fontSize: '0.82rem',
+                                    fontWeight: 800,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: 6
+                                  }}
+                                  title="Task is approved and unlocked"
+                                >
+                                  <CheckCircle size={15} color="#16a34a" /> Approved &amp; Unlocked
+                                </span>
+                              ) : (
+                                <button
+                                  type="button"
+                                  disabled={actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`)}
+                                  onClick={() => handleQuickApprove(task)}
+                                  style={{
+                                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                    border: 'none',
+                                    color: '#ffffff',
+                                    padding: '0.55rem 1.25rem',
+                                    borderRadius: '10px',
+                                    cursor: actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 'not-allowed' : 'pointer',
+                                    opacity: actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 0.7 : 1,
+                                    fontSize: '0.82rem',
+                                    fontWeight: 800,
+                                    boxShadow: '0 3px 8px rgba(16, 185, 129, 0.25)',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: 6,
+                                    transition: 'all 0.2s'
+                                  }}
+                                  title="Approve submission and unlock next content"
+                                >
+                                  <CheckCircle size={15} /> {actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 'Approving...' : 'Approve & Unlock Next Day'}
+                                </button>
+                              )}
 
-                              <button
-                                type="button"
-                                disabled={actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`)}
-                                onClick={() => handleQuickReject(task)}
-                                style={{
-                                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                                  border: 'none',
-                                  color: '#ffffff',
-                                  padding: '0.55rem 1.1rem',
-                                  borderRadius: '10px',
-                                  cursor: actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 'not-allowed' : 'pointer',
-                                  opacity: actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 0.7 : 1,
-                                  fontSize: '0.82rem',
-                                  fontWeight: 800,
-                                  boxShadow: '0 3px 8px rgba(239, 68, 68, 0.25)',
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: 6,
-                                  transition: 'all 0.2s'
-                                }}
-                                title="Request revision from student"
-                              >
-                                <AlertTriangle size={15} /> {actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 'Updating...' : 'Request Revision'}
-                              </button>
+                              {((task.status || '').toLowerCase() === 'rejected') ? (
+                                <span
+                                  style={{
+                                    background: '#fef2f2',
+                                    border: '1.5px solid #fecaca',
+                                    color: '#b91c1c',
+                                    padding: '0.55rem 1.15rem',
+                                    borderRadius: '10px',
+                                    fontSize: '0.82rem',
+                                    fontWeight: 800,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: 6
+                                  }}
+                                >
+                                  <AlertTriangle size={15} color="#ef4444" /> Revision Requested
+                                </span>
+                              ) : (
+                                <button
+                                  type="button"
+                                  disabled={actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`)}
+                                  onClick={() => handleQuickReject(task)}
+                                  style={{
+                                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                                    border: 'none',
+                                    color: '#ffffff',
+                                    padding: '0.55rem 1.1rem',
+                                    borderRadius: '10px',
+                                    cursor: actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 'not-allowed' : 'pointer',
+                                    opacity: actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 0.7 : 1,
+                                    fontSize: '0.82rem',
+                                    fontWeight: 800,
+                                    boxShadow: '0 3px 8px rgba(239, 68, 68, 0.25)',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: 6,
+                                    transition: 'all 0.2s'
+                                  }}
+                                  title="Request revision from student"
+                                >
+                                  <AlertTriangle size={15} /> {actionLoadingId === (task._id || task.id || `${task.studentId}_${task.moduleId}`) ? 'Updating...' : 'Request Revision'}
+                                </button>
+                              )}
 
                               <button
                                 type="button"
