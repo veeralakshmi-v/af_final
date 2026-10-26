@@ -1140,38 +1140,46 @@ app.put('/api/students/:id', async (req, res) => {
   if (inductionCompleted !== undefined) updateFields.inductionCompleted = Boolean(inductionCompleted);
 
   if (logicalThinkingScore !== undefined) {
-    let scoreVal = 0;
-    let totalVal = 100;
-    let feedbackVal = logicalThinkingFeedback || '';
-    let gradeVal = logicalThinkingGrade || '';
+    if (logicalThinkingScore === null || logicalThinkingScore === '' || (Number(logicalThinkingScore) === 0 && !logicalThinkingFeedback)) {
+      updateFields.logicalThinkingScore = null;
+    } else {
+      let scoreVal = 0;
+      let totalVal = 100;
+      let feedbackVal = logicalThinkingFeedback || '';
+      let gradeVal = logicalThinkingGrade || '';
 
-    if (typeof logicalThinkingScore === 'number' || typeof logicalThinkingScore === 'string') {
-      const parsed = parseFloat(logicalThinkingScore);
-      scoreVal = isNaN(parsed) ? 0 : Math.max(0, Math.min(100, parsed));
-    } else if (typeof logicalThinkingScore === 'object' && logicalThinkingScore !== null) {
-      scoreVal = Number(logicalThinkingScore.score) || 0;
-      totalVal = Number(logicalThinkingScore.total) || 100;
-      feedbackVal = logicalThinkingScore.feedback || feedbackVal;
-      gradeVal = logicalThinkingScore.grade || gradeVal;
+      if (typeof logicalThinkingScore === 'number' || typeof logicalThinkingScore === 'string') {
+        const parsed = parseFloat(logicalThinkingScore);
+        scoreVal = isNaN(parsed) ? 0 : Math.max(0, Math.min(100, parsed));
+      } else if (typeof logicalThinkingScore === 'object' && logicalThinkingScore !== null) {
+        scoreVal = Number(logicalThinkingScore.score) || 0;
+        totalVal = Number(logicalThinkingScore.total) || 100;
+        feedbackVal = logicalThinkingScore.feedback || feedbackVal;
+        gradeVal = logicalThinkingScore.grade || gradeVal;
+      }
+
+      if (scoreVal <= 0 && !feedbackVal) {
+        updateFields.logicalThinkingScore = null;
+      } else {
+        const pct = totalVal > 0 ? Math.round((scoreVal / totalVal) * 100) : 0;
+        if (!gradeVal) {
+          if (pct >= 90) gradeVal = 'A+';
+          else if (pct >= 80) gradeVal = 'A';
+          else if (pct >= 70) gradeVal = 'B';
+          else if (pct >= 60) gradeVal = 'C';
+          else gradeVal = 'Needs Practice';
+        }
+
+        updateFields.logicalThinkingScore = {
+          score: scoreVal,
+          total: totalVal,
+          percentage: pct,
+          grade: gradeVal,
+          feedback: feedbackVal,
+          updatedAt: new Date()
+        };
+      }
     }
-
-    const pct = totalVal > 0 ? Math.round((scoreVal / totalVal) * 100) : 0;
-    if (!gradeVal) {
-      if (pct >= 90) gradeVal = 'A+';
-      else if (pct >= 80) gradeVal = 'A';
-      else if (pct >= 70) gradeVal = 'B';
-      else if (pct >= 60) gradeVal = 'C';
-      else gradeVal = 'Needs Practice';
-    }
-
-    updateFields.logicalThinkingScore = {
-      score: scoreVal,
-      total: totalVal,
-      percentage: pct,
-      grade: gradeVal,
-      feedback: feedbackVal,
-      updatedAt: new Date()
-    };
   }
 
   if (idCardIssued && feeInitiated && inductionCompleted) {
@@ -1230,16 +1238,14 @@ app.post('/api/students/:id/logical-thinking-score', async (req, res) => {
     else gradeVal = 'Needs Practice';
   }
 
-  const scoreObj = {
+  const scoreObj = (scoreVal > 0 || feedback) ? {
     score: scoreVal,
     total: totalVal,
     percentage,
     grade: gradeVal,
     feedback: feedback || '',
     updatedAt: new Date()
-  };
-
-  const taskText = `[Logical Reasoning Benchmark]: Score: ${scoreVal}/${totalVal} (${percentage}%) • Grade: ${gradeVal}${feedback ? `\nEvaluator Notes: ${feedback}` : ''}`;
+  } : null;
 
   try {
     const isDbConnected = await checkDbConnection();
@@ -1251,34 +1257,8 @@ app.post('/api/students/:id/logical-thinking-score', async (req, res) => {
       if (!student) return res.status(404).json({ error: 'Student not found!' });
 
       student.logicalThinkingScore = scoreObj;
-      if (!student.tasks) student.tasks = [];
-      const taskStatus = (scoreVal >= 70 || (scoreVal > 0 && percentage >= 70)) ? 'Approved' : 'Pending';
-
-      let existingTask = student.tasks.find(t => t.moduleId === 'spoko_reasoning_benchmark');
-      if (existingTask) {
-        existingTask.score = scoreVal;
-        existingTask.total = totalVal;
-        existingTask.percentage = percentage;
-        existingTask.grade = gradeVal;
-        existingTask.status = taskStatus;
-        existingTask.feedback = feedback || '';
-        existingTask.taskText = taskText;
-        existingTask.submittedAt = new Date();
-      } else {
-        student.tasks.push({
-          _id: new mongoose.Types.ObjectId().toString(),
-          moduleId: 'spoko_reasoning_benchmark',
-          moduleTitle: 'Logical Thinking & Analytical Reasoning Assessment',
-          tabId: 'logical_reasoning',
-          score: scoreVal,
-          total: totalVal,
-          percentage,
-          grade: gradeVal,
-          status: taskStatus,
-          feedback: feedback || '',
-          taskText,
-          submittedAt: new Date()
-        });
+      if (student.tasks && student.tasks.length > 0) {
+        student.tasks = student.tasks.filter(t => t.moduleId !== 'spoko_reasoning_benchmark');
       }
       student.markModified('tasks');
       student.markModified('logicalThinkingScore');
@@ -1291,33 +1271,8 @@ app.post('/api/students/:id/logical-thinking-score', async (req, res) => {
       
       const student = students[idx];
       student.logicalThinkingScore = scoreObj;
-      if (!student.tasks) student.tasks = [];
-      const taskStatus = (scoreVal >= 70 || (scoreVal > 0 && percentage >= 70)) ? 'Approved' : 'Pending';
-      let existingTask = student.tasks.find(t => t.moduleId === 'spoko_reasoning_benchmark');
-      if (existingTask) {
-        existingTask.score = scoreVal;
-        existingTask.total = totalVal;
-        existingTask.percentage = percentage;
-        existingTask.grade = gradeVal;
-        existingTask.status = taskStatus;
-        existingTask.feedback = feedback || '';
-        existingTask.taskText = taskText;
-        existingTask.submittedAt = new Date();
-      } else {
-        student.tasks.push({
-          _id: 'task-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
-          moduleId: 'spoko_reasoning_benchmark',
-          moduleTitle: 'Logical Thinking & Analytical Reasoning Assessment',
-          tabId: 'logical_reasoning',
-          score: scoreVal,
-          total: totalVal,
-          percentage,
-          grade: gradeVal,
-          status: taskStatus,
-          feedback: feedback || '',
-          taskText,
-          submittedAt: new Date()
-        });
+      if (student.tasks && student.tasks.length > 0) {
+        student.tasks = student.tasks.filter(t => t.moduleId !== 'spoko_reasoning_benchmark');
       }
       saveLocalStudents(students);
       return res.json(student);

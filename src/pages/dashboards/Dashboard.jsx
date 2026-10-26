@@ -804,7 +804,7 @@ export function getStudentLogicalThinkingScore(student) {
 
   // 1. Check explicit score on student profile
   const lts = student.logicalThinkingScore;
-  if (lts && (lts.score !== undefined && lts.score !== null) && (Number(lts.score) > 0 || lts.grade || lts.feedback)) {
+  if (lts && (lts.score !== undefined && lts.score !== null) && Number(lts.score) > 0) {
     const scoreVal = Number(lts.score) || 0;
     const totalVal = Number(lts.total) || 100;
     const percentage = totalVal > 0 ? Math.round((scoreVal / totalVal) * 100) : 0;
@@ -1144,9 +1144,9 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     const studentId = s._id || s.id;
     const accessCode = s.accessCode;
 
-    // A. Explicit benchmark or evaluator score on student
+    // A. Explicit staff evaluator score on student (only if valid non-zero score and real feedback exist)
     const lt = getStudentLogicalThinkingScore(s);
-    if (lt && lt.isEvaluated) {
+    if (lt && lt.isEvaluated && typeof lt.score === 'number' && lt.score > 0 && s.logicalThinkingScore?.feedback) {
       list.push({
         _id: `logical_score_${studentId}`,
         id: `logical_score_${studentId}`,
@@ -1156,8 +1156,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         studentName: s.name,
         studentId,
         accessCode,
-        moduleId: 'spoko_reasoning_benchmark',
-        moduleTitle: 'Logical Thinking & Analytical Reasoning Assessment',
+        moduleId: 'logical_evaluator_score',
+        moduleTitle: 'Logical Reasoning Evaluator Score Report',
         tabId: 'logical_reasoning',
         totalQuestions: lt.total || 100,
         correctAnswers: lt.score,
@@ -1167,16 +1167,16 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         percentage: lt.percentage !== undefined ? lt.percentage : (lt.total ? Math.round((lt.score / lt.total) * 100) : lt.score),
         grade: lt.grade || computeLogicalGrade(lt.score),
         submittedAt: lt.updatedAt || s.updatedAt || 'Recently',
-        status: (lt.score >= 70 || (s.logicalThinkingScore?.score !== undefined && Number(s.logicalThinkingScore.score) > 0)) ? 'Approved' : 'Pending',
-        taskText: lt.feedback ? `[Logical Reasoning Evaluator Score]: ${lt.score}/100 • Grade: ${lt.grade} • Notes: ${lt.feedback}` : `[Logical Reasoning Score Result]: Score: ${lt.score}/100 • Grade: ${lt.grade} • Status: ${lt.status}`,
-        staffFeedback: lt.feedback || 'Evaluated across Deductive Logic, Pattern Series, and Fallacy Audits.'
+        status: (lt.score >= 70) ? 'Approved' : 'Pending',
+        taskText: `[Logical Reasoning Evaluator Score]: ${lt.score}/100 • Grade: ${lt.grade} • Notes: ${s.logicalThinkingScore.feedback}`,
+        staffFeedback: s.logicalThinkingScore.feedback
       });
     }
 
-    // B. Daily Reasoning Assessments in student.tasks
+    // B. Daily Reasoning Assessments in student.tasks (only real completed exercises)
     (s.tasks || []).forEach((t, idx) => {
       const modLower = (t.moduleId || '').toLowerCase();
-      if (modLower.includes('reasoning') || modLower.includes('logical') || t.tabId === 'assessment') {
+      if ((modLower.includes('reasoning') || modLower.includes('logical') || t.tabId === 'assessment') && t.moduleId !== 'spoko_reasoning_benchmark') {
         const scoreVal = t.score !== undefined ? Number(t.score) : undefined;
         const totalVal = t.total !== undefined ? Number(t.total) : 20;
         const pctVal = t.percentage !== undefined ? Number(t.percentage) : (scoreVal !== undefined && totalVal ? Math.round((scoreVal / totalVal) * 100) : undefined);
@@ -1616,7 +1616,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
           feeInitiated: editingValFeeInitiated,
           inductionCompleted: editingValInduction,
           admissionConfirmed: allEditingChecked,
-          logicalThinkingScore: editingLogicalScore !== '' ? Number(editingLogicalScore) : 0,
+          logicalThinkingScore: editingLogicalScore !== '' ? Number(editingLogicalScore) : null,
           logicalThinkingFeedback: editingLogicalFeedback
         })
       });
