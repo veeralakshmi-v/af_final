@@ -2298,20 +2298,6 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 >
                   <Receipt size={18} /> Fee Invoices
                 </button>
-
-                <button
-                  onClick={() => { setActiveTab('mock_interviews'); fetchStudents(); if (isMobile) setIsMobileMenuOpen(false); }}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', border: 'none', padding: '0.8rem 1rem',
-                    fontSize: '0.92rem', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', textAlign: 'left',
-                    background: activeTab === 'mock_interviews' ? 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)' : 'transparent',
-                    color: activeTab === 'mock_interviews' ? '#ffffff' : 'var(--text-secondary)',
-                    boxShadow: activeTab === 'mock_interviews' ? '0 4px 12px rgba(79, 70, 229, 0.35)' : 'none',
-                    transition: 'var(--transition)'
-                  }}
-                >
-                  <Bot size={18} /> AI Mock Interviews
-                </button>
               </>
             )}
 
