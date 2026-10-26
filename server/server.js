@@ -109,6 +109,16 @@ const studentSchema = new mongoose.Schema({
   enrolledCourse: { type: String, required: true },
   accessCode: { type: String, required: true, unique: true },
   deviceId: { type: String, default: null },
+  studentId: { type: String, default: '' },
+  admissionStatus: { type: String, enum: ['Pending', 'Approved', 'Suspended', 'None'], default: 'Approved' },
+  isCourseActivated: { type: Boolean, default: true },
+  activatedCourses: { type: [String], default: [] },
+  joiningDate: { type: String, default: '' },
+  idCardNumber: { type: String, default: '' },
+  invoiceNo: { type: String, default: '' },
+  feeInitiated: { type: Boolean, default: false },
+  idCardIssued: { type: Boolean, default: false },
+  inductionCompleted: { type: Boolean, default: false },
   completedLessons: { type: [String], default: [] },
   tasks: { type: [taskSubmissionSchema], default: [] },
   certificate: { type: certificateSchema, default: () => ({}) },
@@ -164,6 +174,94 @@ const invoiceSchema = new mongoose.Schema({
 
 const Invoice = mongoose.model('Invoice', invoiceSchema);
 
+// ADMISSION VERIFICATION & WORKFLOW SCHEMAS
+const auditLogEntrySchema = new mongoose.Schema({
+  timestamp: { type: Date, default: Date.now },
+  performedBy: { type: String, required: true },
+  action: { type: String, required: true },
+  field: { type: String, default: '' },
+  previousValue: { type: mongoose.Schema.Types.Mixed, default: null },
+  newValue: { type: mongoose.Schema.Types.Mixed, default: null },
+  notes: { type: String, default: '' }
+});
+
+const admissionFormSchema = new mongoose.Schema({
+  submittedAt: { type: Date, default: null },
+  fullName: { type: String, default: '' },
+  gender: { type: String, default: '' },
+  dob: { type: String, default: '' },
+  fatherName: { type: String, default: '' },
+  contactNumber: { type: String, default: '' },
+  email: { type: String, default: '' },
+  address: { type: String, default: '' },
+  educationQualification: { type: String, default: '' },
+  idProofType: { type: String, default: '' },
+  idProofNumber: { type: String, default: '' },
+  photoUrl: { type: String, default: '' }
+});
+
+const admissionSchema = new mongoose.Schema({
+  applicationReference: { type: String, required: true, unique: true },
+  studentId: { type: String, default: '' },
+  studentAccountAccessCode: { type: String, default: '' },
+  studentName: { type: String, required: true },
+  contactNumber: { type: String, default: '' },
+  email: { type: String, default: '' },
+  courseName: { type: String, required: true },
+  courseKey: { type: String, default: 'python_fullstack' },
+  admissionFormStatus: {
+    type: String,
+    enum: ['Not Submitted', 'Submitted', 'Verified', 'Incomplete'],
+    default: 'Submitted'
+  },
+  admissionFormData: { type: admissionFormSchema, default: () => ({}) },
+  formVerifiedBy: { type: String, default: '' },
+  formVerifiedAt: { type: Date, default: null },
+  formMissingFields: { type: [String], default: [] },
+  invoiceNumber: { type: String, default: '' },
+  courseFee: { type: Number, default: 0 },
+  amountPaid: { type: Number, default: 0 },
+  balanceDue: { type: Number, default: 0 },
+  paymentReference: { type: String, default: '' },
+  paymentGateway: { type: String, default: 'Razorpay / Bank Transfer' },
+  paymentStatus: {
+    type: String,
+    enum: ['Pending', 'Paid', 'Failed', 'Refunded', 'Partial'],
+    default: 'Pending'
+  },
+  paymentVerifiedBy: { type: String, default: '' },
+  paymentVerifiedAt: { type: Date, default: null },
+  joiningDate: { type: String, default: '' },
+  joiningDateSetBy: { type: String, default: '' },
+  joiningDateSetAt: { type: Date, default: null },
+  idCardStatus: {
+    type: String,
+    enum: ['Not Generated', 'Generated', 'Issued'],
+    default: 'Not Generated'
+  },
+  idCardNumber: { type: String, default: '' },
+  idCardIssuedBy: { type: String, default: '' },
+  idCardIssuedAt: { type: Date, default: null },
+  verificationStatus: {
+    type: String,
+    enum: ['Pending Verification', 'Form Incomplete', 'Payment Pending', 'Joining Date Missing', 'ID Card Pending', 'Ready for Approval', 'Approved', 'Rejected', 'Suspended'],
+    default: 'Pending Verification'
+  },
+  courseActivationStatus: {
+    type: String,
+    enum: ['Locked', 'Active', 'Suspended'],
+    default: 'Locked'
+  },
+  approvedBy: { type: String, default: '' },
+  approvedAt: { type: Date, default: null },
+  rejectionReason: { type: String, default: '' },
+  auditLogs: { type: [auditLogEntrySchema], default: [] },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const Admission = mongoose.model('Admission', admissionSchema);
+
 // Helper to manage local JSON files
 const getLocalStudents = () => {
   if (!fs.existsSync(localDbPath)) {
@@ -175,6 +273,9 @@ const getLocalStudents = () => {
       completedLessons: [],
       tasks: [],
       certificate: null,
+      isCourseActivated: s.isCourseActivated !== undefined ? s.isCourseActivated : (s.admissionStatus === 'Approved'),
+      admissionStatus: s.admissionStatus || 'Pending',
+      studentId: s.studentId || '',
       ...s
     }));
   } catch (e) {
@@ -224,6 +325,100 @@ const saveLocalInvoices = (data) => {
   fs.writeFileSync(localInvoiceDbPath, JSON.stringify(data, null, 2));
 };
 
+const localAdmissionsDbPath = process.env.VERCEL
+  ? '/tmp/admissions.json'
+  : path.join(__dirname, 'admissions.json');
+
+const getLocalAdmissions = () => {
+  if (!fs.existsSync(localAdmissionsDbPath)) {
+    return [];
+  }
+  try {
+    const raw = fs.readFileSync(localAdmissionsDbPath, 'utf8');
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
+};
+
+const saveLocalAdmissions = (data) => {
+  fs.writeFileSync(localAdmissionsDbPath, JSON.stringify(data, null, 2));
+};
+
+// Dynamic calculate verification status
+const calculateVerificationStatus = (adm) => {
+  if (adm.courseActivationStatus === 'Suspended') {
+    return 'Suspended';
+  }
+  if (adm.verificationStatus === 'Approved' || adm.courseActivationStatus === 'Active') {
+    return 'Approved';
+  }
+  if (adm.admissionFormStatus !== 'Verified') {
+    return 'Form Incomplete';
+  }
+  if (adm.paymentStatus !== 'Paid') {
+    return 'Payment Pending';
+  }
+  if (!adm.joiningDate || !adm.joiningDate.trim()) {
+    return 'Joining Date Missing';
+  }
+  if (adm.idCardStatus !== 'Issued') {
+    return 'ID Card Pending';
+  }
+  return 'Ready for Approval';
+};
+
+// Google Sheets Webhook Sync for Admission Verification
+const syncAdmissionToGoogleSheets = async (admission) => {
+  const sheetUrl = process.env.VITE_FEE_INVOICE_SHEET_URL || 'https://script.google.com/macros/s/AKfycbww1I-fIJJV6PLQpORFJlOrByh-vhEOQK9Zkl2wJl4iHmd_jj0NSPNbGxvajn7K1bUSmw/exec';
+  if (!sheetUrl) return;
+  try {
+    const payload = {
+      type: 'ADMISSION_VERIFICATION',
+      application_reference: admission.applicationReference,
+      student_id: admission.studentId || 'PENDING',
+      student_name: admission.studentName,
+      contact_number: admission.contactNumber,
+      course_name: admission.courseName,
+      invoice_number: admission.invoiceNumber || 'N/A',
+      payment_status: admission.paymentStatus,
+      admission_form_status: admission.admissionFormStatus,
+      joining_date: admission.joiningDate || 'N/A',
+      id_card_status: admission.idCardStatus,
+      verification_status: admission.verificationStatus,
+      course_activation_status: admission.courseActivationStatus,
+      approved_by: admission.approvedBy || 'N/A',
+      approved_at: admission.approvedAt ? new Date(admission.approvedAt).toISOString() : 'N/A',
+      updated_at: new Date().toISOString()
+    };
+    await fetch(sheetUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(err => console.warn('Google Sheets non-blocking sync note:', err.message));
+  } catch (err) {
+    console.warn('Google Sheets sync err:', err.message);
+  }
+};
+
+const seedAtlasAdmissionsIfEmpty = async () => {
+  try {
+    const count = await Admission.countDocuments();
+    if (count === 0) {
+      console.log('🌱 Seeding initial sample admissions in MongoDB Atlas...');
+      const localSamples = getLocalAdmissions();
+      if (localSamples.length > 0) {
+        const mongoDocs = localSamples.map(({ _id, id, ...rest }) => rest);
+        await Admission.insertMany(mongoDocs);
+        console.log(`✅ Seeded ${mongoDocs.length} sample admissions into MongoDB Atlas!`);
+      }
+    }
+  } catch (err) {
+    console.warn('Atlas seed notice:', err.message);
+  }
+};
+
 // 3. API ROUTES
 
 // A. Get all students
@@ -257,10 +452,27 @@ app.get('/api/students', async (req, res) => {
 
 // B. Register/Create a new student
 app.post('/api/students', async (req, res) => {
-  const { name, enrolledCourse } = req.body;
-  if (!name || !enrolledCourse) {
-    return res.status(400).json({ error: 'Name and course enrollment are required!' });
+  const {
+    name,
+    enrolledCourse,
+    admissionConfirmed,
+    admissionStatus,
+    isCourseActivated,
+    idCardIssued,
+    feeInitiated,
+    inductionCompleted
+  } = req.body;
+
+  if (!name || !name.trim()) {
+    return res.status(400).json({ error: 'Student Name is required!' });
   }
+
+  // All 3 validations: idcard, fee initiated, induction session
+  const hasAllValidations = Boolean(idCardIssued && feeInitiated && inductionCompleted);
+  const isVerified = admissionConfirmed === true || hasAllValidations || (admissionConfirmed === undefined && admissionStatus === 'Approved');
+  const resolvedAdmissionStatus = isVerified ? 'Approved' : 'Pending';
+  const resolvedCourseActivated = isVerified;
+  const courseAssigned = enrolledCourse && enrolledCourse.trim() ? enrolledCourse.trim() : 'html_css';
 
   // Generate a random numeric access code
   const accessCode = 'STU-' + Math.floor(1000 + Math.random() * 9000);
@@ -268,12 +480,35 @@ app.post('/api/students', async (req, res) => {
   try {
     const isDbConnected = await checkDbConnection();
     if (isDbConnected) {
-      const newStudent = new Student({ name, enrolledCourse, accessCode, deviceId: null });
+      const newStudent = new Student({
+        name: name.trim(),
+        enrolledCourse: courseAssigned,
+        accessCode,
+        deviceId: null,
+        admissionStatus: resolvedAdmissionStatus,
+        isCourseActivated: resolvedCourseActivated,
+        idCardIssued: Boolean(idCardIssued),
+        feeInitiated: Boolean(feeInitiated),
+        inductionCompleted: Boolean(inductionCompleted)
+      });
       await newStudent.save();
       return res.json(newStudent);
     } else {
       const students = getLocalStudents();
-      const newStudent = { id: Date.now().toString(), name, enrolledCourse, accessCode, deviceId: null, completedLessons: [], tasks: [] };
+      const newStudent = {
+        id: Date.now().toString(),
+        name: name.trim(),
+        enrolledCourse: courseAssigned,
+        accessCode,
+        deviceId: null,
+        admissionStatus: resolvedAdmissionStatus,
+        isCourseActivated: resolvedCourseActivated,
+        idCardIssued: Boolean(idCardIssued),
+        feeInitiated: Boolean(feeInitiated),
+        inductionCompleted: Boolean(inductionCompleted),
+        completedLessons: [],
+        tasks: []
+      };
       students.push(newStudent);
       saveLocalStudents(students);
       return res.json(newStudent);
@@ -862,11 +1097,12 @@ app.delete('/api/students/:id', async (req, res) => {
   try {
     const isDbConnected = await checkDbConnection();
     if (isDbConnected) {
-      await Student.findByIdAndDelete(id);
+      const query = mongoose.Types.ObjectId.isValid(id) ? { _id: id } : { accessCode: id.trim() };
+      await Student.findOneAndDelete(query);
       return res.json({ success: true });
     } else {
       let students = getLocalStudents();
-      students = students.filter(s => s.id !== id && s.accessCode !== id);
+      students = students.filter(s => s.id !== id && s._id !== id && s.accessCode !== id && s.accessCode !== id.trim());
       saveLocalStudents(students);
       return res.json({ success: true });
     }
@@ -875,18 +1111,42 @@ app.delete('/api/students/:id', async (req, res) => {
   }
 });
 
-// D-2. Update student details (Name, Access Code, Enrolled Courses)
+// D-2. Update student details (Name, Access Code, Enrolled Courses, Admission Status, Validation Flags)
 app.put('/api/students/:id', async (req, res) => {
   const { id } = req.params;
-  const { name, accessCode, enrolledCourse } = req.body;
+  const {
+    name,
+    accessCode,
+    enrolledCourse,
+    admissionConfirmed,
+    admissionStatus,
+    isCourseActivated,
+    idCardIssued,
+    feeInitiated,
+    inductionCompleted
+  } = req.body;
 
   const updateFields = {};
   if (name && name.trim()) updateFields.name = name.trim();
   if (accessCode && accessCode.trim()) updateFields.accessCode = accessCode.trim();
   if (enrolledCourse && enrolledCourse.trim()) updateFields.enrolledCourse = enrolledCourse.trim();
+  if (idCardIssued !== undefined) updateFields.idCardIssued = Boolean(idCardIssued);
+  if (feeInitiated !== undefined) updateFields.feeInitiated = Boolean(feeInitiated);
+  if (inductionCompleted !== undefined) updateFields.inductionCompleted = Boolean(inductionCompleted);
+
+  if (idCardIssued && feeInitiated && inductionCompleted) {
+    updateFields.admissionStatus = 'Approved';
+    updateFields.isCourseActivated = true;
+  } else if (admissionConfirmed !== undefined) {
+    updateFields.admissionStatus = admissionConfirmed ? 'Approved' : 'Pending';
+    updateFields.isCourseActivated = Boolean(admissionConfirmed);
+  } else {
+    if (admissionStatus !== undefined) updateFields.admissionStatus = admissionStatus;
+    if (isCourseActivated !== undefined) updateFields.isCourseActivated = isCourseActivated;
+  }
 
   if (Object.keys(updateFields).length === 0) {
-    return res.status(400).json({ error: 'At least one field (name, accessCode, or enrolledCourse) is required!' });
+    return res.status(400).json({ error: 'At least one field to update is required!' });
   }
 
   try {
@@ -905,6 +1165,39 @@ app.put('/api/students/:id', async (req, res) => {
       if (idx === -1) return res.status(404).json({ error: 'Student not found!' });
       
       students[idx] = { ...students[idx], ...updateFields };
+      saveLocalStudents(students);
+      return res.json(students[idx]);
+    }
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// D-3. Quick Toggle student admission confirmation
+app.post('/api/students/:id/toggle-admission', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      const query = mongoose.Types.ObjectId.isValid(id) ? { _id: id } : { accessCode: id.trim() };
+      const student = await Student.findOne(query);
+      if (!student) return res.status(404).json({ error: 'Student not found!' });
+
+      const isCurrentApproved = student.admissionStatus === 'Approved' || (student.isCourseActivated !== false && student.admissionStatus !== 'Pending');
+      const nextApproved = !isCurrentApproved;
+      student.admissionStatus = nextApproved ? 'Approved' : 'Pending';
+      student.isCourseActivated = nextApproved;
+      await student.save();
+      return res.json(student);
+    } else {
+      const students = getLocalStudents();
+      const idx = students.findIndex(s => s.id === id || s._id === id || s.accessCode === id.trim());
+      if (idx === -1) return res.status(404).json({ error: 'Student not found!' });
+
+      const isCurrentApproved = students[idx].admissionStatus === 'Approved' || (students[idx].isCourseActivated !== false && students[idx].admissionStatus !== 'Pending');
+      const nextApproved = !isCurrentApproved;
+      students[idx].admissionStatus = nextApproved ? 'Approved' : 'Pending';
+      students[idx].isCourseActivated = nextApproved;
       saveLocalStudents(students);
       return res.json(students[idx]);
     }
@@ -1134,9 +1427,913 @@ app.delete('/api/invoices/:id', async (req, res) => {
   }
 });
 
-// Start Server locally (if not running in serverless cloud environments)
-if (!process.env.VERCEL) {
-  const PORT = 5000;
+// ============================================================
+// H. ADMISSION VERIFICATION & WORKFLOW ROUTES (Staff & Admin)
+// ============================================================
+
+// H-1. Get all admission records (sorted newest first)
+app.get('/api/admissions', async (req, res) => {
+  try {
+    const isDbConnected = await checkDbConnection();
+    let admissions = [];
+    if (isDbConnected) {
+      await seedAtlasAdmissionsIfEmpty();
+      admissions = await Admission.find({}).sort({ createdAt: -1, _id: -1 });
+    } else {
+      admissions = getLocalAdmissions();
+      admissions.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    }
+    return res.json(admissions);
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// H-2. Create a new admission application
+app.post('/api/admissions', async (req, res) => {
+  const {
+    studentName,
+    contactNumber,
+    email,
+    courseName,
+    courseKey,
+    courseFee,
+    admissionFormData = {}
+  } = req.body;
+
+  if (!studentName || !courseName) {
+    return res.status(400).json({ error: 'Student Name and Course Name are required!' });
+  }
+
+  try {
+    const isDbConnected = await checkDbConnection();
+    const allAdmissions = isDbConnected ? await Admission.find({}) : getLocalAdmissions();
+    const year = new Date().getFullYear();
+    let maxRef = 0;
+    allAdmissions.forEach(a => {
+      const match = (a.applicationReference || '').match(/APP-\d+-(\d+)/);
+      if (match) maxRef = Math.max(maxRef, parseInt(match[1], 10));
+    });
+    const appRef = `APP-${year}-${String(maxRef + 1).padStart(3, '0')}`;
+
+    const newAdmission = {
+      applicationReference: appRef,
+      studentId: '',
+      studentAccountAccessCode: 'STU-' + Math.floor(1000 + Math.random() * 9000),
+      studentName: studentName.trim(),
+      contactNumber: contactNumber ? contactNumber.trim() : '',
+      email: email ? email.trim() : '',
+      courseName: courseName.trim(),
+      courseKey: courseKey || 'python_fullstack',
+      admissionFormStatus: req.body.admissionFormStatus || 'Submitted',
+      admissionFormData: {
+        submittedAt: new Date(),
+        fullName: studentName.trim(),
+        contactNumber: contactNumber || '',
+        email: email || '',
+        ...admissionFormData
+      },
+      invoiceNumber: req.body.invoiceNumber || '',
+      courseFee: Number(courseFee) || 15000,
+      amountPaid: Number(req.body.amountPaid) || 0,
+      balanceDue: Number(courseFee || 15000) - (Number(req.body.amountPaid) || 0),
+      paymentStatus: req.body.paymentStatus || 'Pending',
+      paymentReference: req.body.paymentReference || '',
+      joiningDate: req.body.joiningDate || '',
+      idCardStatus: req.body.idCardStatus || 'Not Generated',
+      idCardNumber: req.body.idCardNumber || '',
+      verificationStatus: calculateVerificationStatus({
+        admissionFormStatus: req.body.admissionFormStatus || 'Submitted',
+        paymentStatus: req.body.paymentStatus || 'Pending',
+        joiningDate: req.body.joiningDate || '',
+        idCardStatus: req.body.idCardStatus || 'Not Generated'
+      }),
+      courseActivationStatus: 'Locked',
+      auditLogs: [{
+        timestamp: new Date(),
+        performedBy: 'System / Admissions Office',
+        action: 'APPLICATION_CREATED',
+        field: 'verificationStatus',
+        previousValue: 'None',
+        newValue: 'Pending Verification',
+        notes: `New admission application ${appRef} registered for ${studentName.trim()}.`
+      }],
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    if (isDbConnected) {
+      const created = new Admission(newAdmission);
+      await created.save();
+      syncAdmissionToGoogleSheets(created);
+      return res.json({ success: true, admission: created });
+    } else {
+      const list = getLocalAdmissions();
+      list.unshift({ _id: 'adm_' + Date.now(), ...newAdmission });
+      saveLocalAdmissions(list);
+      syncAdmissionToGoogleSheets(newAdmission);
+      return res.json({ success: true, admission: list[0] });
+    }
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// H-3. Get single admission record by ID or applicationReference
+app.get('/api/admissions/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const isDbConnected = await checkDbConnection();
+    let admission = null;
+    if (isDbConnected) {
+      admission = await Admission.findById(id) || await Admission.findOne({ applicationReference: id });
+    } else {
+      const admissions = getLocalAdmissions();
+      admission = admissions.find(a => a._id === id || a.id === id || a.applicationReference === id);
+    }
+    if (!admission) return res.status(404).json({ error: 'Admission application record not found!' });
+    return res.json(admission);
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// H-4. Verify Admission Form (Checks required fields, marks Verified / Incomplete)
+app.put('/api/admissions/:id/form-verify', async (req, res) => {
+  const { id } = req.params;
+  const { verifiedBy = 'admin', markVerified = true, notes = '' } = req.body;
+
+  try {
+    const isDbConnected = await checkDbConnection();
+    let admission = null;
+    let admissionsList = [];
+
+    if (isDbConnected) {
+      admission = await Admission.findById(id) || await Admission.findOne({ applicationReference: id });
+    } else {
+      admissionsList = getLocalAdmissions();
+      admission = admissionsList.find(a => a._id === id || a.id === id || a.applicationReference === id);
+    }
+
+    if (!admission) return res.status(404).json({ error: 'Admission record not found!' });
+
+    // Validate required fields
+    const formData = admission.admissionFormData || {};
+    const missing = [];
+    if (!formData.fullName && !admission.studentName) missing.push('Full Name');
+    if (!formData.contactNumber && !admission.contactNumber) missing.push('Contact Number');
+    if (!formData.educationQualification) missing.push('Educational Qualification');
+    if (!formData.idProofNumber && !formData.idProofType) missing.push('Government ID Proof');
+
+    if (markVerified && missing.length > 0) {
+      return res.status(400).json({
+        error: 'Cannot mark form as Verified. Required fields are missing.',
+        missingFields: missing
+      });
+    }
+
+    const prevStatus = admission.admissionFormStatus;
+    const newStatus = markVerified ? 'Verified' : 'Incomplete';
+    admission.admissionFormStatus = newStatus;
+    admission.formVerifiedBy = verifiedBy;
+    admission.formVerifiedAt = markVerified ? new Date() : null;
+    admission.formMissingFields = missing;
+    admission.verificationStatus = calculateVerificationStatus(admission);
+    admission.updatedAt = new Date();
+
+    if (!Array.isArray(admission.auditLogs)) admission.auditLogs = [];
+    admission.auditLogs.push({
+      timestamp: new Date(),
+      performedBy: verifiedBy,
+      action: markVerified ? 'VERIFY_FORM' : 'MARK_FORM_INCOMPLETE',
+      field: 'admissionFormStatus',
+      previousValue: prevStatus,
+      newValue: newStatus,
+      notes: notes || (markVerified ? 'Admission form details reviewed and approved by staff.' : 'Marked incomplete by staff.')
+    });
+
+    if (isDbConnected) {
+      await admission.save();
+    } else {
+      saveLocalAdmissions(admissionsList);
+    }
+
+    syncAdmissionToGoogleSheets(admission);
+    return res.json({ success: true, admission });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// H-5. Verify / Confirm Payment Record
+app.put('/api/admissions/:id/payment-verify', async (req, res) => {
+  const { id } = req.params;
+  const {
+    verifiedBy = 'admin',
+    paymentStatus = 'Paid',
+    amountPaid,
+    paymentReference,
+    invoiceNumber,
+    notes = ''
+  } = req.body;
+
+  try {
+    const isDbConnected = await checkDbConnection();
+    let admission = null;
+    let admissionsList = [];
+
+    if (isDbConnected) {
+      admission = await Admission.findById(id) || await Admission.findOne({ applicationReference: id });
+    } else {
+      admissionsList = getLocalAdmissions();
+      admission = admissionsList.find(a => a._id === id || a.id === id || a.applicationReference === id);
+    }
+
+    if (!admission) return res.status(404).json({ error: 'Admission record not found!' });
+
+    const prevStatus = admission.paymentStatus;
+    const prevAmount = admission.amountPaid;
+
+    if (amountPaid !== undefined) {
+      admission.amountPaid = Number(amountPaid);
+      admission.balanceDue = Math.max(0, (admission.courseFee || 0) - Number(amountPaid));
+    }
+    if (paymentReference) admission.paymentReference = paymentReference.trim();
+    if (invoiceNumber) admission.invoiceNumber = invoiceNumber.trim();
+    if (paymentStatus) admission.paymentStatus = paymentStatus;
+
+    admission.paymentVerifiedBy = verifiedBy;
+    admission.paymentVerifiedAt = new Date();
+    admission.verificationStatus = calculateVerificationStatus(admission);
+    admission.updatedAt = new Date();
+
+    // CRITICAL: Confirmed payment does NOT automatically activate the course!
+    if (admission.verificationStatus !== 'Approved') {
+      admission.courseActivationStatus = 'Locked';
+    }
+
+    if (!Array.isArray(admission.auditLogs)) admission.auditLogs = [];
+    admission.auditLogs.push({
+      timestamp: new Date(),
+      performedBy: verifiedBy,
+      action: 'PAYMENT_STATUS_UPDATE',
+      field: 'paymentStatus',
+      previousValue: `${prevStatus} (₹${prevAmount})`,
+      newValue: `${admission.paymentStatus} (₹${admission.amountPaid})`,
+      notes: notes || `Manual payment verification recorded by ${verifiedBy}. Ref: ${admission.paymentReference || 'N/A'}.`
+    });
+
+    if (isDbConnected) {
+      await admission.save();
+    } else {
+      saveLocalAdmissions(admissionsList);
+    }
+
+    syncAdmissionToGoogleSheets(admission);
+    return res.json({ success: true, admission });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// H-6. Set Mandatory Joining Date
+app.put('/api/admissions/:id/joining-date', async (req, res) => {
+  const { id } = req.params;
+  const { joiningDate, setBy = 'admin', notes = '' } = req.body;
+
+  if (!joiningDate || !joiningDate.trim()) {
+    return res.status(400).json({ error: 'Joining date is mandatory and cannot be empty.' });
+  }
+
+  try {
+    const isDbConnected = await checkDbConnection();
+    let admission = null;
+    let admissionsList = [];
+
+    if (isDbConnected) {
+      admission = await Admission.findById(id) || await Admission.findOne({ applicationReference: id });
+    } else {
+      admissionsList = getLocalAdmissions();
+      admission = admissionsList.find(a => a._id === id || a.id === id || a.applicationReference === id);
+    }
+
+    if (!admission) return res.status(404).json({ error: 'Admission record not found!' });
+
+    const prevDate = admission.joiningDate;
+    admission.joiningDate = joiningDate.trim();
+    admission.joiningDateSetBy = setBy;
+    admission.joiningDateSetAt = new Date();
+    admission.verificationStatus = calculateVerificationStatus(admission);
+    admission.updatedAt = new Date();
+
+    if (!Array.isArray(admission.auditLogs)) admission.auditLogs = [];
+    admission.auditLogs.push({
+      timestamp: new Date(),
+      performedBy: setBy,
+      action: 'SET_JOINING_DATE',
+      field: 'joiningDate',
+      previousValue: prevDate || 'None',
+      newValue: joiningDate.trim(),
+      notes: notes || `Batch joining date set to ${joiningDate.trim()} by ${setBy}.`
+    });
+
+    if (isDbConnected) {
+      await admission.save();
+    } else {
+      saveLocalAdmissions(admissionsList);
+    }
+
+    syncAdmissionToGoogleSheets(admission);
+    return res.json({ success: true, admission });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// H-7. Issue / Generate Student ID Card
+app.put('/api/admissions/:id/id-card', async (req, res) => {
+  const { id } = req.params;
+  const { idCardStatus = 'Issued', idCardNumber, issuedBy = 'admin', notes = '' } = req.body;
+
+  try {
+    const isDbConnected = await checkDbConnection();
+    let admission = null;
+    let admissionsList = [];
+
+    if (isDbConnected) {
+      admission = await Admission.findById(id) || await Admission.findOne({ applicationReference: id });
+    } else {
+      admissionsList = getLocalAdmissions();
+      admission = admissionsList.find(a => a._id === id || a.id === id || a.applicationReference === id);
+    }
+
+    if (!admission) return res.status(404).json({ error: 'Admission record not found!' });
+
+    const year = new Date().getFullYear();
+    const finalIdCardNo = idCardNumber ? idCardNumber.trim() : (admission.idCardNumber || `AF-ID-${year}-${Math.floor(100 + Math.random() * 900)}`);
+    const prevStatus = admission.idCardStatus;
+
+    admission.idCardStatus = idCardStatus;
+    admission.idCardNumber = finalIdCardNo;
+    admission.idCardIssuedBy = issuedBy;
+    admission.idCardIssuedAt = new Date();
+    admission.verificationStatus = calculateVerificationStatus(admission);
+    admission.updatedAt = new Date();
+
+    if (!Array.isArray(admission.auditLogs)) admission.auditLogs = [];
+    admission.auditLogs.push({
+      timestamp: new Date(),
+      performedBy: issuedBy,
+      action: 'ISSUE_ID_CARD',
+      field: 'idCardStatus',
+      previousValue: prevStatus,
+      newValue: idCardStatus,
+      notes: notes || `Student ID Card ${finalIdCardNo} marked as ${idCardStatus} by ${issuedBy}.`
+    });
+
+    if (isDbConnected) {
+      await admission.save();
+    } else {
+      saveLocalAdmissions(admissionsList);
+    }
+
+    syncAdmissionToGoogleSheets(admission);
+    return res.json({ success: true, admission });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// H-8. Final "Verify & Approve Admission" Action (Enforces all 4 criteria)
+app.post('/api/admissions/:id/approve', async (req, res) => {
+  const { id } = req.params;
+  const { approvedBy = 'Lead Administrator' } = req.body;
+
+  try {
+    const isDbConnected = await checkDbConnection();
+    let admission = null;
+    let admissionsList = [];
+
+    if (isDbConnected) {
+      admission = await Admission.findById(id) || await Admission.findOne({ applicationReference: id });
+    } else {
+      admissionsList = getLocalAdmissions();
+      admission = admissionsList.find(a => a._id === id || a.id === id || a.applicationReference === id);
+    }
+
+    if (!admission) return res.status(404).json({ error: 'Admission application record not found!' });
+
+    // Evaluate 4 Mandatory Pre-conditions:
+    const missingConditions = [];
+    if (admission.admissionFormStatus !== 'Verified') {
+      missingConditions.push('Admission Form is not verified.');
+    }
+    if (admission.paymentStatus !== 'Paid') {
+      missingConditions.push('Fee Payment is unverified or incomplete.');
+    }
+    if (!admission.joiningDate || !admission.joiningDate.trim()) {
+      missingConditions.push('Joining Date has not been entered.');
+    }
+    if (admission.idCardStatus !== 'Issued') {
+      missingConditions.push('Student ID Card has not been issued.');
+    }
+
+    if (missingConditions.length > 0) {
+      return res.status(400).json({
+        error: 'Approval blocked: All four verification conditions must be satisfied before activating course.',
+        missingConditions
+      });
+    }
+
+    // Generate unique permanent Student ID if not already assigned
+    const year = new Date().getFullYear();
+    let permanentStudentId = admission.studentId;
+    if (!permanentStudentId || !permanentStudentId.startsWith('AF-STU-')) {
+      const allAdmissions = isDbConnected ? await Admission.find({}) : admissionsList;
+      const existingIds = allAdmissions.map(a => a.studentId).filter(Boolean);
+      let maxNum = 0;
+      existingIds.forEach(sid => {
+        const match = sid.match(/AF-STU-\d+-(\d+)/);
+        if (match) maxNum = Math.max(maxNum, parseInt(match[1], 10));
+      });
+      const nextNum = String(maxNum + 1).padStart(4, '0');
+      permanentStudentId = `AF-STU-${year}-${nextNum}`;
+    }
+
+    // Link or create Student account
+    let accessCode = admission.studentAccountAccessCode;
+    if (!accessCode) {
+      accessCode = 'STU-' + Math.floor(1000 + Math.random() * 9000);
+    }
+
+    const courseToActivate = admission.courseKey || 'python_fullstack';
+
+    if (isDbConnected) {
+      let studentAccount = await Student.findOne({ accessCode });
+      if (!studentAccount) {
+        studentAccount = new Student({
+          name: admission.studentName,
+          enrolledCourse: courseToActivate,
+          accessCode,
+          studentId: permanentStudentId,
+          admissionStatus: 'Approved',
+          isCourseActivated: true,
+          activatedCourses: [courseToActivate],
+          joiningDate: admission.joiningDate,
+          idCardNumber: admission.idCardNumber,
+          invoiceNo: admission.invoiceNumber
+        });
+      } else {
+        studentAccount.studentId = permanentStudentId;
+        studentAccount.admissionStatus = 'Approved';
+        studentAccount.isCourseActivated = true;
+        const currentCourses = (studentAccount.enrolledCourse || '').split(',').filter(Boolean);
+        if (!currentCourses.includes(courseToActivate)) {
+          currentCourses.push(courseToActivate);
+        }
+        studentAccount.enrolledCourse = currentCourses.join(',');
+        studentAccount.joiningDate = admission.joiningDate;
+        studentAccount.idCardNumber = admission.idCardNumber;
+        studentAccount.invoiceNo = admission.invoiceNumber;
+      }
+      await studentAccount.save();
+
+      admission.studentId = permanentStudentId;
+      admission.studentAccountAccessCode = accessCode;
+      admission.verificationStatus = 'Approved';
+      admission.courseActivationStatus = 'Active';
+      admission.approvedBy = approvedBy;
+      admission.approvedAt = new Date();
+      admission.updatedAt = new Date();
+      if (!Array.isArray(admission.auditLogs)) admission.auditLogs = [];
+      admission.auditLogs.push({
+        timestamp: new Date(),
+        performedBy: approvedBy,
+        action: 'APPROVE_ADMISSION',
+        field: 'courseActivationStatus',
+        previousValue: 'Locked',
+        newValue: 'Active',
+        notes: `Admission formally verified and approved. Permanent Student ID: ${permanentStudentId}. Course activated: ${admission.courseName}.`
+      });
+      await admission.save();
+    } else {
+      let students = getLocalStudents();
+      let sIdx = students.findIndex(s => s.accessCode === accessCode);
+      if (sIdx === -1) {
+        students.push({
+          id: Date.now().toString(),
+          name: admission.studentName,
+          enrolledCourse: courseToActivate,
+          accessCode,
+          studentId: permanentStudentId,
+          admissionStatus: 'Approved',
+          isCourseActivated: true,
+          activatedCourses: [courseToActivate],
+          joiningDate: admission.joiningDate,
+          idCardNumber: admission.idCardNumber,
+          invoiceNo: admission.invoiceNumber,
+          completedLessons: [],
+          tasks: []
+        });
+      } else {
+        students[sIdx].studentId = permanentStudentId;
+        students[sIdx].admissionStatus = 'Approved';
+        students[sIdx].isCourseActivated = true;
+        const currentCourses = (students[sIdx].enrolledCourse || '').split(',').filter(Boolean);
+        if (!currentCourses.includes(courseToActivate)) {
+          currentCourses.push(courseToActivate);
+        }
+        students[sIdx].enrolledCourse = currentCourses.join(',');
+        students[sIdx].joiningDate = admission.joiningDate;
+        students[sIdx].idCardNumber = admission.idCardNumber;
+        students[sIdx].invoiceNo = admission.invoiceNumber;
+      }
+      saveLocalStudents(students);
+
+      admission.studentId = permanentStudentId;
+      admission.studentAccountAccessCode = accessCode;
+      admission.verificationStatus = 'Approved';
+      admission.courseActivationStatus = 'Active';
+      admission.approvedBy = approvedBy;
+      admission.approvedAt = new Date();
+      admission.updatedAt = new Date();
+      if (!Array.isArray(admission.auditLogs)) admission.auditLogs = [];
+      admission.auditLogs.push({
+        timestamp: new Date(),
+        performedBy: approvedBy,
+        action: 'APPROVE_ADMISSION',
+        field: 'courseActivationStatus',
+        previousValue: 'Locked',
+        newValue: 'Active',
+        notes: `Admission formally verified and approved. Permanent Student ID: ${permanentStudentId}. Course activated: ${admission.courseName}.`
+      });
+      saveLocalAdmissions(admissionsList);
+    }
+
+    syncAdmissionToGoogleSheets(admission);
+
+    return res.json({
+      success: true,
+      message: 'Admission successfully verified and course activated!',
+      admission,
+      studentId: permanentStudentId,
+      accessCode,
+      courseActivated: admission.courseName
+    });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// H-9. Suspend Course Access (on refund or cancellation)
+app.post('/api/admissions/:id/suspend', async (req, res) => {
+  const { id } = req.params;
+  const { reason = 'Refund issued or administrative suspension', suspendedBy = 'admin' } = req.body;
+
+  try {
+    const isDbConnected = await checkDbConnection();
+    let admission = null;
+    let admissionsList = [];
+
+    if (isDbConnected) {
+      admission = await Admission.findById(id) || await Admission.findOne({ applicationReference: id });
+    } else {
+      admissionsList = getLocalAdmissions();
+      admission = admissionsList.find(a => a._id === id || a.id === id || a.applicationReference === id);
+    }
+
+    if (!admission) return res.status(404).json({ error: 'Admission record not found!' });
+
+    const prevActivation = admission.courseActivationStatus;
+    admission.courseActivationStatus = 'Suspended';
+    admission.verificationStatus = 'Suspended';
+    admission.rejectionReason = reason;
+    admission.updatedAt = new Date();
+
+    if (!Array.isArray(admission.auditLogs)) admission.auditLogs = [];
+    admission.auditLogs.push({
+      timestamp: new Date(),
+      performedBy: suspendedBy,
+      action: 'SUSPEND_ACCESS',
+      field: 'courseActivationStatus',
+      previousValue: prevActivation,
+      newValue: 'Suspended',
+      notes: `Course access suspended by ${suspendedBy}. Reason: ${reason}`
+    });
+
+    if (isDbConnected) {
+      await Student.findOneAndUpdate(
+        { $or: [{ accessCode: admission.studentAccountAccessCode }, { studentId: admission.studentId }] },
+        { $set: { isCourseActivated: false, admissionStatus: 'Suspended' } }
+      );
+      await admission.save();
+    } else {
+      let students = getLocalStudents();
+      const sIdx = students.findIndex(s => s.accessCode === admission.studentAccountAccessCode || s.studentId === admission.studentId);
+      if (sIdx >= 0) {
+        students[sIdx].isCourseActivated = false;
+        students[sIdx].admissionStatus = 'Suspended';
+        saveLocalStudents(students);
+      }
+      saveLocalAdmissions(admissionsList);
+    }
+
+    syncAdmissionToGoogleSheets(admission);
+    return res.json({ success: true, message: 'Course access suspended.', admission });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// H-10. Delete Admission Application
+app.delete('/api/admissions/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      const query = mongoose.Types.ObjectId.isValid(id) ? { _id: id } : { applicationReference: id };
+      await Admission.findOneAndDelete(query);
+      return res.json({ success: true, message: 'Admission application deleted.' });
+    } else {
+      let list = getLocalAdmissions();
+      list = list.filter(a => a._id !== id && a.id !== id && a.applicationReference !== id);
+      saveLocalAdmissions(list);
+      return res.json({ success: true, message: 'Admission application deleted.' });
+    }
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// ============================================================
+// I. PAYMENT CONFIRMATION & WEBHOOK ROUTES
+// ============================================================
+
+// I-1. Payment Gateway Webhook (Server-Side Verified & Idempotent)
+app.post('/api/payments/webhook', async (req, res) => {
+  const {
+    transactionId,
+    paymentReference,
+    paymentId,
+    razorpay_payment_id,
+    orderId,
+    amount,
+    invoiceNo,
+    applicationReference,
+    studentName,
+    contactNumber,
+    courseName
+  } = req.body;
+
+  const txnId = transactionId || paymentReference || paymentId || razorpay_payment_id || orderId;
+  if (!txnId) {
+    return res.status(400).json({ error: 'Missing transaction/payment reference identifier.' });
+  }
+
+  try {
+    const isDbConnected = await checkDbConnection();
+
+    // Idempotency: skip duplicates on webhook retries
+    if (isDbConnected) {
+      const existingInvoice = await Invoice.findOne({
+        $or: [
+          { transactionId: txnId },
+          { invoiceNo: invoiceNo ? invoiceNo.trim() : '___' }
+        ]
+      });
+      if (existingInvoice && existingInvoice.status === 'PAID') {
+        return res.json({
+          success: true,
+          isDuplicate: true,
+          message: 'Payment already processed and recorded (idempotent duplicate skipped).',
+          invoiceNo: existingInvoice.invoiceNo,
+          invoiceNumber: existingInvoice.invoiceNo,
+          paymentStatus: 'Paid',
+          courseActivationStatus: 'Locked'
+        });
+      }
+    } else {
+      const invoices = getLocalInvoices();
+      const existingInvoice = invoices.find(inv => inv.transactionId === txnId || (invoiceNo && inv.invoiceNo === invoiceNo.trim()));
+      if (existingInvoice && existingInvoice.status === 'PAID') {
+        return res.json({
+          success: true,
+          isDuplicate: true,
+          message: 'Payment already processed and recorded (idempotent duplicate skipped).',
+          invoiceNo: existingInvoice.invoiceNo,
+          invoiceNumber: existingInvoice.invoiceNo,
+          paymentStatus: 'Paid',
+          courseActivationStatus: 'Locked'
+        });
+      }
+    }
+
+    const invNumber = invoiceNo || ('INV-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000));
+    const paidAmount = Number(amount) || 0;
+    const invPayload = {
+      invoiceNo: invNumber,
+      invoiceDate: new Date().toISOString().split('T')[0],
+      studentName: studentName || 'Enrolled Student',
+      mobile: contactNumber || '',
+      course: courseName || 'Selected Course',
+      grandTotal: paidAmount,
+      amountPaid: paidAmount,
+      balanceDue: 0,
+      status: 'PAID',
+      transactionId: txnId,
+      activeModesStr: 'Gateway Webhook / Online',
+      updatedAt: new Date()
+    };
+
+    if (isDbConnected) {
+      await Invoice.findOneAndUpdate(
+        { invoiceNo: invNumber },
+        { $set: invPayload },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
+    } else {
+      const invoices = getLocalInvoices();
+      const idx = invoices.findIndex(i => i.invoiceNo === invNumber);
+      if (idx >= 0) invoices[idx] = { ...invoices[idx], ...invPayload };
+      else invoices.unshift({ _id: 'inv_' + Date.now(), createdAt: new Date(), ...invPayload });
+      saveLocalInvoices(invoices);
+    }
+
+    // Link/update Admission Record
+    if (isDbConnected) {
+      let admission = null;
+      if (applicationReference) admission = await Admission.findOne({ applicationReference });
+      if (!admission && studentName) admission = await Admission.findOne({ studentName: new RegExp(`^${studentName.trim()}$`, 'i') });
+      if (admission) {
+        admission.paymentStatus = 'Paid';
+        admission.invoiceNumber = invNumber;
+        admission.amountPaid = paidAmount;
+        admission.paymentReference = txnId;
+        admission.paymentVerifiedAt = new Date();
+        admission.paymentVerifiedBy = 'Payment Gateway Webhook';
+        admission.verificationStatus = calculateVerificationStatus(admission);
+        // Confirmed payment MUST NOT automatically activate the course!
+        admission.courseActivationStatus = 'Locked';
+        if (!Array.isArray(admission.auditLogs)) admission.auditLogs = [];
+        admission.auditLogs.push({
+          timestamp: new Date(),
+          performedBy: 'Payment Gateway Webhook',
+          action: 'PAYMENT_CONFIRMED_WEBHOOK',
+          field: 'paymentStatus',
+          previousValue: 'Pending',
+          newValue: 'Paid',
+          notes: `Server-verified payment of ₹${paidAmount} received (Ref: ${txnId}). Course remains locked until staff checklist approval.`
+        });
+        await admission.save();
+        syncAdmissionToGoogleSheets(admission);
+      }
+    } else {
+      let admissions = getLocalAdmissions();
+      let admIdx = -1;
+      if (applicationReference) admIdx = admissions.findIndex(a => a.applicationReference === applicationReference);
+      if (admIdx === -1 && studentName) admIdx = admissions.findIndex(a => (a.studentName || '').toLowerCase() === studentName.trim().toLowerCase());
+      if (admIdx >= 0) {
+        admissions[admIdx].paymentStatus = 'Paid';
+        admissions[admIdx].invoiceNumber = invNumber;
+        admissions[admIdx].amountPaid = paidAmount;
+        admissions[admIdx].paymentReference = txnId;
+        admissions[admIdx].paymentVerifiedAt = new Date();
+        admissions[admIdx].paymentVerifiedBy = 'Payment Gateway Webhook';
+        admissions[admIdx].verificationStatus = calculateVerificationStatus(admissions[admIdx]);
+        admissions[admIdx].courseActivationStatus = 'Locked';
+        if (!Array.isArray(admissions[admIdx].auditLogs)) admissions[admIdx].auditLogs = [];
+        admissions[admIdx].auditLogs.push({
+          timestamp: new Date(),
+          performedBy: 'Payment Gateway Webhook',
+          action: 'PAYMENT_CONFIRMED_WEBHOOK',
+          field: 'paymentStatus',
+          previousValue: 'Pending',
+          newValue: 'Paid',
+          notes: `Server-verified payment of ₹${paidAmount} received (Ref: ${txnId}). Course remains locked until staff checklist approval.`
+        });
+        saveLocalAdmissions(admissions);
+        syncAdmissionToGoogleSheets(admissions[admIdx]);
+      }
+    }
+
+    return res.json({
+      success: true,
+      isDuplicate: false,
+      message: 'Payment confirmed and invoice stored. Course remains locked pending administrator checklist verification.',
+      invoiceNo: invNumber,
+      invoiceNumber: invNumber,
+      paymentStatus: 'Paid',
+      courseActivationStatus: 'Locked'
+    });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// I-2. Server-side payment verification check
+app.post('/api/payments/verify', async (req, res) => {
+  const { applicationReference, transactionId } = req.body;
+  if (!applicationReference || !transactionId) {
+    return res.status(400).json({ error: 'applicationReference and transactionId are required.' });
+  }
+  try {
+    const isDbConnected = await checkDbConnection();
+    let admission = null;
+    if (isDbConnected) {
+      admission = await Admission.findOne({ applicationReference });
+    } else {
+      const list = getLocalAdmissions();
+      admission = list.find(a => a.applicationReference === applicationReference);
+    }
+    if (!admission) return res.status(404).json({ error: 'Admission application not found.' });
+
+    return res.json({
+      verified: admission.paymentStatus === 'Paid',
+      paymentStatus: admission.paymentStatus,
+      amountPaid: admission.amountPaid,
+      courseActivationStatus: admission.courseActivationStatus
+    });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// ============================================================
+// J. SERVER-SIDE COURSE ACCESS CONTROL
+// ============================================================
+app.get('/api/students/:id/course-access', async (req, res) => {
+  const { id } = req.params;
+  const { course } = req.query;
+
+  try {
+    const isDbConnected = await checkDbConnection();
+    let student = null;
+    let admission = null;
+
+    if (isDbConnected) {
+      const query = mongoose.Types.ObjectId.isValid(id)
+        ? { _id: id }
+        : { $or: [{ accessCode: id.trim() }, { studentId: id.trim() }] };
+      student = await Student.findOne(query);
+      if (student) {
+        admission = await Admission.findOne({
+          $or: [
+            { studentAccountAccessCode: student.accessCode },
+            { studentId: student.studentId },
+            { studentName: student.name }
+          ]
+        });
+      }
+    } else {
+      const students = getLocalStudents();
+      student = students.find(s => s.id === id || s._id === id || s.accessCode === id.trim() || (s.studentId && s.studentId === id.trim()));
+      if (student) {
+        const admissions = getLocalAdmissions();
+        admission = admissions.find(a => 
+          a.studentAccountAccessCode === student.accessCode || 
+          (student.studentId && a.studentId === student.studentId) ||
+          a.studentName === student.name
+        );
+      }
+    }
+
+    if (!student) {
+      return res.status(404).json({ error: 'Student record not found.' });
+    }
+
+    if (course === 'induction' || !course) {
+      return res.json({ allowed: true, reason: 'Free access' });
+    }
+
+    const isActivated = student.isCourseActivated !== false && (student.admissionStatus === 'Approved' || student.admissionStatus === 'None');
+
+    if (admission && admission.courseActivationStatus !== 'Active') {
+      return res.status(403).json({
+        allowed: false,
+        error: 'Course Access Locked: Admission verification is incomplete.',
+        verificationStatus: admission.verificationStatus,
+        admissionFormStatus: admission.admissionFormStatus,
+        paymentStatus: admission.paymentStatus,
+        joiningDate: admission.joiningDate,
+        idCardStatus: admission.idCardStatus,
+        courseActivationStatus: admission.courseActivationStatus
+      });
+    }
+
+    return res.json({
+      allowed: isActivated,
+      studentId: student.studentId || 'PENDING',
+      admissionStatus: student.admissionStatus || 'Approved',
+      courseActivationStatus: admission ? admission.courseActivationStatus : 'Active'
+    });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// Start Server locally (if not running in serverless cloud environments or test mode)
+if (!process.env.VERCEL && !process.env.TEST_MODE) {
+  const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`🚀 LMS Backend listening live on http://localhost:${PORT}`);
   });

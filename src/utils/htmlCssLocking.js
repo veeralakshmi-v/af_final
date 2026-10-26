@@ -551,6 +551,26 @@ export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations,
   })();
 
   if (isStaff) return false;
+
+  // 🛡️ Verification Gate: If admission is pending or course not activated, lock paid course modules
+  if (courseKey !== 'induction') {
+    const isUnverifiedStudent = (() => {
+      if (session && session.role === 'student') {
+        return session.isCourseActivated === false || session.admissionStatus === 'Pending';
+      }
+      try {
+        const raw = localStorage.getItem('lms_user_session');
+        if (raw) {
+          const u = JSON.parse(raw);
+          return u && u.role === 'student' && (u.isCourseActivated === false || u.admissionStatus === 'Pending');
+        }
+      } catch (e) {}
+      return false;
+    })();
+
+    if (isUnverifiedStudent) return true;
+  }
+
   if (courseKey === 'spoko_hr' || courseKey === 'hr_interview_mastery' || courseKey === 'spoko_reasoning') return false;
 
   // 2. Student locking rules:
@@ -619,6 +639,32 @@ export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, 
   })();
 
   if (isStaff) return null;
+
+  // 🛡️ Verification Gate
+  if (courseKey !== 'induction') {
+    const isUnverifiedStudent = (() => {
+      if (session && session.role === 'student') {
+        return session.isCourseActivated === false || session.admissionStatus === 'Pending';
+      }
+      try {
+        const raw = localStorage.getItem('lms_user_session');
+        if (raw) {
+          const u = JSON.parse(raw);
+          return u && u.role === 'student' && (u.isCourseActivated === false || u.admissionStatus === 'Pending');
+        }
+      } catch (e) {}
+      return false;
+    })();
+
+    if (isUnverifiedStudent) {
+      return {
+        prevModuleId: null,
+        prevTitle: 'Admission Verification',
+        reason: 'Admission Verification Pending',
+        detail: 'Course lessons are restricted until your admission form, fee payment, joining date, and ID card are verified and approved by the institute administration.'
+      };
+    }
+  }
 
   const order = getCourseModuleOrder(courseKey, targetModuleId);
   const index = order.indexOf(targetModuleId);

@@ -270,6 +270,7 @@ import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, po
 import TallyCourseDay from './pages/tally/TallyCourseDay';
 import AssignmentSubmissionPage from './components/AssignmentSubmissionPage';
 import { isModuleLocked, getLockReason } from './utils/htmlCssLocking';
+import StudentAdmissionStatusModal from './pages/dashboards/StudentAdmissionStatusModal';
 import './index.css';
 
 
@@ -299,6 +300,8 @@ function App() {
   const [completedLessons, setCompletedLessons] = useState([]);
   const [taskSubmissions, setTaskSubmissions] = useState([]);
   const [showTaskModal, setShowTaskModal] = useState(false);
+  const [admissionModalOpen, setAdmissionModalOpen] = useState(false);
+  const [admissionBlockedCourse, setAdmissionBlockedCourse] = useState('');
   const [taskSubmitLoading, setTaskSubmitLoading] = useState(false);
   const [taskSubmitUrl, setTaskSubmitUrl] = useState('');
   const [taskSubmitNotes, setTaskSubmitNotes] = useState('');
@@ -311,10 +314,25 @@ function App() {
           const resStudents = await fetch('/api/students');
           if (resStudents.ok) {
             const list = await resStudents.json();
-            const me = list.find(s => s.accessCode === session.accessCode);
+            const me = list.find(s => s.accessCode === session.accessCode || (s.studentId && s.studentId === session.studentId));
             if (me) {
               setCompletedLessons(me.completedLessons || []);
               setTaskSubmissions(me.tasks || []);
+              if (me.isCourseActivated !== undefined || me.admissionStatus !== undefined) {
+                setSession(prev => {
+                  const updated = {
+                    ...prev,
+                    isCourseActivated: me.isCourseActivated,
+                    admissionStatus: me.admissionStatus,
+                    studentId: me.studentId || prev.studentId,
+                    joiningDate: me.joiningDate || prev.joiningDate,
+                    idCardNumber: me.idCardNumber || prev.idCardNumber,
+                    invoiceNo: me.invoiceNo || prev.invoiceNo
+                  };
+                  localStorage.setItem('lms_user_session', JSON.stringify(updated));
+                  return updated;
+                });
+              }
             }
           }
         } catch (e) {
@@ -410,6 +428,16 @@ function App() {
       return;
     }
 
+    // 🛡️ Verification Gate: Block unactivated students from paid course content
+    if (session?.role === 'student' && activeCourse !== 'induction') {
+      const isPendingActivation = session?.isCourseActivated === false || session?.admissionStatus === 'Pending';
+      if (isPendingActivation) {
+        setAdmissionBlockedCourse(activeCourse);
+        setAdmissionModalOpen(true);
+        return;
+      }
+    }
+
     if (isModuleLocked(activeCourse, moduleId, undefined, session, completedLessons, taskSubmissions)) {
       const lockInfo = getLockReason(activeCourse, moduleId, undefined, session, completedLessons, taskSubmissions);
       alert(`🔒 Day Content Locked!\n\n${lockInfo ? lockInfo.detail : 'You must complete the previous day assignment/topics to unlock this content.'}`);
@@ -494,6 +522,16 @@ function App() {
   };
 
   const handleSelectCourse = (course, startModuleId = null) => {
+    // 🛡️ Verification Gate: Block unactivated students from entering paid courses
+    if (session?.role === 'student' && course !== 'induction') {
+      const isPendingActivation = session?.isCourseActivated === false || session?.admissionStatus === 'Pending';
+      if (isPendingActivation) {
+        setAdmissionBlockedCourse(course);
+        setAdmissionModalOpen(true);
+        return;
+      }
+    }
+
     const enrolledCoursesList = session?.enrolledCourse ? session.enrolledCourse.split(',') : [];
     const isEnrolled = session?.enrolledCourse === 'all' ||
       enrolledCoursesList.includes(course) ||
@@ -1490,6 +1528,14 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* 🛡️ STUDENT ADMISSION STATUS MODAL */}
+      <StudentAdmissionStatusModal
+        isOpen={admissionModalOpen}
+        onClose={() => setAdmissionModalOpen(false)}
+        session={session}
+        requestedCourseName={admissionBlockedCourse || activeCourse}
+      />
     </div>
   );
 }

@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import type { CertificateData, CustomAssets, ViewMode } from './types/certificate';
-import { 
-  getStoredCertificates, 
-  saveStoredCertificates, 
-  getStoredAssets, 
-  saveStoredAssets, 
+import {
+  getStoredCertificates,
+  saveStoredCertificates,
+  getStoredAssets,
+  saveStoredAssets,
   createNewBlankCertificate,
   generateNextCertificateId,
   recoverAllCertificates,
-  INITIAL_CERTIFICATES 
+  INITIAL_CERTIFICATES
 } from './data/certificateStore';
 import { CertificateStats } from './components/CertificateStats';
 import { CertificateTable } from './components/CertificateTable';
@@ -16,9 +16,9 @@ import { CertificateEditor } from './components/CertificateEditor';
 import { PreviewModeView } from './components/PreviewModeView';
 import { VerificationPortal } from './components/VerificationPortal';
 import { AssetManager } from './components/AssetManager';
-import { 
+import {
   Eye,
-  PlusCircle, 
+  PlusCircle,
   Upload,
   LayoutDashboard,
   ShieldCheck,
@@ -35,7 +35,7 @@ export function CertificateApp() {
   const [viewMode, setViewMode] = useState<ViewMode>('dashboard');
   const [isSheetModalOpen, setIsSheetModalOpen] = useState<boolean>(false);
   const [recoveryNotice, setRecoveryNotice] = useState<string>('');
-  
+
   // Active editing or previewing certificate
   const [activeCertificate, setActiveCertificate] = useState<CertificateData | null>(null);
   const [previewCertId, setPreviewCertId] = useState<string>('AFE-2026-0001');
@@ -64,7 +64,7 @@ export function CertificateApp() {
     const path = window.location.pathname;
     const hash = window.location.hash;
     const verifyMatch = path.match(/\/verify\/([A-Za-z0-9_-]+)/) || hash.match(/#\/verify\/([A-Za-z0-9_-]+)/);
-    
+
     if (verifyMatch && verifyMatch[1]) {
       setVerifyTargetId(verifyMatch[1]);
       setViewMode('verify');
@@ -171,11 +171,10 @@ export function CertificateApp() {
             <button
               type="button"
               onClick={() => setViewMode('dashboard')}
-              className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
-                viewMode === 'dashboard'
+              className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${viewMode === 'dashboard'
                   ? 'bg-slate-900 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
+                }`}
             >
               <LayoutDashboard className="w-3.5 h-3.5" />
               <span>Dashboard</span>
@@ -184,11 +183,10 @@ export function CertificateApp() {
             <button
               type="button"
               onClick={() => setViewMode('preview')}
-              className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
-                viewMode === 'preview'
+              className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${viewMode === 'preview'
                   ? 'bg-blue-600 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
+                }`}
             >
               <Eye className="w-3.5 h-3.5" />
               <span>Preview</span>
@@ -197,11 +195,10 @@ export function CertificateApp() {
             <button
               type="button"
               onClick={handleNewCertificate}
-              className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
-                viewMode === 'create'
+              className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${viewMode === 'create'
                   ? 'bg-slate-900 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
+                }`}
             >
               <PlusCircle className="w-3.5 h-3.5" />
               <span>New</span>
@@ -213,11 +210,10 @@ export function CertificateApp() {
                 setVerifyTargetId(certificates[0]?.id || 'AFE-2026-0001');
                 setViewMode('verify');
               }}
-              className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
-                viewMode === 'verify'
+              className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${viewMode === 'verify'
                   ? 'bg-slate-900 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
+                }`}
             >
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Verify</span>
@@ -240,11 +236,10 @@ export function CertificateApp() {
           <button
             type="button"
             onClick={() => setViewMode('assets')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap cursor-pointer ${
-              viewMode === 'assets'
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap cursor-pointer ${viewMode === 'assets'
                 ? 'bg-slate-900 text-white shadow-xs'
                 : 'text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200'
-            }`}
+              }`}
             title="Upload custom certificate signatures, stamps, badges, and logos"
           >
             <Upload className="w-3.5 h-3.5 text-blue-600" />
@@ -269,8 +264,7 @@ export function CertificateApp() {
                 className="inline-flex items-center gap-1.5 px-3 py-2 sm:py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold transition-all flex-1 sm:flex-initial justify-center shadow-xs cursor-pointer"
                 title="Recover all 31 student certificates from LMS database"
               >
-                <RotateCcw className="w-3.5 h-3.5 text-amber-600" />
-                <span>Recover All DB ({certificates.length})</span>
+
               </button>
 
               <button

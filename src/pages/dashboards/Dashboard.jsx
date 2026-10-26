@@ -4,8 +4,8 @@ import {
   UserPlus, Users, LogIn, LogOut, CheckCircle, BarChart3, Layers, GitBranch,
   Server, RefreshCw, Trash2, Key, Star, ShieldAlert, Award, Grid, HelpCircle,
   BookOpen, ExternalLink, Upload, Download, FileText, Lock, AlertTriangle, Menu, X,
-  Search, ChevronLeft, ChevronRight, Copy, Receipt, Briefcase,
-  CreditCard, FileCheck2, Eye, TrendingUp, MessageSquare
+  Search, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Copy, Receipt, Briefcase,
+  CreditCard, FileCheck2, Eye, TrendingUp, MessageSquare, ShieldCheck
 } from 'lucide-react';
 import {
   getAssignmentValidations,
@@ -16,6 +16,8 @@ import {
 import * as CourseData from '../../courseData';
 import InvoiceGenerator from '../invoice/InvoiceGenerator';
 import CertificateManager from '../certificate/CertificateManager';
+import AdmissionVerificationDashboard from './AdmissionVerificationDashboard';
+import StudentAdmissionStatusModal from './StudentAdmissionStatusModal';
 
 const mainCourses = [
   {
@@ -417,6 +419,116 @@ const formatTaskTitle = (task) => {
   return id.replace(/_/g, ' ').toUpperCase();
 };
 
+// 🎓 8 Main Courses with structured Sub-Courses configuration
+export const COURSE_CATEGORIES = [
+  {
+    id: 'python_fullstack',
+    title: 'Python Full Stack Development',
+    badge: '10 Tracks',
+    color: '#2563eb',
+    bg: '#eff6ff',
+    border: '#bfdbfe',
+    subCourses: [
+      { value: 'web_design_20days', label: 'AI-Powered Web Design (20 Days)' },
+      { value: 'html_css', label: 'HTML, CSS & Bootstrap' },
+      { value: 'sql', label: 'Databases & SQL (Full Stack)' },
+      { value: 'python_course', label: 'Core Python & OOPs' },
+      { value: 'core_js', label: 'AI-Powered JavaScript' },
+      { value: 'react_course', label: 'AI-Powered React JS' },
+      { value: 'django_course', label: 'Django Framework' },
+      { value: 'git_github', label: 'Git & GitHub' },
+      { value: 'json_course', label: 'JSON Essentials' },
+      { value: 'devops', label: 'DevOps Framework' }
+    ]
+  },
+  {
+    id: 'data_analysis',
+    title: 'Data Analysis',
+    badge: '3 Tracks',
+    color: '#0284c7',
+    bg: '#f0f9ff',
+    border: '#bae6fd',
+    subCourses: [
+      { value: 'python_da', label: 'Python for Data Analytics' },
+      { value: 'sql_da', label: 'SQL for Data Analytics' },
+      { value: 'powerbi', label: 'Power BI Data Analytics' }
+    ]
+  },
+  {
+    id: 'data_analytics',
+    title: 'Data Analytics',
+    badge: '5 Tracks',
+    color: '#6366f1',
+    bg: '#eef2ff',
+    border: '#c7d2fe',
+    subCourses: [
+      { value: 'stats_course', label: 'Statistics for Data Analytics' },
+      { value: 'numpy_course', label: 'NumPy for Data Science' },
+      { value: 'pandas_course', label: 'Pandas for Data Science' },
+      { value: 'matplotlib_course', label: 'Matplotlib for Data Science' },
+      { value: 'seaborn_course', label: 'Seaborn for Data Science' }
+    ]
+  },
+  {
+    id: 'accounting',
+    title: 'Accounting',
+    badge: '1 Track',
+    color: '#059669',
+    bg: '#ecfdf5',
+    border: '#a7f3d0',
+    subCourses: [
+      { value: 'tally_prime', label: 'AI Powered Tally Prime' }
+    ]
+  },
+  {
+    id: 'cognitive_ai',
+    title: 'Cognitive AI',
+    badge: '2 Tracks',
+    color: '#db2777',
+    bg: '#fdf2f8',
+    border: '#fbcfe8',
+    subCourses: [
+      { value: 'generative_ai_course', label: 'Generative AI Masterclass' },
+      { value: 'agentic_ai', label: 'Agentic AI Engineering' }
+    ]
+  },
+  {
+    id: 'spoko',
+    title: 'Spoko',
+    badge: '1 Track',
+    color: '#ea580c',
+    bg: '#fff7ed',
+    border: '#fed7aa',
+    subCourses: [
+      { value: 'spoko_story', label: 'Story-Based Learning (Spoko English)' }
+    ]
+  },
+  {
+    id: 'skill_development',
+    title: 'Skill Development',
+    badge: '3 Tracks',
+    color: '#7c3aed',
+    bg: '#f5f3ff',
+    border: '#ddd6fe',
+    subCourses: [
+      { value: 'spoko_pro', label: 'Professional Track (Soft Skills)' },
+      { value: 'spoko_hr', label: 'HR Interview Mastery (100 Q&A)' },
+      { value: 'spoko_reasoning', label: 'Logical Reasoning & Analytical Thinking' }
+    ]
+  },
+  {
+    id: 'summer_course',
+    title: 'Summer Course',
+    badge: '1 Track',
+    color: '#0d9488',
+    bg: '#f0fdfa',
+    border: '#99f6e4',
+    subCourses: [
+      { value: 'summer_sql', label: 'Summer SQL Crash Course' }
+    ]
+  }
+];
+
 const availableCourseOptions = [
   { value: "web_design_20days", label: "AI-Powered Web Design (20 Days)" },
   { value: "html_css", label: "HTML, CSS & Bootstrap" },
@@ -489,6 +601,40 @@ function getCourseLabel(courseKey) {
   };
   if (labels[courseKey]) return labels[courseKey];
   return courseKey.replace(/_/g, ' ').toUpperCase();
+}
+
+// 🎓 Returns matched main course category objects for an enrolledCourse string
+export function getMainCourseCategories(courseKey) {
+  if (!courseKey) return [];
+  if (courseKey === 'all') {
+    return COURSE_CATEGORIES;
+  }
+  const keys = (Array.isArray(courseKey) ? courseKey : courseKey.split(','))
+    .map(k => k.trim())
+    .filter(Boolean);
+
+  if (keys.length === 0) return [];
+
+  // Match which main course categories contain any of the enrolled sub-courses
+  const matched = COURSE_CATEGORIES.filter(cat =>
+    cat.subCourses.some(sc => keys.includes(sc.value))
+  );
+
+  return matched;
+}
+
+// 🎓 Returns clean comma-separated Main Course Names (e.g. "Data Analysis, Data Analytics")
+export function getMainCourseLabels(courseKey) {
+  if (!courseKey) return 'Unassigned';
+  if (courseKey === 'all') return 'All Courses';
+
+  const matched = getMainCourseCategories(courseKey);
+  if (matched.length > 0) {
+    return matched.map(m => m.title).join(', ');
+  }
+
+  // Fallback to legacy single label if none matched
+  return getCourseLabel(courseKey);
 }
 
 function getCourseDataList(courseKey) {
@@ -724,6 +870,7 @@ function calculateStudentProgress(student) {
 export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledCourse, session, onLogout, completedLessons = [], taskSubmissions = [] }) {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'courses' | 'register' | 'database' | 'demos' | 'grading'
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAdmissionStatusModalOpen, setIsAdmissionStatusModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 868);
 
   useEffect(() => {
@@ -794,7 +941,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     const codeMatch = (s.accessCode || '').toLowerCase().includes(query);
     const rawCourse = (s.enrolledCourse || '').toLowerCase();
     const courseLabel = getCourseLabel(s.enrolledCourse).toLowerCase();
-    const courseMatch = rawCourse.includes(query) || courseLabel.includes(query);
+    const mainCourseLabel = getMainCourseLabels(s.enrolledCourse).toLowerCase();
+    const courseMatch = rawCourse.includes(query) || courseLabel.includes(query) || mainCourseLabel.includes(query);
 
     const { percentage, completedCount, totalCount } = calculateStudentProgress(s);
     const progressMatch = `${percentage}%`.includes(query) || `${completedCount}/${totalCount}`.includes(query);
@@ -1032,12 +1180,36 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   const [gradingLoading, setGradingLoading] = useState(false);
   const [newStudentName, setNewStudentName] = useState('');
   const [assignedCourse, setAssignedCourse] = useState('html_css');
+  const [valIdCard, setValIdCard] = useState(false);
+  const [valFeeInitiated, setValFeeInitiated] = useState(false);
+  const [valInduction, setValInduction] = useState(false);
+  const allValidationsChecked = valIdCard && valFeeInitiated && valInduction;
+
+  // Accordion state for course categories in enroll & edit modals (all expanded by default)
+  const [expandedEnrollCats, setExpandedEnrollCats] = useState(() => COURSE_CATEGORIES.map(c => c.id));
+  const [expandedEditCats, setExpandedEditCats] = useState(() => COURSE_CATEGORIES.map(c => c.id));
+
+  const toggleEnrollCatExpand = (catId) => {
+    setExpandedEnrollCats(prev =>
+      prev.includes(catId) ? prev.filter(id => id !== catId) : [...prev, catId]
+    );
+  };
+
+  const toggleEditCatExpand = (catId) => {
+    setExpandedEditCats(prev =>
+      prev.includes(catId) ? prev.filter(id => id !== catId) : [...prev, catId]
+    );
+  };
 
   // Student course editing states
   const [editingStudent, setEditingStudent] = useState(null);
   const [editingName, setEditingName] = useState('');
   const [editingAccessCode, setEditingAccessCode] = useState('');
   const [editingCourses, setEditingCourses] = useState('');
+  const [editingAdmissionConfirmed, setEditingAdmissionConfirmed] = useState(true);
+  const [editingValIdCard, setEditingValIdCard] = useState(false);
+  const [editingValFeeInitiated, setEditingValFeeInitiated] = useState(false);
+  const [editingValInduction, setEditingValInduction] = useState(false);
   const [editingLoading, setEditingLoading] = useState(false);
   const [editingError, setEditingError] = useState('');
 
@@ -1046,13 +1218,26 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     setEditingName(student.name || '');
     setEditingAccessCode(student.accessCode || '');
     setEditingCourses(student.enrolledCourse || '');
+    const isConfirmed = student.admissionStatus === 'Approved' || (student.isCourseActivated !== false && student.admissionStatus !== 'Pending');
+    setEditingAdmissionConfirmed(isConfirmed);
+    setEditingValIdCard(student.idCardIssued !== undefined ? Boolean(student.idCardIssued) : isConfirmed);
+    setEditingValFeeInitiated(student.feeInitiated !== undefined ? Boolean(student.feeInitiated) : isConfirmed);
+    setEditingValInduction(student.inductionCompleted !== undefined ? Boolean(student.inductionCompleted) : isConfirmed);
     setEditingError('');
+
+    // Expand only the categories student has enrolled tracks in (or all if none)
+    const enrolledKeys = (student.enrolledCourse || '').split(',').map(s => s.trim()).filter(Boolean);
+    const activeCats = COURSE_CATEGORIES.filter(cat =>
+      cat.subCourses.some(sc => enrolledKeys.includes(sc.value))
+    ).map(c => c.id);
+    setExpandedEditCats(activeCats.length > 0 ? activeCats : COURSE_CATEGORIES.map(c => c.id));
   };
 
   const handleSaveCourses = async (e) => {
     e.preventDefault();
     setEditingError('');
     setEditingLoading(true);
+    const allEditingChecked = editingValIdCard && editingValFeeInitiated && editingValInduction;
     try {
       const res = await fetch(`/api/students/${editingStudent._id || editingStudent.id}`, {
         method: 'PUT',
@@ -1060,7 +1245,11 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         body: JSON.stringify({
           name: editingName,
           accessCode: editingAccessCode,
-          enrolledCourse: editingCourses
+          enrolledCourse: editingCourses,
+          idCardIssued: editingValIdCard,
+          feeInitiated: editingValFeeInitiated,
+          inductionCompleted: editingValInduction,
+          admissionConfirmed: allEditingChecked
         })
       });
       if (res.ok) {
@@ -1074,6 +1263,17 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       setEditingError('Could not reach backend API server.');
     } finally {
       setEditingLoading(false);
+    }
+  };
+
+  const handleToggleAdmission = async (studentId) => {
+    try {
+      const res = await fetch(`/api/students/${studentId}/toggle-admission`, { method: 'POST' });
+      if (res.ok) {
+        fetchStudents();
+      }
+    } catch (e) {
+      console.warn('Failed to toggle admission status:', e);
     }
   };
 
@@ -1203,16 +1403,36 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       return;
     }
 
+    if (!allValidationsChecked) {
+      setAdminError('Please tick all 3 validation checks (ID Card, Fee Initiated, Induction Session) before enrolling!');
+      return;
+    }
+
+    if (!assignedCourse || !assignedCourse.trim()) {
+      setAdminError('Please select at least one curriculum pathway for this student!');
+      return;
+    }
+
     try {
       const res = await fetch('/api/students', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newStudentName.trim(), enrolledCourse: assignedCourse })
+        body: JSON.stringify({
+          name: newStudentName.trim(),
+          enrolledCourse: assignedCourse,
+          idCardIssued: valIdCard,
+          feeInitiated: valFeeInitiated,
+          inductionCompleted: valInduction,
+          admissionConfirmed: allValidationsChecked
+        })
       });
       if (res.ok) {
         const data = await res.json();
-        setSuccessMsg(`Student registered! Access Code: ${data.accessCode}`);
+        setSuccessMsg(`Student registered! Access Code: ${data.accessCode} • All 3 validations completed & course unlocked.`);
         setNewStudentName('');
+        setValIdCard(false);
+        setValFeeInitiated(false);
+        setValInduction(false);
         fetchStudents();
         setActiveTab('database');
       } else {
@@ -1636,7 +1856,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     transition: 'var(--transition)'
                   }}
                 >
-                  <Users size={18} /> Live Database
+                  <Users size={18} /> Students Database
                 </button>
 
                 <button
@@ -1867,6 +2087,85 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 <Award size={200} />
               </div>
             </div>
+
+            {/* Student Admission Verification Status Banner */}
+            {session?.role === 'student' && (
+              <div style={{
+                background: session?.isCourseActivated === false || session?.admissionStatus === 'Pending'
+                  ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(217, 119, 6, 0.12) 100%)'
+                  : 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.12) 100%)',
+                border: session?.isCourseActivated === false || session?.admissionStatus === 'Pending'
+                  ? '1px solid #f59e0b'
+                  : '1px solid #10b981',
+                borderRadius: '20px',
+                padding: '1.25rem 1.75rem',
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '1rem',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <div style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: '14px',
+                    background: session?.isCourseActivated === false || session?.admissionStatus === 'Pending' ? '#fef3c7' : '#d1fae5',
+                    color: session?.isCourseActivated === false || session?.admissionStatus === 'Pending' ? '#d97706' : '#059669',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}>
+                    <ShieldCheck size={26} />
+                  </div>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
+                        Admission Verification & Enrollment Status
+                      </span>
+                      <span style={{
+                        fontSize: '0.72rem',
+                        fontWeight: 800,
+                        textTransform: 'uppercase',
+                        padding: '2px 8px',
+                        borderRadius: '12px',
+                        background: session?.isCourseActivated === false || session?.admissionStatus === 'Pending' ? '#fef3c7' : '#d1fae5',
+                        color: session?.isCourseActivated === false || session?.admissionStatus === 'Pending' ? '#b45309' : '#047857'
+                      }}>
+                        {session?.admissionStatus === 'Approved' || session?.isCourseActivated ? 'Verified & Activated' : 'Verification In Progress'}
+                      </span>
+                    </div>
+                    <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: '#64748b' }}>
+                      {session?.isCourseActivated === false || session?.admissionStatus === 'Pending'
+                        ? 'Your enrollment requires admission form, fee payment, joining date, and ID card verification before course access unlocks.'
+                        : `Student ID: ${session?.studentId || 'Assigned'} • All admission milestones verified and course content unlocked.`}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsAdmissionStatusModalOpen(true)}
+                  style={{
+                    background: 'linear-gradient(135deg, #0A3D91 0%, #1d4ed8 100%)',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '0.65rem 1.25rem',
+                    borderRadius: '10px',
+                    fontWeight: 700,
+                    fontSize: '0.85rem',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 4px 10px rgba(10, 61, 145, 0.25)'
+                  }}
+                >
+                  <Eye size={16} /> Track Verification Progress
+                </button>
+              </div>
+            )}
 
             {/* Course Progress Card & Actions */}
             {(() => {
@@ -2670,156 +2969,698 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
         {/* 👤 TAB 3: REGISTER NEW STUDENT/STAFF FORM VIEW */}
         {activeTab === 'register' && (session?.role === 'admin' || session?.role === 'staff') && (
-          <div style={{ maxWidth: '600px', background: 'var(--surface-color)', border: '1px solid var(--surface-border)', borderRadius: '24px', padding: '2.5rem', boxShadow: 'var(--shadow-md)' }}>
+          <div style={{ maxWidth: '1240px', width: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
             {/* Toggle tabs for Admin role selection */}
             {session?.role === 'admin' && (
-              <div style={{ display: 'flex', background: '#f1f5f9', padding: '0.3rem', borderRadius: '12px', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', background: '#f1f5f9', padding: '0.35rem', borderRadius: '14px', maxWidth: '380px' }}>
                 <button
+                  type="button"
                   onClick={() => { setEnrollRole('student'); setAdminError(''); setSuccessMsg(''); }}
                   style={{
-                    flex: 1, padding: '0.6rem', border: 'none', borderRadius: '10px', fontSize: '0.88rem', fontWeight: 700, cursor: 'pointer',
+                    flex: 1, padding: '0.65rem 1rem', border: 'none', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer',
                     background: enrollRole === 'student' ? '#ffffff' : 'transparent',
                     color: enrollRole === 'student' ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                    boxShadow: enrollRole === 'student' ? '0 2px 4px rgba(0,0,0,0.05)' : 'none',
-                    transition: 'all 0.2s ease'
+                    boxShadow: enrollRole === 'student' ? '0 2px 6px rgba(0,0,0,0.08)' : 'none',
+                    transition: 'all 0.2s ease',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
                   }}
                 >
-                  Enroll Student
+                  <UserPlus size={16} /> Enroll Student
                 </button>
                 <button
+                  type="button"
                   onClick={() => { setEnrollRole('staff'); setAdminError(''); setSuccessMsg(''); }}
                   style={{
-                    flex: 1, padding: '0.6rem', border: 'none', borderRadius: '10px', fontSize: '0.88rem', fontWeight: 700, cursor: 'pointer',
+                    flex: 1, padding: '0.65rem 1rem', border: 'none', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer',
                     background: enrollRole === 'staff' ? '#ffffff' : 'transparent',
                     color: enrollRole === 'staff' ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                    boxShadow: enrollRole === 'staff' ? '0 2px 4px rgba(0,0,0,0.05)' : 'none',
-                    transition: 'all 0.2s ease'
+                    boxShadow: enrollRole === 'staff' ? '0 2px 6px rgba(0,0,0,0.08)' : 'none',
+                    transition: 'all 0.2s ease',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
                   }}
                 >
-                  Enroll Staff
+                  <Users size={16} /> Enroll Staff
                 </button>
               </div>
             )}
 
             {enrollRole === 'student' ? (
-              <form onSubmit={handleRegisterStudent} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontWeight: 800, fontSize: '1.25rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
-                  <UserPlus size={24} color="#3b82f6" /> Enroll New Student Record
-                </div>
+              <form onSubmit={handleRegisterStudent} style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(460px, 1fr))', gap: '1.75rem', alignItems: 'stretch' }}>
 
-                <div>
-                  <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Student Full Name</label>
-                  <input
-                    value={newStudentName}
-                    onChange={e => setNewStudentName(e.target.value)}
-                    placeholder="Enter name..."
-                    style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '0.95rem' }}
-                  />
-                </div>
+                {/* 📝 LEFT COLUMN: Step 1 - Student Info & 3 Validations */}
+                <div style={{ background: '#ffffff', border: '1px solid var(--surface-border)', borderRadius: '24px', padding: '2rem', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', gap: '1.5rem', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
+                      <div style={{ width: 40, height: 40, borderRadius: '12px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <UserPlus size={22} />
+                      </div>
+                      <div>
+                        <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                          Student &amp; Admission Validation
+                        </h2>
+                        <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>
+                          Enter student credentials and complete all 3 onboarding milestones
+                        </p>
+                      </div>
+                    </div>
 
-                <div>
-                  <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Select Curriculums Pathways (Enroll in multiple)</label>
-                  <div style={{
-                    maxHeight: '220px',
-                    overflowY: 'auto',
-                    border: '1px solid var(--surface-border)',
-                    borderRadius: '12px',
-                    padding: '1rem',
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-                    gap: '0.75rem',
-                    background: '#f8fafc'
-                  }}>
-                    {availableCourseOptions.map(course => {
-                      const isChecked = (assignedCourse || '').split(',').includes(course.value);
-                      return (
+                    <div>
+                      <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>
+                        Student Full Name <span style={{ color: '#ef4444' }}>*</span>
+                      </label>
+                      <input
+                        value={newStudentName}
+                        onChange={e => setNewStudentName(e.target.value)}
+                        placeholder="e.g. John Doe"
+                        style={{ width: '100%', padding: '0.8rem 1rem', fontSize: '0.95rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}
+                      />
+                    </div>
+
+                    {/* 🛡️ 3-Step Admission Validation Checklist */}
+                    <div
+                      style={{
+                        background: allValidationsChecked ? '#f0fdf4' : '#fffbeb',
+                        border: `2px solid ${allValidationsChecked ? '#10b981' : '#f59e0b'}`,
+                        borderRadius: '16px',
+                        padding: '1.25rem',
+                        transition: 'all 0.25s ease',
+                        boxShadow: allValidationsChecked ? '0 4px 14px rgba(16, 185, 129, 0.12)' : 'none'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 800, fontSize: '0.95rem', color: allValidationsChecked ? '#166534' : '#92400e' }}>
+                          <ShieldCheck size={18} color={allValidationsChecked ? '#16a34a' : '#d97706'} />
+                          <span>Admission Validation Checklist</span>
+                        </div>
+                        <span style={{
+                          fontSize: '0.72rem',
+                          fontWeight: 800,
+                          padding: '3px 10px',
+                          borderRadius: '20px',
+                          background: allValidationsChecked ? '#dcfce7' : '#fef3c7',
+                          color: allValidationsChecked ? '#15803d' : '#b45309',
+                          border: `1px solid ${allValidationsChecked ? '#86efac' : '#fde68a'}`
+                        }}>
+                          {allValidationsChecked ? 'ALL VERIFIED (3/3)' : `PENDING (${[valIdCard, valFeeInitiated, valInduction].filter(Boolean).length}/3)`}
+                        </span>
+                      </div>
+
+                      <p style={{
+                        margin: '0 0 10px 0',
+                        fontSize: '0.82rem',
+                        color: allValidationsChecked ? '#15803d' : '#78350f',
+                        lineHeight: '1.4'
+                      }}>
+                        {allValidationsChecked
+                          ? '✅ All 3 onboarding milestones verified! Course selection unlocked on the right.'
+                          : '⏳ Tick all 3 validation checkboxes below to unlock course pathways on the right.'}
+                      </p>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {/* Checkbox 1: ID Card */}
                         <label
-                          key={course.value}
                           style={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '8px',
+                            gap: '12px',
+                            padding: '10px 14px',
+                            borderRadius: '10px',
+                            background: valIdCard ? '#ecfdf5' : '#ffffff',
+                            border: `1.5px solid ${valIdCard ? '#10b981' : '#e2e8f0'}`,
                             cursor: 'pointer',
-                            fontSize: '0.9rem',
-                            fontWeight: isChecked ? 700 : 500,
-                            color: isChecked ? 'var(--accent-primary)' : 'var(--text-primary)'
+                            transition: 'all 0.15s ease'
                           }}
                         >
                           <input
                             type="checkbox"
-                            checked={isChecked}
-                            onChange={() => {
-                              const list = assignedCourse ? assignedCourse.split(',') : [];
-                              let newList;
-                              if (list.includes(course.value)) {
-                                if (list.length === 1) return;
-                                newList = list.filter(c => c !== course.value);
-                              } else {
-                                newList = [...list, course.value];
-                              }
-                              setAssignedCourse(newList.join(','));
-                            }}
-                            style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                            checked={valIdCard}
+                            onChange={(e) => setValIdCard(e.target.checked)}
+                            style={{ width: '18px', height: '18px', accentColor: '#10b981', cursor: 'pointer' }}
                           />
-                          <span>{course.label}</span>
+                          <CreditCard size={18} color={valIdCard ? '#10b981' : '#64748b'} />
+                          <div style={{ flex: 1, userSelect: 'none' }}>
+                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: valIdCard ? '#065f46' : 'var(--text-primary)' }}>
+                              ID Card Issued
+                            </div>
+                            <div style={{ fontSize: '0.76rem', color: valIdCard ? '#047857' : 'var(--text-secondary)' }}>
+                              Student identity card created, verified, and issued
+                            </div>
+                          </div>
                         </label>
-                      );
-                    })}
+
+                        {/* Checkbox 2: Fee Initiated */}
+                        <label
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            padding: '10px 14px',
+                            borderRadius: '10px',
+                            background: valFeeInitiated ? '#ecfdf5' : '#ffffff',
+                            border: `1.5px solid ${valFeeInitiated ? '#10b981' : '#e2e8f0'}`,
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease'
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={valFeeInitiated}
+                            onChange={(e) => setValFeeInitiated(e.target.checked)}
+                            style={{ width: '18px', height: '18px', accentColor: '#10b981', cursor: 'pointer' }}
+                          />
+                          <Receipt size={18} color={valFeeInitiated ? '#10b981' : '#64748b'} />
+                          <div style={{ flex: 1, userSelect: 'none' }}>
+                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: valFeeInitiated ? '#065f46' : 'var(--text-primary)' }}>
+                              Fee Initiated
+                            </div>
+                            <div style={{ fontSize: '0.76rem', color: valFeeInitiated ? '#047857' : 'var(--text-secondary)' }}>
+                              Enrollment fee or initial installment payment initiated
+                            </div>
+                          </div>
+                        </label>
+
+                        {/* Checkbox 3: Induction Session */}
+                        <label
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            padding: '10px 14px',
+                            borderRadius: '10px',
+                            background: valInduction ? '#ecfdf5' : '#ffffff',
+                            border: `1.5px solid ${valInduction ? '#10b981' : '#e2e8f0'}`,
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease'
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={valInduction}
+                            onChange={(e) => setValInduction(e.target.checked)}
+                            style={{ width: '18px', height: '18px', accentColor: '#10b981', cursor: 'pointer' }}
+                          />
+                          <BookOpen size={18} color={valInduction ? '#10b981' : '#64748b'} />
+                          <div style={{ flex: 1, userSelect: 'none' }}>
+                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: valInduction ? '#065f46' : 'var(--text-primary)' }}>
+                              Induction Session Completed
+                            </div>
+                            <div style={{ fontSize: '0.76rem', color: valInduction ? '#047857' : 'var(--text-secondary)' }}>
+                              Student attended orientation &amp; platform induction session
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const nextState = !allValidationsChecked;
+                            setValIdCard(nextState);
+                            setValFeeInitiated(nextState);
+                            setValInduction(nextState);
+                          }}
+                          style={{
+                            fontSize: '0.78rem',
+                            fontWeight: 700,
+                            color: allValidationsChecked ? '#059669' : '#2563eb',
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            textDecoration: 'underline',
+                            padding: '2px 4px'
+                          }}
+                        >
+                          {allValidationsChecked ? 'Deselect All Validations' : '✓ Tick All 3 Validations'}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {adminError && <div style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #ef4444' }}>⚠️ {adminError}</div>}
-                {successMsg && <div style={{ color: '#10b981', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(16, 185, 129, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #10b981' }}>{successMsg}</div>}
+                {/* 📚 RIGHT COLUMN: Step 2 - Course Selection & Activation */}
+                <div style={{ background: '#ffffff', border: '1px solid var(--surface-border)', borderRadius: '24px', padding: '2rem', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', gap: '1.25rem', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
+                      <div style={{ width: 40, height: 40, borderRadius: '12px', background: allValidationsChecked ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)', color: allValidationsChecked ? '#10b981' : '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {allValidationsChecked ? <CheckCircle size={22} /> : <Lock size={22} />}
+                      </div>
+                      <div>
+                        <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                          Course Assignment &amp; Access Key
+                        </h2>
+                        <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>
+                          {allValidationsChecked ? 'Choose curriculum tracks and generate student login credentials' : 'Locked until all 3 validation milestones are completed'}
+                        </p>
+                      </div>
+                    </div>
 
-                <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.8rem', borderRadius: '12px' }}>
-                  Generate Student Access Code
-                </button>
+                    {!allValidationsChecked ? (
+                      <div style={{
+                        background: '#f8fafc',
+                        border: '2px dashed #cbd5e1',
+                        borderRadius: '16px',
+                        padding: '2.5rem 1.5rem',
+                        textAlign: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '12px'
+                      }}>
+                        <div style={{
+                          width: '54px',
+                          height: '54px',
+                          borderRadius: '50%',
+                          background: '#fef3c7',
+                          color: '#d97706',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <Lock size={26} />
+                        </div>
+                        <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#1e293b' }}>
+                          Course Selection Locked
+                        </div>
+                        <p style={{ fontSize: '0.86rem', color: '#64748b', maxWidth: '360px', margin: 0, lineHeight: '1.5' }}>
+                          Please tick all 3 validation checks on the left:
+                        </p>
+
+                        {/* Live checklist preview */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left', width: '100%', maxWidth: '320px', marginTop: '4px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', fontWeight: 700, color: valIdCard ? '#059669' : '#94a3b8' }}>
+                            {valIdCard ? '✅' : '⏳'} ID Card: {valIdCard ? 'Verified' : 'Pending'}
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', fontWeight: 700, color: valFeeInitiated ? '#059669' : '#94a3b8' }}>
+                            {valFeeInitiated ? '✅' : '⏳'} Fee Initiated: {valFeeInitiated ? 'Verified' : 'Pending'}
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', fontWeight: 700, color: valInduction ? '#059669' : '#94a3b8' }}>
+                            {valInduction ? '✅' : '⏳'} Induction Session: {valInduction ? 'Verified' : 'Pending'}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ animation: 'fadeIn 0.3s ease-in-out', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          padding: '0.65rem 1rem',
+                          background: '#f0fdf4',
+                          border: '1px solid #86efac',
+                          borderRadius: '12px',
+                          color: '#166534',
+                          fontSize: '0.84rem',
+                          fontWeight: 700
+                        }}>
+                          <CheckCircle size={16} color="#16a34a" />
+                          <span>Validations complete! Select student curriculum pathways below:</span>
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <label style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                              Select Curriculums Pathways <span style={{ color: '#ef4444' }}>*</span>
+                            </label>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (expandedEnrollCats.length === COURSE_CATEGORIES.length) {
+                                  setExpandedEnrollCats([]);
+                                } else {
+                                  setExpandedEnrollCats(COURSE_CATEGORIES.map(c => c.id));
+                                }
+                              }}
+                              style={{
+                                fontSize: '0.72rem',
+                                fontWeight: 700,
+                                color: '#4f46e5',
+                                background: '#eef2ff',
+                                border: '1px solid #c7d2fe',
+                                borderRadius: '6px',
+                                padding: '2px 8px',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              {expandedEnrollCats.length === COURSE_CATEGORIES.length ? 'Collapse All' : 'Expand All'}
+                            </button>
+                          </div>
+                          <span style={{
+                            fontSize: '0.75rem',
+                            fontWeight: 800,
+                            color: '#2563eb',
+                            background: '#eff6ff',
+                            padding: '3px 10px',
+                            borderRadius: '12px',
+                            border: '1px solid #bfdbfe'
+                          }}>
+                            {(assignedCourse ? assignedCourse.split(',').filter(Boolean).length : 0)} Tracks Selected
+                          </span>
+                        </div>
+
+                        {/* 🎓 Categorized Main Courses & Sub-Courses Grid */}
+                        <div style={{
+                          maxHeight: '440px',
+                          overflowY: 'auto',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '10px',
+                          paddingRight: '6px'
+                        }}>
+                          {COURSE_CATEGORIES.map(category => {
+                            const currentList = assignedCourse ? assignedCourse.split(',').map(s => s.trim()).filter(Boolean) : [];
+                            const catVals = category.subCourses.map(sc => sc.value);
+                            const selectedCountInCat = catVals.filter(v => currentList.includes(v)).length;
+                            const isAllInCatSelected = catVals.length > 0 && selectedCountInCat === catVals.length;
+                            const isPartiallySelected = selectedCountInCat > 0 && !isAllInCatSelected;
+                            const isExpanded = expandedEnrollCats.includes(category.id);
+
+                            return (
+                              <div
+                                key={category.id}
+                                style={{
+                                  background: '#ffffff',
+                                  border: `1.5px solid ${selectedCountInCat > 0 ? category.border : '#e2e8f0'}`,
+                                  borderRadius: '14px',
+                                  overflow: 'hidden',
+                                  boxShadow: selectedCountInCat > 0 ? `0 2px 8px ${category.border}40` : '0 1px 3px rgba(0,0,0,0.03)',
+                                  transition: 'all 0.2s ease',
+                                  flexShrink: 0
+                                }}
+                              >
+                                {/* Main Course Category Header */}
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: '10px 14px',
+                                    background: selectedCountInCat > 0 ? category.bg : '#f8fafc',
+                                    borderBottom: isExpanded ? `1px solid ${selectedCountInCat > 0 ? category.border : '#e2e8f0'}` : 'none',
+                                    cursor: 'pointer',
+                                    userSelect: 'none'
+                                  }}
+                                  onClick={() => toggleEnrollCatExpand(category.id)}
+                                >
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <input
+                                      type="checkbox"
+                                      checked={isAllInCatSelected}
+                                      ref={el => { if (el) el.indeterminate = isPartiallySelected; }}
+                                      onClick={(e) => e.stopPropagation()}
+                                      onChange={() => {
+                                        let newList;
+                                        if (isAllInCatSelected) {
+                                          const remaining = currentList.filter(v => !catVals.includes(v));
+                                          newList = remaining.length > 0 ? remaining : [catVals[0]];
+                                        } else {
+                                          newList = Array.from(new Set([...currentList, ...catVals]));
+                                        }
+                                        setAssignedCourse(newList.join(','));
+                                      }}
+                                      style={{ width: '17px', height: '17px', cursor: 'pointer', accentColor: category.color, flexShrink: 0 }}
+                                    />
+                                    <span style={{ fontWeight: 800, fontSize: '0.9rem', color: '#1e293b' }}>
+                                      {category.title}
+                                    </span>
+                                  </div>
+
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <span style={{
+                                      fontSize: '0.72rem',
+                                      fontWeight: 800,
+                                      padding: '3px 9px',
+                                      borderRadius: '10px',
+                                      background: selectedCountInCat > 0 ? category.color : '#e2e8f0',
+                                      color: selectedCountInCat > 0 ? '#ffffff' : '#64748b',
+                                      flexShrink: 0
+                                    }}>
+                                      {isAllInCatSelected ? 'All Selected' : selectedCountInCat > 0 ? `${selectedCountInCat}/${catVals.length}` : `${catVals.length} Tracks`}
+                                    </span>
+                                    <span style={{ color: '#64748b', display: 'flex', alignItems: 'center' }}>
+                                      {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* Sub-Courses Checkboxes */}
+                                {isExpanded && (
+                                  <div style={{
+                                    padding: '10px 12px',
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+                                    gap: '8px',
+                                    background: '#ffffff'
+                                  }}>
+                                    {category.subCourses.map(sc => {
+                                      const isSubChecked = currentList.includes(sc.value);
+                                      return (
+                                        <label
+                                          key={sc.value}
+                                          style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '10px',
+                                            padding: '8px 12px',
+                                            borderRadius: '10px',
+                                            background: isSubChecked ? category.bg : '#f8fafc',
+                                            border: `1.5px solid ${isSubChecked ? category.border : '#e2e8f0'}`,
+                                            cursor: 'pointer',
+                                            fontSize: '0.83rem',
+                                            fontWeight: isSubChecked ? 700 : 500,
+                                            color: isSubChecked ? category.color : '#1e293b',
+                                            transition: 'all 0.15s ease',
+                                            minHeight: '44px',
+                                            lineHeight: '1.3',
+                                            userSelect: 'none'
+                                          }}
+                                          onClick={(e) => e.stopPropagation()}
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            checked={isSubChecked}
+                                            onChange={() => {
+                                              let newList;
+                                              if (currentList.includes(sc.value)) {
+                                                if (currentList.length === 1) return;
+                                                newList = currentList.filter(c => c !== sc.value);
+                                              } else {
+                                                newList = [...currentList, sc.value];
+                                              }
+                                              setAssignedCourse(newList.join(','));
+                                            }}
+                                            style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: category.color, flexShrink: 0 }}
+                                          />
+                                          <span style={{ wordBreak: 'break-word', flex: 1 }}>{sc.label}</span>
+                                        </label>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    {adminError && <div style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #ef4444', marginBottom: '0.75rem' }}>⚠️ {adminError}</div>}
+                    {successMsg && <div style={{ color: '#10b981', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(16, 185, 129, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #10b981', marginBottom: '0.75rem' }}>{successMsg}</div>}
+
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      disabled={!allValidationsChecked}
+                      style={{
+                        width: '100%',
+                        padding: '0.9rem',
+                        borderRadius: '12px',
+                        opacity: allValidationsChecked ? 1 : 0.65,
+                        cursor: allValidationsChecked ? 'pointer' : 'not-allowed',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        fontWeight: 800,
+                        fontSize: '0.95rem'
+                      }}
+                    >
+                      {allValidationsChecked ? (
+                        <>
+                          <CheckCircle size={18} />
+                          Generate Student Access Code &amp; Enroll
+                        </>
+                      ) : (
+                        <>
+                          <Lock size={18} />
+                          Complete Validations on Left to Enroll
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
               </form>
             ) : (
-              <form onSubmit={handleRegisterStaff} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontWeight: 800, fontSize: '1.25rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
-                  <UserPlus size={24} color="#6366f1" /> Enroll New Staff Tutor
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(460px, 1fr))', gap: '1.75rem', alignItems: 'stretch' }}>
+                <form onSubmit={handleRegisterStaff} style={{ background: '#ffffff', border: '1px solid var(--surface-border)', borderRadius: '24px', padding: '2rem', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontWeight: 800, fontSize: '1.25rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
+                    <UserPlus size={24} color="#6366f1" /> Enroll New Staff Tutor
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Tutor Full Name</label>
+                    <input
+                      value={newStaffName}
+                      onChange={e => setNewStaffName(e.target.value)}
+                      placeholder="Enter tutor name..."
+                      style={{ width: '100%', padding: '0.8rem 1rem', fontSize: '0.95rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Username ID</label>
+                    <input
+                      value={newStaffUsername}
+                      onChange={e => setNewStaffUsername(e.target.value)}
+                      placeholder="Enter login username ID..."
+                      style={{ width: '100%', padding: '0.8rem 1rem', fontSize: '0.95rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Password Key</label>
+                    <input
+                      type="text"
+                      value={newStaffPassword}
+                      onChange={e => setNewStaffPassword(e.target.value)}
+                      placeholder="Enter login password..."
+                      style={{ width: '100%', padding: '0.8rem 1rem', fontSize: '0.95rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}
+                    />
+                  </div>
+
+                  {adminError && <div style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #ef4444' }}>⚠️ {adminError}</div>}
+                  {successMsg && <div style={{ color: '#10b981', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(16, 185, 129, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #10b981' }}>{successMsg}</div>}
+
+                  <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.85rem', borderRadius: '12px', background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', marginTop: '0.5rem' }}>
+                    Create Staff Credentials
+                  </button>
+                </form>
+
+                {/* Staff Privileges Guide */}
+                <div style={{ background: '#ffffff', border: '1px solid var(--surface-border)', borderRadius: '24px', padding: '2rem', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontWeight: 800, fontSize: '1.15rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
+                    <ShieldCheck size={22} color="#6366f1" /> Staff Tutor Role Capabilities
+                  </div>
+                  <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.5' }}>
+                    Staff instructors have dedicated privileges to support student learners across all curriculums.
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', background: '#f8fafc', padding: '10px 14px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                      <CheckCircle size={18} color="#10b981" style={{ marginTop: '2px', flexShrink: 0 }} />
+                      <div>
+                        <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#1e293b' }}>Assignment Grading &amp; Review</div>
+                        <div style={{ fontSize: '0.78rem', color: '#64748b' }}>Evaluate student project submissions and assign grades and feedback.</div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', background: '#f8fafc', padding: '10px 14px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                      <CheckCircle size={18} color="#10b981" style={{ marginTop: '2px', flexShrink: 0 }} />
+                      <div>
+                        <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#1e293b' }}>Student Progress Oversight</div>
+                        <div style={{ fontSize: '0.78rem', color: '#64748b' }}>Monitor completion rates, interview scores, and module milestones.</div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', background: '#f8fafc', padding: '10px 14px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                      <CheckCircle size={18} color="#10b981" style={{ marginTop: '2px', flexShrink: 0 }} />
+                      <div>
+                        <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#1e293b' }}>Course Content Access</div>
+                        <div style={{ fontSize: '0.78rem', color: '#64748b' }}>Access the entire course catalog, demo environments, and code labs.</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 📋 Recent Enrolled Students Preview Row */}
+            {students.length > 0 && (
+              <div style={{
+                background: '#ffffff',
+                border: '1px solid var(--surface-border)',
+                borderRadius: '20px',
+                padding: '1.5rem',
+                boxShadow: 'var(--shadow-sm)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-primary)' }}>
+                    <Users size={18} color="#3b82f6" />
+                    <span>Recently Enrolled Students</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>({students.length} total)</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('database')}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#2563eb',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    View Full Directory <ArrowRight size={14} />
+                  </button>
                 </div>
 
-                <div>
-                  <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Tutor Full Name</label>
-                  <input
-                    value={newStaffName}
-                    onChange={e => setNewStaffName(e.target.value)}
-                    placeholder="Enter tutor name..."
-                    style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '0.95rem' }}
-                  />
+                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
+                  {students.slice(0, 4).map(s => {
+                    const isConfirmed = s.admissionStatus === 'Approved' || (s.isCourseActivated !== false && s.admissionStatus !== 'Pending');
+                    return (
+                      <div
+                        key={s._id || s.id || s.accessCode}
+                        style={{
+                          background: '#f8fafc',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '14px',
+                          padding: '1rem',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '8px'
+                        }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                          <div>
+                            <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#1e293b' }}>{s.name}</div>
+                            <div style={{ fontSize: '0.76rem', color: '#64748b', marginTop: '2px' }}>
+                              Code: <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#2563eb' }}>{s.accessCode}</span>
+                            </div>
+                          </div>
+                          <span style={{
+                            fontSize: '0.68rem',
+                            fontWeight: 800,
+                            padding: '2px 8px',
+                            borderRadius: '10px',
+                            background: isConfirmed ? '#dcfce7' : '#fef3c7',
+                            color: isConfirmed ? '#15803d' : '#b45309'
+                          }}>
+                            {isConfirmed ? 'Active' : 'Pending'}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '0.78rem', color: '#475569', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          Course: {getMainCourseLabels(s.enrolledCourse)}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-
-                <div>
-                  <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Username ID</label>
-                  <input
-                    value={newStaffUsername}
-                    onChange={e => setNewStaffUsername(e.target.value)}
-                    placeholder="Enter login username ID..."
-                    style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '0.95rem' }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Password Key</label>
-                  <input
-                    type="text"
-                    value={newStaffPassword}
-                    onChange={e => setNewStaffPassword(e.target.value)}
-                    placeholder="Enter login password..."
-                    style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '0.95rem' }}
-                  />
-                </div>
-
-                {adminError && <div style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #ef4444' }}>⚠️ {adminError}</div>}
-                {successMsg && <div style={{ color: '#10b981', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(16, 185, 129, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #10b981' }}>{successMsg}</div>}
-
-                <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' }}>
-                  Create Staff Credentials
-                </button>
-              </form>
+              </div>
             )}
 
           </div>
@@ -2953,6 +3794,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                               <th style={{ padding: '1rem 1.25rem', minWidth: '220px' }}>COURSE PROGRESS</th>
                               <th style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>SHAREABLE LINK</th>
                               <th style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>LOCK STATUS</th>
+                              <th style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>ADMISSION</th>
                               <th style={{ padding: '1rem 1.25rem', textAlign: 'center', whiteSpace: 'nowrap' }}>ACTIONS</th>
                             </tr>
                           </thead>
@@ -2982,8 +3824,51 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                     </button>
                                   </div>
                                 </td>
-                                <td style={{ padding: '1rem 1.25rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                                  {getCourseLabel(s.enrolledCourse)}
+                                <td style={{ padding: '1rem 1.25rem' }}>
+                                  {(() => {
+                                    const categories = getMainCourseCategories(s.enrolledCourse);
+                                    if (categories.length === 0) {
+                                      return (
+                                        <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                                          {getMainCourseLabels(s.enrolledCourse)}
+                                        </span>
+                                      );
+                                    }
+                                    return (
+                                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', maxWidth: '320px' }}>
+                                        {categories.map(cat => {
+                                          const subKeys = (s.enrolledCourse || '').split(',').map(k => k.trim());
+                                          const subCount = cat.subCourses.filter(sc => subKeys.includes(sc.value)).length;
+                                          return (
+                                            <span
+                                              key={cat.id}
+                                              style={{
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '5px',
+                                                fontSize: '0.78rem',
+                                                fontWeight: 700,
+                                                color: cat.color,
+                                                background: cat.bg,
+                                                border: `1px solid ${cat.border}`,
+                                                padding: '3px 9px',
+                                                borderRadius: '8px',
+                                                lineHeight: 1.3
+                                              }}
+                                              title={`Enrolled Tracks (${subCount}/${cat.subCourses.length}): ${cat.subCourses.filter(sc => subKeys.includes(sc.value)).map(sc => sc.label).join(', ')}`}
+                                            >
+                                              <span>{cat.title}</span>
+                                              {subCount < cat.subCourses.length && (
+                                                <span style={{ fontSize: '0.68rem', opacity: 0.75, fontWeight: 600 }}>
+                                                  ({subCount})
+                                                </span>
+                                              )}
+                                            </span>
+                                          );
+                                        })}
+                                      </div>
+                                    );
+                                  })()}
                                 </td>
                                 <td style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>
                                   <span style={{
@@ -3114,6 +3999,35 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                     </span>
                                   )}
                                 </td>
+                                <td style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>
+                                  {(() => {
+                                    const isConfirmed = s.admissionStatus === 'Approved' || (s.isCourseActivated !== false && s.admissionStatus !== 'Pending');
+                                    return (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleToggleAdmission(s._id || s.id)}
+                                        style={{
+                                          border: `1px solid ${isConfirmed ? '#a7f3d0' : '#fde68a'}`,
+                                          cursor: 'pointer',
+                                          background: isConfirmed ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.12)',
+                                          color: isConfirmed ? '#059669' : '#d97706',
+                                          padding: '0.35rem 0.75rem',
+                                          borderRadius: '20px',
+                                          fontWeight: 800,
+                                          fontSize: '0.78rem',
+                                          display: 'inline-flex',
+                                          alignItems: 'center',
+                                          gap: '5px',
+                                          transition: 'all 0.2s'
+                                        }}
+                                        title="Click to toggle Admission Confirmation status"
+                                      >
+                                        <ShieldCheck size={13} />
+                                        {isConfirmed ? 'Confirmed' : 'Pending'}
+                                      </button>
+                                    );
+                                  })()}
+                                </td>
                                 <td style={{ padding: '1rem 1.25rem', textAlign: 'center', whiteSpace: 'nowrap' }}>
                                   <button
                                     onClick={() => handleOpenEditCoursesModal(s)}
@@ -3129,14 +4043,26 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                       Reset Lock
                                     </button>
                                   )}
-                                  {session?.role === 'admin' && (
-                                    <button
-                                      onClick={() => handleDeleteStudent(s._id || s.id)}
-                                      style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#ef4444', fontWeight: 800, cursor: 'pointer', fontSize: '0.8rem', padding: '0.35rem 0.75rem', borderRadius: '8px' }}
-                                    >
-                                      Delete
-                                    </button>
-                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteStudent(s._id || s.id || s.accessCode)}
+                                    style={{
+                                      background: '#fef2f2',
+                                      border: '1px solid #fecaca',
+                                      color: '#ef4444',
+                                      fontWeight: 800,
+                                      cursor: 'pointer',
+                                      fontSize: '0.8rem',
+                                      padding: '0.35rem 0.75rem',
+                                      borderRadius: '8px',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '4px'
+                                    }}
+                                    title="Delete this student record"
+                                  >
+                                    <Trash2 size={13} /> Delete
+                                  </button>
                                 </td>
                               </tr>
                             ))}
@@ -3185,20 +4111,48 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                   </div>
                                 </div>
 
-                                {s.deviceId ? (
-                                  <span style={{ color: '#10b981', fontWeight: 700, fontSize: '0.74rem', background: 'rgba(16, 185, 129, 0.08)', padding: '0.25rem 0.6rem', borderRadius: '20px' }}>
-                                    🔒 Locked
-                                  </span>
-                                ) : (
-                                  <span style={{ color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.74rem', background: 'rgba(0, 0, 0, 0.03)', padding: '0.25rem 0.6rem', borderRadius: '20px' }}>
-                                    🆕 Unlocked
-                                  </span>
-                                )}
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '5px' }}>
+                                  {s.deviceId ? (
+                                    <span style={{ color: '#10b981', fontWeight: 700, fontSize: '0.74rem', background: 'rgba(16, 185, 129, 0.08)', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>
+                                      🔒 Locked
+                                    </span>
+                                  ) : (
+                                    <span style={{ color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.74rem', background: 'rgba(0, 0, 0, 0.03)', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>
+                                      🆕 Unlocked
+                                    </span>
+                                  )}
+                                  {(() => {
+                                    const isConfirmed = s.admissionStatus === 'Approved' || (s.isCourseActivated !== false && s.admissionStatus !== 'Pending');
+                                    return (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleToggleAdmission(s._id || s.id)}
+                                        style={{
+                                          border: `1px solid ${isConfirmed ? '#a7f3d0' : '#fde68a'}`,
+                                          cursor: 'pointer',
+                                          background: isConfirmed ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.12)',
+                                          color: isConfirmed ? '#059669' : '#d97706',
+                                          padding: '0.2rem 0.55rem',
+                                          borderRadius: '20px',
+                                          fontWeight: 800,
+                                          fontSize: '0.72rem',
+                                          display: 'inline-flex',
+                                          alignItems: 'center',
+                                          gap: '4px'
+                                        }}
+                                        title="Click to toggle Admission Confirmation status"
+                                      >
+                                        <ShieldCheck size={11} />
+                                        {isConfirmed ? 'Confirmed' : 'Pending'}
+                                      </button>
+                                    );
+                                  })()}
+                                </div>
                               </div>
 
                               {/* Enrolled Track Description */}
                               <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', background: '#f8fafc', padding: '8px 12px', borderRadius: '10px' }}>
-                                <strong>Enrolled Tracks:</strong> {getCourseLabel(s.enrolledCourse)}
+                                <strong>Main Course:</strong> {getMainCourseLabels(s.enrolledCourse)}
                               </div>
 
                               {/* Progress Card Section */}
@@ -3297,14 +4251,26 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                     Reset Lock
                                   </button>
                                 )}
-                                {session?.role === 'admin' && (
-                                  <button
-                                    onClick={() => handleDeleteStudent(s._id || s.id)}
-                                    style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#ef4444', fontWeight: 800, cursor: 'pointer', fontSize: '0.78rem', padding: '0.45rem 0.6rem', borderRadius: '8px' }}
-                                  >
-                                    Delete
-                                  </button>
-                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteStudent(s._id || s.id || s.accessCode)}
+                                  style={{
+                                    background: '#fef2f2',
+                                    border: '1px solid #fecaca',
+                                    color: '#ef4444',
+                                    fontWeight: 800,
+                                    cursor: 'pointer',
+                                    fontSize: '0.78rem',
+                                    padding: '0.45rem 0.6rem',
+                                    borderRadius: '8px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '4px'
+                                  }}
+                                  title="Delete this student record"
+                                >
+                                  <Trash2 size={12} /> Delete
+                                </button>
                               </div>
                             </div>
                           );
@@ -4218,6 +5184,11 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
           <InvoiceGenerator session={session} students={students} onBack={() => setActiveTab('overview')} />
         )}
 
+        {/* 🛡️ TAB 7.5: ADMISSION VERIFICATION WORKFLOW (STAFF & ADMIN ONLY) */}
+        {activeTab === 'admission_verification' && (session?.role === 'admin' || session?.role === 'staff') && (
+          <AdmissionVerificationDashboard session={session} onBack={() => setActiveTab('overview')} />
+        )}
+
         {/* 🎙️ TAB 8: AI MOCK INTERVIEW PERFORMANCE & STUDENT MARKS (STAFF & ADMIN ONLY) */}
         {activeTab === 'mock_interviews' && (session?.role === 'admin' || session?.role === 'staff') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
@@ -4540,8 +5511,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                   </td>
 
                                   {/* Enrolled Track */}
-                                  <td style={{ padding: '0.9rem 0.75rem', fontSize: '0.82rem', color: '#64748b', maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={getCourseLabel(s.enrolledCourse)}>
-                                    {getCourseLabel(s.enrolledCourse)}
+                                  <td style={{ padding: '0.9rem 0.75rem', fontSize: '0.82rem', color: '#64748b', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={getMainCourseLabels(s.enrolledCourse)}>
+                                    {getMainCourseLabels(s.enrolledCourse)}
                                   </td>
 
                                   {/* Days 1 to 5 Scores */}
@@ -4811,29 +5782,72 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 9999,
-          padding: '1.5rem'
+          padding: '1rem',
+          overflowY: 'auto'
         }}>
           <div style={{
             background: '#ffffff',
             borderRadius: '24px',
             width: '100%',
-            maxWidth: '520px',
-            padding: '2.2rem',
-            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            maxWidth: '560px',
+            maxHeight: '90vh',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
             border: '1px solid #cbd5e1',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            overflow: 'hidden'
           }}>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0', fontFamily: 'system-ui' }}>
-              Edit Student Credentials & Tracks
-            </h3>
-            <p style={{ fontSize: '0.9rem', color: '#64748b', margin: '0 0 1.5rem 0' }}>
-              Update student name, access key ID, or assign/remove curriculum tracks.
-            </p>
+            {/* Modal Header */}
+            <div style={{
+              padding: '1.25rem 1.75rem',
+              borderBottom: '1px solid #e2e8f0',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              background: '#f8fafc',
+              flexShrink: 0
+            }}>
+              <div>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: 0, fontFamily: 'system-ui' }}>
+                  Edit Student Credentials &amp; Tracks
+                </h3>
+                <p style={{ fontSize: '0.82rem', color: '#64748b', margin: '4px 0 0 0' }}>
+                  Update student name, access key ID, or assign/remove curriculum tracks.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingStudent(null)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#94a3b8',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '6px'
+                }}
+                title="Close"
+              >
+                <X size={20} />
+              </button>
+            </div>
 
-            <form onSubmit={handleSaveCourses}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: '0.4rem', fontFamily: 'system-ui' }}>
+            <form onSubmit={handleSaveCourses} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflow: 'hidden' }}>
+              <div style={{
+                padding: '1.25rem 1.75rem',
+                overflowY: 'auto',
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.1rem'
+              }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: '0.4rem', fontFamily: 'system-ui' }}>
                     Student Name
                   </label>
                   <input
@@ -4877,57 +5891,238 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               </div>
 
               <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginBottom: '0.75rem', fontFamily: 'system-ui' }}>
-                  Select Course Tracks
-                </label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem', flexWrap: 'wrap', gap: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#334155', margin: 0, fontFamily: 'system-ui' }}>
+                      Select Course Tracks
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (expandedEditCats.length === COURSE_CATEGORIES.length) {
+                          setExpandedEditCats([]);
+                        } else {
+                          setExpandedEditCats(COURSE_CATEGORIES.map(c => c.id));
+                        }
+                      }}
+                      style={{
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        color: '#4f46e5',
+                        background: '#eef2ff',
+                        border: '1px solid #c7d2fe',
+                        borderRadius: '6px',
+                        padding: '2px 8px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {expandedEditCats.length === COURSE_CATEGORIES.length ? 'Collapse All' : 'Expand All'}
+                    </button>
+                  </div>
+                  <span style={{ fontSize: '0.74rem', color: '#2563eb', fontWeight: 700 }}>
+                    {(editingCourses ? editingCourses.split(',').filter(Boolean).length : 0)} Tracks Selected
+                  </span>
+                </div>
+
                 <div style={{
-                  maxHeight: '220px',
+                  maxHeight: '320px',
                   overflowY: 'auto',
                   border: '1px solid #cbd5e1',
                   borderRadius: '12px',
-                  padding: '1rem',
-                  display: 'grid',
-                  gridTemplateColumns: '1fr',
-                  gap: '0.6rem',
+                  padding: '0.75rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
                   background: '#f8fafc',
                   boxSizing: 'border-box'
                 }}>
-                  {availableCourseOptions.map(course => {
-                    const isChecked = (editingCourses || '').split(',').includes(course.value);
+                  {COURSE_CATEGORIES.map(category => {
+                    const currentList = editingCourses ? editingCourses.split(',').map(s => s.trim()).filter(Boolean) : [];
+                    const catVals = category.subCourses.map(sc => sc.value);
+                    const selectedCountInCat = catVals.filter(v => currentList.includes(v)).length;
+                    const isAllInCatSelected = catVals.length > 0 && selectedCountInCat === catVals.length;
+                    const isPartiallySelected = selectedCountInCat > 0 && !isAllInCatSelected;
+                    const isExpanded = expandedEditCats.includes(category.id);
+
                     return (
-                      <label
-                        key={course.value}
+                      <div
+                        key={category.id}
                         style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          cursor: 'pointer',
-                          fontSize: '0.9rem',
-                          fontWeight: isChecked ? 700 : 500,
-                          color: isChecked ? 'var(--accent-primary)' : 'var(--text-primary)'
+                          background: '#ffffff',
+                          border: `1px solid ${selectedCountInCat > 0 ? category.border : '#e2e8f0'}`,
+                          borderRadius: '10px',
+                          overflow: 'hidden',
+                          flexShrink: 0
                         }}
                       >
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => {
-                            const list = editingCourses ? editingCourses.split(',') : [];
-                            let newList;
-                            if (list.includes(course.value)) {
-                              if (list.length === 1) return;
-                              newList = list.filter(c => c !== course.value);
-                            } else {
-                              newList = [...list, course.value];
-                            }
-                            setEditingCourses(newList.join(','));
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            padding: '8px 12px',
+                            background: selectedCountInCat > 0 ? category.bg : '#f1f5f9',
+                            cursor: 'pointer',
+                            userSelect: 'none',
+                            borderBottom: isExpanded ? `1px solid ${selectedCountInCat > 0 ? category.border : '#e2e8f0'}` : 'none'
                           }}
-                          style={{ width: '16px', height: '16px', cursor: 'pointer' }}
-                        />
-                        <span>{course.label}</span>
-                      </label>
+                          onClick={() => toggleEditCatExpand(category.id)}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <input
+                              type="checkbox"
+                              checked={isAllInCatSelected}
+                              ref={el => { if (el) el.indeterminate = isPartiallySelected; }}
+                              onClick={(e) => e.stopPropagation()}
+                              onChange={() => {
+                                let newList;
+                                if (isAllInCatSelected) {
+                                  const remaining = currentList.filter(v => !catVals.includes(v));
+                                  newList = remaining.length > 0 ? remaining : [catVals[0]];
+                                } else {
+                                  newList = Array.from(new Set([...currentList, ...catVals]));
+                                }
+                                setEditingCourses(newList.join(','));
+                              }}
+                              style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: category.color, flexShrink: 0 }}
+                            />
+                            <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#1e293b' }}>
+                              {category.title}
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span style={{ fontSize: '0.7rem', fontWeight: 800, color: selectedCountInCat > 0 ? category.color : '#64748b', flexShrink: 0 }}>
+                              {selectedCountInCat}/{catVals.length}
+                            </span>
+                            <span style={{ color: '#64748b', display: 'flex', alignItems: 'center' }}>
+                              {isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                            </span>
+                          </div>
+                        </div>
+
+                        {isExpanded && (
+                          <div style={{
+                            padding: '8px 10px',
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
+                            gap: '6px',
+                            background: '#ffffff'
+                          }}>
+                            {category.subCourses.map(sc => {
+                              const isSubChecked = currentList.includes(sc.value);
+                              return (
+                                <label
+                                  key={sc.value}
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    padding: '6px 8px',
+                                    borderRadius: '6px',
+                                    background: isSubChecked ? category.bg : '#f8fafc',
+                                    border: `1px solid ${isSubChecked ? category.border : '#e2e8f0'}`,
+                                    cursor: 'pointer',
+                                    fontSize: '0.8rem',
+                                    fontWeight: isSubChecked ? 700 : 500,
+                                    color: isSubChecked ? category.color : '#334155',
+                                    minHeight: '36px',
+                                    lineHeight: '1.25'
+                                  }}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={isSubChecked}
+                                    onChange={() => {
+                                      let newList;
+                                      if (currentList.includes(sc.value)) {
+                                        if (currentList.length === 1) return;
+                                        newList = currentList.filter(c => c !== sc.value);
+                                      } else {
+                                        newList = [...currentList, sc.value];
+                                      }
+                                      setEditingCourses(newList.join(','));
+                                    }}
+                                    style={{ width: '14px', height: '14px', cursor: 'pointer', accentColor: category.color, flexShrink: 0 }}
+                                  />
+                                  <span style={{ wordBreak: 'break-word', flex: 1 }}>{sc.label}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
+              </div>
+
+              {/* 🛡️ 3 Validation Checkboxes in Edit Modal */}
+              <div style={{
+                marginBottom: '1.5rem',
+                background: (editingValIdCard && editingValFeeInitiated && editingValInduction) ? '#f0fdf4' : '#fffbeb',
+                border: `1.5px solid ${(editingValIdCard && editingValFeeInitiated && editingValInduction) ? '#10b981' : '#f59e0b'}`,
+                borderRadius: '12px',
+                padding: '1rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <div style={{ fontWeight: 800, fontSize: '0.88rem', color: (editingValIdCard && editingValFeeInitiated && editingValInduction) ? '#065f46' : '#92400e', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <ShieldCheck size={16} color={(editingValIdCard && editingValFeeInitiated && editingValInduction) ? '#10b981' : '#f59e0b'} />
+                    <span>Admission Validations (3 Checklist Steps)</span>
+                  </div>
+                  <span style={{
+                    fontSize: '0.7rem',
+                    fontWeight: 800,
+                    padding: '2px 8px',
+                    borderRadius: '10px',
+                    background: (editingValIdCard && editingValFeeInitiated && editingValInduction) ? '#dcfce7' : '#fef3c7',
+                    color: (editingValIdCard && editingValFeeInitiated && editingValInduction) ? '#15803d' : '#b45309'
+                  }}>
+                    {(editingValIdCard && editingValFeeInitiated && editingValInduction) ? 'APPROVED (3/3)' : 'PENDING'}
+                  </span>
+                </div>
+
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', background: '#ffffff', padding: '6px 10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <input
+                    type="checkbox"
+                    checked={editingValIdCard}
+                    onChange={(e) => setEditingValIdCard(e.target.checked)}
+                    style={{ width: '16px', height: '16px', accentColor: '#10b981', cursor: 'pointer' }}
+                  />
+                  <CreditCard size={15} color={editingValIdCard ? '#10b981' : '#64748b'} />
+                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: editingValIdCard ? '#065f46' : '#334155' }}>
+                    ID Card Issued
+                  </span>
+                </label>
+
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', background: '#ffffff', padding: '6px 10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <input
+                    type="checkbox"
+                    checked={editingValFeeInitiated}
+                    onChange={(e) => setEditingValFeeInitiated(e.target.checked)}
+                    style={{ width: '16px', height: '16px', accentColor: '#10b981', cursor: 'pointer' }}
+                  />
+                  <Receipt size={15} color={editingValFeeInitiated ? '#10b981' : '#64748b'} />
+                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: editingValFeeInitiated ? '#065f46' : '#334155' }}>
+                    Fee Initiated
+                  </span>
+                </label>
+
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', background: '#ffffff', padding: '6px 10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <input
+                    type="checkbox"
+                    checked={editingValInduction}
+                    onChange={(e) => setEditingValInduction(e.target.checked)}
+                    style={{ width: '16px', height: '16px', accentColor: '#10b981', cursor: 'pointer' }}
+                  />
+                  <BookOpen size={15} color={editingValInduction ? '#10b981' : '#64748b'} />
+                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: editingValInduction ? '#065f46' : '#334155' }}>
+                    Induction Session Completed
+                  </span>
+                </label>
               </div>
 
               {editingError && (
@@ -4938,46 +6133,83 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   background: 'rgba(239, 68, 68, 0.05)',
                   padding: '0.6rem 1rem',
                   borderRadius: '10px',
-                  borderLeft: '3px solid #ef4444',
-                  marginBottom: '1.5rem'
+                  borderLeft: '3px solid #ef4444'
                 }}>
                   ⚠️ {editingError}
                 </div>
               )}
+              </div>
 
-              <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+              {/* Modal Footer - Always visible at bottom */}
+              <div style={{
+                padding: '1rem 1.75rem',
+                borderTop: '1px solid #e2e8f0',
+                background: '#f8fafc',
+                display: 'flex',
+                gap: '10px',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                flexShrink: 0
+              }}>
                 <button
                   type="button"
-                  onClick={() => setEditingStudent(null)}
+                  onClick={() => {
+                    const sId = editingStudent._id || editingStudent.id || editingStudent.accessCode;
+                    setEditingStudent(null);
+                    handleDeleteStudent(sId);
+                  }}
                   style={{
-                    padding: '0.65rem 1.25rem',
+                    padding: '0.65rem 1.1rem',
                     borderRadius: '10px',
-                    border: '1px solid #cbd5e1',
-                    background: '#ffffff',
-                    color: '#475569',
+                    border: '1px solid #fecaca',
+                    background: '#fef2f2',
+                    color: '#ef4444',
                     fontSize: '0.88rem',
                     fontWeight: 700,
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px'
                   }}
+                  title="Permanently delete this student"
                 >
-                  Cancel
+                  <Trash2 size={15} /> Delete Student
                 </button>
-                <button
-                  type="submit"
-                  disabled={editingLoading}
-                  style={{
-                    padding: '0.65rem 1.5rem',
-                    borderRadius: '10px',
-                    border: 'none',
-                    background: 'linear-gradient(135deg, var(--accent-primary) 0%, #1d4ed8 100%)',
-                    color: '#ffffff',
-                    fontSize: '0.88rem',
-                    fontWeight: 700,
-                    cursor: 'pointer'
-                  }}
-                >
-                  {editingLoading ? 'Saving...' : 'Save Changes'}
-                </button>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setEditingStudent(null)}
+                    style={{
+                      padding: '0.65rem 1.25rem',
+                      borderRadius: '10px',
+                      border: '1px solid #cbd5e1',
+                      background: '#ffffff',
+                      color: '#475569',
+                      fontSize: '0.88rem',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={editingLoading}
+                    style={{
+                      padding: '0.65rem 1.5rem',
+                      borderRadius: '10px',
+                      border: 'none',
+                      background: 'linear-gradient(135deg, var(--accent-primary) 0%, #1d4ed8 100%)',
+                      color: '#ffffff',
+                      fontSize: '0.88rem',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {editingLoading ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -5626,7 +6858,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                         {inspectingMockStudent.name} — AI Mock Interview Marks
                       </h3>
                       <span style={{ fontSize: '0.78rem', color: '#a5b4fc' }}>
-                        Track: {getCourseLabel(inspectingMockStudent.enrolledCourse)} • Overall Avg: {summary.completedCount > 0 ? `${summary.averageScore}/100 (Grade ${summary.grade})` : 'No attempts'}
+                        Course: {getMainCourseLabels(inspectingMockStudent.enrolledCourse)} • Overall Avg: {summary.completedCount > 0 ? `${summary.averageScore}/100 (Grade ${summary.grade})` : 'No attempts'}
                       </span>
                     </div>
 
@@ -5906,6 +7138,14 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
           </div>
         </div>
       )}
+
+      {/* 🛡️ STUDENT ADMISSION STATUS MODAL */}
+      <StudentAdmissionStatusModal
+        isOpen={isAdmissionStatusModalOpen}
+        onClose={() => setIsAdmissionStatusModalOpen(false)}
+        session={session}
+        requestedCourseName={getCourseLabel(enrolledCourse)}
+      />
     </div>
   );
 }

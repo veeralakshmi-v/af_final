@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 
 console.log('🔄 Starting frontend (Vite) and backend (Express) concurrently...');
 
-const server = spawn('node', ['server/server.js'], { stdio: 'inherit', shell: true });
+const server = spawn('node', ['--watch', 'server/server.js'], { stdio: 'inherit', shell: true });
 const vite = spawn('npx', ['vite'], { stdio: 'inherit', shell: true });
 
 server.on('exit', (code) => {
