@@ -122,7 +122,8 @@ const studentSchema = new mongoose.Schema({
   completedLessons: { type: [String], default: [] },
   tasks: { type: [taskSubmissionSchema], default: [] },
   certificate: { type: certificateSchema, default: () => ({}) },
-  mockInterviews: { type: [mongoose.Schema.Types.Mixed], default: [] }
+  mockInterviews: { type: [mongoose.Schema.Types.Mixed], default: [] },
+  logicalThinkingScore: { type: mongoose.Schema.Types.Mixed, default: () => ({ score: 0, total: 100, percentage: 0, grade: '', feedback: '', updatedAt: null }) }
 });
 
 const Student = mongoose.model('Student', studentSchema);
@@ -276,6 +277,7 @@ const getLocalStudents = () => {
       isCourseActivated: s.isCourseActivated !== undefined ? s.isCourseActivated : (s.admissionStatus === 'Approved'),
       admissionStatus: s.admissionStatus || 'Pending',
       studentId: s.studentId || '',
+      logicalThinkingScore: s.logicalThinkingScore || { score: 0, total: 100, percentage: 0, grade: '', feedback: '', updatedAt: null },
       ...s
     }));
   } catch (e) {
@@ -1123,7 +1125,10 @@ app.put('/api/students/:id', async (req, res) => {
     isCourseActivated,
     idCardIssued,
     feeInitiated,
-    inductionCompleted
+    inductionCompleted,
+    logicalThinkingScore,
+    logicalThinkingFeedback,
+    logicalThinkingGrade
   } = req.body;
 
   const updateFields = {};
@@ -1133,6 +1138,41 @@ app.put('/api/students/:id', async (req, res) => {
   if (idCardIssued !== undefined) updateFields.idCardIssued = Boolean(idCardIssued);
   if (feeInitiated !== undefined) updateFields.feeInitiated = Boolean(feeInitiated);
   if (inductionCompleted !== undefined) updateFields.inductionCompleted = Boolean(inductionCompleted);
+
+  if (logicalThinkingScore !== undefined) {
+    let scoreVal = 0;
+    let totalVal = 100;
+    let feedbackVal = logicalThinkingFeedback || '';
+    let gradeVal = logicalThinkingGrade || '';
+
+    if (typeof logicalThinkingScore === 'number' || typeof logicalThinkingScore === 'string') {
+      const parsed = parseFloat(logicalThinkingScore);
+      scoreVal = isNaN(parsed) ? 0 : Math.max(0, Math.min(100, parsed));
+    } else if (typeof logicalThinkingScore === 'object' && logicalThinkingScore !== null) {
+      scoreVal = Number(logicalThinkingScore.score) || 0;
+      totalVal = Number(logicalThinkingScore.total) || 100;
+      feedbackVal = logicalThinkingScore.feedback || feedbackVal;
+      gradeVal = logicalThinkingScore.grade || gradeVal;
+    }
+
+    const pct = totalVal > 0 ? Math.round((scoreVal / totalVal) * 100) : 0;
+    if (!gradeVal) {
+      if (pct >= 90) gradeVal = 'A+';
+      else if (pct >= 80) gradeVal = 'A';
+      else if (pct >= 70) gradeVal = 'B';
+      else if (pct >= 60) gradeVal = 'C';
+      else gradeVal = 'Needs Practice';
+    }
+
+    updateFields.logicalThinkingScore = {
+      score: scoreVal,
+      total: totalVal,
+      percentage: pct,
+      grade: gradeVal,
+      feedback: feedbackVal,
+      updatedAt: new Date()
+    };
+  }
 
   if (idCardIssued && feeInitiated && inductionCompleted) {
     updateFields.admissionStatus = 'Approved';
@@ -1165,6 +1205,61 @@ app.put('/api/students/:id', async (req, res) => {
       if (idx === -1) return res.status(404).json({ error: 'Student not found!' });
       
       students[idx] = { ...students[idx], ...updateFields };
+      saveLocalStudents(students);
+      return res.json(students[idx]);
+    }
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// D-2b. Update student logical thinking score directly
+app.post('/api/students/:id/logical-thinking-score', async (req, res) => {
+  const { id } = req.params;
+  const { score, total, grade, feedback } = req.body;
+
+  const scoreVal = Math.max(0, Math.min(100, Number(score) || 0));
+  const totalVal = Number(total) || 100;
+  const percentage = totalVal > 0 ? Math.round((scoreVal / totalVal) * 100) : 0;
+  let gradeVal = grade;
+  if (!gradeVal) {
+    if (percentage >= 90) gradeVal = 'A+';
+    else if (percentage >= 80) gradeVal = 'A';
+    else if (percentage >= 70) gradeVal = 'B';
+    else if (percentage >= 60) gradeVal = 'C';
+    else gradeVal = 'Needs Practice';
+  }
+
+  const scoreObj = {
+    score: scoreVal,
+    total: totalVal,
+    percentage,
+    grade: gradeVal,
+    feedback: feedback || '',
+    updatedAt: new Date()
+  };
+
+  try {
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      const query = mongoose.Types.ObjectId.isValid(id) 
+        ? { _id: id } 
+        : { accessCode: id.trim() };
+      const student = await Student.findOneAndUpdate(
+        query, 
+        { logicalThinkingScore: scoreObj }, 
+        { new: true }
+      );
+      if (!student) return res.status(404).json({ error: 'Student not found!' });
+      return res.json(student);
+    } else {
+      const students = getLocalStudents();
+      const idx = students.findIndex(s => s.id === id || s._id === id || s.accessCode === id.trim());
+      if (idx === -1) return res.status(404).json({ error: 'Student not found!' });
+      students[idx] = {
+        ...students[idx],
+        logicalThinkingScore: scoreObj
+      };
       saveLocalStudents(students);
       return res.json(students[idx]);
     }

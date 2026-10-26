@@ -31,7 +31,7 @@ export default function StudentAdmissionStatusModal({
       if (res.ok) {
         const list = await res.json();
         // Match by student name or access code
-        const myApp = list.find(a => 
+        const myApp = list.find(a =>
           (session?.username && a.studentAccountAccessCode === session.username) ||
           (session?.accessCode && a.studentAccountAccessCode === session.accessCode) ||
           (session?.studentId && a.studentId === session.studentId) ||
@@ -90,7 +90,7 @@ export default function StudentAdmissionStatusModal({
         display: 'flex',
         flexDirection: 'column'
       }}>
-        
+
         {/* Header */}
         <div style={{
           background: 'linear-gradient(135deg, #0A3D91 0%, #1e40af 100%)',
@@ -126,15 +126,15 @@ export default function StudentAdmissionStatusModal({
             {isCourseActive ? 'Admission Approved & Active' : 'Course Activation Pending'}
           </h2>
           <p style={{ margin: '4px 0 0 0', fontSize: '0.86rem', color: '#e0e7ff' }}>
-            {isCourseActive 
-              ? 'Your admission has been verified. All course modules are unlocked!' 
+            {isCourseActive
+              ? 'Your admission has been verified. All course modules are unlocked!'
               : `Access to ${requestedCourseName} is locked pending administrator checklist verification.`}
           </p>
         </div>
 
         {/* Content */}
         <div style={{ padding: '1.75rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          
+
           {loading ? (
             <div style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
               <RefreshCw size={28} className="animate-spin" style={{ margin: '0 auto 0.5rem auto', color: '#0284c7' }} />
@@ -169,7 +169,7 @@ export default function StudentAdmissionStatusModal({
 
               {/* 4 Checklist Items */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                
+
                 {/* 1. Form */}
                 <div style={{
                   display: 'flex',
