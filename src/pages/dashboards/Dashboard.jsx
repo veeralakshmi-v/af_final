@@ -1274,6 +1274,11 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     const hasData = rec.studentFeedback || rec.submissionUrl || rec.submissionNotes || rec.submittedAt;
     if (!hasData) return null;
 
+    const matchingStudent = students.find(s => 
+      (rec.studentAccessCode && s.accessCode === rec.studentAccessCode) ||
+      (rec.studentName && s.name && s.name.toLowerCase() === rec.studentName.toLowerCase())
+    );
+
     return {
       _id: `html_css_${modId}`,
       id: `html_css_${modId}`,
@@ -1283,8 +1288,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       moduleId: modId,
       moduleTitle: cfg.dayTitle || modId,
       tabId: 'assignment',
-      studentName: rec.studentName || 'Student Learner',
-      accessCode: rec.studentAccessCode || 'STUDENT',
+      studentName: matchingStudent?.name || rec.studentName || 'Student Learner',
+      studentId: matchingStudent?._id || matchingStudent?.id || '',
+      accessCode: matchingStudent?.accessCode || rec.studentAccessCode || 'STUDENT',
+      photoUrl: matchingStudent?.photoUrl || '',
       submissionUrl: rec.submissionUrl || '',
       submissionNotes: rec.submissionNotes || '',
       studentFeedback: rec.studentFeedback || '',
@@ -1306,6 +1313,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       const taskId = t._id || t.id || `task_${s._id || s.id}_${t.moduleId || idx}`;
       const isReasoning = isLogicalItem(t);
       const isSpoko = isSpokoItem(t);
+      const resolvedUrl = t.taskUrl || t.submissionUrl || '';
+      const resolvedNotes = t.taskText || t.submissionNotes || '';
       return {
         ...t,
         _id: taskId,
@@ -1316,10 +1325,17 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         studentName: s.name,
         studentId: s._id || s.id,
         accessCode: s.accessCode,
+        photoUrl: s.photoUrl || '',
         moduleId: t.moduleId,
         tabId: t.tabId || 'assignment',
         moduleTitle: formatTaskTitle(t),
-        status: normalizedStatus
+        status: normalizedStatus,
+        taskUrl: resolvedUrl,
+        submissionUrl: resolvedUrl,
+        taskText: resolvedNotes,
+        submissionNotes: resolvedNotes,
+        studentFeedback: t.studentFeedback || (resolvedNotes ? resolvedNotes : ''),
+        staffFeedback: t.feedback || t.staffFeedback || ''
       };
     })
   );
@@ -1334,7 +1350,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
   const seenSubKeys = new Set();
   const allSubmissions = rawSubmissions.filter(item => {
-    const key = item.moduleId ? `${item.studentId || ''}_${item.moduleId}` : (item._id || item.id);
+    const key = item._id || item.id || `${item.studentId || item.accessCode || ''}_${item.moduleId}_${item.tabId || ''}`;
     if (seenSubKeys.has(key)) return false;
     seenSubKeys.add(key);
     return true;
@@ -1355,26 +1371,43 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     const taskKey = task._id || task.id || `${task.studentId}_${task.moduleId}`;
     setActionLoadingId(taskKey);
 
-    if (task.isHtmlCss) {
-      const rec = htmlCssValidations[task.moduleId] || {};
-      const updatedRecord = {
-        ...rec,
-        staffFeedback: 'Great work! Code meets semantic standards and feedback is thoughtful. Approved.',
-        status: 'approved',
-        validatedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-        validatedBy: session?.name || 'Staff Instructor'
-      };
-      saveAssignmentValidation(task.moduleId, updatedRecord);
-      setHtmlCssValidations(getAssignmentValidations());
-      setActionLoadingId(null);
-    } else {
-      try {
+    const targetStudentId = task.studentId || task.accessCode;
+
+    try {
+      if (task.isHtmlCss) {
+        const rec = htmlCssValidations[task.moduleId] || {};
+        const updatedRecord = {
+          ...rec,
+          staffFeedback: 'Great work! Code meets semantic standards and feedback is thoughtful. Approved.',
+          status: 'approved',
+          validatedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+          validatedBy: session?.name || 'Staff Instructor'
+        };
+        saveAssignmentValidation(task.moduleId, updatedRecord);
+        setHtmlCssValidations(getAssignmentValidations());
+
+        if (targetStudentId && targetStudentId !== 'STUDENT') {
+          await fetch(`/api/students/tasks/${task._id || 'html_css_review'}/grade`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              studentId: targetStudentId,
+              accessCode: task.accessCode,
+              moduleId: task.moduleId,
+              tabId: task.tabId || 'assignment',
+              status: 'Approved',
+              feedback: 'Approved by staff',
+              grade: 'A+'
+            })
+          }).catch(e => console.warn('HTML CSS sync error:', e));
+        }
+      } else {
         const taskId = task._id || task.id || 'module_review';
         const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            studentId: task.studentId,
+            studentId: targetStudentId,
             accessCode: task.accessCode,
             moduleId: task.moduleId,
             tabId: task.tabId || 'assignment',
@@ -1383,42 +1416,63 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             grade: 'A+'
           })
         });
-        if (res.ok) {
-          if (task.moduleId) {
-            saveAssignmentValidation(task.moduleId, {
-              status: 'approved',
-              studentName: task.studentName,
-              staffFeedback: 'Approved by staff'
-            });
-          }
-          // Optimistically update students state so pending count and badge update immediately
-          setStudents(prev => prev.map(s => {
-            if (s._id === task.studentId || s.id === task.studentId || s.accessCode === task.accessCode) {
-              const updatedTasks = (s.tasks || []).map(t => {
-                if ((task._id && (t._id === task._id || t.id === task._id)) || t.moduleId === task.moduleId) {
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          alert(err.error || 'Failed to approve task.');
+          return;
+        }
+
+        if (task.moduleId) {
+          saveAssignmentValidation(task.moduleId, {
+            status: 'approved',
+            studentName: task.studentName,
+            staffFeedback: 'Approved by staff'
+          });
+        }
+      }
+
+      // Optimistically update students state so pending count and badge update immediately
+      setStudents(prev => prev.map(s => {
+        if (s._id === targetStudentId || s.id === targetStudentId || s.accessCode === targetStudentId || s.accessCode === task.accessCode) {
+          const taskMatch = (t) => ((task._id && (t._id === task._id || t.id === task._id)) || t.moduleId === task.moduleId);
+          const exists = (s.tasks || []).some(taskMatch);
+          const updatedTasks = exists
+            ? (s.tasks || []).map(t => {
+                if (taskMatch(t)) {
                   return { ...t, status: 'Approved', feedback: 'Approved by staff', grade: 'A+' };
                 }
                 return t;
-              });
-              const completed = Array.isArray(s.completedLessons) ? [...s.completedLessons] : [];
-              if (task.moduleId && !completed.includes(task.moduleId)) {
-                completed.push(task.moduleId);
-              }
-              return { ...s, tasks: updatedTasks, completedLessons: completed };
-            }
-            return s;
-          }));
-          await fetchStudents();
-        } else {
-          const err = await res.json().catch(() => ({}));
-          alert(err.error || 'Failed to approve task.');
+              })
+            : [
+                ...(s.tasks || []),
+                {
+                  _id: task._id || `task_${Date.now()}`,
+                  id: task.id || `task_${Date.now()}`,
+                  moduleId: task.moduleId,
+                  tabId: task.tabId || 'assignment',
+                  taskUrl: task.taskUrl || task.submissionUrl || '',
+                  taskText: task.taskText || task.submissionNotes || '',
+                  status: 'Approved',
+                  feedback: 'Approved by staff',
+                  grade: 'A+',
+                  submittedAt: task.submittedAt || new Date()
+                }
+              ];
+          const completed = Array.isArray(s.completedLessons) ? [...s.completedLessons] : [];
+          if (task.moduleId && !completed.includes(task.moduleId)) {
+            completed.push(task.moduleId);
+          }
+          return { ...s, tasks: updatedTasks, completedLessons: completed };
         }
-      } catch (err) {
-        console.warn('API error approving task:', err);
-        alert('Could not reach backend API server.');
-      } finally {
-        setActionLoadingId(null);
-      }
+        return s;
+      }));
+      await fetchStudents();
+    } catch (err) {
+      console.warn('API error approving task:', err);
+      alert('Could not reach backend API server.');
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
@@ -1426,26 +1480,43 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     const taskKey = task._id || task.id || `${task.studentId}_${task.moduleId}`;
     setActionLoadingId(taskKey);
 
-    if (task.isHtmlCss) {
-      const rec = htmlCssValidations[task.moduleId] || {};
-      const updatedRecord = {
-        ...rec,
-        staffFeedback: 'Please revise your submission details according to criteria and resubmit.',
-        status: 'rejected',
-        validatedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-        validatedBy: session?.name || 'Staff Instructor'
-      };
-      saveAssignmentValidation(task.moduleId, updatedRecord);
-      setHtmlCssValidations(getAssignmentValidations());
-      setActionLoadingId(null);
-    } else {
-      try {
+    const targetStudentId = task.studentId || task.accessCode;
+
+    try {
+      if (task.isHtmlCss) {
+        const rec = htmlCssValidations[task.moduleId] || {};
+        const updatedRecord = {
+          ...rec,
+          staffFeedback: 'Please revise your submission details according to criteria and resubmit.',
+          status: 'rejected',
+          validatedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+          validatedBy: session?.name || 'Staff Instructor'
+        };
+        saveAssignmentValidation(task.moduleId, updatedRecord);
+        setHtmlCssValidations(getAssignmentValidations());
+
+        if (targetStudentId && targetStudentId !== 'STUDENT') {
+          await fetch(`/api/students/tasks/${task._id || 'html_css_review'}/grade`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              studentId: targetStudentId,
+              accessCode: task.accessCode,
+              moduleId: task.moduleId,
+              tabId: task.tabId || 'assignment',
+              status: 'Rejected',
+              feedback: 'Revision requested by staff. Please review comments and resubmit.',
+              grade: 'Needs Revision'
+            })
+          }).catch(e => console.warn('HTML CSS sync error:', e));
+        }
+      } else {
         const taskId = task._id || task.id || 'module_review';
         const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            studentId: task.studentId,
+            studentId: targetStudentId,
             accessCode: task.accessCode,
             moduleId: task.moduleId,
             tabId: task.tabId || 'assignment',
@@ -1454,38 +1525,62 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             grade: 'Needs Revision'
           })
         });
-        if (res.ok) {
-          if (task.moduleId) {
-            saveAssignmentValidation(task.moduleId, {
-              status: 'rejected',
-              studentName: task.studentName,
-              staffFeedback: 'Revision requested by staff'
-            });
-          }
-          // Optimistically update students state
-          setStudents(prev => prev.map(s => {
-            if (s._id === task.studentId || s.id === task.studentId || s.accessCode === task.accessCode) {
-              const updatedTasks = (s.tasks || []).map(t => {
-                if ((task._id && (t._id === task._id || t.id === task._id)) || t.moduleId === task.moduleId) {
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          alert(err.error || 'Failed to request revision.');
+          return;
+        }
+
+        if (task.moduleId) {
+          saveAssignmentValidation(task.moduleId, {
+            status: 'rejected',
+            studentName: task.studentName,
+            staffFeedback: 'Revision requested by staff'
+          });
+        }
+      }
+
+      // Optimistically update students state
+      setStudents(prev => prev.map(s => {
+        if (s._id === targetStudentId || s.id === targetStudentId || s.accessCode === targetStudentId || s.accessCode === task.accessCode) {
+          const taskMatch = (t) => ((task._id && (t._id === task._id || t.id === task._id)) || t.moduleId === task.moduleId);
+          const exists = (s.tasks || []).some(taskMatch);
+          const updatedTasks = exists
+            ? (s.tasks || []).map(t => {
+                if (taskMatch(t)) {
                   return { ...t, status: 'Rejected', feedback: 'Revision requested by staff', grade: 'Needs Revision' };
                 }
                 return t;
-              });
-              return { ...s, tasks: updatedTasks };
-            }
-            return s;
-          }));
-          await fetchStudents();
-        } else {
-          const err = await res.json().catch(() => ({}));
-          alert(err.error || 'Failed to request revision.');
+              })
+            : [
+                ...(s.tasks || []),
+                {
+                  _id: task._id || `task_${Date.now()}`,
+                  id: task.id || `task_${Date.now()}`,
+                  moduleId: task.moduleId,
+                  tabId: task.tabId || 'assignment',
+                  taskUrl: task.taskUrl || task.submissionUrl || '',
+                  taskText: task.taskText || task.submissionNotes || '',
+                  status: 'Rejected',
+                  feedback: 'Revision requested by staff',
+                  grade: 'Needs Revision',
+                  submittedAt: task.submittedAt || new Date()
+                }
+              ];
+          const completed = Array.isArray(s.completedLessons)
+            ? s.completedLessons.filter(m => m !== task.moduleId)
+            : [];
+          return { ...s, tasks: updatedTasks, completedLessons: completed };
         }
-      } catch (err) {
-        console.warn('API error requesting revision:', err);
-        alert('Could not reach backend API server.');
-      } finally {
-        setActionLoadingId(null);
-      }
+        return s;
+      }));
+      await fetchStudents();
+    } catch (err) {
+      console.warn('API error requesting revision:', err);
+      alert('Could not reach backend API server.');
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
@@ -1982,6 +2077,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     }
 
     setGradingLoading(true);
+    const targetStudentId = gradingStudentId || gradingTask.studentId || gradingTask.accessCode;
+
     try {
       if (gradingTask.isHtmlCss) {
         const rec = htmlCssValidations[gradingTask.moduleId] || {};
@@ -1994,15 +2091,33 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         };
         saveAssignmentValidation(gradingTask.moduleId, updatedRecord);
         setHtmlCssValidations(getAssignmentValidations());
+
+        if (targetStudentId && targetStudentId !== 'STUDENT') {
+          await fetch(`/api/students/tasks/${gradingTask._id || 'html_css_review'}/grade`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              studentId: targetStudentId,
+              accessCode: gradingTask.accessCode,
+              moduleId: gradingTask.moduleId,
+              tabId: gradingTask.tabId || 'assignment',
+              status: statusTrimmed,
+              feedback: feedbackTrimmed,
+              grade: gradeTrimmed || (statusTrimmed === 'Approved' ? 'A+' : statusTrimmed === 'Rejected' ? 'Needs Revision' : '')
+            })
+          }).catch(e => console.warn('HTML CSS backend grade sync note:', e));
+        }
+
         alert('Task evaluated successfully!');
         setGradingTask(null);
+        await fetchStudents();
       } else {
         const taskId = gradingTask._id || gradingTask.id || 'module_review';
         const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            studentId: gradingStudentId || gradingTask.studentId,
+            studentId: targetStudentId,
             accessCode: gradingTask.accessCode,
             moduleId: gradingTask.moduleId,
             tabId: gradingTask.tabId || 'assignment',
@@ -2011,6 +2126,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             grade: gradeTrimmed || (statusTrimmed === 'Approved' ? 'A+' : statusTrimmed === 'Rejected' ? 'Needs Revision' : '')
           })
         });
+
         if (res.ok) {
           if (gradingTask.moduleId) {
             saveAssignmentValidation(gradingTask.moduleId, {
@@ -2019,18 +2135,39 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               staffFeedback: feedbackTrimmed
             });
           }
-          // Optimistically update students state
+          // Optimistically update students state so UI updates immediately
           setStudents(prev => prev.map(s => {
-            if (s._id === (gradingStudentId || gradingTask.studentId) || s.id === (gradingStudentId || gradingTask.studentId) || s.accessCode === gradingTask.accessCode) {
-              const updatedTasks = (s.tasks || []).map(t => {
-                if ((gradingTask._id && (t._id === gradingTask._id || t.id === gradingTask._id)) || t.moduleId === gradingTask.moduleId) {
-                  return { ...t, status: statusTrimmed, feedback: feedbackTrimmed, grade: gradeTrimmed };
-                }
-                return t;
-              });
+            if (s._id === targetStudentId || s.id === targetStudentId || s.accessCode === targetStudentId || s.accessCode === gradingTask.accessCode) {
+              const taskMatch = (t) => ((gradingTask._id && (t._id === gradingTask._id || t.id === gradingTask._id)) || t.moduleId === gradingTask.moduleId);
+              const exists = (s.tasks || []).some(taskMatch);
+              const updatedTasks = exists
+                ? (s.tasks || []).map(t => {
+                    if (taskMatch(t)) {
+                      return { ...t, status: statusTrimmed, feedback: feedbackTrimmed, grade: gradeTrimmed };
+                    }
+                    return t;
+                  })
+                : [
+                    ...(s.tasks || []),
+                    {
+                      _id: gradingTask._id || `task_${Date.now()}`,
+                      id: gradingTask.id || `task_${Date.now()}`,
+                      moduleId: gradingTask.moduleId,
+                      tabId: gradingTask.tabId || 'assignment',
+                      taskUrl: gradingTask.taskUrl || gradingTask.submissionUrl || '',
+                      taskText: gradingTask.taskText || gradingTask.submissionNotes || '',
+                      status: statusTrimmed,
+                      feedback: feedbackTrimmed,
+                      grade: gradeTrimmed,
+                      submittedAt: gradingTask.submittedAt || new Date()
+                    }
+                  ];
               const completed = Array.isArray(s.completedLessons) ? [...s.completedLessons] : [];
               if (statusTrimmed === 'Approved' && gradingTask.moduleId && !completed.includes(gradingTask.moduleId)) {
                 completed.push(gradingTask.moduleId);
+              } else if (statusTrimmed === 'Rejected' && gradingTask.moduleId) {
+                const idx = completed.indexOf(gradingTask.moduleId);
+                if (idx !== -1) completed.splice(idx, 1);
               }
               return { ...s, tasks: updatedTasks, completedLessons: completed };
             }
@@ -5850,7 +5987,9 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   const nameMatch = (s.studentName || '').toLowerCase().includes(q);
                   const codeMatch = (s.accessCode || '').toLowerCase().includes(q);
                   const modMatch = (s.moduleId || '').toLowerCase().includes(q) || (s.moduleTitle || '').toLowerCase().includes(q);
-                  return nameMatch || codeMatch || modMatch;
+                  const courseMatch = (s.enrolledCourse || s.trackType || '').toLowerCase().includes(q);
+                  const textMatch = (s.taskText || s.submissionNotes || s.studentFeedback || '').toLowerCase().includes(q);
+                  return nameMatch || codeMatch || modMatch || courseMatch || textMatch;
                 }
                 return true;
               });
@@ -6181,28 +6320,44 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', width: '100%' }}>
                               {/* Student Info */}
                               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <div style={{
-                                  width: 44,
-                                  height: 44,
-                                  borderRadius: '50%',
-                                  background: task.isLogicalReasoning
-                                    ? 'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)'
-                                    : (task.isSpoko || isSpokoItem(task))
-                                    ? 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)'
-                                    : task.isHtmlCss
-                                    ? 'linear-gradient(135deg, #a855f7 0%, #7e22ce 100%)'
-                                    : 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-                                  color: '#ffffff',
-                                  fontWeight: 900,
-                                  fontSize: '0.95rem',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  flexShrink: 0,
-                                  boxShadow: '0 3px 8px rgba(0,0,0,0.12)'
-                                }}>
-                                  {task.studentName ? task.studentName.substring(0, 2).toUpperCase() : 'ST'}
-                                </div>
+                                {task.photoUrl ? (
+                                  <img
+                                    src={task.photoUrl}
+                                    alt={task.studentName || 'Student'}
+                                    style={{
+                                      width: 44,
+                                      height: 44,
+                                      borderRadius: '50%',
+                                      objectFit: 'cover',
+                                      border: '2px solid #ffffff',
+                                      boxShadow: '0 3px 8px rgba(0,0,0,0.15)',
+                                      flexShrink: 0
+                                    }}
+                                  />
+                                ) : (
+                                  <div style={{
+                                    width: 44,
+                                    height: 44,
+                                    borderRadius: '50%',
+                                    background: task.isLogicalReasoning
+                                      ? 'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)'
+                                      : (task.isSpoko || isSpokoItem(task))
+                                      ? 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)'
+                                      : task.isHtmlCss
+                                      ? 'linear-gradient(135deg, #a855f7 0%, #7e22ce 100%)'
+                                      : 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                                    color: '#ffffff',
+                                    fontWeight: 900,
+                                    fontSize: '0.95rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0,
+                                    boxShadow: '0 3px 8px rgba(0,0,0,0.12)'
+                                  }}>
+                                    {task.studentName ? task.studentName.substring(0, 2).toUpperCase() : 'ST'}
+                                  </div>
+                                )}
                                 <div>
                                   <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#0f172a' }}>
                                     {task.studentName}
@@ -6396,10 +6551,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                               ) : (
                                 <>
                                   {/* URL Button */}
-                                  {task.submissionUrl && (
+                                  {(task.submissionUrl || task.taskUrl) && (
                                     <div>
                                       <a
-                                        href={task.submissionUrl}
+                                        href={task.submissionUrl || task.taskUrl}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         style={{
@@ -6442,7 +6597,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                   )}
 
                                   {/* Default fallback notice when no feedback/link attached */}
-                                  {!task.submissionUrl && !task.studentFeedback && !task.taskText && !task.submissionNotes && (
+                                  {!task.submissionUrl && !task.taskUrl && !task.studentFeedback && !task.taskText && !task.submissionNotes && (
                                     <div style={{ fontSize: '0.82rem', color: '#94a3b8', fontStyle: 'italic', background: '#fafafa', padding: '8px 12px', borderRadius: 8 }}>
                                       📝 Practical topic homework exercise submission record.
                                     </div>

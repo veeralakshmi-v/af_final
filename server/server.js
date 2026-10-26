@@ -815,11 +815,19 @@ app.post('/api/students/:id/tasks', async (req, res) => {
   try {
     const isDbConnected = await checkDbConnection();
     if (isDbConnected) {
-      const query = mongoose.Types.ObjectId.isValid(id) 
-        ? { _id: id } 
-        : { accessCode: id.trim() };
-        
-      const student = await Student.findOne(query);
+      const idTrimmed = id ? String(id).trim() : '';
+      let student = null;
+      if (mongoose.Types.ObjectId.isValid(idTrimmed)) {
+        student = await Student.findById(idTrimmed);
+      }
+      if (!student) {
+        student = await Student.findOne({
+          $or: [
+            { accessCode: idTrimmed },
+            { studentId: idTrimmed }
+          ]
+        });
+      }
       if (!student) return res.status(404).json({ error: 'Student not found!' });
       
       // Check if already submitted
@@ -852,7 +860,8 @@ app.post('/api/students/:id/tasks', async (req, res) => {
       return res.json(student);
     } else {
       const students = getLocalStudents();
-      const idx = students.findIndex(s => s.id === id || s.accessCode === id.trim());
+      const idTrimmed = id ? String(id).trim() : '';
+      const idx = students.findIndex(s => s.id === idTrimmed || s._id === idTrimmed || s.accessCode === idTrimmed || s.studentId === idTrimmed);
       if (idx === -1) return res.status(404).json({ error: 'Student not found!' });
       
       const student = students[idx];
@@ -1017,16 +1026,29 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
 
   try {
     const isDbConnected = await checkDbConnection();
+    const sIdStr = studentId ? String(studentId).trim() : '';
+    const accStr = accessCode ? String(accessCode).trim() : '';
+
     if (isDbConnected) {
       let student = null;
-      if (studentId && mongoose.Types.ObjectId.isValid(studentId)) {
-        student = await Student.findById(studentId);
+      if (sIdStr && mongoose.Types.ObjectId.isValid(sIdStr)) {
+        student = await Student.findById(sIdStr);
       }
-      if (!student && studentId) {
-        student = await Student.findOne({ accessCode: String(studentId).trim() });
+      if (!student && sIdStr) {
+        student = await Student.findOne({
+          $or: [
+            { accessCode: sIdStr },
+            { studentId: sIdStr }
+          ]
+        });
       }
-      if (!student && accessCode) {
-        student = await Student.findOne({ accessCode: String(accessCode).trim() });
+      if (!student && accStr) {
+        student = await Student.findOne({
+          $or: [
+            { accessCode: accStr },
+            { studentId: accStr }
+          ]
+        });
       }
       if (!student && taskId && taskId !== 'undefined' && taskId !== 'null') {
         student = await Student.findOne({
@@ -1037,6 +1059,8 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
         });
       }
       if (!student) return res.status(404).json({ error: 'Student not found!' });
+
+      if (!Array.isArray(student.tasks)) student.tasks = [];
 
       let task = null;
       if (taskId && taskId !== 'undefined' && taskId !== 'null') {
@@ -1050,10 +1074,10 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
         }
       }
       if (!task && moduleId) {
-        task = student.tasks.find(t => t.moduleId === moduleId && (!tabId || t.tabId === tabId));
+        task = student.tasks.find(t => (t.moduleId === moduleId || t.moduleId === moduleId.replace(/:/g, '_')) && (!tabId || t.tabId === tabId));
       }
       if (!task && moduleId) {
-        task = student.tasks.find(t => t.moduleId === moduleId);
+        task = student.tasks.find(t => t.moduleId === moduleId || t.moduleId.endsWith(moduleId) || moduleId.endsWith(t.moduleId));
       }
       if (!task && taskId && taskId.includes('_')) {
         const parts = taskId.split('_');
@@ -1063,45 +1087,77 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
         }
       }
 
-      if (!task) return res.status(404).json({ error: 'Task submission not found!' });
+      const effectiveMod = (task && task.moduleId) || moduleId || taskId || 'module_review';
+      const effectiveTab = (task && task.tabId) || tabId || 'assignment';
 
-      task.status = normalizedStatus;
-      task.feedback = feedbackTrimmed;
-      task.grade = finalGrade;
-      if (!task._id) {
-        task._id = new mongoose.Types.ObjectId().toString();
+      if (!task) {
+        task = {
+          _id: new mongoose.Types.ObjectId().toString(),
+          moduleId: effectiveMod,
+          tabId: effectiveTab,
+          taskUrl: '',
+          taskText: 'Submission evaluated by instructor',
+          submittedAt: new Date(),
+          status: normalizedStatus,
+          feedback: feedbackTrimmed,
+          grade: finalGrade
+        };
+        student.tasks.push(task);
+      } else {
+        task.status = normalizedStatus;
+        task.feedback = feedbackTrimmed;
+        task.grade = finalGrade;
+        if (!task._id) {
+          task._id = new mongoose.Types.ObjectId().toString();
+        }
       }
 
-      // When approved, also ensure student.completedLessons includes moduleId so next day is unlocked!
-      if (normalizedStatus === 'Approved' && task.moduleId) {
+      // When approved, ensure student.completedLessons includes moduleId so next day is unlocked!
+      if (normalizedStatus === 'Approved' && effectiveMod) {
         if (!Array.isArray(student.completedLessons)) {
           student.completedLessons = [];
         }
-        if (!student.completedLessons.includes(task.moduleId)) {
-          student.completedLessons.push(task.moduleId);
+        if (!student.completedLessons.includes(effectiveMod)) {
+          student.completedLessons.push(effectiveMod);
+        }
+      } else if (normalizedStatus === 'Rejected' && effectiveMod) {
+        if (Array.isArray(student.completedLessons)) {
+          student.completedLessons = student.completedLessons.filter(m => m !== effectiveMod);
+        }
+      }
+
+      // If evaluating logical thinking or reasoning
+      if (effectiveMod === 'logical_evaluator_score' || effectiveMod.includes('reasoning')) {
+        if (!student.logicalThinkingScore) {
+          student.logicalThinkingScore = { score: 85, total: 100, percentage: 85, grade: finalGrade || 'A', feedback: feedbackTrimmed, updatedAt: new Date().toISOString() };
+        } else {
+          student.logicalThinkingScore.grade = finalGrade || student.logicalThinkingScore.grade || 'A';
+          student.logicalThinkingScore.feedback = feedbackTrimmed || student.logicalThinkingScore.feedback;
+          student.logicalThinkingScore.updatedAt = new Date().toISOString();
         }
       }
 
       student.markModified('tasks');
       student.markModified('completedLessons');
+      if (student.logicalThinkingScore) student.markModified('logicalThinkingScore');
       await student.save();
       return res.json(student);
     } else {
       const students = getLocalStudents();
       let student = students.find(s => 
-        (studentId && (s.id === studentId || s.accessCode === String(studentId).trim())) ||
-        (accessCode && s.accessCode === String(accessCode).trim()) ||
+        (sIdStr && (s.id === sIdStr || s._id === sIdStr || s.accessCode === sIdStr || s.studentId === sIdStr)) ||
+        (accStr && (s.accessCode === accStr || s.studentId === accStr || s.id === accStr || s._id === accStr)) ||
         (s.tasks && s.tasks.some(t => String(t._id || t.id) === String(taskId)))
       );
       if (!student) return res.status(404).json({ error: 'Student not found!' });
 
-      if (!student.tasks) student.tasks = [];
+      if (!Array.isArray(student.tasks)) student.tasks = [];
       let task = student.tasks.find(t => String(t._id || t.id) === String(taskId));
       if (!task && moduleId) {
-        task = student.tasks.find(t => t.moduleId === moduleId && (!tabId || t.tabId === tabId));
+        task = student.tasks.find(t => (t.moduleId === moduleId || t.moduleId === moduleId.replace(/:/g, '_')) && (!tabId || t.tabId === tabId));
       }
       if (!task && moduleId) {
-        task = student.tasks.find(t => t.moduleId === moduleId);
+        task = student.tasks.find(t => t.moduleId === moduleId || t.moduleId.endsWith(moduleId) || moduleId.endsWith(t.moduleId));
       }
       if (!task && taskId && taskId.includes('_')) {
         const parts = taskId.split('_');
@@ -1111,21 +1167,51 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
         }
       }
 
-      if (!task) return res.status(404).json({ error: 'Task submission not found!' });
+      const effectiveMod = (task && task.moduleId) || moduleId || taskId || 'module_review';
+      const effectiveTab = (task && task.tabId) || tabId || 'assignment';
 
-      task.status = normalizedStatus;
-      task.feedback = feedbackTrimmed;
-      task.grade = finalGrade;
-      if (!task._id) {
-        task._id = 'task-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+      if (!task) {
+        task = {
+          _id: 'task-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+          moduleId: effectiveMod,
+          tabId: effectiveTab,
+          taskUrl: '',
+          taskText: 'Submission evaluated by instructor',
+          submittedAt: new Date(),
+          status: normalizedStatus,
+          feedback: feedbackTrimmed,
+          grade: finalGrade
+        };
+        student.tasks.push(task);
+      } else {
+        task.status = normalizedStatus;
+        task.feedback = feedbackTrimmed;
+        task.grade = finalGrade;
+        if (!task._id) {
+          task._id = 'task-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+        }
       }
 
-      if (normalizedStatus === 'Approved' && task.moduleId) {
+      if (normalizedStatus === 'Approved' && effectiveMod) {
         if (!Array.isArray(student.completedLessons)) {
           student.completedLessons = [];
         }
-        if (!student.completedLessons.includes(task.moduleId)) {
-          student.completedLessons.push(task.moduleId);
+        if (!student.completedLessons.includes(effectiveMod)) {
+          student.completedLessons.push(effectiveMod);
+        }
+      } else if (normalizedStatus === 'Rejected' && effectiveMod) {
+        if (Array.isArray(student.completedLessons)) {
+          student.completedLessons = student.completedLessons.filter(m => m !== effectiveMod);
+        }
+      }
+
+      if (effectiveMod === 'logical_evaluator_score' || effectiveMod.includes('reasoning')) {
+        if (!student.logicalThinkingScore) {
+          student.logicalThinkingScore = { score: 85, total: 100, percentage: 85, grade: finalGrade || 'A', feedback: feedbackTrimmed, updatedAt: new Date().toISOString() };
+        } else {
+          student.logicalThinkingScore.grade = finalGrade || student.logicalThinkingScore.grade || 'A';
+          student.logicalThinkingScore.feedback = feedbackTrimmed || student.logicalThinkingScore.feedback;
+          student.logicalThinkingScore.updatedAt = new Date().toISOString();
         }
       }
 
