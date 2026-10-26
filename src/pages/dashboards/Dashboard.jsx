@@ -771,6 +771,23 @@ export function getLogicalGradeStyle(grade) {
   }
 }
 
+export function isLogicalItem(s) {
+  if (!s) return false;
+  if (s.isLogicalReasoning === true || s.trackType === 'logical_reasoning') return true;
+  const mod = (s.moduleId || '').toLowerCase();
+  const title = (s.moduleTitle || '').toLowerCase();
+  return mod.includes('reasoning') || mod.includes('logical') || title.includes('reasoning') || title.includes('logical');
+}
+
+export function isSpokoItem(s) {
+  if (!s) return false;
+  if (isLogicalItem(s)) return false; // Strictly isolate logical reasoning from Spoko English
+  if (s.isSpoko === true || s.trackType === 'spoko') return true;
+  const mod = (s.moduleId || '').toLowerCase();
+  const title = (s.moduleTitle || '').toLowerCase();
+  return (mod.includes('spoko') || title.includes('spoko'));
+}
+
 export function getStudentLogicalThinkingScore(student) {
   if (!student) {
     return {
@@ -1285,9 +1302,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       const rawStatus = (t.status || 'Pending').toLowerCase();
       const normalizedStatus = rawStatus === 'approved' ? 'Approved' : rawStatus === 'rejected' ? 'Rejected' : 'Pending';
       const taskId = t._id || t.id || `task_${s._id || s.id}_${t.moduleId || idx}`;
-      const modIdLower = (t.moduleId || '').toLowerCase();
-      const isSpoko = modIdLower.includes('spoko') && !modIdLower.includes('reasoning') && !modIdLower.includes('logical');
-      const isReasoning = modIdLower.includes('reasoning') || modIdLower.includes('logical');
+      const isReasoning = isLogicalItem(t);
+      const isSpoko = isSpokoItem(t);
       return {
         ...t,
         _id: taskId,
@@ -1316,7 +1332,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
   const seenSubKeys = new Set();
   const allSubmissions = rawSubmissions.filter(item => {
-    const key = (item._id || item.id) || `${item.studentId}_${item.moduleId}`;
+    const key = item.moduleId ? `${item.studentId || ''}_${item.moduleId}` : (item._id || item.id);
     if (seenSubKeys.has(key)) return false;
     seenSubKeys.add(key);
     return true;
@@ -1326,8 +1342,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     return db - da;
   });
 
-  const spokoSubmissions = allSubmissions.filter(s => s.isSpoko || s.trackType === 'spoko' || ((s.moduleId || '').toLowerCase().includes('spoko') && !(s.moduleId || '').toLowerCase().includes('reasoning')));
-  const logicalReasoningSubmissions = allSubmissions.filter(s => s.isLogicalReasoning || s.trackType === 'logical_reasoning' || (s.moduleId || '').toLowerCase().includes('reasoning') || (s.moduleId || '').toLowerCase().includes('logical'));
+  const spokoSubmissions = allSubmissions.filter(isSpokoItem);
+  const logicalReasoningSubmissions = allSubmissions.filter(isLogicalItem);
 
   const pendingSubmissions = allSubmissions.filter(s => (s.status || '').toLowerCase() === 'pending');
   const pendingCount = pendingSubmissions.length;
@@ -5332,8 +5348,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 if (reviewFilter === 'pending' && sStatus !== 'pending') return false;
                 if (reviewFilter === 'approved' && sStatus !== 'approved') return false;
                 if (reviewFilter === 'rejected' && sStatus !== 'rejected') return false;
-                if (reviewFilter === 'spoko' && !(s.isSpoko || s.trackType === 'spoko' || (s.moduleId || '').toLowerCase().includes('spoko'))) return false;
-                if (reviewFilter === 'logical_reasoning' && !(s.isLogicalReasoning || s.trackType === 'logical_reasoning' || (s.moduleId || '').toLowerCase().includes('reasoning') || (s.moduleId || '').toLowerCase().includes('logical'))) return false;
+                if (reviewFilter === 'spoko' && !isSpokoItem(s)) return false;
+                if (reviewFilter === 'logical_reasoning' && !isLogicalItem(s)) return false;
                 if (reviewFilter === 'html_css' && !s.isHtmlCss) return false;
 
                 if (reviewSearch.trim()) {
@@ -5354,16 +5370,22 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     gap: '1.25rem'
                   }}>
                     {/* Card 1: Total */}
-                    <div style={{
-                      background: '#ffffff',
-                      border: '1px solid var(--surface-border)',
-                      borderRadius: '20px',
-                      padding: '1.25rem 1.5rem',
-                      boxShadow: 'var(--shadow-sm)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between'
-                    }}>
+                    <div
+                      onClick={() => setReviewFilter('all')}
+                      style={{
+                        background: reviewFilter === 'all' ? '#eff6ff' : '#ffffff',
+                        border: reviewFilter === 'all' ? '2px solid #3b82f6' : '1px solid var(--surface-border)',
+                        borderRadius: '20px',
+                        padding: '1.25rem 1.5rem',
+                        boxShadow: reviewFilter === 'all' ? '0 4px 14px rgba(59, 130, 246, 0.15)' : 'var(--shadow-sm)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                      title="Show all submissions"
+                    >
                       <div>
                         <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Submissions</span>
                         <div style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px' }}>{allSubmissions.length}</div>
@@ -5374,16 +5396,22 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     </div>
 
                     {/* Card 2: Pending */}
-                    <div style={{
-                      background: '#ffffff',
-                      border: pendingCount > 0 ? '1px solid #fca5a5' : '1px solid var(--surface-border)',
-                      borderRadius: '20px',
-                      padding: '1.25rem 1.5rem',
-                      boxShadow: pendingCount > 0 ? '0 4px 14px rgba(239,68,68,0.1)' : 'var(--shadow-sm)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between'
-                    }}>
+                    <div
+                      onClick={() => setReviewFilter('pending')}
+                      style={{
+                        background: reviewFilter === 'pending' ? '#fef2f2' : '#ffffff',
+                        border: reviewFilter === 'pending' ? '2px solid #dc2626' : pendingCount > 0 ? '1px solid #fca5a5' : '1px solid var(--surface-border)',
+                        borderRadius: '20px',
+                        padding: '1.25rem 1.5rem',
+                        boxShadow: reviewFilter === 'pending' || pendingCount > 0 ? '0 4px 14px rgba(239,68,68,0.15)' : 'var(--shadow-sm)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                      title="Filter by Pending Review"
+                    >
                       <div>
                         <span style={{ fontSize: '0.78rem', fontWeight: 800, color: pendingCount > 0 ? '#dc2626' : 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pending Review</span>
                         <div style={{ fontSize: '1.8rem', fontWeight: 900, color: pendingCount > 0 ? '#dc2626' : 'var(--text-primary)', marginTop: '4px' }}>{pendingCount}</div>
@@ -5394,16 +5422,22 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     </div>
 
                     {/* Card 3: Approved */}
-                    <div style={{
-                      background: '#ffffff',
-                      border: '1px solid var(--surface-border)',
-                      borderRadius: '20px',
-                      padding: '1.25rem 1.5rem',
-                      boxShadow: 'var(--shadow-sm)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between'
-                    }}>
+                    <div
+                      onClick={() => setReviewFilter('approved')}
+                      style={{
+                        background: reviewFilter === 'approved' ? '#f0fdf4' : '#ffffff',
+                        border: reviewFilter === 'approved' ? '2px solid #16a34a' : '1px solid var(--surface-border)',
+                        borderRadius: '20px',
+                        padding: '1.25rem 1.5rem',
+                        boxShadow: reviewFilter === 'approved' ? '0 4px 14px rgba(22, 163, 74, 0.15)' : 'var(--shadow-sm)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                      title="Filter by Approved Submissions"
+                    >
                       <div>
                         <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Approved</span>
                         <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#16a34a', marginTop: '4px' }}>{approvedCount}</div>
@@ -5414,16 +5448,22 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     </div>
 
                     {/* Card 4: Spoko Submissions */}
-                    <div style={{
-                      background: '#ffffff',
-                      border: '1px solid var(--surface-border)',
-                      borderRadius: '20px',
-                      padding: '1.25rem 1.5rem',
-                      boxShadow: 'var(--shadow-sm)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between'
-                    }}>
+                    <div
+                      onClick={() => setReviewFilter('spoko')}
+                      style={{
+                        background: reviewFilter === 'spoko' ? '#eef2ff' : '#ffffff',
+                        border: reviewFilter === 'spoko' ? '2px solid #4f46e5' : '1px solid var(--surface-border)',
+                        borderRadius: '20px',
+                        padding: '1.25rem 1.5rem',
+                        boxShadow: reviewFilter === 'spoko' ? '0 4px 14px rgba(79, 70, 229, 0.15)' : 'var(--shadow-sm)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                      title="Filter strictly by Spoko English & HR Mock Interview Submissions"
+                    >
                       <div>
                         <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Spoko Scores</span>
                         <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#4f46e5', marginTop: '4px' }}>{spokoSubmissions.length}</div>
@@ -5434,16 +5474,22 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     </div>
 
                     {/* Card 5: Logical Reasoning Submissions */}
-                    <div style={{
-                      background: '#ffffff',
-                      border: '1px solid var(--surface-border)',
-                      borderRadius: '20px',
-                      padding: '1.25rem 1.5rem',
-                      boxShadow: 'var(--shadow-sm)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between'
-                    }}>
+                    <div
+                      onClick={() => setReviewFilter('logical_reasoning')}
+                      style={{
+                        background: reviewFilter === 'logical_reasoning' ? '#fdf2f8' : '#ffffff',
+                        border: reviewFilter === 'logical_reasoning' ? '2px solid #db2777' : '1px solid var(--surface-border)',
+                        borderRadius: '20px',
+                        padding: '1.25rem 1.5rem',
+                        boxShadow: reviewFilter === 'logical_reasoning' ? '0 4px 14px rgba(219, 39, 119, 0.15)' : 'var(--shadow-sm)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                      title="Filter strictly by Logical Thinking & Analytical Reasoning Submissions"
+                    >
                       <div>
                         <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Logical Reasoning</span>
                         <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#db2777', marginTop: '4px' }}>{logicalReasoningSubmissions.length}</div>
@@ -5468,14 +5514,15 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     gap: '1rem'
                   }}>
                     {/* Filter Chips */}
-                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
                       <button
                         type="button"
                         onClick={() => setReviewFilter('all')}
                         style={{
                           background: reviewFilter === 'all' ? '#3b82f6' : '#f1f5f9',
                           color: reviewFilter === 'all' ? '#ffffff' : '#475569',
-                          border: 'none', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
+                          border: reviewFilter === 'all' ? '1.5px solid #2563eb' : '1px solid #e2e8f0',
+                          padding: '7px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
                         }}
                       >
                         All ({allSubmissions.length})
@@ -5486,7 +5533,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                         style={{
                           background: reviewFilter === 'pending' ? '#dc2626' : '#fef2f2',
                           color: reviewFilter === 'pending' ? '#ffffff' : '#dc2626',
-                          border: '1px solid #fca5a5', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
+                          border: reviewFilter === 'pending' ? '1.5px solid #b91c1c' : '1px solid #fca5a5',
+                          padding: '7px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
                         }}
                       >
                         ⏳ Pending ({pendingCount})
@@ -5497,7 +5545,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                         style={{
                           background: reviewFilter === 'approved' ? '#16a34a' : '#f0fdf4',
                           color: reviewFilter === 'approved' ? '#ffffff' : '#16a34a',
-                          border: '1px solid #bbf7d0', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
+                          border: reviewFilter === 'approved' ? '1.5px solid #15803d' : '1px solid #bbf7d0',
+                          padding: '7px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
                         }}
                       >
                         ✅ Approved ({approvedCount})
@@ -5508,7 +5557,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                         style={{
                           background: reviewFilter === 'rejected' ? '#ea580c' : '#fff7ed',
                           color: reviewFilter === 'rejected' ? '#ffffff' : '#ea580c',
-                          border: '1px solid #fed7aa', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
+                          border: reviewFilter === 'rejected' ? '1.5px solid #c2410c' : '1px solid #fed7aa',
+                          padding: '7px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
                         }}
                       >
                         ⚠️ Revisions ({rejectedCount})
@@ -5519,7 +5569,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                         style={{
                           background: reviewFilter === 'spoko' ? '#4f46e5' : '#eef2ff',
                           color: reviewFilter === 'spoko' ? '#ffffff' : '#4f46e5',
-                          border: '1px solid #c7d2fe', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s',
+                          border: reviewFilter === 'spoko' ? '1.5px solid #4338ca' : '1px solid #c7d2fe',
+                          padding: '7px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s',
                           display: 'inline-flex', alignItems: 'center', gap: 6
                         }}
                       >
@@ -5531,7 +5582,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                         style={{
                           background: reviewFilter === 'logical_reasoning' ? '#db2777' : '#fdf2f8',
                           color: reviewFilter === 'logical_reasoning' ? '#ffffff' : '#db2777',
-                          border: '1px solid #fbcfe8', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s',
+                          border: reviewFilter === 'logical_reasoning' ? '1.5px solid #be123c' : '1px solid #fbcfe8',
+                          padding: '7px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s',
                           display: 'inline-flex', alignItems: 'center', gap: 6
                         }}
                       >
@@ -5559,6 +5611,49 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                       <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.45, fontSize: '0.85rem' }}>🔍</span>
                     </div>
                   </div>
+
+                  {/* Active Filter Status Bar */}
+                  {reviewFilter !== 'all' && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      background: '#f8fafc',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '14px',
+                      padding: '0.65rem 1.25rem',
+                      fontSize: '0.84rem',
+                      color: '#475569',
+                      flexWrap: 'wrap',
+                      gap: 8
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span>Active Filter:</span>
+                        <strong style={{ color: '#0f172a' }}>
+                          {reviewFilter === 'pending' && `⏳ Pending Review (${filteredSubmissions.length})`}
+                          {reviewFilter === 'approved' && `✅ Approved Submissions (${filteredSubmissions.length})`}
+                          {reviewFilter === 'rejected' && `⚠️ Revisions Requested (${filteredSubmissions.length})`}
+                          {reviewFilter === 'spoko' && `💬 Spoko Scores Track (${filteredSubmissions.length})`}
+                          {reviewFilter === 'logical_reasoning' && `🧠 Logical Reasoning Assessment (${filteredSubmissions.length})`}
+                        </strong>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setReviewFilter('all')}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#3b82f6',
+                          fontWeight: 800,
+                          fontSize: '0.8rem',
+                          cursor: 'pointer',
+                          textDecoration: 'underline'
+                        }}
+                      >
+                        Reset to All ({allSubmissions.length})
+                      </button>
+                    </div>
+                  )}
 
                   {/* 📋 3) Submission Cards List */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>

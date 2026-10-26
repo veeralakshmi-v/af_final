@@ -1252,13 +1252,15 @@ app.post('/api/students/:id/logical-thinking-score', async (req, res) => {
 
       student.logicalThinkingScore = scoreObj;
       if (!student.tasks) student.tasks = [];
+      const taskStatus = (scoreVal >= 70 || (scoreVal > 0 && percentage >= 70)) ? 'Approved' : 'Pending';
+
       let existingTask = student.tasks.find(t => t.moduleId === 'spoko_reasoning_benchmark');
       if (existingTask) {
         existingTask.score = scoreVal;
         existingTask.total = totalVal;
         existingTask.percentage = percentage;
         existingTask.grade = gradeVal;
-        existingTask.status = 'Approved';
+        existingTask.status = taskStatus;
         existingTask.feedback = feedback || '';
         existingTask.taskText = taskText;
         existingTask.submittedAt = new Date();
@@ -1272,7 +1274,7 @@ app.post('/api/students/:id/logical-thinking-score', async (req, res) => {
           total: totalVal,
           percentage,
           grade: gradeVal,
-          status: 'Approved',
+          status: taskStatus,
           feedback: feedback || '',
           taskText,
           submittedAt: new Date()
@@ -1290,13 +1292,14 @@ app.post('/api/students/:id/logical-thinking-score', async (req, res) => {
       const student = students[idx];
       student.logicalThinkingScore = scoreObj;
       if (!student.tasks) student.tasks = [];
+      const taskStatus = (scoreVal >= 70 || (scoreVal > 0 && percentage >= 70)) ? 'Approved' : 'Pending';
       let existingTask = student.tasks.find(t => t.moduleId === 'spoko_reasoning_benchmark');
       if (existingTask) {
         existingTask.score = scoreVal;
         existingTask.total = totalVal;
         existingTask.percentage = percentage;
         existingTask.grade = gradeVal;
-        existingTask.status = 'Approved';
+        existingTask.status = taskStatus;
         existingTask.feedback = feedback || '';
         existingTask.taskText = taskText;
         existingTask.submittedAt = new Date();
@@ -1310,7 +1313,7 @@ app.post('/api/students/:id/logical-thinking-score', async (req, res) => {
           total: totalVal,
           percentage,
           grade: gradeVal,
-          status: 'Approved',
+          status: taskStatus,
           feedback: feedback || '',
           taskText,
           submittedAt: new Date()
