@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   LayoutTemplate, Database, Code, ArrowRight, Sparkles, Bot, Terminal, Brain,
   UserPlus, Users, LogIn, LogOut, CheckCircle, BarChart3, Layers, GitBranch,
   Server, RefreshCw, Trash2, Key, Star, ShieldAlert, Award, Grid, HelpCircle,
   BookOpen, ExternalLink, Upload, Download, FileText, Lock, AlertTriangle, Menu, X,
   Search, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Copy, Receipt, Briefcase,
-  CreditCard, FileCheck2, Eye, TrendingUp, MessageSquare, ShieldCheck
+  CreditCard, FileCheck2, Eye, TrendingUp, MessageSquare, ShieldCheck,
+  Camera, Phone, Mail, MapPin, Calendar, GraduationCap, Check
 } from 'lucide-react';
 import {
   getAssignmentValidations,
@@ -1496,6 +1497,42 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   const [gradingGrade, setGradingGrade] = useState('A+');
   const [gradingLoading, setGradingLoading] = useState(false);
   const [newStudentName, setNewStudentName] = useState('');
+  const [newStudentPhoto, setNewStudentPhoto] = useState('');
+  const [newStudentGender, setNewStudentGender] = useState('Male');
+  const [newStudentDob, setNewStudentDob] = useState('');
+  const [newStudentFatherName, setNewStudentFatherName] = useState('');
+  const [newStudentPhone, setNewStudentPhone] = useState('');
+  const [newStudentEmail, setNewStudentEmail] = useState('');
+  const [newStudentAddress, setNewStudentAddress] = useState('');
+  const [newStudentQualification, setNewStudentQualification] = useState('B.Sc / B.E / B.Tech');
+  const [newStudentIdProofType, setNewStudentIdProofType] = useState('Aadhaar Card');
+  const [newStudentIdProofNumber, setNewStudentIdProofNumber] = useState('');
+  const [newStudentJoiningDate, setNewStudentJoiningDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [newlyEnrolledResult, setNewlyEnrolledResult] = useState(null);
+  const photoInputRef = useRef(null);
+
+  const PRESET_STUDENT_PHOTOS = [
+    { label: 'Sample Student', url: '/id_card_assets/sample_student_photo.jpg' },
+    { label: 'Male Avatar', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80' },
+    { label: 'Female Avatar', url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80' },
+  ];
+
+  const handleStudentPhotoChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Photo size exceeds 5MB. Please choose a smaller image.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setNewStudentPhoto(event.target.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const [assignedCourse, setAssignedCourse] = useState('html_css');
   const [valIdCard, setValIdCard] = useState(false);
   const [valFeeInitiated, setValFeeInitiated] = useState(false);
@@ -1768,7 +1805,17 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     setAdminError('');
     setSuccessMsg('');
     if (!newStudentName.trim()) {
-      setAdminError('Student Name is required!');
+      setAdminError('Student Full Name is required!');
+      return;
+    }
+
+    if (!newStudentPhoto) {
+      setAdminError('Please attach a student photograph (upload photo or select quick avatar) on the admission form!');
+      return;
+    }
+
+    if (!newStudentPhone.trim()) {
+      setAdminError('Contact Phone Number is required on the admission form!');
       return;
     }
 
@@ -1789,21 +1836,53 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         body: JSON.stringify({
           name: newStudentName.trim(),
           enrolledCourse: assignedCourse,
+          photoUrl: newStudentPhoto,
+          contactNumber: newStudentPhone.trim(),
+          phone: newStudentPhone.trim(),
+          email: newStudentEmail.trim(),
+          gender: newStudentGender,
+          dob: newStudentDob,
+          fatherName: newStudentFatherName.trim(),
+          address: newStudentAddress.trim(),
+          educationQualification: newStudentQualification,
+          idProofType: newStudentIdProofType,
+          idProofNumber: newStudentIdProofNumber.trim(),
+          joiningDate: newStudentJoiningDate,
           idCardIssued: valIdCard,
           feeInitiated: valFeeInitiated,
           inductionCompleted: valInduction,
-          admissionConfirmed: allValidationsChecked
+          admissionConfirmed: allValidationsChecked,
+          admissionFormData: {
+            fullName: newStudentName.trim(),
+            photoUrl: newStudentPhoto,
+            gender: newStudentGender,
+            dob: newStudentDob,
+            fatherName: newStudentFatherName.trim(),
+            contactNumber: newStudentPhone.trim(),
+            email: newStudentEmail.trim(),
+            address: newStudentAddress.trim(),
+            educationQualification: newStudentQualification,
+            idProofType: newStudentIdProofType,
+            idProofNumber: newStudentIdProofNumber.trim(),
+            submittedAt: new Date()
+          }
         })
       });
       if (res.ok) {
         const data = await res.json();
-        setSuccessMsg(`Student registered! Access Code: ${data.accessCode} • All 3 validations completed & course unlocked.`);
+        setSuccessMsg(`Student Admission Confirmed & Enrolled! Access Code: ${data.accessCode}`);
+        setNewlyEnrolledResult(data);
         setNewStudentName('');
+        setNewStudentPhoto('');
+        setNewStudentPhone('');
+        setNewStudentEmail('');
+        setNewStudentFatherName('');
+        setNewStudentAddress('');
+        setNewStudentIdProofNumber('');
         setValIdCard(false);
         setValFeeInitiated(false);
         setValInduction(false);
         fetchStudents();
-        setActiveTab('database');
       } else {
         const err = await res.json();
         setAdminError(err.error || 'Registration failed.');
@@ -3476,193 +3555,516 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             {enrollRole === 'student' ? (
               <form onSubmit={handleRegisterStudent} style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(460px, 1fr))', gap: '1.75rem', alignItems: 'stretch' }}>
 
-                {/* 📝 LEFT COLUMN: Step 1 - Student Info & 3 Validations */}
-                <div style={{ background: '#ffffff', border: '1px solid var(--surface-border)', borderRadius: '24px', padding: '2rem', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', gap: '1.5rem', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
-                      <div style={{ width: 40, height: 40, borderRadius: '12px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <UserPlus size={22} />
-                      </div>
-                      <div>
-                        <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-                          Student &amp; Admission Validation
+                {/* 📝 LEFT COLUMN: Step 1 - Official Student Admission Application Form */}
+                <div style={{ background: '#ffffff', border: '1px solid var(--surface-border)', borderRadius: '24px', padding: isMobile ? '1.25rem' : '2rem', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  
+                  {/* Admission Form Header Banner */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.1rem' }}>
+                    <div style={{ width: 44, height: 44, borderRadius: '14px', background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.25)', flexShrink: 0 }}>
+                      <FileText size={22} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                        <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                          Student Admission Form
                         </h2>
-                        <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>
-                          Enter student credentials and complete all 3 onboarding milestones
-                        </p>
+                        <span style={{ fontSize: '0.68rem', fontWeight: 800, padding: '2px 8px', borderRadius: '12px', background: '#dbeafe', color: '#1e40af', border: '1px solid #bfdbfe', letterSpacing: '0.3px', textTransform: 'uppercase' }}>
+                          Official Intake
+                        </span>
+                      </div>
+                      <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: '3px 0 0 0' }}>
+                        Attach passport photo, student biodata &amp; verify onboarding milestones before enrollment
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 📷 SECTION 1: Student Passport Photograph */}
+                  <div style={{
+                    background: newStudentPhoto ? '#f0fdf4' : '#f8fafc',
+                    border: `1.5px solid ${newStudentPhoto ? '#86efac' : '#cbd5e1'}`,
+                    borderRadius: '18px',
+                    padding: '1.25rem',
+                    display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
+                    alignItems: 'center',
+                    gap: '1.25rem',
+                    transition: 'all 0.2s ease'
+                  }}>
+                    {/* Photo Box Preview (Passport standard 3:4 aspect ratio) */}
+                    <div style={{
+                      width: '96px',
+                      height: '120px',
+                      borderRadius: '12px',
+                      overflow: 'hidden',
+                      background: '#ffffff',
+                      border: `2.5px solid ${newStudentPhoto ? '#10b981' : '#94a3b8'}`,
+                      boxShadow: newStudentPhoto ? '0 4px 14px rgba(16, 185, 129, 0.22)' : '0 2px 6px rgba(0,0,0,0.06)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      position: 'relative'
+                    }}>
+                      {newStudentPhoto ? (
+                        <img
+                          src={newStudentPhoto}
+                          alt="Student Passport"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: '#94a3b8', padding: '6px', textAlign: 'center' }}>
+                          <Camera size={26} />
+                          <span style={{ fontSize: '0.65rem', fontWeight: 800, lineHeight: '1.2' }}>Passport Photo</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Photo Controls */}
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', width: isMobile ? '100%' : 'auto' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                          Student Passport Photo <span style={{ color: '#ef4444' }}>*</span>
+                        </span>
+                        <span style={{
+                          fontSize: '0.7rem',
+                          fontWeight: 800,
+                          padding: '2px 8px',
+                          borderRadius: '12px',
+                          background: newStudentPhoto ? '#dcfce7' : '#fee2e2',
+                          color: newStudentPhoto ? '#15803d' : '#b91c1c',
+                          border: `1px solid ${newStudentPhoto ? '#86efac' : '#fecaca'}`
+                        }}>
+                          {newStudentPhoto ? '✓ Photo Verified' : 'Photo Required'}
+                        </span>
+                      </div>
+
+                      <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b', lineHeight: '1.3' }}>
+                        Upload official student photograph (JPG/PNG/WebP up to 5MB) or choose quick preset avatar:
+                      </p>
+
+                      <input
+                        type="file"
+                        ref={photoInputRef}
+                        onChange={handleStudentPhotoChange}
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                      />
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '2px' }}>
+                        <button
+                          type="button"
+                          onClick={() => photoInputRef.current?.click()}
+                          style={{
+                            display: 'inline-flex', alignItems: 'center', gap: '6px',
+                            padding: '6px 14px', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 700,
+                            background: '#3b82f6', color: '#ffffff', border: 'none', cursor: 'pointer',
+                            boxShadow: '0 2px 6px rgba(59, 130, 246, 0.25)'
+                          }}
+                        >
+                          <Upload size={14} /> Upload Photo
+                        </button>
+
+                        {newStudentPhoto && (
+                          <button
+                            type="button"
+                            onClick={() => setNewStudentPhoto('')}
+                            style={{
+                              padding: '6px 12px', borderRadius: '8px', fontSize: '0.78rem', fontWeight: 700,
+                              background: '#f1f5f9', color: '#ef4444', border: '1px solid #e2e8f0', cursor: 'pointer'
+                            }}
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Quick preset chips */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
+                        <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>Quick Avatars:</span>
+                        {PRESET_STUDENT_PHOTOS.map(p => (
+                          <button
+                            key={p.label}
+                            type="button"
+                            onClick={() => setNewStudentPhoto(p.url)}
+                            style={{
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              padding: '3px 8px',
+                              borderRadius: '6px',
+                              border: newStudentPhoto === p.url ? '1.5px solid #3b82f6' : '1px solid #cbd5e1',
+                              background: newStudentPhoto === p.url ? '#eff6ff' : '#ffffff',
+                              color: newStudentPhoto === p.url ? '#1d4ed8' : '#475569',
+                              cursor: 'pointer',
+                              transition: 'all 0.15s ease'
+                            }}
+                          >
+                            {p.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 👤 SECTION 2: Personal Information */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: '#f8fafc', padding: '1.25rem', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <UserPlus size={16} color="#3b82f6" />
+                      <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        Personal Biodata
+                      </span>
+                    </div>
+
+                    {/* Student Full Name */}
+                    <div>
+                      <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                        Student Full Name <span style={{ color: '#ef4444' }}>*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={newStudentName}
+                        onChange={e => setNewStudentName(e.target.value)}
+                        placeholder="e.g. M. Rajesh Kumar"
+                        style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '0.92rem', borderRadius: '10px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+                      />
+                    </div>
+
+                    {/* Gender & DOB */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                      <div>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                          Gender
+                        </label>
+                        <select
+                          value={newStudentGender}
+                          onChange={e => setNewStudentGender(e.target.value)}
+                          style={{ width: '100%', padding: '0.75rem 0.85rem', fontSize: '0.92rem', borderRadius: '10px', border: '1px solid #cbd5e1', boxSizing: 'border-box', background: '#ffffff' }}
+                        >
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                          Date of Birth (DOB)
+                        </label>
+                        <input
+                          type="date"
+                          value={newStudentDob}
+                          onChange={e => setNewStudentDob(e.target.value)}
+                          style={{ width: '100%', padding: '0.75rem 0.85rem', fontSize: '0.92rem', borderRadius: '10px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Father's / Guardian's Name */}
+                    <div>
+                      <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                        Father's / Guardian's Name
+                      </label>
+                      <input
+                        type="text"
+                        value={newStudentFatherName}
+                        onChange={e => setNewStudentFatherName(e.target.value)}
+                        placeholder="e.g. S. Murugan"
+                        style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '0.92rem', borderRadius: '10px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* 📞 SECTION 3: Contact & Communication */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: '#f8fafc', padding: '1.25rem', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Phone size={16} color="#3b82f6" />
+                      <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        Contact &amp; Address
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '1rem' }}>
+                      <div>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                          Contact Mobile Number <span style={{ color: '#ef4444' }}>*</span>
+                        </label>
+                        <div style={{ position: 'relative' }}>
+                          <input
+                            type="tel"
+                            required
+                            value={newStudentPhone}
+                            onChange={e => setNewStudentPhone(e.target.value)}
+                            placeholder="e.g. 9840123456"
+                            style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.2rem', fontSize: '0.92rem', borderRadius: '10px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+                          />
+                          <Phone size={15} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                          Email Address
+                        </label>
+                        <div style={{ position: 'relative' }}>
+                          <input
+                            type="email"
+                            value={newStudentEmail}
+                            onChange={e => setNewStudentEmail(e.target.value)}
+                            placeholder="e.g. student@gmail.com"
+                            style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.2rem', fontSize: '0.92rem', borderRadius: '10px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+                          />
+                          <Mail size={15} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                        </div>
                       </div>
                     </div>
 
                     <div>
-                      <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>
-                        Student Full Name <span style={{ color: '#ef4444' }}>*</span>
+                      <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                        Residential Address
                       </label>
-                      <input
-                        value={newStudentName}
-                        onChange={e => setNewStudentName(e.target.value)}
-                        placeholder="e.g. John Doe"
-                        style={{ width: '100%', padding: '0.8rem 1rem', fontSize: '0.95rem', borderRadius: '12px', border: '1px solid #cbd5e1' }}
+                      <textarea
+                        rows={2}
+                        value={newStudentAddress}
+                        onChange={e => setNewStudentAddress(e.target.value)}
+                        placeholder="e.g. 14, Main Road, Theni, Tamil Nadu - 625531"
+                        style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '0.92rem', borderRadius: '10px', border: '1px solid #cbd5e1', boxSizing: 'border-box', resize: 'vertical' }}
                       />
                     </div>
+                  </div>
 
-                    {/* 🛡️ 3-Step Admission Validation Checklist */}
-                    <div
-                      style={{
-                        background: allValidationsChecked ? '#f0fdf4' : '#fffbeb',
-                        border: `2px solid ${allValidationsChecked ? '#10b981' : '#f59e0b'}`,
-                        borderRadius: '16px',
-                        padding: '1.25rem',
-                        transition: 'all 0.25s ease',
-                        boxShadow: allValidationsChecked ? '0 4px 14px rgba(16, 185, 129, 0.12)' : 'none'
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 800, fontSize: '0.95rem', color: allValidationsChecked ? '#166534' : '#92400e' }}>
-                          <ShieldCheck size={18} color={allValidationsChecked ? '#16a34a' : '#d97706'} />
-                          <span>Admission Validation Checklist</span>
-                        </div>
-                        <span style={{
-                          fontSize: '0.72rem',
-                          fontWeight: 800,
-                          padding: '3px 10px',
-                          borderRadius: '20px',
-                          background: allValidationsChecked ? '#dcfce7' : '#fef3c7',
-                          color: allValidationsChecked ? '#15803d' : '#b45309',
-                          border: `1px solid ${allValidationsChecked ? '#86efac' : '#fde68a'}`
-                        }}>
-                          {allValidationsChecked ? 'ALL VERIFIED (3/3)' : `PENDING (${[valIdCard, valFeeInitiated, valInduction].filter(Boolean).length}/3)`}
-                        </span>
+                  {/* 🎓 SECTION 4: Academic & Identity Verification */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: '#f8fafc', padding: '1.25rem', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <GraduationCap size={16} color="#3b82f6" />
+                      <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        Academic &amp; Verification Documents
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '1rem' }}>
+                      <div>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                          Highest Qualification
+                        </label>
+                        <select
+                          value={newStudentQualification}
+                          onChange={e => setNewStudentQualification(e.target.value)}
+                          style={{ width: '100%', padding: '0.75rem 0.85rem', fontSize: '0.92rem', borderRadius: '10px', border: '1px solid #cbd5e1', boxSizing: 'border-box', background: '#ffffff' }}
+                        >
+                          <option value="B.Sc / B.E / B.Tech">B.Sc / B.E / B.Tech (Undergraduate)</option>
+                          <option value="BCA / MCA">BCA / MCA</option>
+                          <option value="Diploma in IT / Poly">Diploma in IT / Poly</option>
+                          <option value="12th Standard / HSC">12th Standard (HSC)</option>
+                          <option value="10th Standard / SSLC">10th Standard (SSLC)</option>
+                          <option value="Post Graduate (M.Sc/M.E)">Post Graduate (M.Sc / M.E / MBA)</option>
+                          <option value="Other">Other Qualification</option>
+                        </select>
                       </div>
 
-                      <p style={{
-                        margin: '0 0 10px 0',
-                        fontSize: '0.82rem',
-                        color: allValidationsChecked ? '#15803d' : '#78350f',
-                        lineHeight: '1.4'
+                      <div>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                          Batch Commencement Date
+                        </label>
+                        <input
+                          type="date"
+                          value={newStudentJoiningDate}
+                          onChange={e => setNewStudentJoiningDate(e.target.value)}
+                          style={{ width: '100%', padding: '0.75rem 0.85rem', fontSize: '0.92rem', borderRadius: '10px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '1rem' }}>
+                      <div>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                          ID Proof Document
+                        </label>
+                        <select
+                          value={newStudentIdProofType}
+                          onChange={e => setNewStudentIdProofType(e.target.value)}
+                          style={{ width: '100%', padding: '0.75rem 0.85rem', fontSize: '0.92rem', borderRadius: '10px', border: '1px solid #cbd5e1', boxSizing: 'border-box', background: '#ffffff' }}
+                        >
+                          <option value="Aadhaar Card">Aadhaar Card</option>
+                          <option value="PAN Card">PAN Card</option>
+                          <option value="College ID Card">College ID Card</option>
+                          <option value="Driving License">Driving License</option>
+                          <option value="Voter ID">Voter ID</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                          ID Proof Number
+                        </label>
+                        <input
+                          type="text"
+                          value={newStudentIdProofNumber}
+                          onChange={e => setNewStudentIdProofNumber(e.target.value)}
+                          placeholder="e.g. 7842-1209-4531"
+                          style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '0.92rem', borderRadius: '10px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 🛡️ SECTION 5: 3-Step Admission Validation Checklist */}
+                  <div
+                    style={{
+                      background: allValidationsChecked ? '#f0fdf4' : '#fffbeb',
+                      border: `2px solid ${allValidationsChecked ? '#10b981' : '#f59e0b'}`,
+                      borderRadius: '16px',
+                      padding: '1.25rem',
+                      transition: 'all 0.25s ease',
+                      boxShadow: allValidationsChecked ? '0 4px 14px rgba(16, 185, 129, 0.12)' : 'none'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 800, fontSize: '0.95rem', color: allValidationsChecked ? '#166534' : '#92400e' }}>
+                        <ShieldCheck size={18} color={allValidationsChecked ? '#16a34a' : '#d97706'} />
+                        <span>Admission Validation Checklist</span>
+                      </div>
+                      <span style={{
+                        fontSize: '0.72rem',
+                        fontWeight: 800,
+                        padding: '3px 10px',
+                        borderRadius: '20px',
+                        background: allValidationsChecked ? '#dcfce7' : '#fef3c7',
+                        color: allValidationsChecked ? '#15803d' : '#b45309',
+                        border: `1px solid ${allValidationsChecked ? '#86efac' : '#fde68a'}`
                       }}>
-                        {allValidationsChecked
-                          ? '✅ All 3 onboarding milestones verified! Course selection unlocked on the right.'
-                          : '⏳ Tick all 3 validation checkboxes below to unlock course pathways on the right.'}
-                      </p>
+                        {allValidationsChecked ? 'ALL VERIFIED (3/3)' : `PENDING (${[valIdCard, valFeeInitiated, valInduction].filter(Boolean).length}/3)`}
+                      </span>
+                    </div>
 
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {/* Checkbox 1: ID Card */}
-                        <label
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            padding: '10px 14px',
-                            borderRadius: '10px',
-                            background: valIdCard ? '#ecfdf5' : '#ffffff',
-                            border: `1.5px solid ${valIdCard ? '#10b981' : '#e2e8f0'}`,
-                            cursor: 'pointer',
-                            transition: 'all 0.15s ease'
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={valIdCard}
-                            onChange={(e) => setValIdCard(e.target.checked)}
-                            style={{ width: '18px', height: '18px', accentColor: '#10b981', cursor: 'pointer' }}
-                          />
-                          <CreditCard size={18} color={valIdCard ? '#10b981' : '#64748b'} />
-                          <div style={{ flex: 1, userSelect: 'none' }}>
-                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: valIdCard ? '#065f46' : 'var(--text-primary)' }}>
-                              ID Card Issued
-                            </div>
-                            <div style={{ fontSize: '0.76rem', color: valIdCard ? '#047857' : 'var(--text-secondary)' }}>
-                              Student identity card created, verified, and issued
-                            </div>
+                    <p style={{
+                      margin: '0 0 10px 0',
+                      fontSize: '0.82rem',
+                      color: allValidationsChecked ? '#15803d' : '#78350f',
+                      lineHeight: '1.4'
+                    }}>
+                      {allValidationsChecked
+                        ? '✅ All 3 onboarding milestones verified! Course selection unlocked on the right.'
+                        : '⏳ Tick all 3 validation checkboxes below to unlock course pathways on the right.'}
+                    </p>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {/* Checkbox 1: ID Card */}
+                      <label
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          padding: '10px 14px',
+                          borderRadius: '10px',
+                          background: valIdCard ? '#ecfdf5' : '#ffffff',
+                          border: `1.5px solid ${valIdCard ? '#10b981' : '#e2e8f0'}`,
+                          cursor: 'pointer',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={valIdCard}
+                          onChange={(e) => setValIdCard(e.target.checked)}
+                          style={{ width: '18px', height: '18px', accentColor: '#10b981', cursor: 'pointer' }}
+                        />
+                        <CreditCard size={18} color={valIdCard ? '#10b981' : '#64748b'} />
+                        <div style={{ flex: 1, userSelect: 'none' }}>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: valIdCard ? '#065f46' : 'var(--text-primary)' }}>
+                            ID Card Issued
                           </div>
-                        </label>
-
-                        {/* Checkbox 2: Fee Initiated */}
-                        <label
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            padding: '10px 14px',
-                            borderRadius: '10px',
-                            background: valFeeInitiated ? '#ecfdf5' : '#ffffff',
-                            border: `1.5px solid ${valFeeInitiated ? '#10b981' : '#e2e8f0'}`,
-                            cursor: 'pointer',
-                            transition: 'all 0.15s ease'
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={valFeeInitiated}
-                            onChange={(e) => setValFeeInitiated(e.target.checked)}
-                            style={{ width: '18px', height: '18px', accentColor: '#10b981', cursor: 'pointer' }}
-                          />
-                          <Receipt size={18} color={valFeeInitiated ? '#10b981' : '#64748b'} />
-                          <div style={{ flex: 1, userSelect: 'none' }}>
-                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: valFeeInitiated ? '#065f46' : 'var(--text-primary)' }}>
-                              Fee Initiated
-                            </div>
-                            <div style={{ fontSize: '0.76rem', color: valFeeInitiated ? '#047857' : 'var(--text-secondary)' }}>
-                              Enrollment fee or initial installment payment initiated
-                            </div>
+                          <div style={{ fontSize: '0.76rem', color: valIdCard ? '#047857' : 'var(--text-secondary)' }}>
+                            Student identity card created, photo verified, and issued
                           </div>
-                        </label>
+                        </div>
+                      </label>
 
-                        {/* Checkbox 3: Induction Session */}
-                        <label
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            padding: '10px 14px',
-                            borderRadius: '10px',
-                            background: valInduction ? '#ecfdf5' : '#ffffff',
-                            border: `1.5px solid ${valInduction ? '#10b981' : '#e2e8f0'}`,
-                            cursor: 'pointer',
-                            transition: 'all 0.15s ease'
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={valInduction}
-                            onChange={(e) => setValInduction(e.target.checked)}
-                            style={{ width: '18px', height: '18px', accentColor: '#10b981', cursor: 'pointer' }}
-                          />
-                          <BookOpen size={18} color={valInduction ? '#10b981' : '#64748b'} />
-                          <div style={{ flex: 1, userSelect: 'none' }}>
-                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: valInduction ? '#065f46' : 'var(--text-primary)' }}>
-                              Induction Session Completed
-                            </div>
-                            <div style={{ fontSize: '0.76rem', color: valInduction ? '#047857' : 'var(--text-secondary)' }}>
-                              Student attended orientation &amp; platform induction session
-                            </div>
+                      {/* Checkbox 2: Fee Initiated */}
+                      <label
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          padding: '10px 14px',
+                          borderRadius: '10px',
+                          background: valFeeInitiated ? '#ecfdf5' : '#ffffff',
+                          border: `1.5px solid ${valFeeInitiated ? '#10b981' : '#e2e8f0'}`,
+                          cursor: 'pointer',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={valFeeInitiated}
+                          onChange={(e) => setValFeeInitiated(e.target.checked)}
+                          style={{ width: '18px', height: '18px', accentColor: '#10b981', cursor: 'pointer' }}
+                        />
+                        <Receipt size={18} color={valFeeInitiated ? '#10b981' : '#64748b'} />
+                        <div style={{ flex: 1, userSelect: 'none' }}>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: valFeeInitiated ? '#065f46' : 'var(--text-primary)' }}>
+                            Fee Initiated
                           </div>
-                        </label>
-                      </div>
+                          <div style={{ fontSize: '0.76rem', color: valFeeInitiated ? '#047857' : 'var(--text-secondary)' }}>
+                            Enrollment fee or initial installment payment initiated
+                          </div>
+                        </div>
+                      </label>
 
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const nextState = !allValidationsChecked;
-                            setValIdCard(nextState);
-                            setValFeeInitiated(nextState);
-                            setValInduction(nextState);
-                          }}
-                          style={{
-                            fontSize: '0.78rem',
-                            fontWeight: 700,
-                            color: allValidationsChecked ? '#059669' : '#2563eb',
-                            background: 'transparent',
-                            border: 'none',
-                            cursor: 'pointer',
-                            textDecoration: 'underline',
-                            padding: '2px 4px'
-                          }}
-                        >
-                          {allValidationsChecked ? 'Deselect All Validations' : '✓ Tick All 3 Validations'}
-                        </button>
-                      </div>
+                      {/* Checkbox 3: Induction Session */}
+                      <label
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          padding: '10px 14px',
+                          borderRadius: '10px',
+                          background: valInduction ? '#ecfdf5' : '#ffffff',
+                          border: `1.5px solid ${valInduction ? '#10b981' : '#e2e8f0'}`,
+                          cursor: 'pointer',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={valInduction}
+                          onChange={(e) => setValInduction(e.target.checked)}
+                          style={{ width: '18px', height: '18px', accentColor: '#10b981', cursor: 'pointer' }}
+                        />
+                        <BookOpen size={18} color={valInduction ? '#10b981' : '#64748b'} />
+                        <div style={{ flex: 1, userSelect: 'none' }}>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: valInduction ? '#065f46' : 'var(--text-primary)' }}>
+                            Induction Session Completed
+                          </div>
+                          <div style={{ fontSize: '0.76rem', color: valInduction ? '#047857' : 'var(--text-secondary)' }}>
+                            Student attended orientation &amp; platform induction session
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const nextState = !allValidationsChecked;
+                          setValIdCard(nextState);
+                          setValFeeInitiated(nextState);
+                          setValInduction(nextState);
+                        }}
+                        style={{
+                          fontSize: '0.78rem',
+                          fontWeight: 700,
+                          color: allValidationsChecked ? '#059669' : '#2563eb',
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          textDecoration: 'underline',
+                          padding: '2px 4px'
+                        }}
+                      >
+                        {allValidationsChecked ? 'Deselect All Validations' : '✓ Tick All 3 Validations'}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -3936,6 +4338,45 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   </div>
 
                   <div>
+                    {/* Live Admission Preview Badge */}
+                    <div style={{
+                      background: '#f8fafc',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '14px',
+                      padding: '10px 14px',
+                      marginBottom: '1rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px'
+                    }}>
+                      <div style={{
+                        width: 44,
+                        height: 52,
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                        background: '#ffffff',
+                        border: `1.5px solid ${newStudentPhoto ? '#10b981' : '#cbd5e1'}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0
+                      }}>
+                        {newStudentPhoto ? (
+                          <img src={newStudentPhoto} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                          <Camera size={18} color="#94a3b8" />
+                        )}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {newStudentName.trim() || 'Student Name'}
+                        </div>
+                        <div style={{ fontSize: '0.74rem', color: '#64748b' }}>
+                          {newStudentPhoto ? '✓ Passport Photo Attached' : '⚠️ Photo Missing'} • {assignedCourse ? assignedCourse.split(',').length : 0} track(s)
+                        </div>
+                      </div>
+                    </div>
+
                     {adminError && <div style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #ef4444', marginBottom: '0.75rem' }}>⚠️ {adminError}</div>}
                     {successMsg && <div style={{ color: '#10b981', fontSize: '0.85rem', fontWeight: 700, background: 'rgba(16, 185, 129, 0.05)', padding: '0.6rem 1rem', borderRadius: '10px', borderLeft: '3px solid #10b981', marginBottom: '0.75rem' }}>{successMsg}</div>}
 
@@ -3945,7 +4386,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                       disabled={!allValidationsChecked}
                       style={{
                         width: '100%',
-                        padding: '0.9rem',
+                        padding: '0.95rem',
                         borderRadius: '12px',
                         opacity: allValidationsChecked ? 1 : 0.65,
                         cursor: allValidationsChecked ? 'pointer' : 'not-allowed',
@@ -3954,13 +4395,14 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                         justifyContent: 'center',
                         gap: '8px',
                         fontWeight: 800,
-                        fontSize: '0.95rem'
+                        fontSize: '0.95rem',
+                        boxShadow: allValidationsChecked ? '0 4px 14px rgba(59, 130, 246, 0.35)' : 'none'
                       }}
                     >
                       {allValidationsChecked ? (
                         <>
                           <CheckCircle size={18} />
-                          Generate Student Access Code &amp; Enroll
+                          Complete Admission &amp; Enroll Student
                         </>
                       ) : (
                         <>
@@ -4048,6 +4490,221 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                         <div style={{ fontSize: '0.78rem', color: '#64748b' }}>Access the entire course catalog, demo environments, and code labs.</div>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 🎓 ADMISSION CONFIRMATION & CREDENTIALS RECEIPT MODAL */}
+            {newlyEnrolledResult && (
+              <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'rgba(15, 23, 42, 0.75)',
+                backdropFilter: 'blur(5px)',
+                zIndex: 9999,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '1rem'
+              }}>
+                <div style={{
+                  background: '#ffffff',
+                  borderRadius: '24px',
+                  maxWidth: '520px',
+                  width: '100%',
+                  padding: '2rem',
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  position: 'relative',
+                  maxHeight: '90vh',
+                  overflowY: 'auto'
+                }}>
+                  {/* Close button */}
+                  <button
+                    onClick={() => setNewlyEnrolledResult(null)}
+                    style={{
+                      position: 'absolute',
+                      top: '16px',
+                      right: '16px',
+                      background: '#f1f5f9',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: '32px',
+                      height: '32px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#64748b'
+                    }}
+                  >
+                    <X size={18} />
+                  </button>
+
+                  {/* Verified Badge */}
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '4px 14px',
+                    borderRadius: '20px',
+                    background: '#dcfce7',
+                    color: '#15803d',
+                    fontWeight: 800,
+                    fontSize: '0.78rem',
+                    marginBottom: '1rem',
+                    border: '1px solid #86efac'
+                  }}>
+                    <CheckCircle size={15} color="#16a34a" /> Admission Form Verified &amp; Student Enrolled
+                  </div>
+
+                  {/* Student Passport Photo */}
+                  <div style={{
+                    width: '96px',
+                    height: '120px',
+                    borderRadius: '14px',
+                    overflow: 'hidden',
+                    border: '3px solid #3b82f6',
+                    boxShadow: '0 8px 20px rgba(59, 130, 246, 0.3)',
+                    marginBottom: '1rem',
+                    background: '#f8fafc',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}>
+                    {newlyEnrolledResult.photoUrl ? (
+                      <img
+                        src={newlyEnrolledResult.photoUrl}
+                        alt={newlyEnrolledResult.name}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#3b82f6' }}>
+                        {newlyEnrolledResult.name?.substring(0, 2).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+
+                  <h3 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#0f172a', margin: '0 0 4px 0' }}>
+                    {newlyEnrolledResult.name}
+                  </h3>
+                  <p style={{ fontSize: '0.84rem', color: '#64748b', margin: '0 0 1.25rem 0' }}>
+                    Alpha Fly Computer Education • Student Admission Confirmed
+                  </p>
+
+                  {/* Access Code Box */}
+                  <div style={{
+                    width: '100%',
+                    background: '#f8fafc',
+                    border: '1.5px dashed #3b82f6',
+                    borderRadius: '16px',
+                    padding: '1rem',
+                    marginBottom: '1.25rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '10px',
+                    boxSizing: 'border-box'
+                  }}>
+                    <div style={{ textAlign: 'left' }}>
+                      <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        Student Access Key Code
+                      </span>
+                      <div style={{ fontSize: '1.35rem', fontWeight: 900, color: '#1d4ed8', fontFamily: 'monospace' }}>
+                        {newlyEnrolledResult.accessCode}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(newlyEnrolledResult.accessCode);
+                        alert(`Copied Student Access Code: ${newlyEnrolledResult.accessCode}`);
+                      }}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        background: '#3b82f6',
+                        color: '#ffffff',
+                        border: 'none',
+                        padding: '8px 14px',
+                        borderRadius: '10px',
+                        fontSize: '0.82rem',
+                        fontWeight: 800,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <Copy size={15} /> Copy
+                    </button>
+                  </div>
+
+                  {/* Details Breakdown */}
+                  <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.82rem', textAlign: 'left', background: '#f8fafc', padding: '0.9rem', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '1.25rem', boxSizing: 'border-box' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#64748b' }}>Contact Phone:</span>
+                      <span style={{ fontWeight: 700, color: '#1e293b' }}>{newlyEnrolledResult.contactNumber || newlyEnrolledResult.phone || '--'}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#64748b' }}>Commencement Date:</span>
+                      <span style={{ fontWeight: 700, color: '#1e293b' }}>{newlyEnrolledResult.joiningDate || new Date().toISOString().split('T')[0]}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#64748b' }}>Onboarding Milestones:</span>
+                      <span style={{ fontWeight: 800, color: '#15803d' }}>3/3 Verified (ID Card, Fee, Induction)</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#64748b' }}>Course Pathways:</span>
+                      <span style={{ fontWeight: 700, color: '#2563eb' }}>{newlyEnrolledResult.enrolledCourse?.split(',').length || 1} Track(s) Allocated</span>
+                    </div>
+                  </div>
+
+                  {/* Modal Action Buttons */}
+                  <div style={{ display: 'flex', gap: '10px', width: '100%', boxSizing: 'border-box' }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNewlyEnrolledResult(null);
+                        setActiveTab('database');
+                      }}
+                      style={{
+                        flex: 1,
+                        padding: '0.85rem',
+                        borderRadius: '12px',
+                        background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                        color: '#ffffff',
+                        fontWeight: 800,
+                        fontSize: '0.9rem',
+                        border: 'none',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                      }}
+                    >
+                      View in Student Database
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setNewlyEnrolledResult(null)}
+                      style={{
+                        padding: '0.85rem 1.25rem',
+                        borderRadius: '12px',
+                        background: '#f1f5f9',
+                        color: '#475569',
+                        fontWeight: 700,
+                        fontSize: '0.88rem',
+                        border: '1px solid #cbd5e1',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Enroll Another
+                    </button>
                   </div>
                 </div>
               </div>
@@ -4271,14 +4928,26 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                               <tr key={s._id || s.id} style={{ color: 'var(--text-primary)', borderBottom: '1px solid var(--surface-border)', transition: 'background 0.2s' }}>
                                 <td style={{ padding: '1rem 1.25rem', fontWeight: 800 }}>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <div style={{
-                                      width: 34, height: 34, borderRadius: '50%',
-                                      background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-                                      color: '#ffffff', fontWeight: 900, fontSize: '0.82rem',
-                                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
-                                    }}>
-                                      {s.name ? s.name.substring(0, 2).toUpperCase() : 'ST'}
-                                    </div>
+                                    {s.photoUrl ? (
+                                      <img
+                                        src={s.photoUrl}
+                                        alt={s.name}
+                                        style={{
+                                          width: 36, height: 36, borderRadius: '50%',
+                                          objectFit: 'cover', border: '2px solid #3b82f6',
+                                          flexShrink: 0, boxShadow: '0 2px 6px rgba(59, 130, 246, 0.25)'
+                                        }}
+                                      />
+                                    ) : (
+                                      <div style={{
+                                        width: 34, height: 34, borderRadius: '50%',
+                                        background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                                        color: '#ffffff', fontWeight: 900, fontSize: '0.82rem',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                                      }}>
+                                        {s.name ? s.name.substring(0, 2).toUpperCase() : 'ST'}
+                                      </div>
+                                    )}
                                     <button
                                       type="button"
                                       onClick={() => setViewingProgressStudent(s)}
@@ -4561,14 +5230,26 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                               {/* Student Header */}
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                  <div style={{
-                                    width: 40, height: 40, borderRadius: '50%',
-                                    background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-                                    color: '#ffffff', fontWeight: 900, fontSize: '0.9rem',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
-                                  }}>
-                                    {s.name ? s.name.substring(0, 2).toUpperCase() : 'ST'}
-                                  </div>
+                                  {s.photoUrl ? (
+                                    <img
+                                      src={s.photoUrl}
+                                      alt={s.name}
+                                      style={{
+                                        width: 40, height: 40, borderRadius: '50%',
+                                        objectFit: 'cover', border: '2px solid #3b82f6',
+                                        flexShrink: 0, boxShadow: '0 2px 6px rgba(59, 130, 246, 0.25)'
+                                      }}
+                                    />
+                                  ) : (
+                                    <div style={{
+                                      width: 40, height: 40, borderRadius: '50%',
+                                      background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                                      color: '#ffffff', fontWeight: 900, fontSize: '0.9rem',
+                                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                                    }}>
+                                      {s.name ? s.name.substring(0, 2).toUpperCase() : 'ST'}
+                                    </div>
+                                  )}
                                   <div>
                                     <div style={{ fontWeight: 800, fontSize: '1rem', color: '#0f172a' }}>
                                       {s.name}
@@ -7126,12 +7807,24 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-                  <div style={{
-                    width: 38, height: 38, borderRadius: '50%', background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
-                    color: '#ffffff', fontWeight: 900, fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                  }}>
-                    {viewingProgressStudent.name ? viewingProgressStudent.name.substring(0, 2).toUpperCase() : 'ST'}
-                  </div>
+                  {viewingProgressStudent.photoUrl ? (
+                    <img
+                      src={viewingProgressStudent.photoUrl}
+                      alt={viewingProgressStudent.name}
+                      style={{
+                        width: 40, height: 40, borderRadius: '50%',
+                        objectFit: 'cover', border: '2px solid #60a5fa',
+                        boxShadow: '0 2px 8px rgba(96, 165, 250, 0.4)', flexShrink: 0
+                      }}
+                    />
+                  ) : (
+                    <div style={{
+                      width: 38, height: 38, borderRadius: '50%', background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
+                      color: '#ffffff', fontWeight: 900, fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                    }}>
+                      {viewingProgressStudent.name ? viewingProgressStudent.name.substring(0, 2).toUpperCase() : 'ST'}
+                    </div>
+                  )}
                   <h3 style={{ fontSize: '1.3rem', fontWeight: 900, margin: 0, fontFamily: 'system-ui', color: '#ffffff' }}>
                     {viewingProgressStudent.name} — Course Progress Audit
                   </h3>

@@ -110,6 +110,17 @@ const studentSchema = new mongoose.Schema({
   accessCode: { type: String, required: true, unique: true },
   deviceId: { type: String, default: null },
   studentId: { type: String, default: '' },
+  photoUrl: { type: String, default: '' },
+  contactNumber: { type: String, default: '' },
+  email: { type: String, default: '' },
+  gender: { type: String, default: '' },
+  dob: { type: String, default: '' },
+  fatherName: { type: String, default: '' },
+  address: { type: String, default: '' },
+  educationQualification: { type: String, default: '' },
+  idProofType: { type: String, default: '' },
+  idProofNumber: { type: String, default: '' },
+  admissionFormData: { type: mongoose.Schema.Types.Mixed, default: () => ({}) },
   admissionStatus: { type: String, enum: ['Pending', 'Approved', 'Suspended', 'None'], default: 'Approved' },
   isCourseActivated: { type: Boolean, default: true },
   activatedCourses: { type: [String], default: [] },
@@ -462,7 +473,20 @@ app.post('/api/students', async (req, res) => {
     isCourseActivated,
     idCardIssued,
     feeInitiated,
-    inductionCompleted
+    inductionCompleted,
+    photoUrl = '',
+    contactNumber = '',
+    phone = '',
+    email = '',
+    gender = '',
+    dob = '',
+    fatherName = '',
+    address = '',
+    educationQualification = '',
+    idProofType = '',
+    idProofNumber = '',
+    joiningDate = '',
+    admissionFormData = {}
   } = req.body;
 
   if (!name || !name.trim()) {
@@ -475,39 +499,59 @@ app.post('/api/students', async (req, res) => {
   const resolvedAdmissionStatus = isVerified ? 'Approved' : 'Pending';
   const resolvedCourseActivated = isVerified;
   const courseAssigned = enrolledCourse && enrolledCourse.trim() ? enrolledCourse.trim() : 'html_css';
+  const resolvedContact = (contactNumber || phone || '').trim();
 
   // Generate a random numeric access code
   const accessCode = 'STU-' + Math.floor(1000 + Math.random() * 9000);
 
+  const studentPayload = {
+    name: name.trim(),
+    enrolledCourse: courseAssigned,
+    accessCode,
+    deviceId: null,
+    photoUrl: photoUrl || '',
+    contactNumber: resolvedContact,
+    email: (email || '').trim(),
+    gender: gender || '',
+    dob: dob || '',
+    fatherName: (fatherName || '').trim(),
+    address: (address || '').trim(),
+    educationQualification: educationQualification || '',
+    idProofType: idProofType || '',
+    idProofNumber: (idProofNumber || '').trim(),
+    joiningDate: joiningDate || '',
+    admissionFormData: admissionFormData && Object.keys(admissionFormData).length > 0 ? admissionFormData : {
+      fullName: name.trim(),
+      photoUrl: photoUrl || '',
+      contactNumber: resolvedContact,
+      email: (email || '').trim(),
+      gender: gender || '',
+      dob: dob || '',
+      fatherName: (fatherName || '').trim(),
+      address: (address || '').trim(),
+      educationQualification: educationQualification || '',
+      idProofType: idProofType || '',
+      idProofNumber: (idProofNumber || '').trim(),
+      submittedAt: new Date()
+    },
+    admissionStatus: resolvedAdmissionStatus,
+    isCourseActivated: resolvedCourseActivated,
+    idCardIssued: Boolean(idCardIssued),
+    feeInitiated: Boolean(feeInitiated),
+    inductionCompleted: Boolean(inductionCompleted)
+  };
+
   try {
     const isDbConnected = await checkDbConnection();
     if (isDbConnected) {
-      const newStudent = new Student({
-        name: name.trim(),
-        enrolledCourse: courseAssigned,
-        accessCode,
-        deviceId: null,
-        admissionStatus: resolvedAdmissionStatus,
-        isCourseActivated: resolvedCourseActivated,
-        idCardIssued: Boolean(idCardIssued),
-        feeInitiated: Boolean(feeInitiated),
-        inductionCompleted: Boolean(inductionCompleted)
-      });
+      const newStudent = new Student(studentPayload);
       await newStudent.save();
       return res.json(newStudent);
     } else {
       const students = getLocalStudents();
       const newStudent = {
         id: Date.now().toString(),
-        name: name.trim(),
-        enrolledCourse: courseAssigned,
-        accessCode,
-        deviceId: null,
-        admissionStatus: resolvedAdmissionStatus,
-        isCourseActivated: resolvedCourseActivated,
-        idCardIssued: Boolean(idCardIssued),
-        feeInitiated: Boolean(feeInitiated),
-        inductionCompleted: Boolean(inductionCompleted),
+        ...studentPayload,
         completedLessons: [],
         tasks: []
       };
@@ -1126,6 +1170,19 @@ app.put('/api/students/:id', async (req, res) => {
     idCardIssued,
     feeInitiated,
     inductionCompleted,
+    photoUrl,
+    contactNumber,
+    phone,
+    email,
+    gender,
+    dob,
+    fatherName,
+    address,
+    educationQualification,
+    idProofType,
+    idProofNumber,
+    joiningDate,
+    admissionFormData,
     logicalThinkingScore,
     logicalThinkingFeedback,
     logicalThinkingGrade
@@ -1135,6 +1192,19 @@ app.put('/api/students/:id', async (req, res) => {
   if (name && name.trim()) updateFields.name = name.trim();
   if (accessCode && accessCode.trim()) updateFields.accessCode = accessCode.trim();
   if (enrolledCourse && enrolledCourse.trim()) updateFields.enrolledCourse = enrolledCourse.trim();
+  if (photoUrl !== undefined) updateFields.photoUrl = photoUrl;
+  if (contactNumber !== undefined) updateFields.contactNumber = contactNumber;
+  if (phone !== undefined && contactNumber === undefined) updateFields.contactNumber = phone;
+  if (email !== undefined) updateFields.email = email;
+  if (gender !== undefined) updateFields.gender = gender;
+  if (dob !== undefined) updateFields.dob = dob;
+  if (fatherName !== undefined) updateFields.fatherName = fatherName;
+  if (address !== undefined) updateFields.address = address;
+  if (educationQualification !== undefined) updateFields.educationQualification = educationQualification;
+  if (idProofType !== undefined) updateFields.idProofType = idProofType;
+  if (idProofNumber !== undefined) updateFields.idProofNumber = idProofNumber;
+  if (joiningDate !== undefined) updateFields.joiningDate = joiningDate;
+  if (admissionFormData !== undefined) updateFields.admissionFormData = admissionFormData;
   if (idCardIssued !== undefined) updateFields.idCardIssued = Boolean(idCardIssued);
   if (feeInitiated !== undefined) updateFields.feeInitiated = Boolean(feeInitiated);
   if (inductionCompleted !== undefined) updateFields.inductionCompleted = Boolean(inductionCompleted);
