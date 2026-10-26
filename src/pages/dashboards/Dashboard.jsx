@@ -1080,7 +1080,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
   // HTML & CSS Course Validation State
   const [htmlCssValidations, setHtmlCssValidations] = useState(() => getAssignmentValidations());
-  const [reviewFilter, setReviewFilter] = useState('all'); // 'all' | 'pending' | 'approved' | 'rejected' | 'html_css'
+  const [reviewFilter, setReviewFilter] = useState('all'); // 'all' | 'pending' | 'approved' | 'rejected' | 'spoko' | 'logical_reasoning'
   const [reviewSearch, setReviewSearch] = useState('');
 
   useEffect(() => {
@@ -1093,7 +1093,61 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     };
   }, []);
 
-  // 1) HTML & CSS Course Day Submissions
+  // 1) Spoko Track Score Submissions (AI Mock Interview evaluations, STAR ratings, Spoko English tasks)
+  const spokoMockSubmissions = students.flatMap(s => {
+    const mocks = getStudentMockInterviews(s);
+    return mocks.map((m, idx) => {
+      const dayInfo = HR_MOCK_DAYS.find(d => Number(d.day) === Number(m.day)) || { title: `Day ${m.day} Interview` };
+      return {
+        _id: `spoko_mock_${s._id || s.id}_d${m.day || idx}`,
+        id: `spoko_mock_${s._id || s.id}_d${m.day || idx}`,
+        isSpoko: true,
+        isLogicalReasoning: false,
+        trackType: 'spoko',
+        studentName: s.name,
+        studentId: s._id || s.id,
+        accessCode: s.accessCode,
+        moduleId: `spoko_hr_day${m.day}`,
+        moduleTitle: `Spoko HR Mock Interview Day ${m.day}: ${dayInfo.title}`,
+        tabId: 'mock_interview',
+        score: m.totalScore || 0,
+        total: 100,
+        grade: m.grade || 'B',
+        submittedAt: m.completedAt || s.updatedAt || 'Recently',
+        status: 'Approved',
+        taskText: `[AI Mock Interview Evaluation]: Score: ${m.totalScore || 0}/100 • Grade: ${m.grade || 'B'}\nEvaluation Rubric: STAR Method (Situation, Task, Action, Result)\n${m.overallFeedback ? `Feedback: ${m.overallFeedback}` : 'Completed with 1-on-1 AI interviewer.'}`,
+        staffFeedback: m.overallFeedback || 'Evaluated by AI with STAR Scoring Rubric'
+      };
+    });
+  });
+
+  // 2) Logical Reasoning Score Submissions (Benchmark assessments & daily reasoning tests)
+  const logicalReasoningScoreSubmissions = students.map(s => {
+    const lt = getStudentLogicalThinkingScore(s);
+    if (!lt || !lt.isEvaluated) return null;
+    return {
+      _id: `logical_score_${s._id || s.id}`,
+      id: `logical_score_${s._id || s.id}`,
+      isSpoko: false,
+      isLogicalReasoning: true,
+      trackType: 'logical_reasoning',
+      studentName: s.name,
+      studentId: s._id || s.id,
+      accessCode: s.accessCode,
+      moduleId: 'spoko_reasoning_benchmark',
+      moduleTitle: 'Logical Thinking & Analytical Reasoning Assessment',
+      tabId: 'logical_reasoning',
+      score: lt.score,
+      total: lt.total || 100,
+      grade: lt.grade || 'A',
+      submittedAt: lt.updatedAt || s.updatedAt || 'Recently',
+      status: 'Approved',
+      taskText: `[Logical Reasoning Benchmark]: Score: ${lt.score}/100 • Grade: ${lt.grade} • Status: ${lt.status}\nCurriculum: Pattern Recognition, Deductive Syllogisms, Epistemic Boundary Testing & Critical Fallacies.\n${lt.feedback ? `Evaluator Feedback: ${lt.feedback}` : ''}`,
+      staffFeedback: lt.feedback || 'Benchmarked across Deductive Logic, Pattern Series, and Fallacy Audits.'
+    };
+  }).filter(Boolean);
+
+  // 3) HTML & CSS Course Day Submissions
   const htmlCssSubmissions = Object.keys(htmlCssValidations).map(modId => {
     const rec = htmlCssValidations[modId] || {};
     const cfg = HTML_CSS_ASSIGNMENTS_CONFIG[modId] || {};
@@ -1104,6 +1158,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       _id: `html_css_${modId}`,
       id: `html_css_${modId}`,
       isHtmlCss: true,
+      isSpoko: false,
+      isLogicalReasoning: false,
       moduleId: modId,
       moduleTitle: cfg.dayTitle || modId,
       tabId: 'assignment',
@@ -1122,17 +1178,22 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     };
   }).filter(Boolean);
 
-  // 2) Topic Homework Submissions from Students Backend
+  // 4) Topic Homework Submissions from Students Backend
   const topicSubmissions = students.flatMap(s =>
     (s.tasks || []).map((t, idx) => {
       const rawStatus = (t.status || 'Pending').toLowerCase();
       const normalizedStatus = rawStatus === 'approved' ? 'Approved' : rawStatus === 'rejected' ? 'Rejected' : 'Pending';
       const taskId = t._id || t.id || `task_${s._id || s.id}_${t.moduleId || idx}`;
+      const modIdLower = (t.moduleId || '').toLowerCase();
+      const isSpoko = modIdLower.includes('spoko');
+      const isReasoning = modIdLower.includes('reasoning') || modIdLower.includes('logical');
       return {
         ...t,
         _id: taskId,
         id: taskId,
         isHtmlCss: false,
+        isSpoko,
+        isLogicalReasoning: isReasoning,
         studentName: s.name,
         studentId: s._id || s.id,
         accessCode: s.accessCode,
@@ -1145,11 +1206,19 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   );
 
   // Combined Chronological Submissions
-  const allSubmissions = [...htmlCssSubmissions, ...topicSubmissions].sort((a, b) => {
+  const allSubmissions = [
+    ...spokoMockSubmissions,
+    ...logicalReasoningScoreSubmissions,
+    ...htmlCssSubmissions,
+    ...topicSubmissions
+  ].sort((a, b) => {
     const da = new Date(a.submittedAt).getTime() || 0;
     const db = new Date(b.submittedAt).getTime() || 0;
     return db - da;
   });
+
+  const spokoSubmissions = allSubmissions.filter(s => s.isSpoko || s.trackType === 'spoko' || (s.moduleId || '').toLowerCase().includes('spoko'));
+  const logicalReasoningSubmissions = allSubmissions.filter(s => s.isLogicalReasoning || s.trackType === 'logical_reasoning' || (s.moduleId || '').toLowerCase().includes('reasoning') || (s.moduleId || '').toLowerCase().includes('logical'));
 
   const pendingSubmissions = allSubmissions.filter(s => (s.status || '').toLowerCase() === 'pending');
   const pendingCount = pendingSubmissions.length;
@@ -5154,6 +5223,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 if (reviewFilter === 'pending' && sStatus !== 'pending') return false;
                 if (reviewFilter === 'approved' && sStatus !== 'approved') return false;
                 if (reviewFilter === 'rejected' && sStatus !== 'rejected') return false;
+                if (reviewFilter === 'spoko' && !(s.isSpoko || s.trackType === 'spoko' || (s.moduleId || '').toLowerCase().includes('spoko'))) return false;
+                if (reviewFilter === 'logical_reasoning' && !(s.isLogicalReasoning || s.trackType === 'logical_reasoning' || (s.moduleId || '').toLowerCase().includes('reasoning') || (s.moduleId || '').toLowerCase().includes('logical'))) return false;
                 if (reviewFilter === 'html_css' && !s.isHtmlCss) return false;
 
                 if (reviewSearch.trim()) {
@@ -5233,7 +5304,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                       </div>
                     </div>
 
-                    {/* Card 4: HTML & CSS */}
+                    {/* Card 4: Spoko Submissions */}
                     <div style={{
                       background: '#ffffff',
                       border: '1px solid var(--surface-border)',
@@ -5245,11 +5316,31 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                       justifyContent: 'space-between'
                     }}>
                       <div>
-                        <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>HTML &amp; CSS Track</span>
-                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#7e22ce', marginTop: '4px' }}>{htmlCssSubmissions.length}</div>
+                        <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Spoko Scores</span>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#4f46e5', marginTop: '4px' }}>{spokoSubmissions.length}</div>
                       </div>
-                      <div style={{ width: 44, height: 44, borderRadius: '14px', background: 'rgba(147, 51, 234, 0.1)', color: '#9333ea', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Code size={22} />
+                      <div style={{ width: 44, height: 44, borderRadius: '14px', background: 'rgba(79, 70, 229, 0.1)', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <MessageSquare size={22} />
+                      </div>
+                    </div>
+
+                    {/* Card 5: Logical Reasoning Submissions */}
+                    <div style={{
+                      background: '#ffffff',
+                      border: '1px solid var(--surface-border)',
+                      borderRadius: '20px',
+                      padding: '1.25rem 1.5rem',
+                      boxShadow: 'var(--shadow-sm)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <div>
+                        <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Logical Reasoning</span>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#db2777', marginTop: '4px' }}>{logicalReasoningSubmissions.length}</div>
+                      </div>
+                      <div style={{ width: 44, height: 44, borderRadius: '14px', background: 'rgba(219, 39, 119, 0.1)', color: '#db2777', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Brain size={22} />
                       </div>
                     </div>
                   </div>
@@ -5315,14 +5406,27 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                       </button>
                       <button
                         type="button"
-                        onClick={() => setReviewFilter('html_css')}
+                        onClick={() => setReviewFilter('spoko')}
                         style={{
-                          background: reviewFilter === 'html_css' ? '#6b21a8' : '#faf5ff',
-                          color: reviewFilter === 'html_css' ? '#ffffff' : '#6b21a8',
-                          border: '1px solid #e9d5ff', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
+                          background: reviewFilter === 'spoko' ? '#4f46e5' : '#eef2ff',
+                          color: reviewFilter === 'spoko' ? '#ffffff' : '#4f46e5',
+                          border: '1px solid #c7d2fe', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s',
+                          display: 'inline-flex', alignItems: 'center', gap: 6
                         }}
                       >
-                        🎨 HTML &amp; CSS ({htmlCssSubmissions.length})
+                        <MessageSquare size={13} /> Spoko Scores ({spokoSubmissions.length})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setReviewFilter('logical_reasoning')}
+                        style={{
+                          background: reviewFilter === 'logical_reasoning' ? '#db2777' : '#fdf2f8',
+                          color: reviewFilter === 'logical_reasoning' ? '#ffffff' : '#db2777',
+                          border: '1px solid #fbcfe8', padding: '6px 16px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s',
+                          display: 'inline-flex', alignItems: 'center', gap: 6
+                        }}
+                      >
+                        <Brain size={13} /> Logical Reasoning ({logicalReasoningSubmissions.length})
                       </button>
                     </div>
 
@@ -5382,7 +5486,13 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                   width: 44,
                                   height: 44,
                                   borderRadius: '50%',
-                                  background: task.isHtmlCss ? 'linear-gradient(135deg, #a855f7 0%, #7e22ce 100%)' : 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                                  background: task.isLogicalReasoning
+                                    ? 'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)'
+                                    : task.isSpoko
+                                    ? 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)'
+                                    : task.isHtmlCss
+                                    ? 'linear-gradient(135deg, #a855f7 0%, #7e22ce 100%)'
+                                    : 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
                                   color: '#ffffff',
                                   fontWeight: 900,
                                   fontSize: '0.95rem',
@@ -5406,17 +5516,66 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
                               {/* Course / Module & Status Badges */}
                               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                                <span style={{
-                                  fontSize: '0.75rem',
-                                  fontWeight: 800,
-                                  color: task.isHtmlCss ? '#7e22ce' : '#1d4ed8',
-                                  background: task.isHtmlCss ? '#faf5ff' : '#eff6ff',
-                                  border: `1px solid ${task.isHtmlCss ? '#e9d5ff' : '#bfdbfe'}`,
-                                  padding: '4px 10px',
-                                  borderRadius: '20px'
-                                }}>
-                                  {task.isHtmlCss ? '🎨 HTML & CSS Course' : `📚 ${task.moduleId || 'Course Module'}`}
-                                </span>
+                                {task.isLogicalReasoning ? (
+                                  <span style={{
+                                    fontSize: '0.75rem',
+                                    fontWeight: 800,
+                                    color: '#be123c',
+                                    background: '#fff1f2',
+                                    border: '1px solid #fecdd3',
+                                    padding: '4px 10px',
+                                    borderRadius: '20px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: 5
+                                  }}>
+                                    <Brain size={12} /> Logical Reasoning Score
+                                  </span>
+                                ) : task.isSpoko ? (
+                                  <span style={{
+                                    fontSize: '0.75rem',
+                                    fontWeight: 800,
+                                    color: '#4338ca',
+                                    background: '#eef2ff',
+                                    border: '1px solid #c7d2fe',
+                                    padding: '4px 10px',
+                                    borderRadius: '20px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: 5
+                                  }}>
+                                    <MessageSquare size={12} /> Spoko Score Track
+                                  </span>
+                                ) : (
+                                  <span style={{
+                                    fontSize: '0.75rem',
+                                    fontWeight: 800,
+                                    color: task.isHtmlCss ? '#7e22ce' : '#1d4ed8',
+                                    background: task.isHtmlCss ? '#faf5ff' : '#eff6ff',
+                                    border: `1px solid ${task.isHtmlCss ? '#e9d5ff' : '#bfdbfe'}`,
+                                    padding: '4px 10px',
+                                    borderRadius: '20px'
+                                  }}>
+                                    {task.isHtmlCss ? '🎨 HTML & CSS Course' : `📚 ${task.moduleId || 'Course Module'}`}
+                                  </span>
+                                )}
+
+                                {task.score !== undefined && (
+                                  <span style={{
+                                    fontSize: '0.75rem',
+                                    fontWeight: 800,
+                                    color: '#065f46',
+                                    background: '#ecfdf5',
+                                    border: '1px solid #a7f3d0',
+                                    padding: '4px 10px',
+                                    borderRadius: '20px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: 4
+                                  }}>
+                                    🎯 Score: {task.score}/{task.total || 100} {task.grade ? `(${task.grade})` : ''}
+                                  </span>
+                                )}
 
                                 <span style={{
                                   color: col.text,
