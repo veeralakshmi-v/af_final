@@ -4259,12 +4259,6 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                               <th style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>STUDENT NAME</th>
                               <th style={{ padding: '1rem 1.25rem' }}>ENROLLED CURRICULUMS</th>
                               <th style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>ACCESS CODE</th>
-                              <th style={{ padding: '1rem 1.25rem', minWidth: '170px', whiteSpace: 'nowrap' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <Brain size={15} color="#6366f1" />
-                                  <span>LOGICAL THINKING</span>
-                                </div>
-                              </th>
                               <th style={{ padding: '1rem 1.25rem', minWidth: '220px' }}>COURSE PROGRESS</th>
                               <th style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>SHAREABLE LINK</th>
                               <th style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>LOCK STATUS</th>
@@ -4352,105 +4346,6 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                   }}>
                                     {s.accessCode}
                                   </span>
-                                </td>
-                                <td style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>
-                                  {(() => {
-                                    const lt = getStudentLogicalThinkingScore(s);
-                                    const badgeStyle = getLogicalGradeStyle(lt.grade);
-                                    return (
-                                      <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', minWidth: '150px' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                                          <button
-                                            type="button"
-                                            onClick={() => handleOpenQuickLogicalModal(s)}
-                                            style={{
-                                              background: 'none',
-                                              border: 'none',
-                                              padding: 0,
-                                              cursor: 'pointer',
-                                              display: 'inline-flex',
-                                              alignItems: 'center',
-                                              gap: '6px',
-                                              fontWeight: 800,
-                                              fontSize: '0.88rem',
-                                              color: lt.isEvaluated ? '#0f172a' : '#64748b'
-                                            }}
-                                            title="Click to view or edit Logical Thinking Score"
-                                          >
-                                            <Brain size={14} color="#6366f1" />
-                                            <span>{lt.isEvaluated ? `${lt.score}/100` : '--/100'}</span>
-                                          </button>
-                                          <span style={{
-                                            fontSize: '0.7rem',
-                                            fontWeight: 800,
-                                            padding: '2px 7px',
-                                            borderRadius: '6px',
-                                            background: badgeStyle.bg,
-                                            color: badgeStyle.text,
-                                            border: `1px solid ${badgeStyle.border}`
-                                          }}>
-                                            {lt.grade}
-                                          </span>
-                                        </div>
-
-                                        {lt.isEvaluated ? (
-                                          <div style={{ width: '100%', height: '5px', background: '#e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
-                                            <div style={{
-                                              width: `${lt.percentage}%`,
-                                              height: '100%',
-                                              background: lt.percentage >= 80 ? 'linear-gradient(90deg, #10b981 0%, #059669 100%)' :
-                                                          lt.percentage >= 60 ? 'linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)' :
-                                                          'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)',
-                                              borderRadius: '6px',
-                                              transition: 'width 0.4s ease'
-                                            }} />
-                                          </div>
-                                        ) : (
-                                          <button
-                                            type="button"
-                                            onClick={() => handleOpenQuickLogicalModal(s)}
-                                            style={{
-                                              background: '#f8fafc',
-                                              border: '1px dashed #cbd5e1',
-                                              color: '#6366f1',
-                                              borderRadius: '6px',
-                                              padding: '2px 6px',
-                                              fontSize: '0.7rem',
-                                              fontWeight: 700,
-                                              cursor: 'pointer',
-                                              textAlign: 'center'
-                                            }}
-                                          >
-                                            + Set Score
-                                          </button>
-                                        )}
-
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px' }}>
-                                          <span style={{ fontSize: '0.68rem', color: '#94a3b8', fontWeight: 600 }}>
-                                            {lt.status}
-                                          </span>
-                                          {lt.isEvaluated && (
-                                            <button
-                                              type="button"
-                                              onClick={() => handleOpenQuickLogicalModal(s)}
-                                              style={{
-                                                background: 'none',
-                                                border: 'none',
-                                                color: '#6366f1',
-                                                cursor: 'pointer',
-                                                fontSize: '0.68rem',
-                                                fontWeight: 700,
-                                                padding: 0
-                                              }}
-                                              title="Edit Score"
-                                            >
-                                              Edit
-                                            </button>
-                                          )}
-                                        </div>
-                                      </div>
-                                    );
-                                  })()}
                                 </td>
                                 <td style={{ padding: '1rem 1.25rem', minWidth: '220px' }}>
                                   {(() => {
@@ -4727,76 +4622,6 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                               <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', background: '#f8fafc', padding: '8px 12px', borderRadius: '10px' }}>
                                 <strong>Main Course:</strong> {getMainCourseLabels(s.enrolledCourse)}
                               </div>
-
-                              {/* Logical Thinking Score Mobile Row */}
-                              {(() => {
-                                const lt = getStudentLogicalThinkingScore(s);
-                                const badgeStyle = getLogicalGradeStyle(lt.grade);
-                                return (
-                                  <div style={{
-                                    background: '#f8fafc',
-                                    border: '1px solid #e2e8f0',
-                                    borderRadius: '12px',
-                                    padding: '10px 12px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    gap: '10px'
-                                  }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                      <div style={{
-                                        width: 32,
-                                        height: 32,
-                                        borderRadius: '8px',
-                                        background: '#eef2ff',
-                                        color: '#6366f1',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        flexShrink: 0
-                                      }}>
-                                        <Brain size={18} />
-                                      </div>
-                                      <div>
-                                        <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>
-                                          Logical Thinking
-                                        </div>
-                                        <div style={{ fontSize: '0.92rem', fontWeight: 900, color: '#0f172a' }}>
-                                          {lt.isEvaluated ? `${lt.score} / 100` : '-- / 100'}
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px' }}>
-                                      <span style={{
-                                        fontSize: '0.74rem',
-                                        fontWeight: 800,
-                                        padding: '2px 8px',
-                                        borderRadius: '8px',
-                                        background: badgeStyle.bg,
-                                        color: badgeStyle.text,
-                                        border: `1px solid ${badgeStyle.border}`
-                                      }}>
-                                        {lt.grade}
-                                      </span>
-                                      <button
-                                        type="button"
-                                        onClick={() => handleOpenQuickLogicalModal(s)}
-                                        style={{
-                                          background: 'none',
-                                          border: 'none',
-                                          color: '#6366f1',
-                                          cursor: 'pointer',
-                                          fontSize: '0.7rem',
-                                          fontWeight: 700,
-                                          padding: 0
-                                        }}
-                                      >
-                                        {lt.isEvaluated ? 'Edit Score' : '+ Set Score'}
-                                      </button>
-                                    </div>
-                                  </div>
-                                );
-                              })()}
 
                               {/* Progress Card Section */}
                               <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
