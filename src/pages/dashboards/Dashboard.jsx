@@ -1221,6 +1221,11 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       for (const uKey of uKeys) {
         for (let day = 1; day <= 21; day++) {
           try {
+            const targetMod = `spoko_reasoning_day${day}`;
+            // If already present in student.tasks from backend database, skip localStorage scan to avoid phantom duplicates
+            const hasTaskInDb = (s.tasks || []).some(t => (t.moduleId || '').toLowerCase() === targetMod.toLowerCase());
+            if (hasTaskInDb) continue;
+
             const raw = localStorage.getItem(`spoko_reasoning_d${day}_progress_${uKey}`);
             if (raw) {
               const parsed = JSON.parse(raw);
@@ -1232,6 +1237,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                  qPct >= 70 ? '🎉 70–89%: Good Progress!' :
                                  qPct >= 50 ? '📚 50–69%: Keep Practising!' :
                                  '⚠️ Below 50%: Review the Learning Material & Try Again.';
+                const localStatus = (parsed.status || '').toLowerCase() === 'approved' ? 'Approved'
+                  : (parsed.status || '').toLowerCase() === 'rejected' ? 'Rejected'
+                  : (qPct >= 70 ? 'Approved' : 'Pending');
+
                 list.push({
                   _id: `logical_day_${day}_${studentId}`,
                   id: `logical_day_${day}_${studentId}`,
@@ -1253,7 +1262,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   grade: qGrade,
                   feedbackBand: bandText,
                   submittedAt: parsed.lastActivity || s.updatedAt || 'Recently',
-                  status: qPct >= 70 ? 'Approved' : 'Pending',
+                  status: localStatus,
                   taskText: `[Day ${day} Assessment Report]: Total Questions: 20 • Correct: ${qScore} • Incorrect: ${Math.max(0, 20 - qScore)} • Final Percentage: ${qPct}%\n${bandText}`,
                   staffFeedback: bandText
                 });
@@ -1279,9 +1288,11 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       (rec.studentName && s.name && s.name.toLowerCase() === rec.studentName.toLowerCase())
     );
 
+    const subStudentId = matchingStudent?._id || matchingStudent?.id || rec.studentAccessCode || 'stu';
+
     return {
-      _id: `html_css_${modId}`,
-      id: `html_css_${modId}`,
+      _id: `html_css_${subStudentId}_${modId}`,
+      id: `html_css_${subStudentId}_${modId}`,
       isHtmlCss: true,
       isSpoko: false,
       isLogicalReasoning: false,
@@ -1340,7 +1351,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     })
   );
 
-  // Combined Chronological Submissions with clean key deduplication
+  // Combined Chronological Submissions with authoritative canonical deduplication
   const rawSubmissions = [
     ...spokoMockSubmissions,
     ...logicalReasoningScoreSubmissions,
@@ -1348,13 +1359,61 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     ...topicSubmissions
   ];
 
-  const seenSubKeys = new Set();
-  const allSubmissions = rawSubmissions.filter(item => {
-    const key = item._id || item.id || `${item.studentId || item.accessCode || ''}_${item.moduleId}_${item.tabId || ''}`;
-    if (seenSubKeys.has(key)) return false;
-    seenSubKeys.add(key);
-    return true;
-  }).sort((a, b) => {
+  const subMap = new Map();
+  for (const item of rawSubmissions) {
+    if (!item) continue;
+    const uStudent = String(item.studentId || item.accessCode || item.studentName || 'student').trim().toLowerCase();
+    const uMod = String(item.moduleId || item.id || 'module').trim().toLowerCase();
+    const uTab = String(item.tabId || 'assignment').trim().toLowerCase();
+    const compositeKey = `${uStudent}_${uMod}_${uTab}`;
+
+    if (!subMap.has(compositeKey)) {
+      subMap.set(compositeKey, { ...item });
+    } else {
+      const existing = subMap.get(compositeKey);
+      const exStatus = (existing.status || '').toLowerCase();
+      const newStatus = (item.status || '').toLowerCase();
+
+      // Rule 1: 'Approved' status ALWAYS wins (cleared/passed modules must never linger as pending)
+      let resolvedStatus = existing.status;
+      if (newStatus === 'approved' || exStatus === 'approved') {
+        resolvedStatus = 'Approved';
+      } else if (newStatus === 'rejected' || exStatus === 'rejected') {
+        resolvedStatus = 'Rejected';
+      } else {
+        resolvedStatus = 'Pending';
+      }
+
+      // Rule 2: Prefer backend database records over client-side localStorage drafts
+      const preferNew = (!existing.isHtmlCss && item.isHtmlCss === false) ||
+        (existing._id && String(existing._id).startsWith('logical_day_') && !String(item._id).startsWith('logical_day_')) ||
+        (new Date(item.submittedAt).getTime() > new Date(existing.submittedAt).getTime());
+
+      const base = preferNew ? item : existing;
+      const other = preferNew ? existing : item;
+
+      subMap.set(compositeKey, {
+        ...other,
+        ...base,
+        status: resolvedStatus,
+        submissionUrl: base.submissionUrl || other.submissionUrl || base.taskUrl || other.taskUrl || '',
+        taskUrl: base.taskUrl || other.taskUrl || base.submissionUrl || other.submissionUrl || '',
+        taskText: base.taskText || other.taskText || base.submissionNotes || other.submissionNotes || '',
+        submissionNotes: base.submissionNotes || other.submissionNotes || base.taskText || other.taskText || '',
+        studentFeedback: base.studentFeedback || other.studentFeedback || '',
+        staffFeedback: base.staffFeedback || other.staffFeedback || '',
+        grade: (resolvedStatus === 'Approved' && (base.grade === 'Pass' || !base.grade)) ? (other.grade || 'A+') : (base.grade || other.grade || 'Pass'),
+        score: base.score !== undefined ? base.score : other.score,
+        total: base.total !== undefined ? base.total : other.total,
+        percentage: base.percentage !== undefined ? base.percentage : other.percentage,
+        photoUrl: base.photoUrl || other.photoUrl || '',
+        studentName: base.studentName || other.studentName || 'Student Learner',
+        accessCode: base.accessCode || other.accessCode || 'STUDENT'
+      });
+    }
+  }
+
+  const allSubmissions = Array.from(subMap.values()).sort((a, b) => {
     const da = new Date(a.submittedAt).getTime() || 0;
     const db = new Date(b.submittedAt).getTime() || 0;
     return db - da;
@@ -1429,6 +1488,28 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             studentName: task.studentName,
             staffFeedback: 'Approved by staff'
           });
+        }
+
+        if (task.moduleId && (task.moduleId.startsWith('spoko_reasoning_') || task.isLogicalReasoning)) {
+          try {
+            const dayMatch = task.moduleId.match(/\d+/);
+            const day = dayMatch ? dayMatch[0] : null;
+            const uKeys = [task.accessCode, task.studentId, targetStudentId].filter(Boolean);
+            if (day && typeof localStorage !== 'undefined') {
+              uKeys.forEach(uk => {
+                try {
+                  const k = `spoko_reasoning_d${day}_progress_${uk}`;
+                  const existing = localStorage.getItem(k);
+                  if (existing) {
+                    const p = JSON.parse(existing);
+                    p.status = 'approved';
+                    p.quizScore = Math.max(Number(p.quizScore) || 0, 18);
+                    localStorage.setItem(k, JSON.stringify(p));
+                  }
+                } catch (e) {}
+              });
+            }
+          } catch (e) {}
         }
       }
 
@@ -1538,6 +1619,27 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             studentName: task.studentName,
             staffFeedback: 'Revision requested by staff'
           });
+        }
+
+        if (task.moduleId && (task.moduleId.startsWith('spoko_reasoning_') || task.isLogicalReasoning)) {
+          try {
+            const dayMatch = task.moduleId.match(/\d+/);
+            const day = dayMatch ? dayMatch[0] : null;
+            const uKeys = [task.accessCode, task.studentId, targetStudentId].filter(Boolean);
+            if (day && typeof localStorage !== 'undefined') {
+              uKeys.forEach(uk => {
+                try {
+                  const k = `spoko_reasoning_d${day}_progress_${uk}`;
+                  const existing = localStorage.getItem(k);
+                  if (existing) {
+                    const p = JSON.parse(existing);
+                    p.status = 'rejected';
+                    localStorage.setItem(k, JSON.stringify(p));
+                  }
+                } catch (e) {}
+              });
+            }
+          } catch (e) {}
         }
       }
 
@@ -1909,18 +2011,28 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       return;
     }
 
+    if (!newStudentDob) {
+      setAdminError('Date of Birth (DOB) is required on the admission form!');
+      return;
+    }
+
+    if (!newStudentJoiningDate) {
+      setAdminError('Date of Joining (DOJ) is required on the admission form!');
+      return;
+    }
+
     if (!newStudentPhone.trim()) {
       setAdminError('Contact Phone Number is required on the admission form!');
       return;
     }
 
-    if (!allValidationsChecked) {
-      setAdminError('Please tick all 3 validation checks (ID Card, Fee Initiated, Induction Session) before enrolling!');
+    if (!assignedCourse || !assignedCourse.trim()) {
+      setAdminError('Please select at least one curriculum pathway for this student!');
       return;
     }
 
-    if (!assignedCourse || !assignedCourse.trim()) {
-      setAdminError('Please select at least one curriculum pathway for this student!');
+    if (!allValidationsChecked) {
+      setAdminError('Please tick all 3 validation checks (ID Card, Fee Initiated, Induction Session) before enrolling!');
       return;
     }
 
@@ -1931,12 +2043,15 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         body: JSON.stringify({
           name: newStudentName.trim(),
           enrolledCourse: assignedCourse,
+          course: assignedCourse,
+          courseName: getMainCourseLabels(assignedCourse),
           photoUrl: newStudentPhoto,
           contactNumber: newStudentPhone.trim(),
           phone: newStudentPhone.trim(),
           email: newStudentEmail.trim(),
           gender: newStudentGender,
           dob: newStudentDob,
+          doj: newStudentJoiningDate,
           fatherName: newStudentFatherName.trim(),
           address: newStudentAddress.trim(),
           educationQualification: newStudentQualification,
@@ -1952,6 +2067,11 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             photoUrl: newStudentPhoto,
             gender: newStudentGender,
             dob: newStudentDob,
+            doj: newStudentJoiningDate,
+            joiningDate: newStudentJoiningDate,
+            course: assignedCourse,
+            enrolledCourse: assignedCourse,
+            courseName: getMainCourseLabels(assignedCourse),
             fatherName: newStudentFatherName.trim(),
             contactNumber: newStudentPhone.trim(),
             email: newStudentEmail.trim(),
@@ -1969,6 +2089,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         setNewlyEnrolledResult(data);
         setNewStudentName('');
         setNewStudentPhoto('');
+        setNewStudentDob('');
+        setNewStudentJoiningDate(new Date().toISOString().split('T')[0]);
         setNewStudentPhone('');
         setNewStudentEmail('');
         setNewStudentFatherName('');
@@ -2134,6 +2256,30 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               studentName: gradingTask.studentName,
               staffFeedback: feedbackTrimmed
             });
+          }
+
+          if (gradingTask.moduleId && (gradingTask.moduleId.startsWith('spoko_reasoning_') || gradingTask.isLogicalReasoning)) {
+            try {
+              const dayMatch = gradingTask.moduleId.match(/\d+/);
+              const day = dayMatch ? dayMatch[0] : null;
+              const uKeys = [gradingTask.accessCode, gradingTask.studentId, targetStudentId].filter(Boolean);
+              if (day && typeof localStorage !== 'undefined') {
+                uKeys.forEach(uk => {
+                  try {
+                    const k = `spoko_reasoning_d${day}_progress_${uk}`;
+                    const existing = localStorage.getItem(k);
+                    if (existing) {
+                      const p = JSON.parse(existing);
+                      p.status = statusTrimmed.toLowerCase();
+                      if (statusTrimmed === 'Approved') {
+                        p.quizScore = Math.max(Number(p.quizScore) || 0, 18);
+                      }
+                      localStorage.setItem(k, JSON.stringify(p));
+                    }
+                  } catch (e) {}
+                });
+              }
+            } catch (e) {}
           }
           // Optimistically update students state so UI updates immediately
           setStudents(prev => prev.map(s => {
@@ -3886,10 +4032,11 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
                       <div>
                         <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
-                          Date of Birth (DOB)
+                          Date of Birth (DOB) <span style={{ color: '#ef4444' }}>*</span>
                         </label>
                         <input
                           type="date"
+                          required
                           value={newStudentDob}
                           onChange={e => setNewStudentDob(e.target.value)}
                           style={{ width: '100%', padding: '0.75rem 0.85rem', fontSize: '0.92rem', borderRadius: '10px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
@@ -4001,14 +4148,53 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
                       <div>
                         <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
-                          Batch Commencement Date
+                          Date of Joining (DOJ) <span style={{ color: '#ef4444' }}>*</span>
                         </label>
                         <input
                           type="date"
+                          required
                           value={newStudentJoiningDate}
                           onChange={e => setNewStudentJoiningDate(e.target.value)}
                           style={{ width: '100%', padding: '0.75rem 0.85rem', fontSize: '0.92rem', borderRadius: '10px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
                         />
+                      </div>
+                    </div>
+
+                    {/* 🎓 Course Selection in Admission Form */}
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', margin: 0 }}>
+                          Enrolled Course / Pathway <span style={{ color: '#ef4444' }}>*</span>
+                        </label>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#2563eb', background: '#eff6ff', padding: '2px 8px', borderRadius: '6px' }}>
+                          {assignedCourse ? `${assignedCourse.split(',').filter(Boolean).length} Track(s) Selected` : 'None Selected'}
+                        </span>
+                      </div>
+                      <select
+                        value={assignedCourse.includes(',') ? assignedCourse : assignedCourse}
+                        onChange={e => setAssignedCourse(e.target.value)}
+                        style={{ width: '100%', padding: '0.75rem 0.85rem', fontSize: '0.92rem', borderRadius: '10px', border: '1.5px solid #3b82f6', boxSizing: 'border-box', background: '#ffffff', fontWeight: 600, color: '#0f172a' }}
+                      >
+                        <optgroup label="Complete Specialization Pathways">
+                          <option value="python_fullstack,web_design_20days,html_css,sql,python_course,core_js,react_course,django_course,git_github,json_course,devops">Python Full Stack Development (Complete 10 Tracks)</option>
+                          <option value="data_analysis,python_da,sql_da,powerbi">Data Analysis Specialization (3 Tracks)</option>
+                          <option value="data_analytics,stats_course,numpy_course,pandas_course,matplotlib_course,tableau">Data Analytics Mastery (5 Tracks)</option>
+                          <option value="summer_python,summer_sql,summer_html">Summer Python &amp; AI Bootcamp</option>
+                          <option value="web_design_20days,html_css,core_js,react_course">Summer Web Development &amp; AI</option>
+                          <option value="agentic_ai,langchain,rag_course">Agentic AI &amp; Generative AI Suite</option>
+                          <option value="tally_prime">Tally Prime &amp; GST Certification</option>
+                          <option value="spoko_hr,spoko_reasoning">HR &amp; Logical Thinking Prep</option>
+                          <option value="all">All Courses (All Access Full Curriculum)</option>
+                        </optgroup>
+                        <optgroup label="Individual Course Tracks">
+                          {COURSE_CATEGORIES.flatMap(cat => cat.subCourses).map(sc => (
+                            <option key={sc.value} value={sc.value}>{sc.label}</option>
+                          ))}
+                        </optgroup>
+                      </select>
+                      <div style={{ marginTop: '5px', fontSize: '0.76rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span>Current Program:</span>
+                        <strong style={{ color: '#0284c7' }}>{getMainCourseLabels(assignedCourse)}</strong>
                       </div>
                     </div>
 
@@ -4784,14 +4970,22 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   </div>
 
                   {/* Details Breakdown */}
-                  <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.82rem', textAlign: 'left', background: '#f8fafc', padding: '0.9rem', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '1.25rem', boxSizing: 'border-box' }}>
+                  <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '7px', fontSize: '0.82rem', textAlign: 'left', background: '#f8fafc', padding: '0.9rem', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '1.25rem', boxSizing: 'border-box' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#64748b' }}>Enrolled Course:</span>
+                      <strong style={{ color: '#2563eb' }}>{getMainCourseLabels(newlyEnrolledResult.enrolledCourse || newlyEnrolledResult.course)}</strong>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#64748b' }}>Date of Birth (DOB):</span>
+                      <span style={{ fontWeight: 700, color: '#1e293b' }}>{newlyEnrolledResult.dob || newlyEnrolledResult.admissionFormData?.dob || '--'}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#64748b' }}>Date of Joining (DOJ):</span>
+                      <span style={{ fontWeight: 700, color: '#15803d' }}>{newlyEnrolledResult.doj || newlyEnrolledResult.joiningDate || newlyEnrolledResult.admissionFormData?.doj || newlyEnrolledResult.admissionFormData?.joiningDate || new Date().toISOString().split('T')[0]}</span>
+                    </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span style={{ color: '#64748b' }}>Contact Phone:</span>
                       <span style={{ fontWeight: 700, color: '#1e293b' }}>{newlyEnrolledResult.contactNumber || newlyEnrolledResult.phone || '--'}</span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: '#64748b' }}>Commencement Date:</span>
-                      <span style={{ fontWeight: 700, color: '#1e293b' }}>{newlyEnrolledResult.joiningDate || new Date().toISOString().split('T')[0]}</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span style={{ color: '#64748b' }}>Onboarding Milestones:</span>
@@ -4799,7 +4993,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span style={{ color: '#64748b' }}>Course Pathways:</span>
-                      <span style={{ fontWeight: 700, color: '#2563eb' }}>{newlyEnrolledResult.enrolledCourse?.split(',').length || 1} Track(s) Allocated</span>
+                      <span style={{ fontWeight: 700, color: '#2563eb' }}>{newlyEnrolledResult.enrolledCourse?.split(',').filter(Boolean).length || 1} Track(s) Allocated</span>
                     </div>
                   </div>
 
@@ -5085,17 +5279,25 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                         {s.name ? s.name.substring(0, 2).toUpperCase() : 'ST'}
                                       </div>
                                     )}
-                                    <button
-                                      type="button"
-                                      onClick={() => setViewingProgressStudent(s)}
-                                      style={{
-                                        background: 'none', border: 'none', color: '#0f172a', fontWeight: 800, cursor: 'pointer',
-                                        fontSize: '0.92rem', textAlign: 'left', padding: 0
-                                      }}
-                                      title="Click to view detailed per-course progress breakdown"
-                                    >
-                                      {s.name}
-                                    </button>
+                                    <div>
+                                      <button
+                                        type="button"
+                                        onClick={() => setViewingProgressStudent(s)}
+                                        style={{
+                                          background: 'none', border: 'none', color: '#0f172a', fontWeight: 800, cursor: 'pointer',
+                                          fontSize: '0.92rem', textAlign: 'left', padding: 0
+                                        }}
+                                        title="Click to view detailed per-course progress breakdown"
+                                      >
+                                        {s.name}
+                                      </button>
+                                      {(s.dob || s.joiningDate || s.doj) && (
+                                        <div style={{ fontSize: '0.72rem', color: '#64748b', display: 'flex', gap: '8px', marginTop: '2px' }}>
+                                          {s.dob && <span>DOB: {s.dob}</span>}
+                                          {(s.doj || s.joiningDate) && <span>DOJ: {s.doj || s.joiningDate}</span>}
+                                        </div>
+                                      )}
+                                    </div>
                                   </div>
                                 </td>
                                 <td style={{ padding: '1rem 1.25rem' }}>
@@ -6291,16 +6493,18 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%', boxSizing: 'border-box' }}>
                     {filteredSubmissions.length > 0 ? (
                       filteredSubmissions.map(task => {
+                        const rawSt = (task.status || '').toLowerCase();
+                        const normStatus = rawSt === 'approved' ? 'Approved' : rawSt === 'rejected' ? 'Rejected' : 'Pending';
                         const statusColors = {
                           Pending: { text: '#b45309', bg: '#fffbe8', border: '#fde68a', leftBar: '#f59e0b', label: '⏳ Pending Approval' },
                           Approved: { text: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', leftBar: '#10b981', label: '✅ Approved' },
                           Rejected: { text: '#b91c1c', bg: '#fef2f2', border: '#fecaca', leftBar: '#ef4444', label: '⚠️ Revision Requested' }
                         };
-                        const col = statusColors[task.status] || { text: '#475569', bg: '#f8fafc', border: '#cbd5e1', leftBar: '#94a3b8', label: task.status };
+                        const col = statusColors[normStatus];
 
                         return (
                           <div
-                            key={task._id || task.id}
+                            key={task._id || `${task.studentId || task.accessCode}_${task.moduleId}_${task.tabId || 'assignment'}`}
                             style={{
                               background: '#ffffff',
                               border: '1px solid #e2e8f0',
@@ -6790,9 +6994,15 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                         padding: '4rem 1.5rem',
                         color: 'var(--text-secondary)'
                       }}>
-                        <CheckCircle size={52} style={{ opacity: 0.25, marginBottom: '1rem', color: '#3b82f6' }} />
-                        <h4 style={{ margin: '0 0 6px 0', fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>No Submissions Found</h4>
-                        <p style={{ margin: 0, fontSize: '0.88rem', color: '#64748b' }}>No student submission requests matched your current search or status filter.</p>
+                        <CheckCircle size={52} style={{ opacity: 0.35, marginBottom: '1rem', color: reviewFilter === 'pending' ? '#10b981' : '#3b82f6' }} />
+                        <h4 style={{ margin: '0 0 6px 0', fontSize: '1.15rem', fontWeight: 800, color: reviewFilter === 'pending' ? '#15803d' : '#0f172a' }}>
+                          {reviewFilter === 'pending' ? 'All Caught Up! 🎉' : 'No Submissions Found'}
+                        </h4>
+                        <p style={{ margin: 0, fontSize: '0.88rem', color: '#64748b' }}>
+                          {reviewFilter === 'pending'
+                            ? 'There are currently no pending student submissions awaiting approval.'
+                            : 'No student submission requests matched your current search or status filter.'}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -6825,7 +7035,14 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
         {/* 🛡️ TAB 7.5: ADMISSION VERIFICATION WORKFLOW (STAFF & ADMIN ONLY) */}
         {activeTab === 'admission_verification' && (session?.role === 'admin' || session?.role === 'staff') && (
-          <AdmissionVerificationDashboard session={session} onBack={() => setActiveTab('overview')} />
+          <AdmissionVerificationDashboard
+            session={session}
+            students={students}
+            onBack={() => setActiveTab('overview')}
+            onNavigateToIDCard={() => setActiveTab('idcards')}
+            onNavigateToCertificates={() => setActiveTab('af_certificates')}
+            onNavigateToInvoice={() => setActiveTab('invoices')}
+          />
         )}
 
         {/* 🎙️ TAB 8: AI MOCK INTERVIEW PERFORMANCE & STUDENT MARKS (STAFF & ADMIN ONLY) */}

@@ -33,12 +33,18 @@ import {
   Building,
   GraduationCap
 } from 'lucide-react';
+import {
+  populateIDCardFromAdmission,
+  populateCertificateFromAdmission,
+  normalizeCourseTitle
+} from '../certificate/shared/services/admissionDataService';
 
 export default function AdmissionVerificationDashboard({
   session,
   students = [],
   onBack,
   onNavigateToIDCard,
+  onNavigateToCertificates,
   onNavigateToInvoice
 }) {
   const [admissions, setAdmissions] = useState([]);
@@ -69,6 +75,8 @@ export default function AdmissionVerificationDashboard({
     studentName: '',
     contactNumber: '',
     email: '',
+    dob: '',
+    joiningDate: new Date().toISOString().split('T')[0],
     courseName: 'Python Full Stack Development',
     courseKey: 'python_fullstack',
     courseFee: 24000,
@@ -290,6 +298,115 @@ export default function AdmissionVerificationDashboard({
     }
   };
 
+  // Helper: Sync candidate details from admission form directly to the ID Card store
+  const syncToIDCardStore = (adm, customIdNo) => {
+    try {
+      if (!adm) return null;
+      const form = adm.admissionFormData || {};
+      const candidateName = (form.fullName || adm.studentName || '').trim();
+      if (!candidateName) return null;
+
+      const rawCourse = form.courseName || form.course || adm.courseName || adm.courseKey || '';
+      const courseTitle = normalizeCourseTitle ? normalizeCourseTitle(rawCourse) : rawCourse;
+      const cardId = customIdNo || adm.idCardNumber || `AF-ID-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`;
+
+      const candidateObj = {
+        id: adm.applicationReference || adm._id || cardId,
+        applicationReference: adm.applicationReference || cardId,
+        studentName: candidateName,
+        courseName: courseTitle,
+        courseKey: adm.courseKey || 'python_fullstack',
+        dob: (form.dob || adm.dob || '').trim(),
+        doj: (form.doj || form.joiningDate || adm.doj || adm.joiningDate || '').trim(),
+        joiningDate: (form.doj || form.joiningDate || adm.doj || adm.joiningDate || '').trim(),
+        contactNumber: (form.contactNumber || adm.contactNumber || '').trim(),
+        email: (form.email || adm.email || '').trim(),
+        fatherName: (form.fatherName || '').trim(),
+        address: (form.address || adm.address || '').trim(),
+        photoUrl: form.photoUrl || adm.photoUrl || '/id_card_assets/sample_student_photo.jpg',
+        idCardNumber: cardId,
+        idCardStatus: 'Issued',
+        admissionStatus: adm.verificationStatus || 'Approved',
+        source: 'admission'
+      };
+
+      const idCardObj = populateIDCardFromAdmission(candidateObj);
+
+      const raw = localStorage.getItem('alphafly_id_cards_v1');
+      let currentCards = [];
+      if (raw) {
+        try { currentCards = JSON.parse(raw); } catch (e) {}
+      }
+      if (!Array.isArray(currentCards)) currentCards = [];
+
+      const matchIdx = currentCards.findIndex(c => c.id === cardId || c.studentName.toUpperCase() === candidateName.toUpperCase());
+      if (matchIdx >= 0) {
+        currentCards[matchIdx] = { ...currentCards[matchIdx], ...idCardObj };
+      } else {
+        currentCards.unshift(idCardObj);
+      }
+      localStorage.setItem('alphafly_id_cards_v1', JSON.stringify(currentCards));
+      return idCardObj;
+    } catch (e) {
+      console.warn('Error syncing to ID card store:', e);
+      return null;
+    }
+  };
+
+  // Helper: Sync candidate details from admission form directly to the Certificate store
+  const syncToCertificateStore = (adm) => {
+    try {
+      if (!adm) return null;
+      const form = adm.admissionFormData || {};
+      const candidateName = (form.fullName || adm.studentName || '').trim();
+      if (!candidateName) return null;
+
+      const rawCourse = form.courseName || form.course || adm.courseName || adm.courseKey || '';
+      const courseTitle = normalizeCourseTitle ? normalizeCourseTitle(rawCourse) : rawCourse;
+
+      const candidateObj = {
+        id: adm.applicationReference || adm._id || `APP-${Date.now()}`,
+        applicationReference: adm.applicationReference || '',
+        studentName: candidateName,
+        courseName: courseTitle,
+        courseKey: adm.courseKey || 'python_fullstack',
+        dob: (form.dob || adm.dob || '').trim(),
+        doj: (form.doj || form.joiningDate || adm.doj || adm.joiningDate || '').trim(),
+        joiningDate: (form.doj || form.joiningDate || adm.doj || adm.joiningDate || '').trim(),
+        contactNumber: (form.contactNumber || adm.contactNumber || '').trim(),
+        email: (form.email || adm.email || '').trim(),
+        fatherName: (form.fatherName || '').trim(),
+        address: (form.address || adm.address || '').trim(),
+        photoUrl: form.photoUrl || adm.photoUrl || '',
+        idCardNumber: adm.idCardNumber || '',
+        idCardStatus: adm.idCardStatus || 'Issued',
+        admissionStatus: adm.verificationStatus || 'Approved',
+        source: 'admission'
+      };
+
+      const certObj = populateCertificateFromAdmission(candidateObj);
+
+      const raw = localStorage.getItem('alphafly_certificates_v1');
+      let currentCerts = [];
+      if (raw) {
+        try { currentCerts = JSON.parse(raw); } catch (e) {}
+      }
+      if (!Array.isArray(currentCerts)) currentCerts = [];
+
+      const matchIdx = currentCerts.findIndex(c => c.studentName.toUpperCase() === candidateName.toUpperCase());
+      if (matchIdx >= 0) {
+        currentCerts[matchIdx] = { ...currentCerts[matchIdx], ...certObj, id: currentCerts[matchIdx].id };
+      } else {
+        currentCerts.unshift(certObj);
+      }
+      localStorage.setItem('alphafly_certificates_v1', JSON.stringify(currentCerts));
+      return certObj;
+    } catch (e) {
+      console.warn('Error syncing to Certificate store:', e);
+      return null;
+    }
+  };
+
   // 4. Issue ID Card
   const handleIssueIDCard = async () => {
     if (!selectedAdmission) return;
@@ -310,7 +427,10 @@ export default function AdmissionVerificationDashboard({
       });
       const data = await res.json();
       if (res.ok) {
-        showToast(`Student ID Card ${generatedIdCardNo} issued!`);
+        // Automatically populate and persist into ID Card store
+        syncToIDCardStore(selectedAdmission, generatedIdCardNo);
+
+        showToast(`Student ID Card ${generatedIdCardNo} issued & saved to ID Card Studio!`);
         setSelectedAdmission(data.admission);
         fetchAdmissions();
       } else {
@@ -389,6 +509,14 @@ export default function AdmissionVerificationDashboard({
       alert('Student Name and Course are required.');
       return;
     }
+    if (!newAppForm.dob) {
+      alert('Date of Birth (DOB) is required.');
+      return;
+    }
+    if (!newAppForm.joiningDate) {
+      alert('Date of Joining (DOJ) is required.');
+      return;
+    }
     setActionLoading(true);
     try {
       const res = await fetch('/api/admissions', {
@@ -398,11 +526,20 @@ export default function AdmissionVerificationDashboard({
           studentName: newAppForm.studentName,
           contactNumber: newAppForm.contactNumber,
           email: newAppForm.email,
+          dob: newAppForm.dob,
+          doj: newAppForm.joiningDate,
+          joiningDate: newAppForm.joiningDate,
+          course: newAppForm.courseKey,
           courseName: newAppForm.courseName,
           courseKey: newAppForm.courseKey,
           courseFee: newAppForm.courseFee,
           admissionFormData: {
             fullName: newAppForm.studentName,
+            dob: newAppForm.dob,
+            doj: newAppForm.joiningDate,
+            joiningDate: newAppForm.joiningDate,
+            course: newAppForm.courseKey,
+            courseName: newAppForm.courseName,
             contactNumber: newAppForm.contactNumber,
             email: newAppForm.email,
             educationQualification: newAppForm.educationQualification,
@@ -422,6 +559,8 @@ export default function AdmissionVerificationDashboard({
           studentName: '',
           contactNumber: '',
           email: '',
+          dob: '',
+          joiningDate: new Date().toISOString().split('T')[0],
           courseName: 'Python Full Stack Development',
           courseKey: 'python_fullstack',
           courseFee: 24000,
@@ -1496,6 +1635,7 @@ export default function AdmissionVerificationDashboard({
                       {onNavigateToIDCard && (
                         <button
                           onClick={() => {
+                            syncToIDCardStore(selectedAdmission, idCardNumberInput.trim() || undefined);
                             setIsChecklistOpen(false);
                             onNavigateToIDCard();
                           }}
@@ -1516,6 +1656,31 @@ export default function AdmissionVerificationDashboard({
                           <ExternalLink size={13} /> Open ID Card Studio
                         </button>
                       )}
+
+                      {onNavigateToCertificates && (
+                        <button
+                          onClick={() => {
+                            syncToCertificateStore(selectedAdmission);
+                            setIsChecklistOpen(false);
+                            onNavigateToCertificates();
+                          }}
+                          style={{
+                            background: '#f0fdf4',
+                            border: '1px solid #a7f3d0',
+                            color: '#047857',
+                            padding: '0.5rem 0.85rem',
+                            borderRadius: '8px',
+                            fontSize: '0.8rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          <Award size={13} /> Generate Certificate
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -1525,6 +1690,82 @@ export default function AdmissionVerificationDashboard({
               {/* TAB 2: SUBMITTED FORM DETAILS */}
               {activeChecklistTab === 'form_details' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {/* Instant Action Bar: Fetch & Issue ID Card / Certificate */}
+                  <div style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '10px',
+                    padding: '0.9rem 1.1rem',
+                    background: 'linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%)',
+                    border: '1.5px solid #bfdbfe',
+                    borderRadius: '12px',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '0.88rem', color: '#1e3a8a' }}>
+                        Direct Studio Issuance
+                      </div>
+                      <div style={{ fontSize: '0.78rem', color: '#475569' }}>
+                        Fetch this candidate's verified name, course, DOB, and DOJ directly into ID Cards or Certificates.
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      {onNavigateToIDCard && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            syncToIDCardStore(selectedAdmission);
+                            setIsChecklistOpen(false);
+                            onNavigateToIDCard();
+                          }}
+                          style={{
+                            background: '#0284c7',
+                            color: '#ffffff',
+                            border: 'none',
+                            padding: '0.5rem 0.9rem',
+                            borderRadius: '8px',
+                            fontWeight: 700,
+                            fontSize: '0.8rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            boxShadow: '0 2px 6px rgba(2, 132, 199, 0.3)'
+                          }}
+                        >
+                          <CreditCard size={14} /> Open in ID Card Studio
+                        </button>
+                      )}
+                      {onNavigateToCertificates && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            syncToCertificateStore(selectedAdmission);
+                            setIsChecklistOpen(false);
+                            onNavigateToCertificates();
+                          }}
+                          style={{
+                            background: '#16a34a',
+                            color: '#ffffff',
+                            border: 'none',
+                            padding: '0.5rem 0.9rem',
+                            borderRadius: '8px',
+                            fontWeight: 700,
+                            fontSize: '0.8rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            boxShadow: '0 2px 6px rgba(22, 163, 74, 0.3)'
+                          }}
+                        >
+                          <Award size={14} /> Generate Certificate
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
                   <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                     <h4 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>
                       Candidate Submitted Application Profile
@@ -1536,8 +1777,20 @@ export default function AdmissionVerificationDashboard({
                         <strong style={{ color: '#0f172a' }}>{selectedAdmission.admissionFormData?.fullName || selectedAdmission.studentName}</strong>
                       </div>
                       <div>
-                        <span style={{ color: '#64748b', display: 'block', fontSize: '0.74rem', textTransform: 'uppercase', fontWeight: 700 }}>Gender & DOB</span>
-                        <strong style={{ color: '#0f172a' }}>{selectedAdmission.admissionFormData?.gender || '—'} ({selectedAdmission.admissionFormData?.dob || 'Not specified'})</strong>
+                        <span style={{ color: '#64748b', display: 'block', fontSize: '0.74rem', textTransform: 'uppercase', fontWeight: 700 }}>Enrolled Course / Program</span>
+                        <strong style={{ color: '#0284c7' }}>{selectedAdmission.courseName || selectedAdmission.admissionFormData?.courseName || selectedAdmission.admissionFormData?.course || selectedAdmission.courseKey || '—'}</strong>
+                      </div>
+                      <div>
+                        <span style={{ color: '#64748b', display: 'block', fontSize: '0.74rem', textTransform: 'uppercase', fontWeight: 700 }}>Date of Birth (DOB)</span>
+                        <strong style={{ color: '#0f172a' }}>{selectedAdmission.admissionFormData?.dob || selectedAdmission.dob || '—'}</strong>
+                      </div>
+                      <div>
+                        <span style={{ color: '#64748b', display: 'block', fontSize: '0.74rem', textTransform: 'uppercase', fontWeight: 700 }}>Date of Joining (DOJ)</span>
+                        <strong style={{ color: '#16a34a' }}>{selectedAdmission.joiningDate || selectedAdmission.doj || selectedAdmission.admissionFormData?.doj || selectedAdmission.admissionFormData?.joiningDate || '—'}</strong>
+                      </div>
+                      <div>
+                        <span style={{ color: '#64748b', display: 'block', fontSize: '0.74rem', textTransform: 'uppercase', fontWeight: 700 }}>Gender</span>
+                        <strong style={{ color: '#0f172a' }}>{selectedAdmission.admissionFormData?.gender || '—'}</strong>
                       </div>
                       <div>
                         <span style={{ color: '#64748b', display: 'block', fontSize: '0.74rem', textTransform: 'uppercase', fontWeight: 700 }}>Father / Guardian Name</span>
@@ -1827,6 +2080,30 @@ export default function AdmissionVerificationDashboard({
                   onChange={(e) => setNewAppForm({ ...newAppForm, studentName: e.target.value })}
                   style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.9rem', boxSizing: 'border-box' }}
                 />
+              </div>
+
+              {/* Date of Birth & Date of Joining */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '4px' }}>Date of Birth (DOB) *</label>
+                  <input
+                    type="date"
+                    required
+                    value={newAppForm.dob}
+                    onChange={(e) => setNewAppForm({ ...newAppForm, dob: e.target.value })}
+                    style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.9rem', boxSizing: 'border-box' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '4px' }}>Date of Joining (DOJ) *</label>
+                  <input
+                    type="date"
+                    required
+                    value={newAppForm.joiningDate}
+                    onChange={(e) => setNewAppForm({ ...newAppForm, joiningDate: e.target.value })}
+                    style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.9rem', boxSizing: 'border-box' }}
+                  />
+                </div>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>

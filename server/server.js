@@ -115,6 +115,8 @@ const studentSchema = new mongoose.Schema({
   email: { type: String, default: '' },
   gender: { type: String, default: '' },
   dob: { type: String, default: '' },
+  doj: { type: String, default: '' },
+  course: { type: String, default: '' },
   fatherName: { type: String, default: '' },
   address: { type: String, default: '' },
   educationQualification: { type: String, default: '' },
@@ -202,6 +204,10 @@ const admissionFormSchema = new mongoose.Schema({
   fullName: { type: String, default: '' },
   gender: { type: String, default: '' },
   dob: { type: String, default: '' },
+  doj: { type: String, default: '' },
+  joiningDate: { type: String, default: '' },
+  course: { type: String, default: '' },
+  courseName: { type: String, default: '' },
   fatherName: { type: String, default: '' },
   contactNumber: { type: String, default: '' },
   email: { type: String, default: '' },
@@ -219,6 +225,9 @@ const admissionSchema = new mongoose.Schema({
   studentName: { type: String, required: true },
   contactNumber: { type: String, default: '' },
   email: { type: String, default: '' },
+  dob: { type: String, default: '' },
+  doj: { type: String, default: '' },
+  course: { type: String, default: '' },
   courseName: { type: String, required: true },
   courseKey: { type: String, default: 'python_fullstack' },
   admissionFormStatus: {
@@ -468,6 +477,8 @@ app.post('/api/students', async (req, res) => {
   const {
     name,
     enrolledCourse,
+    course,
+    courseName,
     admissionConfirmed,
     admissionStatus,
     isCourseActivated,
@@ -480,6 +491,7 @@ app.post('/api/students', async (req, res) => {
     email = '',
     gender = '',
     dob = '',
+    doj = '',
     fatherName = '',
     address = '',
     educationQualification = '',
@@ -498,8 +510,10 @@ app.post('/api/students', async (req, res) => {
   const isVerified = admissionConfirmed === true || hasAllValidations || (admissionConfirmed === undefined && admissionStatus === 'Approved');
   const resolvedAdmissionStatus = isVerified ? 'Approved' : 'Pending';
   const resolvedCourseActivated = isVerified;
-  const courseAssigned = enrolledCourse && enrolledCourse.trim() ? enrolledCourse.trim() : 'html_css';
+  const courseAssigned = (enrolledCourse || course || '').trim() || 'html_css';
   const resolvedContact = (contactNumber || phone || '').trim();
+  const resolvedJoiningDate = (joiningDate || doj || '').trim();
+  const resolvedDob = (dob || '').trim();
 
   // Generate a random numeric access code
   const accessCode = 'STU-' + Math.floor(1000 + Math.random() * 9000);
@@ -507,26 +521,42 @@ app.post('/api/students', async (req, res) => {
   const studentPayload = {
     name: name.trim(),
     enrolledCourse: courseAssigned,
+    course: courseAssigned,
     accessCode,
     deviceId: null,
     photoUrl: photoUrl || '',
     contactNumber: resolvedContact,
     email: (email || '').trim(),
     gender: gender || '',
-    dob: dob || '',
+    dob: resolvedDob,
+    doj: resolvedJoiningDate,
     fatherName: (fatherName || '').trim(),
     address: (address || '').trim(),
     educationQualification: educationQualification || '',
     idProofType: idProofType || '',
     idProofNumber: (idProofNumber || '').trim(),
-    joiningDate: joiningDate || '',
-    admissionFormData: admissionFormData && Object.keys(admissionFormData).length > 0 ? admissionFormData : {
+    joiningDate: resolvedJoiningDate,
+    admissionFormData: admissionFormData && Object.keys(admissionFormData).length > 0 ? {
+      ...admissionFormData,
+      fullName: admissionFormData.fullName || name.trim(),
+      course: courseAssigned,
+      courseName: courseName || admissionFormData.courseName || '',
+      enrolledCourse: courseAssigned,
+      dob: resolvedDob || admissionFormData.dob || '',
+      doj: resolvedJoiningDate || admissionFormData.doj || admissionFormData.joiningDate || '',
+      joiningDate: resolvedJoiningDate || admissionFormData.joiningDate || admissionFormData.doj || ''
+    } : {
       fullName: name.trim(),
+      course: courseAssigned,
+      courseName: courseName || '',
+      enrolledCourse: courseAssigned,
       photoUrl: photoUrl || '',
       contactNumber: resolvedContact,
       email: (email || '').trim(),
       gender: gender || '',
-      dob: dob || '',
+      dob: resolvedDob,
+      doj: resolvedJoiningDate,
+      joiningDate: resolvedJoiningDate,
       fatherName: (fatherName || '').trim(),
       address: (address || '').trim(),
       educationQualification: educationQualification || '',
@@ -1112,6 +1142,17 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
         }
       }
 
+      // Consolidate & synchronize any duplicate task entries for the same moduleId on this student
+      if (effectiveMod && Array.isArray(student.tasks)) {
+        student.tasks.forEach(t => {
+          if (t && t !== task && (t.moduleId === effectiveMod || (effectiveMod && t.moduleId && (t.moduleId.endsWith(effectiveMod) || effectiveMod.endsWith(t.moduleId))))) {
+            t.status = normalizedStatus;
+            t.feedback = feedbackTrimmed;
+            t.grade = finalGrade;
+          }
+        });
+      }
+
       // When approved, ensure student.completedLessons includes moduleId so next day is unlocked!
       if (normalizedStatus === 'Approved' && effectiveMod) {
         if (!Array.isArray(student.completedLessons)) {
@@ -1190,6 +1231,17 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
         if (!task._id) {
           task._id = 'task-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
         }
+      }
+
+      // Consolidate & synchronize any duplicate task entries for the same moduleId on this student
+      if (effectiveMod && Array.isArray(student.tasks)) {
+        student.tasks.forEach(t => {
+          if (t && t !== task && (t.moduleId === effectiveMod || (effectiveMod && t.moduleId && (t.moduleId.endsWith(effectiveMod) || effectiveMod.endsWith(t.moduleId))))) {
+            t.status = normalizedStatus;
+            t.feedback = feedbackTrimmed;
+            t.grade = finalGrade;
+          }
+        });
       }
 
       if (normalizedStatus === 'Approved' && effectiveMod) {
@@ -1887,13 +1939,22 @@ app.post('/api/admissions', async (req, res) => {
     email,
     courseName,
     courseKey,
+    course,
     courseFee,
+    dob,
+    doj,
+    joiningDate,
     admissionFormData = {}
   } = req.body;
 
-  if (!studentName || !courseName) {
-    return res.status(400).json({ error: 'Student Name and Course Name are required!' });
+  if (!studentName || (!courseName && !courseKey && !course)) {
+    return res.status(400).json({ error: 'Student Name and Course are required!' });
   }
+
+  const resolvedDob = (dob || (admissionFormData && admissionFormData.dob) || '').trim();
+  const resolvedJoiningDate = (joiningDate || doj || (admissionFormData && (admissionFormData.joiningDate || admissionFormData.doj)) || '').trim();
+  const resolvedCourseKey = (courseKey || course || (admissionFormData && (admissionFormData.courseKey || admissionFormData.course)) || 'python_fullstack').trim();
+  const resolvedCourseName = (courseName || (admissionFormData && admissionFormData.courseName) || resolvedCourseKey).trim();
 
   try {
     const isDbConnected = await checkDbConnection();
@@ -1913,14 +1974,22 @@ app.post('/api/admissions', async (req, res) => {
       studentName: studentName.trim(),
       contactNumber: contactNumber ? contactNumber.trim() : '',
       email: email ? email.trim() : '',
-      courseName: courseName.trim(),
-      courseKey: courseKey || 'python_fullstack',
+      dob: resolvedDob,
+      doj: resolvedJoiningDate,
+      course: resolvedCourseKey,
+      courseName: resolvedCourseName,
+      courseKey: resolvedCourseKey,
       admissionFormStatus: req.body.admissionFormStatus || 'Submitted',
       admissionFormData: {
         submittedAt: new Date(),
         fullName: studentName.trim(),
         contactNumber: contactNumber || '',
         email: email || '',
+        dob: resolvedDob,
+        doj: resolvedJoiningDate,
+        joiningDate: resolvedJoiningDate,
+        course: resolvedCourseKey,
+        courseName: resolvedCourseName,
         ...admissionFormData
       },
       invoiceNumber: req.body.invoiceNumber || '',
@@ -1929,13 +1998,13 @@ app.post('/api/admissions', async (req, res) => {
       balanceDue: Number(courseFee || 15000) - (Number(req.body.amountPaid) || 0),
       paymentStatus: req.body.paymentStatus || 'Pending',
       paymentReference: req.body.paymentReference || '',
-      joiningDate: req.body.joiningDate || '',
+      joiningDate: resolvedJoiningDate,
       idCardStatus: req.body.idCardStatus || 'Not Generated',
       idCardNumber: req.body.idCardNumber || '',
       verificationStatus: calculateVerificationStatus({
         admissionFormStatus: req.body.admissionFormStatus || 'Submitted',
         paymentStatus: req.body.paymentStatus || 'Pending',
-        joiningDate: req.body.joiningDate || '',
+        joiningDate: resolvedJoiningDate,
         idCardStatus: req.body.idCardStatus || 'Not Generated'
       }),
       courseActivationStatus: 'Locked',

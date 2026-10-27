@@ -10,9 +10,12 @@ import {
   Users, 
   GraduationCap, 
   Phone,
-  FileSpreadsheet
+  FileSpreadsheet,
+  UserCheck
 } from 'lucide-react';
 import { GoogleSheetSyncModal } from '../../shared/components/GoogleSheetSyncModal';
+import { AdmissionFormPickerModal } from '../../shared/components/AdmissionFormPickerModal';
+import { populateIDCardFromAdmission, type AdmissionCandidate } from '../../shared/services/admissionDataService';
 
 interface IDCardDashboardProps {
   cards: IDCardData[];
@@ -34,6 +37,12 @@ export const IDCardDashboard: React.FC<IDCardDashboardProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCourse, setSelectedCourse] = useState('ALL');
   const [isSheetModalOpen, setIsSheetModalOpen] = useState(false);
+  const [isAdmissionModalOpen, setIsAdmissionModalOpen] = useState(false);
+
+  const handleSelectAdmissionCandidate = (candidate: AdmissionCandidate) => {
+    const newCard = populateIDCardFromAdmission(candidate, cards);
+    onEditCard(newCard);
+  };
 
   // Extract unique courses
   const courses = useMemo(() => {
@@ -127,6 +136,18 @@ export const IDCardDashboard: React.FC<IDCardDashboardProps> = ({
               </option>
             ))}
           </select>
+
+          {/* Import from Admission Form Button */}
+          <button
+            type="button"
+            onClick={() => setIsAdmissionModalOpen(true)}
+            className="inline-flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition-all shadow-xs flex-1 sm:flex-initial cursor-pointer"
+            title="Fetch applicant details directly from student admission form"
+          >
+            <UserCheck className="w-4 h-4 text-blue-600" />
+            <span className="hidden xs:inline">From Admission Form</span>
+            <span className="xs:hidden">Admissions</span>
+          </button>
 
           {/* Sync Google Sheet Button */}
           <button
@@ -274,6 +295,14 @@ export const IDCardDashboard: React.FC<IDCardDashboardProps> = ({
             onImportCards(importedCards);
           }
         }}
+      />
+
+      {/* ADMISSION FORM PICKER MODAL */}
+      <AdmissionFormPickerModal
+        isOpen={isAdmissionModalOpen}
+        onClose={() => setIsAdmissionModalOpen(false)}
+        onSelectCandidate={handleSelectAdmissionCandidate}
+        targetType="idcard"
       />
     </div>
   );

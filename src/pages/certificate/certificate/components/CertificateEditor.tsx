@@ -23,9 +23,12 @@ import {
   Maximize2,
   Upload,
   Image as ImageIcon,
-  Trash2
+  Trash2,
+  UserCheck
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { AdmissionFormPickerModal } from '../../shared/components/AdmissionFormPickerModal';
+import { populateCertificateFromAdmission, type AdmissionCandidate } from '../../shared/services/admissionDataService';
 
 interface CertificateEditorProps {
   initialData: CertificateData;
@@ -81,8 +84,29 @@ export const CertificateEditor: React.FC<CertificateEditorProps> = ({
   const [assessmentInput, setAssessmentInput] = useState<string>('');
   const [saveSuccessMsg, setSaveSuccessMsg] = useState(false);
   const [showFullModal, setShowFullModal] = useState(false);
+  const [isAdmissionModalOpen, setIsAdmissionModalOpen] = useState(false);
   const previewWrapperRef = useRef<HTMLDivElement>(null);
   const photoInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSelectAdmission = (candidate: AdmissionCandidate) => {
+    const prefilled = populateCertificateFromAdmission(candidate);
+    setFormData(prev => ({
+      ...prev,
+      studentName: prefilled.studentName,
+      courseName: prefilled.courseName,
+      startDate: prefilled.startDate,
+      endDate: prefilled.endDate,
+      formattedDuration: prefilled.formattedDuration,
+      photoUrl: prefilled.photoUrl || prev.photoUrl,
+      description: prefilled.description,
+      finalAssessment: prefilled.finalAssessment,
+      finalAssessmentRaw: prefilled.finalAssessmentRaw,
+      qualities: prefilled.qualities
+    }));
+    setSaveSuccessMsg(true);
+    confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+    setTimeout(() => setSaveSuccessMsg(false), 3000);
+  };
 
   // Auto-fit calculation based on both container width and viewport height
   const calculateFitZoom = () => {
@@ -363,6 +387,29 @@ export const CertificateEditor: React.FC<CertificateEditorProps> = ({
         {(viewMode === 'split' || viewMode === 'form') && (
           <div className={`${viewMode === 'form' ? 'lg:col-span-8 lg:col-start-3' : 'lg:col-span-5'} space-y-5`}>
             
+            {/* 📥 Fetch from Admission Form Card */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/90 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <UserCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900 m-0">Fetch Details from Admission Form</h4>
+                  <p className="text-[11px] text-slate-600 m-0 mt-0.5">
+                    Auto-fill Student Name, Course, DOJ, Photo &amp; Curriculum Assessment from admissions
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsAdmissionModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all shrink-0 cursor-pointer active:scale-95 w-full sm:w-auto justify-center"
+              >
+                <UserCheck className="w-3.5 h-3.5" />
+                <span>Fetch Form</span>
+              </button>
+            </div>
+
             {/* 1. Student Info Card */}
             <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs space-y-4 hover:border-slate-300 transition-colors">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -990,6 +1037,13 @@ export const CertificateEditor: React.FC<CertificateEditorProps> = ({
         </div>
       )}
 
+      {/* Admission Form Picker Modal */}
+      <AdmissionFormPickerModal
+        isOpen={isAdmissionModalOpen}
+        onClose={() => setIsAdmissionModalOpen(false)}
+        onSelectCandidate={handleSelectAdmission}
+        targetType="certificate"
+      />
     </div>
   );
 };

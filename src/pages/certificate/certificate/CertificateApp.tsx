@@ -25,16 +25,26 @@ import {
   Award,
   FileSpreadsheet,
   RotateCcw,
-  CheckCircle2
+  CheckCircle2,
+  UserCheck
 } from 'lucide-react';
 import { GoogleSheetSyncModal } from '../shared/components/GoogleSheetSyncModal';
+import { AdmissionFormPickerModal } from '../shared/components/AdmissionFormPickerModal';
+import { populateCertificateFromAdmission, type AdmissionCandidate } from '../shared/services/admissionDataService';
 
 export function CertificateApp() {
   const [certificates, setCertificates] = useState<CertificateData[]>([]);
   const [customAssets, setCustomAssets] = useState<CustomAssets>({});
   const [viewMode, setViewMode] = useState<ViewMode>('dashboard');
   const [isSheetModalOpen, setIsSheetModalOpen] = useState<boolean>(false);
+  const [isAdmissionModalOpen, setIsAdmissionModalOpen] = useState<boolean>(false);
   const [recoveryNotice, setRecoveryNotice] = useState<string>('');
+
+  const handleSelectAdmissionCandidate = (candidate: AdmissionCandidate) => {
+    const newCert = populateCertificateFromAdmission(candidate, certificates);
+    setActiveCertificate(newCert);
+    setViewMode('create');
+  };
 
   // Active editing or previewing certificate
   const [activeCertificate, setActiveCertificate] = useState<CertificateData | null>(null);
@@ -287,6 +297,16 @@ export function CertificateApp() {
 
               <button
                 type="button"
+                onClick={() => setIsAdmissionModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 sm:py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-bold transition-all flex-1 sm:flex-initial justify-center cursor-pointer shadow-xs"
+                title="Fetch applicant details directly from student admission form"
+              >
+                <UserCheck className="w-3.5 h-3.5 text-indigo-600" />
+                <span>From Admission Form</span>
+              </button>
+
+              <button
+                type="button"
                 onClick={handleNewCertificate}
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 sm:py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs transition-all active:scale-95 w-full sm:w-auto justify-center"
               >
@@ -375,6 +395,14 @@ export function CertificateApp() {
         onImport={(importedCerts) => {
           updateCertificates([...importedCerts, ...certificates]);
         }}
+      />
+
+      {/* ADMISSION FORM PICKER MODAL */}
+      <AdmissionFormPickerModal
+        isOpen={isAdmissionModalOpen}
+        onClose={() => setIsAdmissionModalOpen(false)}
+        onSelectCandidate={handleSelectAdmissionCandidate}
+        targetType="certificate"
       />
     </div>
   );

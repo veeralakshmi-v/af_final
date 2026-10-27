@@ -17,9 +17,12 @@ import {
   CheckCircle2,
   ZoomIn,
   ZoomOut,
-  Sparkles
+  Sparkles,
+  UserCheck
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { AdmissionFormPickerModal } from '../../shared/components/AdmissionFormPickerModal';
+import { populateIDCardFromAdmission, type AdmissionCandidate } from '../../shared/services/admissionDataService';
 
 interface IDCardEditorProps {
   initialData: IDCardData;
@@ -59,6 +62,27 @@ export const IDCardEditor: React.FC<IDCardEditorProps> = ({
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [pdfStatus, setPdfStatus] = useState('');
   const [saveSuccessMsg, setSaveSuccessMsg] = useState(false);
+  const [isAdmissionModalOpen, setIsAdmissionModalOpen] = useState(false);
+
+  const handleSelectAdmission = (candidate: AdmissionCandidate) => {
+    const prefilled = populateIDCardFromAdmission(candidate);
+    setFormData(prev => ({
+      ...prev,
+      studentName: prefilled.studentName,
+      courseName: prefilled.courseName,
+      dob: prefilled.dob,
+      studentContact: prefilled.studentContact,
+      emergencyPhone: prefilled.emergencyPhone,
+      parentPhone: prefilled.parentPhone,
+      address: prefilled.address,
+      photoUrl: prefilled.photoUrl,
+      issueDate: prefilled.issueDate,
+      id: candidate.idCardNumber && candidate.idCardNumber.trim() ? candidate.idCardNumber.trim() : prev.id
+    }));
+    setSaveSuccessMsg(true);
+    confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+    setTimeout(() => setSaveSuccessMsg(false), 3000);
+  };
 
   const handleTextChange = (field: keyof IDCardData, value: string) => {
     setFormData(prev => ({
@@ -207,6 +231,29 @@ export const IDCardEditor: React.FC<IDCardEditorProps> = ({
         {/* LEFT PANE: FORM FIELDS */}
         <div className={`${viewMode === 'form' ? 'block' : 'hidden lg:block'} lg:col-span-6 xl:col-span-5 space-y-5`}>
           
+          {/* 📥 Fetch from Admission Form Card */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/90 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                <UserCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-slate-900 m-0">Fetch Details from Admission Form</h4>
+                <p className="text-[11px] text-slate-600 m-0 mt-0.5">
+                  Auto-fill Name, Course, DOB, DOJ, Address &amp; Photo from registered admissions
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsAdmissionModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all shrink-0 cursor-pointer active:scale-95 w-full sm:w-auto justify-center"
+            >
+              <UserCheck className="w-3.5 h-3.5" />
+              <span>Fetch Form</span>
+            </button>
+          </div>
+
           {/* 1. Student Photo */}
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
             <div className="flex items-center gap-2 text-slate-900 font-bold text-sm border-b border-slate-100 pb-2.5">
@@ -507,6 +554,14 @@ export const IDCardEditor: React.FC<IDCardEditorProps> = ({
         </div>
 
       </div>
+
+      {/* Admission Form Picker Modal */}
+      <AdmissionFormPickerModal
+        isOpen={isAdmissionModalOpen}
+        onClose={() => setIsAdmissionModalOpen(false)}
+        onSelectCandidate={handleSelectAdmission}
+        targetType="idcard"
+      />
     </div>
   );
 };
