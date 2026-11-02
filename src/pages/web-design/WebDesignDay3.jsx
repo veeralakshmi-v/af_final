@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, MonitorPlay, LayoutGrid, Layers, Code, PenTool,
-  Briefcase, Sparkles, CheckCircle, Trophy, ChevronRight, 
+  Briefcase, Sparkles, CheckCircle, Trophy, 
   ArrowRight, Lightbulb, RefreshCw, Terminal, Eye, Sliders, Menu, X, Play, HelpCircle
 } from 'lucide-react';
 
@@ -542,34 +542,7 @@ p { font-size: 1.05rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.8rem;
         </div>
       </div>
 
-      {/* 🚀 PEDAGOGY LEARNING FLOW BAR */}
-      <div style={{
-        background: '#ffffff',
-        border: '1px solid #e2e8f0',
-        borderRadius: '16px',
-        padding: '1rem 1.5rem',
-        marginBottom: '2rem',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
-      }}>
-        <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '8px' }}>
-          Our Practical Learning Philosophy:
-        </span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontSize: '0.84rem', fontWeight: 800 }}>
-          <span style={{ background: '#eff6ff', color: '#2563eb', padding: '4px 12px', borderRadius: '8px' }}>LEARN</span>
-          <ChevronRight size={14} color="#94a3b8" />
-          <span style={{ background: '#faf5ff', color: '#7e22ce', padding: '4px 12px', borderRadius: '8px' }}>SEE</span>
-          <ChevronRight size={14} color="#94a3b8" />
-          <span style={{ background: '#f0fdf4', color: '#16a34a', padding: '4px 12px', borderRadius: '8px' }}>BUILD</span>
-          <ChevronRight size={14} color="#94a3b8" />
-          <span style={{ background: '#fff7ed', color: '#ea580c', padding: '4px 12px', borderRadius: '8px' }}>CODE</span>
-          <ChevronRight size={14} color="#94a3b8" />
-          <span style={{ background: '#fdf2f8', color: '#db2777', padding: '4px 12px', borderRadius: '8px' }}>LIVE OUTPUT</span>
-          <ChevronRight size={14} color="#94a3b8" />
-          <span style={{ background: '#f0f9ff', color: '#0284c7', padding: '4px 12px', borderRadius: '8px' }}>PRACTICE</span>
-          <ChevronRight size={14} color="#94a3b8" />
-          <span style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)', color: '#ffffff', padding: '4px 12px', borderRadius: '8px' }}>AI CHALLENGE</span>
-        </div>
-      </div>
+
 
       {/* ==================== TOPIC 1: HERO SECTION ANATOMY ==================== */}
       {isTabActive('intro') && (
