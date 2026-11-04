@@ -366,10 +366,10 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box">
             <div className="code-header">Basic Table: Student Marks Summary</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(tableCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
-              <div className="preview-pane" style={{ overflowX: 'auto', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div className="preview-pane" style={{ minWidth: 0, overflowX: 'auto', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div dangerouslySetInnerHTML={{ __html: tableCode }} style={{ width: '100%' }} />
               </div>
             </div>
@@ -389,10 +389,10 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box">
             <div className="code-header">Advanced Table: Cell Merging Summary</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(advancedTableCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
-              <div className="preview-pane" style={{ overflowX: 'auto', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div className="preview-pane" style={{ minWidth: 0, overflowX: 'auto', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div dangerouslySetInnerHTML={{ __html: advancedTableCode }} style={{ width: '100%' }} />
               </div>
             </div>
@@ -410,7 +410,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box">
             <div className="code-header">Semantic Structure</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(semanticIframesCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
               <div className="preview-pane" style={{ padding: '1.5rem' }}>
@@ -432,7 +432,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
             <div className="code-header">Common Meta Tags inside &lt;head&gt;</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(metaCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
               <div className="preview-pane" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1rem', background: '#f8fafc' }}>
@@ -455,7 +455,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
             <div className="code-header">Iframe Embed Code</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(iframeCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
               <div className="preview-pane" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
@@ -488,7 +488,7 @@ export default function Day2({ activeTab, onNavigate }) {
               <div className="preview-pane" style={{ background: '#f9fafb', padding: '1.5rem', borderBottom: '1px solid var(--surface-border)', borderLeft: 'none' }}>
                 <div dangerouslySetInnerHTML={{ __html: mediaCode }} />
               </div>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(mediaCode, Prism.languages.markup, 'markup') }} style={{ margin: 0 }}></pre>
               </div>
             </div>
@@ -509,7 +509,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2rem' }}>
             <div className="code-header">The &lt;form&gt; Tag</div>
             <div className="code-content">
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(formsIntroCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
             </div>
@@ -521,7 +521,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2rem' }}>
             <div className="code-header">Text Inputs: text, email, password, tel, url, search</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(textInputsCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
               <div className="preview-pane" style={{ padding: '1.5rem' }}>
@@ -536,7 +536,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2rem' }}>
             <div className="code-header">number, range</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(numericInputsCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
               <div className="preview-pane" style={{ padding: '1.5rem' }}>
@@ -551,7 +551,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2rem' }}>
             <div className="code-header">date, time, datetime-local, month, week</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(dateTimeInputsCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
               <div className="preview-pane" style={{ padding: '1.5rem' }}>
@@ -566,7 +566,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2rem' }}>
             <div className="code-header">radio, checkbox, fieldset, legend</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(choiceInputsCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
               <div className="preview-pane" style={{ padding: '1.5rem' }}>
@@ -581,7 +581,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2rem' }}>
             <div className="code-header">select, option, optgroup, multiple</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(selectCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
               <div className="preview-pane" style={{ padding: '1.5rem' }}>
@@ -596,7 +596,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2rem' }}>
             <div className="code-header">textarea</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(textareaCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
               <div className="preview-pane" style={{ padding: '1.5rem' }}>
@@ -611,7 +611,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2rem' }}>
             <div className="code-header">datalist</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(datalistCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
               <div className="preview-pane" style={{ padding: '1.5rem' }}>
@@ -626,7 +626,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2rem' }}>
             <div className="code-header">file, color, hidden</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(fileColorHiddenCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
               <div className="preview-pane" style={{ padding: '1.5rem' }}>
@@ -641,7 +641,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2rem' }}>
             <div className="code-header">button type="submit", type="reset", type="button"</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(buttonTypesCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
               <div className="preview-pane" style={{ padding: '1.5rem' }}>
@@ -656,7 +656,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2rem' }}>
             <div className="code-header">required, placeholder, readonly, disabled, pattern, autofocus, autocomplete</div>
             <div className="code-content">
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(formAttributesCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
             </div>
@@ -668,7 +668,7 @@ export default function Day2({ activeTab, onNavigate }) {
           <div className="code-example-box" style={{ marginBottom: '2rem' }}>
             <div className="code-header">meter, progress, output</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(meterProgressCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
               <div className="preview-pane" style={{ padding: '1.5rem' }}>
@@ -702,7 +702,7 @@ export default function Day2({ activeTab, onNavigate }) {
               <div className="preview-pane" style={{ background: '#f9fafb', padding: '2rem', display: 'flex', justifyContent: 'center', borderLeft: 'none', borderBottom: '1px solid var(--surface-border)' }}>
                 <div dangerouslySetInnerHTML={{ __html: projectCode }} style={{ width: '100%' }} />
               </div>
-              <div className="code-pane">
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(projectCode, Prism.languages.markup, 'markup') }} style={{ margin: 0 }}></pre>
               </div>
             </div>

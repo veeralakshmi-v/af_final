@@ -240,20 +240,55 @@ tr:hover td {
 
 .code-pane {
   min-width: 0 !important;
+  max-width: 100% !important;
   overflow-x: auto !important;
 }
 
 .code-pane pre {
   margin: 0 !important;
   min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  white-space: pre !important;
 }
 
 .preview-pane { 
   min-width: 0 !important;
+  max-width: 100% !important;
   overflow-x: auto !important;
   background: #ffffff !important; 
   color: #0f172a !important; 
   border-left: 1px solid var(--surface-border) !important; 
+}
+
+/* Restore table borders and cell styling inside preview panes */
+.preview-pane table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+.preview-pane th,
+.preview-pane td {
+  border: 1px solid #cbd5e1 !important;
+  padding: 10px 14px !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  font-size: 0.95rem !important;
+  line-height: 1.4 !important;
+  box-sizing: border-box !important;
+}
+
+.preview-pane th {
+  background: #f1f5f9 !important;
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+
+.preview-pane tr:hover td {
+  background: #f8fafc !important;
 }
 
 .preview-pane pre {
