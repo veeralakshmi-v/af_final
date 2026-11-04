@@ -68,13 +68,26 @@ export default function TagTooltip() {
     return () => document.body.removeEventListener('click', handleClick);
   }, []);
 
+  if (!tooltipState.show) return null;
+
   return (
     <div className={`tag-tooltip ${tooltipState.show ? 'show' : ''}`} style={{
+      position: 'absolute',
       left: tooltipState.x,
       top: tooltipState.y,
+      zIndex: 1000,
+      background: '#1e293b',
+      color: '#ffffff',
+      padding: '0.75rem 1rem',
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      maxWidth: '300px',
+      fontSize: '0.85rem',
+      lineHeight: 1.5,
+      pointerEvents: 'none'
     }}>
-      <h4>{tooltipState.tag}</h4>
-      <p>{tooltipState.desc}</p>
+      <h4 style={{ margin: '0 0 0.25rem 0', color: '#38bdf8', fontSize: '0.9rem' }}>{tooltipState.tag}</h4>
+      <p style={{ margin: 0, color: '#e2e8f0' }}>{tooltipState.desc}</p>
     </div>
   );
 }

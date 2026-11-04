@@ -9,20 +9,22 @@ import 'prismjs/themes/prism-tomorrow.css';
 // Reusable Section Component with Framer Motion
 const Section = ({ id, eyebrow, title, children }) => {
   return (
-    <motion.section 
+    <motion.div 
       id={id}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
       className="learning-card"
       style={{ marginBottom: '3rem' }}
     >
-      <div style={{ color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
-        {eyebrow}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <span style={{ color: 'var(--accent-secondary)', fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          {eyebrow}
+        </span>
+        <h2 style={{ fontSize: '2rem', marginTop: '0.5rem', color: 'var(--text-primary)' }}>{title}</h2>
       </div>
-      <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>{title}</h2>
       {children}
-    </motion.section>
+    </motion.div>
   );
 };
 
@@ -358,377 +360,365 @@ export default function Day2({ activeTab, onNavigate }) {
     <AnimatePresence mode="wait">
 
       {activeTab === 'tables' && (
-              <Section key="tables" id="tables" eyebrow="Layout" title="HTML Tables">
-                <div className="panel">
-                  <p>Tables allow you to arrange data into rows and columns using <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code> (table row), <code>&lt;th&gt;</code> (table header), and <code>&lt;td&gt;</code> (table cell).</p>
-                  
-                  <div className="code-example-box">
-                    <div className="code-header">Basic Table: Student Marks Summary</div>
-                    <div className="code-content" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(tableCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ overflowX: 'auto', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <div dangerouslySetInnerHTML={{ __html: tableCode }} style={{ width: '100%' }} />
-                      </div>
-                    </div>
-                  </div>
+        <Section key="tables" id="tables" eyebrow="Layout" title="HTML Tables">
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Tables allow you to arrange data into rows and columns using <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code> (table row), <code>&lt;th&gt;</code> (table header), and <code>&lt;td&gt;</code> (table cell).</p>
+          
+          <div className="code-example-box">
+            <div className="code-header">Basic Table: Student Marks Summary</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(tableCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ overflowX: 'auto', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div dangerouslySetInnerHTML={{ __html: tableCode }} style={{ width: '100%' }} />
+              </div>
+            </div>
+          </div>
 
-                  <h3 style={{ marginTop: '2.5rem', marginBottom: '0.75rem', fontSize: '1.3rem', color: 'var(--text-primary)' }}>Advanced Tables: Merging Cells</h3>
-                  <p>For more complex layouts, HTML cells support merging using two key attributes:</p>
-                  <ul style={{ paddingLeft: '2rem', marginBottom: '1.5rem', listStyleType: 'disc' }}>
-                    <li style={{ display: 'list-item', marginBottom: '0.5rem' }}>
-                      <strong><code>colspan</code></strong>: Merges columns horizontally. For example, <code>&lt;td colspan="2"&gt;</code> spans across two columns.
-                    </li>
-                    <li style={{ display: 'list-item', marginBottom: '0.5rem' }}>
-                      <strong><code>rowspan</code></strong>: Merges rows vertically. For example, <code>&lt;th rowspan="2"&gt;</code> spans down across two rows.
-                    </li>
-                  </ul>
+          <h3 style={{ marginTop: '2.5rem', marginBottom: '0.75rem', fontSize: '1.3rem', color: 'var(--text-primary)' }}>Advanced Tables: Merging Cells</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>For more complex layouts, HTML cells support merging using two key attributes:</p>
+          <ul style={{ paddingLeft: '2rem', marginBottom: '1.5rem', listStyleType: 'disc', color: 'var(--text-secondary)', lineHeight: 1.8 }}>
+            <li style={{ display: 'list-item', marginBottom: '0.5rem' }}>
+              <strong><code>colspan</code></strong>: Merges columns horizontally. For example, <code>&lt;td colspan="2"&gt;</code> spans across two columns.
+            </li>
+            <li style={{ display: 'list-item', marginBottom: '0.5rem' }}>
+              <strong><code>rowspan</code></strong>: Merges rows vertically. For example, <code>&lt;th rowspan="2"&gt;</code> spans down across two rows.
+            </li>
+          </ul>
 
-                  <div className="code-example-box">
-                    <div className="code-header">Advanced Table: Cell Merging Summary</div>
-                    <div className="code-content" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(advancedTableCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ overflowX: 'auto', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <div dangerouslySetInnerHTML={{ __html: advancedTableCode }} style={{ width: '100%' }} />
-                      </div>
-                    </div>
-                  </div>
+          <div className="code-example-box">
+            <div className="code-header">Advanced Table: Cell Merging Summary</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(advancedTableCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ overflowX: 'auto', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div dangerouslySetInnerHTML={{ __html: advancedTableCode }} style={{ width: '100%' }} />
+              </div>
+            </div>
+          </div>
 
-                  <div className="card-actions" style={{ marginTop: '2.5rem' }}>
-                    <button className="btn btn-primary" onClick={() => handleContinue('semantic')}>Continue (+10 XP)</button>
-                  </div>
+          <div className="card-actions" style={{ marginTop: '2.5rem' }}>
+            <button className="btn btn-primary" onClick={() => handleContinue('semantic')}>Continue (+10 XP)</button>
+          </div>
+        </Section>
+      )}
+
+      {activeTab === 'semantic' && (
+        <Section key="semantic" id="semantic" eyebrow="Structure" title="Semantic HTML5 Tags">
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>In Day 1, we introduced Semantic HTML. Let's dive a bit deeper into elements like <code>&lt;article&gt;</code> and <code>&lt;aside&gt;</code>.</p>
+          <div className="code-example-box">
+            <div className="code-header">Semantic Structure</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(semanticIframesCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ padding: '1.5rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: semanticIframesCode }} />
+              </div>
+            </div>
+          </div>
+          <div className="card-actions" style={{ marginTop: '1.5rem' }}>
+            <button className="btn btn-primary" onClick={() => handleContinue('meta_iframes')}>Continue (+10 XP)</button>
+          </div>
+        </Section>
+      )}
+
+      {activeTab === 'meta_iframes' && (
+        <Section key="meta_iframes" id="meta_iframes" eyebrow="Head & Embeds" title="Meta Tags & Iframes">
+          <h3 style={{ fontSize: '1.3rem', color: 'var(--text-primary)', marginBottom: '0.75rem' }}>1. Meta Tags (Document Metadata)</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}><strong>Meta tags</strong> provide metadata about the HTML document (like description, character encoding, keywords, and author). They are placed inside the <code>&lt;head&gt;</code> element and are invisible on the screen, but critical for browser rendering and Search Engine Optimization (SEO).</p>
+          
+          <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
+            <div className="code-header">Common Meta Tags inside &lt;head&gt;</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(metaCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1rem', background: '#f8fafc' }}>
+                <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1rem', fontSize: '0.85rem' }}>
+                  <strong style={{ color: '#2563eb', display: 'block', marginBottom: '0.25rem' }}>Google Search Result Preview:</strong>
+                  <h4 style={{ margin: 0, color: '#1a0dab', fontSize: '1.1rem', cursor: 'pointer', textDecoration: 'underline' }}>AlphaFly Course LMS</h4>
+                  <span style={{ color: '#006621', fontSize: '0.75rem', display: 'block', marginBottom: '0.25rem' }}>https://alphaflytheni.vercel.app</span>
+                  <p style={{ margin: 0, color: '#545454', fontSize: '0.8rem' }}>Learn Web Development and AI with AlphaFly Course LMS. Discover structured courses, quizzes, and live lab exercises...</p>
                 </div>
-              </Section>
-            )}
-
-            {activeTab === 'semantic' && (
-              <Section key="semantic" id="semantic" eyebrow="Structure" title="Semantic HTML5 Tags">
-                <div className="panel">
-                  <p>In Day 1, we introduced Semantic HTML. Let's dive a bit deeper into elements like <code>&lt;article&gt;</code> and <code>&lt;aside&gt;</code>.</p>
-                  <div className="code-example-box">
-                    <div className="code-header">Semantic Structure</div>
-                    <div className="code-content">
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(semanticIframesCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane">
-                        <div dangerouslySetInnerHTML={{ __html: semanticIframesCode }} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-actions">
-                    <button className="btn btn-primary" onClick={() => handleContinue('meta_iframes')}>Continue (+10 XP)</button>
-                  </div>
+                <div style={{ fontSize: '0.8rem', color: '#64748b', fontStyle: 'italic' }}>
+                  Note: Search engines parse the meta description tag to build search engine snippets.
                 </div>
-              </Section>
-            )}
+              </div>
+            </div>
+          </div>
 
-            {activeTab === 'meta_iframes' && (
-              <Section key="meta_iframes" id="meta_iframes" eyebrow="Head & Embeds" title="Meta Tags & Iframes">
-                <div className="panel">
-                  <h3 style={{ fontSize: '1.3rem', color: 'var(--text-primary)', marginBottom: '0.75rem' }}>1. Meta Tags (Document Metadata)</h3>
-                  <p><strong>Meta tags</strong> provide metadata about the HTML document (like description, character encoding, keywords, and author). They are placed inside the <code>&lt;head&gt;</code> element and are invisible on the screen, but critical for browser rendering and Search Engine Optimization (SEO).</p>
-                  
-                  <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
-                    <div className="code-header">Common Meta Tags inside &lt;head&gt;</div>
-                    <div className="code-content" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(metaCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1rem', background: '#f8fafc' }}>
-                        <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1rem', fontSize: '0.85rem' }}>
-                          <strong style={{ color: '#2563eb', display: 'block', marginBottom: '0.25rem' }}>Google Search Result Preview:</strong>
-                          <h4 style={{ margin: 0, color: '#1a0dab', fontSize: '1.1rem', cursor: 'pointer', textDecoration: 'underline' }}>AlphaFly Course LMS</h4>
-                          <span style={{ color: '#006621', fontSize: '0.75rem', display: 'block', marginBottom: '0.25rem' }}>https://alphaflytheni.vercel.app</span>
-                          <p style={{ margin: 0, color: '#545454', fontSize: '0.8rem' }}>Learn Web Development and AI with AlphaFly Course LMS. Discover structured courses, quizzes, and live lab exercises...</p>
-                        </div>
-                        <div style={{ fontSize: '0.8rem', color: '#64748b', fontStyle: 'italic' }}>
-                          Note: Search engines parse the meta description tag to build search engine snippets.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <h3 style={{ fontSize: '1.3rem', color: 'var(--text-primary)', marginBottom: '0.75rem' }}>2. Iframes (Inline Frames)</h3>
-                  <p>An <strong>Iframe</strong> (inline frame) is used to embed another document or webpage entirely within the current HTML page. This is commonly used for embedding interactive maps, third-party widgets, or external tools.</p>
-                  
-                  <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
-                    <div className="code-header">Iframe Embed Code</div>
-                    <div className="code-content" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(iframeCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
-                        <div style={{ width: '100%' }}>
-                          <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Live Embedded Preview:</div>
-                          <iframe 
-                            src="https://example.com" 
-                            width="100%" 
-                            height="180" 
-                            title="Iframe Live Demo"
-                            style={{ border: '2px solid #3b82f6', borderRadius: '8px', background: 'white' }}>
-                          </iframe>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="card-actions" style={{ marginTop: '2.5rem' }}>
-                    <button className="btn btn-primary" onClick={() => handleContinue('media')}>Continue (+10 XP)</button>
-                  </div>
+          <h3 style={{ fontSize: '1.3rem', color: 'var(--text-primary)', marginBottom: '0.75rem' }}>2. Iframes (Inline Frames)</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>An <strong>Iframe</strong> (inline frame) is used to embed another document or webpage entirely within the current HTML page. This is commonly used for embedding interactive maps, third-party widgets, or external tools.</p>
+          
+          <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
+            <div className="code-header">Iframe Embed Code</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(iframeCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
+                <div style={{ width: '100%' }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Live Embedded Preview:</div>
+                  <iframe 
+                    src="https://example.com" 
+                    width="100%" 
+                    height="180" 
+                    title="Iframe Live Demo"
+                    style={{ border: '2px solid #3b82f6', borderRadius: '8px', background: 'white' }}>
+                  </iframe>
                 </div>
-              </Section>
-            )}
+              </div>
+            </div>
+          </div>
 
-            {activeTab === 'media' && (
-              <Section key="media" id="media" eyebrow="Multimedia" title="Media Elements">
-                <div className="panel">
-                  <p>HTML5 makes it incredibly easy to embed audio and video directly into the browser without third-party plugins.</p>
-                  <div className="code-example-box">
-                    <div className="code-header">Audio & Video Tags</div>
-                    <div className="code-content" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0 }}>
-                      <div className="preview-pane" style={{ background: '#f9fafb', borderBottom: '1px solid var(--surface-border)', borderLeft: 'none' }}>
-                        <div dangerouslySetInnerHTML={{ __html: mediaCode }} />
-                      </div>
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(mediaCode, Prism.languages.markup, 'markup') }} style={{ margin: 0 }}></pre>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-actions">
-                    <button className="btn btn-primary" onClick={() => handleContinue('forms')}>Continue (+10 XP)</button>
-                  </div>
-                </div>
-              </Section>
-            )}
+          <div className="card-actions" style={{ marginTop: '2.5rem' }}>
+            <button className="btn btn-primary" onClick={() => handleContinue('media')}>Continue (+10 XP)</button>
+          </div>
+        </Section>
+      )}
 
-            {activeTab === 'forms' && (
-              <Section key="forms" id="forms" eyebrow="Input" title="HTML Forms">
-                <div className="panel">
-                  <p>HTML Forms collect user input and send it to a server. They are built with the <code>&lt;form&gt;</code> tag and filled with various input elements. Below is a complete reference of all important form tags.</p>
+      {activeTab === 'media' && (
+        <Section key="media" id="media" eyebrow="Multimedia" title="Media Elements">
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>HTML5 makes it incredibly easy to embed audio and video directly into the browser without third-party plugins.</p>
+          <div className="code-example-box">
+            <div className="code-header">Audio & Video Tags</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0 }}>
+              <div className="preview-pane" style={{ background: '#f9fafb', padding: '1.5rem', borderBottom: '1px solid var(--surface-border)', borderLeft: 'none' }}>
+                <div dangerouslySetInnerHTML={{ __html: mediaCode }} />
+              </div>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(mediaCode, Prism.languages.markup, 'markup') }} style={{ margin: 0 }}></pre>
+              </div>
+            </div>
+          </div>
+          <div className="card-actions" style={{ marginTop: '1.5rem' }}>
+            <button className="btn btn-primary" onClick={() => handleContinue('forms')}>Continue (+10 XP)</button>
+          </div>
+        </Section>
+      )}
 
-                  {/* 1. The <form> tag */}
-                  <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>1. The &lt;form&gt; Tag &amp; Attributes</h3>
-                  <p>The <code>&lt;form&gt;</code> element wraps all inputs. Key attributes: <code>action</code> (URL to send data), <code>method</code> (<code>get</code> or <code>post</code>), <code>autocomplete</code>.</p>
-                  <div className="code-example-box" style={{ marginBottom: '2rem' }}>
-                    <div className="code-header">The &lt;form&gt; Tag</div>
-                    <div className="code-content">
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(formsIntroCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                    </div>
-                  </div>
+      {activeTab === 'forms' && (
+        <Section key="forms" id="forms" eyebrow="Input" title="HTML Forms">
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>HTML Forms collect user input and send it to a server. They are built with the <code>&lt;form&gt;</code> tag and filled with various input elements. Below is a complete reference of all important form tags.</p>
 
-                  {/* 2. Text-based inputs */}
-                  <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>2. Text-Based Input Types</h3>
-                  <p>These inputs accept text in different formats: plain text, email, password, phone, URL, and search.</p>
-                  <div className="code-example-box" style={{ marginBottom: '2rem' }}>
-                    <div className="code-header">Text Inputs: text, email, password, tel, url, search</div>
-                    <div className="code-content">
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(textInputsCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ padding: '1.5rem' }}>
-                        <div dangerouslySetInnerHTML={{ __html: FP + textInputsCode + FPend }} />
-                      </div>
-                    </div>
-                  </div>
+          {/* 1. The <form> tag */}
+          <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>1. The &lt;form&gt; Tag &amp; Attributes</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>The <code>&lt;form&gt;</code> element wraps all inputs. Key attributes: <code>action</code> (URL to send data), <code>method</code> (<code>get</code> or <code>post</code>), <code>autocomplete</code>.</p>
+          <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+            <div className="code-header">The &lt;form&gt; Tag</div>
+            <div className="code-content">
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(formsIntroCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+            </div>
+          </div>
 
-                  {/* 3. Numeric & Range */}
-                  <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>3. Numeric &amp; Range Inputs</h3>
-                  <p><code>type="number"</code> accepts numeric values with optional <code>min</code>, <code>max</code>, <code>step</code>. <code>type="range"</code> renders a slider.</p>
-                  <div className="code-example-box" style={{ marginBottom: '2rem' }}>
-                    <div className="code-header">number, range</div>
-                    <div className="code-content">
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(numericInputsCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ padding: '1.5rem' }}>
-                        <div dangerouslySetInnerHTML={{ __html: FP + numericInputsCode + FPend }} />
-                      </div>
-                    </div>
-                  </div>
+          {/* 2. Text-based inputs */}
+          <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>2. Text-Based Input Types</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>These inputs accept text in different formats: plain text, email, password, phone, URL, and search.</p>
+          <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+            <div className="code-header">Text Inputs: text, email, password, tel, url, search</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(textInputsCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ padding: '1.5rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: FP + textInputsCode + FPend }} />
+              </div>
+            </div>
+          </div>
 
-                  {/* 4. Date & Time */}
-                  <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>4. Date &amp; Time Inputs</h3>
-                  <p>HTML5 provides native date/time pickers: <code>date</code>, <code>time</code>, <code>datetime-local</code>, <code>month</code>, and <code>week</code>.</p>
-                  <div className="code-example-box" style={{ marginBottom: '2rem' }}>
-                    <div className="code-header">date, time, datetime-local, month, week</div>
-                    <div className="code-content">
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(dateTimeInputsCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ padding: '1.5rem' }}>
-                        <div dangerouslySetInnerHTML={{ __html: FP + dateTimeInputsCode + FPend }} />
-                      </div>
-                    </div>
-                  </div>
+          {/* 3. Numeric & Range */}
+          <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>3. Numeric &amp; Range Inputs</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}><code>type="number"</code> accepts numeric values with optional <code>min</code>, <code>max</code>, <code>step</code>. <code>type="range"</code> renders a slider.</p>
+          <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+            <div className="code-header">number, range</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(numericInputsCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ padding: '1.5rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: FP + numericInputsCode + FPend }} />
+              </div>
+            </div>
+          </div>
 
-                  {/* 5. Radio & Checkboxes with fieldset/legend */}
-                  <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>5. Radio Buttons, Checkboxes, Fieldset &amp; Legend</h3>
-                  <p><code>radio</code> — pick one from a group (same <code>name</code>). <code>checkbox</code> — pick multiple. <code>&lt;fieldset&gt;</code> groups related inputs; <code>&lt;legend&gt;</code> gives the group a title.</p>
-                  <div className="code-example-box" style={{ marginBottom: '2rem' }}>
-                    <div className="code-header">radio, checkbox, fieldset, legend</div>
-                    <div className="code-content">
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(choiceInputsCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ padding: '1.5rem' }}>
-                        <div dangerouslySetInnerHTML={{ __html: FP + choiceInputsCode + FPend }} />
-                      </div>
-                    </div>
-                  </div>
+          {/* 4. Date & Time */}
+          <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>4. Date &amp; Time Inputs</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>HTML5 provides native date/time pickers: <code>date</code>, <code>time</code>, <code>datetime-local</code>, <code>month</code>, and <code>week</code>.</p>
+          <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+            <div className="code-header">date, time, datetime-local, month, week</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(dateTimeInputsCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ padding: '1.5rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: FP + dateTimeInputsCode + FPend }} />
+              </div>
+            </div>
+          </div>
 
-                  {/* 6. Select, Optgroup */}
-                  <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>6. Select, Option &amp; Optgroup</h3>
-                  <p><code>&lt;select&gt;</code> creates a dropdown. <code>&lt;option&gt;</code> adds items. <code>&lt;optgroup&gt;</code> groups options. Add <code>multiple</code> to allow multi-selection.</p>
-                  <div className="code-example-box" style={{ marginBottom: '2rem' }}>
-                    <div className="code-header">select, option, optgroup, multiple</div>
-                    <div className="code-content">
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(selectCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ padding: '1.5rem' }}>
-                        <div dangerouslySetInnerHTML={{ __html: FP + selectCode + FPend }} />
-                      </div>
-                    </div>
-                  </div>
+          {/* 5. Radio & Checkboxes with fieldset/legend */}
+          <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>5. Radio Buttons, Checkboxes, Fieldset &amp; Legend</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}><code>radio</code> — pick one from a group (same <code>name</code>). <code>checkbox</code> — pick multiple. <code>&lt;fieldset&gt;</code> groups related inputs; <code>&lt;legend&gt;</code> gives the group a title.</p>
+          <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+            <div className="code-header">radio, checkbox, fieldset, legend</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(choiceInputsCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ padding: '1.5rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: FP + choiceInputsCode + FPend }} />
+              </div>
+            </div>
+          </div>
 
-                  {/* 7. Textarea */}
-                  <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>7. Textarea</h3>
-                  <p><code>&lt;textarea&gt;</code> is a multi-line text input. Use <code>rows</code> and <code>cols</code> to control size, and <code>maxlength</code> to cap characters.</p>
-                  <div className="code-example-box" style={{ marginBottom: '2rem' }}>
-                    <div className="code-header">textarea</div>
-                    <div className="code-content">
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(textareaCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ padding: '1.5rem' }}>
-                        <div dangerouslySetInnerHTML={{ __html: FP + textareaCode + FPend }} />
-                      </div>
-                    </div>
-                  </div>
+          {/* 6. Select, Optgroup */}
+          <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>6. Select, Option &amp; Optgroup</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}><code>&lt;select&gt;</code> creates a dropdown. <code>&lt;option&gt;</code> adds items. <code>&lt;optgroup&gt;</code> groups options. Add <code>multiple</code> to allow multi-selection.</p>
+          <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+            <div className="code-header">select, option, optgroup, multiple</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(selectCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ padding: '1.5rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: FP + selectCode + FPend }} />
+              </div>
+            </div>
+          </div>
 
-                  {/* 8. Datalist */}
-                  <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>8. Datalist (Autocomplete Suggestions)</h3>
-                  <p><code>&lt;datalist&gt;</code> pairs with an <code>&lt;input&gt;</code> via its <code>list</code> attribute to provide autocomplete suggestions while keeping free-text entry possible.</p>
-                  <div className="code-example-box" style={{ marginBottom: '2rem' }}>
-                    <div className="code-header">datalist</div>
-                    <div className="code-content">
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(datalistCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ padding: '1.5rem' }}>
-                        <div dangerouslySetInnerHTML={{ __html: FP + datalistCode + FPend }} />
-                      </div>
-                    </div>
-                  </div>
+          {/* 7. Textarea */}
+          <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>7. Textarea</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}><code>&lt;textarea&gt;</code> is a multi-line text input. Use <code>rows</code> and <code>cols</code> to control size, and <code>maxlength</code> to cap characters.</p>
+          <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+            <div className="code-header">textarea</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(textareaCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ padding: '1.5rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: FP + textareaCode + FPend }} />
+              </div>
+            </div>
+          </div>
 
-                  {/* 9. File, Color, Hidden */}
-                  <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>9. File Upload, Color Picker &amp; Hidden Input</h3>
-                  <p><code>type="file"</code> lets users upload files (use <code>accept</code> to filter, <code>multiple</code> for multiple files). <code>type="color"</code> shows a color picker. <code>type="hidden"</code> stores data invisibly.</p>
-                  <div className="code-example-box" style={{ marginBottom: '2rem' }}>
-                    <div className="code-header">file, color, hidden</div>
-                    <div className="code-content">
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(fileColorHiddenCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ padding: '1.5rem' }}>
-                        <div dangerouslySetInnerHTML={{ __html: FP + fileColorHiddenCode + FPend }} />
-                      </div>
-                    </div>
-                  </div>
+          {/* 8. Datalist */}
+          <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>8. Datalist (Autocomplete Suggestions)</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}><code>&lt;datalist&gt;</code> pairs with an <code>&lt;input&gt;</code> via its <code>list</code> attribute to provide autocomplete suggestions while keeping free-text entry possible.</p>
+          <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+            <div className="code-header">datalist</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(datalistCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ padding: '1.5rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: FP + datalistCode + FPend }} />
+              </div>
+            </div>
+          </div>
 
-                  {/* 10. Button Types */}
-                  <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>10. Button Types</h3>
-                  <p>The <code>&lt;button&gt;</code> element has three types: <code>submit</code> (sends the form), <code>reset</code> (clears fields), and <code>button</code> (custom JS action). Always specify <code>type</code>!</p>
-                  <div className="code-example-box" style={{ marginBottom: '2rem' }}>
-                    <div className="code-header">button type="submit", type="reset", type="button"</div>
-                    <div className="code-content">
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(buttonTypesCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ padding: '1.5rem' }}>
-                        <div dangerouslySetInnerHTML={{ __html: FP + buttonTypesCode + FPend }} />
-                      </div>
-                    </div>
-                  </div>
+          {/* 9. File, Color, Hidden */}
+          <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>9. File Upload, Color Picker &amp; Hidden Input</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}><code>type="file"</code> lets users upload files (use <code>accept</code> to filter, <code>multiple</code> for multiple files). <code>type="color"</code> shows a color picker. <code>type="hidden"</code> stores data invisibly.</p>
+          <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+            <div className="code-header">file, color, hidden</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(fileColorHiddenCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ padding: '1.5rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: FP + fileColorHiddenCode + FPend }} />
+              </div>
+            </div>
+          </div>
 
-                  {/* 11. Form Validation Attributes */}
-                  <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>11. Important Form Attributes</h3>
-                  <p>HTML provides built-in validation without JavaScript using attributes like <code>required</code>, <code>pattern</code>, <code>min</code>, <code>max</code>, <code>minlength</code>, <code>maxlength</code>, <code>readonly</code>, <code>disabled</code>, <code>autofocus</code>.</p>
-                  <div className="code-example-box" style={{ marginBottom: '2rem' }}>
-                    <div className="code-header">required, placeholder, readonly, disabled, pattern, autofocus, autocomplete</div>
-                    <div className="code-content">
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(formAttributesCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                    </div>
-                  </div>
+          {/* 10. Button Types */}
+          <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>10. Button Types</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>The <code>&lt;button&gt;</code> element has three types: <code>submit</code> (sends the form), <code>reset</code> (clears fields), and <code>button</code> (custom JS action). Always specify <code>type</code>!</p>
+          <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+            <div className="code-header">button type="submit", type="reset", type="button"</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(buttonTypesCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ padding: '1.5rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: FP + buttonTypesCode + FPend }} />
+              </div>
+            </div>
+          </div>
 
-                  {/* 12. Meter, Progress, Output */}
-                  <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>12. Meter, Progress &amp; Output</h3>
-                  <p><code>&lt;meter&gt;</code> shows a scalar value in a range (like storage usage). <code>&lt;progress&gt;</code> shows task completion. <code>&lt;output&gt;</code> displays the result of a calculation.</p>
-                  <div className="code-example-box" style={{ marginBottom: '2rem' }}>
-                    <div className="code-header">meter, progress, output</div>
-                    <div className="code-content">
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(meterProgressCode, Prism.languages.markup, 'markup') }}></pre>
-                      </div>
-                      <div className="preview-pane" style={{ padding: '1.5rem' }}>
-                        <div dangerouslySetInnerHTML={{ __html: FP + meterProgressCode + FPend }} />
-                      </div>
-                    </div>
-                  </div>
+          {/* 11. Form Validation Attributes */}
+          <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>11. Important Form Attributes</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>HTML provides built-in validation without JavaScript using attributes like <code>required</code>, <code>pattern</code>, <code>min</code>, <code>max</code>, <code>minlength</code>, <code>maxlength</code>, <code>readonly</code>, <code>disabled</code>, <code>autofocus</code>.</p>
+          <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+            <div className="code-header">required, placeholder, readonly, disabled, pattern, autofocus, autocomplete</div>
+            <div className="code-content">
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(formAttributesCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+            </div>
+          </div>
 
-                  <div className="card-actions">
-                    <button className="btn btn-primary" onClick={() => handleContinue('playground')}>Continue (+10 XP)</button>
-                  </div>
-                </div>
-              </Section>
-            )}
+          {/* 12. Meter, Progress, Output */}
+          <h3 style={{ marginTop: '2rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: 'var(--text-primary)' }}>12. Meter, Progress &amp; Output</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}><code>&lt;meter&gt;</code> shows a scalar value in a range (like storage usage). <code>&lt;progress&gt;</code> shows task completion. <code>&lt;output&gt;</code> displays the result of a calculation.</p>
+          <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+            <div className="code-header">meter, progress, output</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(meterProgressCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ padding: '1.5rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: FP + meterProgressCode + FPend }} />
+              </div>
+            </div>
+          </div>
 
-            {activeTab === 'playground' && (
-              <Section key="playground" id="playground" eyebrow="Live Lab" title="Live Coding Lab">
-                <p>Experiment with tables, forms, and media elements in real-time!</p>
-                <LiveEditor />
-                <div className="card-actions" style={{ marginTop: '1.5rem' }}>
-                  <button className="btn btn-primary" onClick={() => handleContinue('project')}>Continue (+20 XP)</button>
-                </div>
-              </Section>
-            )}
+          <div className="card-actions" style={{ marginTop: '2rem' }}>
+            <button className="btn btn-primary" onClick={() => handleContinue('playground')}>Continue (+10 XP)</button>
+          </div>
+        </Section>
+      )}
 
-            {activeTab === 'project' && (
-              <Section key="project" id="project" eyebrow="Mini Project" title="Event Registration Form">
-                <p>Combine everything from Day 2 to build a comprehensive, beautiful registration form!</p>
-                <div className="panel">
-                  <div className="code-example-box">
-                    <div className="code-header">registration.html</div>
-                    <div className="code-content" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0 }}>
-                      <div className="preview-pane" style={{ background: '#f9fafb', padding: '2rem', display: 'flex', justifyContent: 'center', borderLeft: 'none', borderBottom: '1px solid var(--surface-border)' }}>
-                        <div dangerouslySetInnerHTML={{ __html: projectCode }} style={{ width: '100%' }} />
-                      </div>
-                      <div className="code-pane">
-                        <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(projectCode, Prism.languages.markup, 'markup') }} style={{ margin: 0 }}></pre>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-actions">
-                    <button className="btn btn-primary" onClick={() => handleContinue('quiz')}>Continue to Quiz (+20 XP)</button>
-                  </div>
-                </div>
-              </Section>
-            )}
+      {activeTab === 'playground' && (
+        <Section key="playground" id="playground" eyebrow="Live Lab" title="Live Coding Lab">
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Experiment with tables, forms, and media elements in real-time!</p>
+          <LiveEditor />
+          <div className="card-actions" style={{ marginTop: '1.5rem' }}>
+            <button className="btn btn-primary" onClick={() => handleContinue('project')}>Continue (+20 XP)</button>
+          </div>
+        </Section>
+      )}
 
-            {activeTab === 'quiz' && (
-              <Section key="quiz" id="quiz" eyebrow="Final Step" title="Day 2 Knowledge Check">
-                <p>Let's see what you've learned about layouts, media, and forms!</p>
-                <Quiz questions={day2QuizQuestions} />
-              </Section>
-            )}
+      {activeTab === 'project' && (
+        <Section key="project" id="project" eyebrow="Mini Project" title="Event Registration Form">
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Combine everything from Day 2 to build a comprehensive, beautiful registration form!</p>
+          <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+            <div className="code-header">registration.html</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0 }}>
+              <div className="preview-pane" style={{ background: '#f9fafb', padding: '2rem', display: 'flex', justifyContent: 'center', borderLeft: 'none', borderBottom: '1px solid var(--surface-border)' }}>
+                <div dangerouslySetInnerHTML={{ __html: projectCode }} style={{ width: '100%' }} />
+              </div>
+              <div className="code-pane">
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(projectCode, Prism.languages.markup, 'markup') }} style={{ margin: 0 }}></pre>
+              </div>
+            </div>
+          </div>
+          <div className="card-actions">
+            <button className="btn btn-primary" onClick={() => handleContinue('quiz')}>Continue to Quiz (+20 XP)</button>
+          </div>
+        </Section>
+      )}
+
+      {activeTab === 'quiz' && (
+        <Section key="quiz" id="quiz" eyebrow="Final Step" title="Day 2 Knowledge Check">
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Let's see what you've learned about layouts, media, and forms!</p>
+          <Quiz questions={day2QuizQuestions} />
+        </Section>
+      )}
 
     </AnimatePresence>
   );

@@ -231,10 +231,59 @@ tr:hover td {
   margin-right: 4rem;
 }
 
+.code-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0;
+  width: 100%;
+}
+
+.code-pane {
+  min-width: 0 !important;
+  overflow-x: auto !important;
+}
+
+.code-pane pre {
+  margin: 0 !important;
+  min-width: 0 !important;
+}
+
 .preview-pane { 
+  min-width: 0 !important;
+  overflow-x: auto !important;
   background: #ffffff !important; 
   color: #0f172a !important; 
   border-left: 1px solid var(--surface-border) !important; 
+}
+
+.preview-pane pre {
+  color: #0f172a !important;
+  background: #f8fafc !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: 6px !important;
+  border: 1px solid #e2e8f0 !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  white-space: pre !important;
+  margin: 0.75rem 0 !important;
+  font-size: 0.9rem !important;
+  line-height: 1.4 !important;
+}
+
+.preview-pane marquee {
+  display: block !important;
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  padding: 0.6rem 0.9rem !important;
+  border-radius: 6px !important;
+  border: 1px solid #fde68a !important;
+  margin: 0.75rem 0 !important;
+  font-weight: 500 !important;
+}
+
+.preview-pane hr {
+  border: none !important;
+  border-top: 1px solid #e2e8f0 !important;
+  margin: 1.25rem 0 !important;
 }
 
 /* Restore browser-default list rendering inside preview panes */
