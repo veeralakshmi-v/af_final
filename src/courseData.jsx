@@ -32,7 +32,7 @@ export const htmlCourseData = [
     title: 'Day 2 - HTML Advanced',
     items: [
       { id: 'tables', label: 'HTML Tables', icon: <LayoutGrid size={18} /> },
-      { id: 'semantic', label: 'Semantic HTML5', icon: <Layers size={18} /> },
+      { id: 'semantic', label: 'Semantic & Non-Semantic', icon: <Layers size={18} /> },
       { id: 'meta_iframes', label: 'Meta & Iframes', icon: <MonitorPlay size={18} /> },
       { id: 'media', label: 'Media Tags', icon: <Video size={18} /> },
       { id: 'forms', label: 'HTML Forms', icon: <Edit3 size={18} /> },

@@ -110,15 +110,37 @@ export default function Day2({ activeTab, onNavigate }) {
   style="border: 2px solid #3b82f6; border-radius: 8px;">
 </iframe>`;
 
-  const semanticIframesCode = `<article>
-  <header>
-    <h2>Understanding Semantic HTML</h2>
+  const semanticIframesCode = `<article style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; background: #f8fafc;">
+  <header style="border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+    <h3 style="margin: 0; color: #1e293b;">Understanding Semantic HTML</h3>
+    <small style="color: #64748b;">Published on HTML Learning Blog</small>
   </header>
-  <p>Semantic HTML introduces meaning to the web page rather than just presentation.</p>
-  <aside>
-    <p>Fun fact: Search engines love semantic tags!</p>
+  <p style="color: #475569; line-height: 1.6; margin: 0 0 10px 0;">
+    Semantic HTML introduces meaning to the webpage rather than just presentation.
+  </p>
+  <aside style="background: #e0f2fe; padding: 10px; border-left: 4px solid #0284c7; border-radius: 4px;">
+    <p style="margin: 0; color: #0369a1; font-size: 0.9rem;">
+      <strong>Tip:</strong> Search engines reward semantic markup with better SEO!
+    </p>
   </aside>
 </article>`;
+
+  const nonSemanticCode = `<!-- <div> is a block-level container (starts on new line, full width) -->
+<div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+  <h3 style="margin: 0 0 8px 0; color: #1e293b;">Product Card (&lt;div&gt;)</h3>
+  <p style="margin: 0; color: #475569; line-height: 1.6;">
+    Product status: 
+    <!-- <span> is an inline container (stays within text on same line) -->
+    <span style="color: #16a34a; background: #dcfce7; padding: 2px 8px; border-radius: 4px; font-weight: bold;">In Stock</span>
+    &nbsp;|&nbsp; Price: 
+    <span style="color: #2563eb; font-size: 1.15rem; font-weight: bold;">$29.99</span>
+  </p>
+</div>
+
+<!-- Another <div> starts on its own new line below -->
+<div style="background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 12px; color: #92400e;">
+  <strong>Notice (&lt;div&gt;):</strong> Use <span style="text-decoration: underline; font-weight: bold;">&lt;span&gt;</span> for inline words and <span style="text-decoration: underline; font-weight: bold;">&lt;div&gt;</span> for block containers!
+</div>`;
 
   const mediaCode = `<!-- Audio Example -->
 <audio controls>
@@ -405,20 +427,124 @@ export default function Day2({ activeTab, onNavigate }) {
       )}
 
       {activeTab === 'semantic' && (
-        <Section key="semantic" id="semantic" eyebrow="Structure" title="Semantic HTML5 Tags">
-          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>In Day 1, we introduced Semantic HTML. Let's dive a bit deeper into elements like <code>&lt;article&gt;</code> and <code>&lt;aside&gt;</code>.</p>
-          <div className="code-example-box">
-            <div className="code-header">Semantic Structure</div>
+        <Section key="semantic" id="semantic" eyebrow="Structure" title="Semantic & Non-Semantic Tags">
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1.5rem', lineHeight: '1.8' }}>
+            HTML elements are fundamentally divided into two categories: <strong>Semantic tags</strong> (which provide clear meaning to both browsers and search engines) and <strong>Non-Semantic tags</strong> (generic containers used for layout and CSS styling).
+          </p>
+
+          <h3 style={{ marginTop: '2rem', marginBottom: '0.75rem', fontSize: '1.3rem', color: 'var(--text-primary)' }}>1. Semantic HTML5 Tags (Meaningful Structure)</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem', lineHeight: '1.8' }}>
+            <strong>Semantic tags</strong> clearly describe their purpose and the role of the content inside them. Examples include <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;aside&gt;</code>, and <code>&lt;footer&gt;</code>. They improve <strong>SEO</strong> (search engine indexing) and <strong>accessibility</strong> (screen readers for assistive tech).
+          </p>
+
+          <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
+            <div className="code-header">Semantic Structure: &lt;article&gt;, &lt;header&gt;, &lt;aside&gt;</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
               <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(semanticIframesCode, Prism.languages.markup, 'markup') }}></pre>
               </div>
-              <div className="preview-pane" style={{ padding: '1.5rem' }}>
+              <div className="preview-pane" style={{ minWidth: 0, overflowX: 'auto', padding: '1.5rem' }}>
                 <div dangerouslySetInnerHTML={{ __html: semanticIframesCode }} />
               </div>
             </div>
           </div>
-          <div className="card-actions" style={{ marginTop: '1.5rem' }}>
+
+          <h3 style={{ marginTop: '2.5rem', marginBottom: '0.75rem', fontSize: '1.3rem', color: 'var(--text-primary)' }}>2. Non-Semantic HTML Tags (Generic Containers: &lt;div&gt; &amp; &lt;span&gt;)</h3>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem', lineHeight: '1.8' }}>
+            <strong>Non-semantic tags</strong> tell nothing about the content they hold. They have no default meaning or appearance, making them ideal as building blocks for CSS styling and layout manipulation:
+          </p>
+          <ul style={{ paddingLeft: '2rem', marginBottom: '1.5rem', listStyleType: 'disc', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
+            <li style={{ display: 'list-item', marginBottom: '0.5rem' }}>
+              <strong><code>&lt;div&gt;</code> (Division)</strong>: A <strong>block-level</strong> element. It always starts on a <strong>new line</strong> and takes up the full width available (100%). Used to group large sections, create cards, and structure layouts (Grid &amp; Flexbox).
+            </li>
+            <li style={{ display: 'list-item', marginBottom: '0.5rem' }}>
+              <strong><code>&lt;span&gt;</code></strong>: An <strong>inline</strong> element. It does <strong>not</strong> start on a new line and only occupies as much width as its content. Used to style, color, or highlight a specific word, phrase, badge, or icon inside a paragraph.
+            </li>
+          </ul>
+
+          <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
+            <div className="code-header">Non-Semantic Containers: &lt;div&gt; and &lt;span&gt;</div>
+            <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
+              <div className="code-pane" style={{ minWidth: 0, overflowX: 'auto' }}>
+                <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(nonSemanticCode, Prism.languages.markup, 'markup') }}></pre>
+              </div>
+              <div className="preview-pane" style={{ minWidth: 0, overflowX: 'auto', padding: '1.5rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: nonSemanticCode }} />
+              </div>
+            </div>
+          </div>
+
+          <h3 style={{ marginTop: '2.5rem', marginBottom: '0.75rem', fontSize: '1.3rem', color: 'var(--text-primary)' }}>3. Key Differences: Semantic vs Non-Semantic</h3>
+          <div style={{ overflowX: 'auto', marginBottom: '2.5rem' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', background: '#ffffff', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1' }}>
+              <thead>
+                <tr style={{ background: '#f8fafc', borderBottom: '2px solid #cbd5e1' }}>
+                  <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#1e293b', border: '1px solid #cbd5e1', width: '22%' }}>Feature</th>
+                  <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#1e293b', border: '1px solid #cbd5e1', width: '39%' }}>Semantic Tags</th>
+                  <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#1e293b', border: '1px solid #cbd5e1', width: '39%' }}>Non-Semantic Tags</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ padding: '12px 16px', fontWeight: 600, border: '1px solid #cbd5e1', color: '#1e293b' }}>Meaning</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>Describes the content purpose (e.g., <code>&lt;article&gt;</code>, <code>&lt;nav&gt;</code>).</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>No meaning; purely a generic container (e.g., <code>&lt;div&gt;</code>, <code>&lt;span&gt;</code>).</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '12px 16px', fontWeight: 600, border: '1px solid #cbd5e1', color: '#1e293b' }}>SEO &amp; Crawlers</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>Search engines understand page hierarchy and rank content better.</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>Treated as generic styling boxes without contextual value.</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '12px 16px', fontWeight: 600, border: '1px solid #cbd5e1', color: '#1e293b' }}>Accessibility</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>Screen readers easily navigate page landmarks for visually impaired users.</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>Screen readers provide no landmarks or extra context.</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '12px 16px', fontWeight: 600, border: '1px solid #cbd5e1', color: '#1e293b' }}>Best Used For</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>Page structure, navigation, headers, footers, main article content.</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>CSS styling, flexbox/grid layout wrappers, and inline text highlights.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 style={{ marginTop: '2.5rem', marginBottom: '0.75rem', fontSize: '1.3rem', color: 'var(--text-primary)' }}>4. Key Differences: &lt;div&gt; vs &lt;span&gt;</h3>
+          <div style={{ overflowX: 'auto', marginBottom: '2rem' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', background: '#ffffff', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1' }}>
+              <thead>
+                <tr style={{ background: '#f8fafc', borderBottom: '2px solid #cbd5e1' }}>
+                  <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#1e293b', border: '1px solid #cbd5e1', width: '22%' }}>Feature</th>
+                  <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#1e293b', border: '1px solid #cbd5e1', width: '39%' }}>&lt;div&gt; (Division)</th>
+                  <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: '#1e293b', border: '1px solid #cbd5e1', width: '39%' }}>&lt;span&gt; (Span)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ padding: '12px 16px', fontWeight: 600, border: '1px solid #cbd5e1', color: '#1e293b' }}>Display Mode</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}><strong>Block-level</strong> (<code>display: block</code>)</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}><strong>Inline</strong> (<code>display: inline</code>)</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '12px 16px', fontWeight: 600, border: '1px solid #cbd5e1', color: '#1e293b' }}>Line Behavior</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>Always starts on a <strong>new line</strong> and takes full container width (100%).</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>Stays <strong>on the same line</strong>; takes only width of its text content.</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '12px 16px', fontWeight: 600, border: '1px solid #cbd5e1', color: '#1e293b' }}>Content Allowed</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>Can hold other block elements, inline elements, and text.</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>Can only contain text and other inline elements.</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '12px 16px', fontWeight: 600, border: '1px solid #cbd5e1', color: '#1e293b' }}>Common Purpose</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>Grouping sections, creating cards, layout wrappers, flex/grid containers.</td>
+                  <td style={{ padding: '12px 16px', border: '1px solid #cbd5e1', color: '#475569' }}>Styling specific words, badges, price tags, text coloring, and highlights.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="card-actions" style={{ marginTop: '2rem' }}>
             <button className="btn btn-primary" onClick={() => handleContinue('meta_iframes')}>Continue (+10 XP)</button>
           </div>
         </Section>
