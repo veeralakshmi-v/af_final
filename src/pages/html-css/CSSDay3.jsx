@@ -673,8 +673,8 @@ export default function CSSDay3({ activeTab, onNavigate }) {
                 <div className="code-pane" style={{ gridColumn: 'span 2' }}>
                   <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(
 `.target-box {
-  order: ${demoOrder};            /* ${demoOrder < 0 ? 'Positions item before siblings' : demoOrder > 0 ? 'Positions item after siblings' : 'Default position'} */
-  align-self: ${demoAlignSelf};   /* ${demoAlignSelf === 'center' ? 'Centers vertically' : demoAlignSelf === 'flex-end' ? 'Aligns to bottom' : demoAlignSelf === 'stretch' ? 'Stretches full height' : 'Aligns to top'} */
+  order: ${demoOrder}; /* ${demoOrder < 0 ? 'Positions item before siblings' : demoOrder > 0 ? 'Positions item after siblings' : 'Default position'} */
+  align-self: ${demoAlignSelf}; /* ${demoAlignSelf === 'center' ? 'Centers vertically' : demoAlignSelf === 'flex-end' ? 'Aligns to bottom' : demoAlignSelf === 'stretch' ? 'Stretches full height' : 'Aligns to top'} */
 }`, Prism.languages.css, 'css') }}></pre>
                 </div>
               </div>
@@ -856,9 +856,9 @@ export default function CSSDay3({ activeTab, onNavigate }) {
                 <div className="code-pane" style={{ gridColumn: 'span 2' }}>
                   <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(
 `.target-box {
-  flex-grow: ${demoGrow};        /* ${demoGrow > 0 ? 'Expands to absorb extra container space' : 'Fixed size, does not grow'} */
-  flex-shrink: ${demoShrink};      /* ${demoShrink === 0 ? 'Does not shrink when container space contracts' : 'Shrinks proportionally'} */
-  flex-basis: ${demoBasis};     /* Starting base size before grow/shrink calculations */
+  flex-grow: ${demoGrow}; /* ${demoGrow > 0 ? 'Expands to absorb extra container space' : 'Fixed size, does not grow'} */
+  flex-shrink: ${demoShrink}; /* ${demoShrink === 0 ? 'Does not shrink when container space contracts' : 'Shrinks proportionally'} */
+  flex-basis: ${demoBasis}; /* Starting base size before grow/shrink calculations */
   
   /* Equivalent Shorthand: */
   flex: ${demoGrow} ${demoShrink} ${demoBasis};

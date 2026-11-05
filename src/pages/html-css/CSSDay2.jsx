@@ -62,11 +62,11 @@ export default function CSSDay2({ activeTab, onNavigate }) {
 
 /* 2. Display Properties */
 .block-element {
-  display: block;        /* Starts on new line, 100% width */
+  display: block; /* Starts on new line, 100% width */
 }
 
 .inline-element {
-  display: inline;       /* Same line, width/height DO NOT apply */
+  display: inline; /* Same line, width/height DO NOT apply */
 }
 
 .inline-block-element {
@@ -81,30 +81,30 @@ export default function CSSDay2({ activeTab, onNavigate }) {
   height: 200px;
   
   /* Padding (Inside space around content) */
-  padding: 20px;         /* Shorthand: top right bottom left */
+  padding: 20px; /* Shorthand: top right bottom left */
   /* padding: 10px 20px; (top/bottom right/left) */
 
   /* Border (Frame surrounding padding) */
   border: 4px solid #2563eb;
-  border-radius: 12px;   /* Rounded corners */
+  border-radius: 12px; /* Rounded corners */
 
   /* Margin (Outside space separating elements) */
-  margin: 30px auto;     /* Auto centers block elements horizontally */
+  margin: 30px auto; /* Auto centers block elements horizontally */
 }`;
 
   const staticCode = `/* Default Normal Document Flow */
 .static-box {
-  position: static;      /* Default value for all elements */
+  position: static; /* Default value for all elements */
   background-color: #e2e8f0;
 
   /* Top, Right, Bottom, Left & Z-Index DO NOT work on static elements */
-  top: 50px;             /* Ignored */
-  left: 100px;           /* Ignored */
+  top: 50px; /* Ignored */
+  left: 100px; /* Ignored */
 }`;
 
   const relativeAbsoluteCode = `/* 1. Position Relative (Anchor Parent) */
 .parent-card {
-  position: relative;    /* Keeps original spot + acts as reference anchor */
+  position: relative; /* Keeps original spot + acts as reference anchor */
   width: 400px;
   height: 250px;
   border: 2px solid #3b82f6;
@@ -112,9 +112,9 @@ export default function CSSDay2({ activeTab, onNavigate }) {
 
 /* 2. Position Absolute (Positioned Child) */
 .badge-tag {
-  position: absolute;    /* Removed from normal flow */
+  position: absolute; /* Removed from normal flow */
   top: 15px;
-  right: 15px;           /* Anchored 15px from top-right of .parent-card */
+  right: 15px; /* Anchored 15px from top-right of .parent-card */
   background-color: #ef4444;
   color: white;
   padding: 0.3rem 0.6rem;
@@ -123,7 +123,7 @@ export default function CSSDay2({ activeTab, onNavigate }) {
 
 /* 3. Position Fixed (Viewport Locked) */
 .floating-support-btn {
-  position: fixed;       /* Locked to screen window during scrolling */
+  position: fixed; /* Locked to screen window during scrolling */
   bottom: 20px;
   right: 20px;
   z-index: 1000;
@@ -131,51 +131,51 @@ export default function CSSDay2({ activeTab, onNavigate }) {
 
 /* 4. Position Sticky (Scroll Toggle) */
 .sticky-header {
-  position: sticky;      /* Behaves as relative until top boundary is reached */
+  position: sticky; /* Behaves as relative until top boundary is reached */
   top: 0;
   z-index: 100;
 }`;
 
   const floatCode = `/* 1. Floating Elements */
 .sidebar-box {
-  float: left;           /* Floats to left margin, text wraps around right */
+  float: left; /* Floats to left margin, text wraps around right */
   width: 200px;
   margin-right: 20px;
 }
 
 .promo-badge {
-  float: right;          /* Floats to right margin */
+  float: right; /* Floats to right margin */
   width: 150px;
 }
 
 /* 2. Clearing Floats */
 .footer-section {
-  clear: both;           /* Prevents floating elements from overlapping footer */
+  clear: both; /* Prevents floating elements from overlapping footer */
 }
 
 /* 3. Modern Micro Clearfix Hack */
 .clearfix::after {
   content: "";
   display: table;
-  clear: both;           /* Automatically prevents parent height collapse */
+  clear: both; /* Automatically prevents parent height collapse */
 }`;
 
   const zIndexCode = `/* 1. Normal Stacking Order */
 .background-card {
   position: relative;
-  z-index: 1;            /* Lowest layer */
+  z-index: 1; /* Lowest layer */
 }
 
 .middle-card {
   position: relative;
-  z-index: 2;            /* Overlaps z-index: 1 */
+  z-index: 2; /* Overlaps z-index: 1 */
 }
 
 /* 2. Modal Overlay / Top Header */
 .top-nav-modal {
   position: fixed;
   top: 0;
-  z-index: 1000;         /* Highest priority front layer */
+  z-index: 1000; /* Highest priority front layer */
 }
 
 /* 3. Stacking Context Rule */
@@ -186,7 +186,7 @@ export default function CSSDay2({ activeTab, onNavigate }) {
 
 .child-a {
   position: absolute;
-  z-index: 9999;         /* Scoped inside parent-a (cannot overlap parent-b with z-index: 2) */
+  z-index: 9999; /* Scoped inside parent-a (cannot overlap parent-b with z-index: 2) */
 }`;
 
   const offsetCode = `/* CSS Offset Properties Example */
@@ -194,34 +194,34 @@ export default function CSSDay2({ activeTab, onNavigate }) {
 /* 1. Relative Offset (Shifted from normal spot) */
 .relative-box {
   position: relative;
-  top: 20px;            /* Nudges box 20px DOWN from its top edge */
-  left: 30px;           /* Nudges box 30px RIGHT from its left edge */
+  top: 20px; /* Nudges box 20px DOWN from its top edge */
+  left: 30px; /* Nudges box 30px RIGHT from its left edge */
 }
 
 /* 2. Absolute Offset (Placed inside relative parent) */
 .parent-container {
-  position: relative;   /* Boundary for absolute child elements */
+  position: relative; /* Boundary for absolute child elements */
   width: 300px;
   height: 200px;
 }
 
 .badge-top-right {
   position: absolute;
-  top: 10px;            /* 10px from top of parent */
-  right: 10px;          /* 10px from right of parent */
+  top: 10px; /* 10px from top of parent */
+  right: 10px; /* 10px from right of parent */
 }
 
 /* 3. Fixed Offset (Pinned to screen window) */
 .chat-widget {
   position: fixed;
-  bottom: 20px;         /* 20px from bottom of viewport screen */
-  right: 20px;          /* 20px from right of viewport screen */
+  bottom: 20px; /* 20px from bottom of viewport screen */
+  right: 20px; /* 20px from right of viewport screen */
 }
 
 /* 4. Sticky Offset (Pins at threshold) */
 .sticky-header {
   position: sticky;
-  top: 0;               /* Locks at 0px from top when scrolling */
+  top: 0; /* Locks at 0px from top when scrolling */
 }`;
 
 
@@ -230,14 +230,14 @@ export default function CSSDay2({ activeTab, onNavigate }) {
   width: 300px;
   height: 150px;
   
-  overflow: auto;         /* scrollbars added only when content overflows */
+  overflow: auto; /* scrollbars added only when content overflows */
   /* Options: */
   /* overflow: visible;   (Content bleeds outside container - default) */
   /* overflow: hidden;    (Clips overflowing content) */
   /* overflow: scroll;    (Always shows scrollbars on X and Y) */
   
-  overflow-x: hidden;     /* Disable horizontal scrollbar */
-  overflow-y: auto;       /* Enable vertical scrollbar */
+  overflow-x: hidden; /* Disable horizontal scrollbar */
+  overflow-y: auto; /* Enable vertical scrollbar */
 }`;
 
   const day4QuizQuestions = [
@@ -1005,12 +1005,12 @@ export default function CSSDay2({ activeTab, onNavigate }) {
             <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
               <div className="code-header">Positioning & Offset Code Examples</div>
               <div className="code-content" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div>
-                  <h4 style={{ margin: '0 0 0.5rem', color: '#0f172a', fontSize: '0.95rem' }}>CSS Position Values Syntax</h4>
+                <div className="code-pane" style={{ width: '100%' }}>
+                  <h4 style={{ margin: '0 0 0.75rem', color: '#60a5fa', fontSize: '0.95rem', fontWeight: 600 }}>CSS Position Values Syntax</h4>
                   <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(relativeAbsoluteCode, Prism.languages.css, 'css') }}></pre>
                 </div>
-                <div>
-                  <h4 style={{ margin: '0 0 0.5rem', color: '#0f172a', fontSize: '0.95rem' }}>CSS Offset Properties (top, bottom, left, right) Syntax</h4>
+                <div className="code-pane" style={{ width: '100%', borderTop: '1px solid #334155' }}>
+                  <h4 style={{ margin: '0 0 0.75rem', color: '#60a5fa', fontSize: '0.95rem', fontWeight: 600 }}>CSS Offset Properties (top, bottom, left, right) Syntax</h4>
                   <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(offsetCode, Prism.languages.css, 'css') }}></pre>
                 </div>
               </div>
@@ -1156,8 +1156,8 @@ export default function CSSDay2({ activeTab, onNavigate }) {
                   <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(
 `/* Selected Z-Index Rule */
 .interactive-element {
-  position: relative;     /* Required for z-index to work */
-  z-index: ${demoZIndex};           /* ${demoZIndex > 0 ? 'Positive: brings forward' : 'Negative: pushes behind'} */
+  position: relative; /* Required for z-index to work */
+  z-index: ${demoZIndex}; /* ${demoZIndex > 0 ? 'Positive: brings forward' : 'Negative: pushes behind'} */
 }`, Prism.languages.css, 'css') }}></pre>
                 </div>
               </div>

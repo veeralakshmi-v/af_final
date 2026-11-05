@@ -946,8 +946,8 @@ export default function CSSDay4({ activeTab, onNavigate }) {
   grid-template-columns: 140px 140px;
   
   /* Cell-Level Alignment: */
-  justify-items: ${gridJustifyItems};   /* ${gridJustifyItems === 'center' ? 'Centers items horizontally in cells' : gridJustifyItems === 'stretch' ? 'Stretches items full cell width' : 'Aligns to cell edge'} */
-  align-items: ${gridAlignItems};       /* ${gridAlignItems === 'center' ? 'Centers items vertically in cells' : gridAlignItems === 'stretch' ? 'Stretches items full cell height' : 'Aligns to cell edge'} */
+  justify-items: ${gridJustifyItems}; /* ${gridJustifyItems === 'center' ? 'Centers items horizontally in cells' : gridJustifyItems === 'stretch' ? 'Stretches items full cell width' : 'Aligns to cell edge'} */
+  align-items: ${gridAlignItems}; /* ${gridAlignItems === 'center' ? 'Centers items vertically in cells' : gridAlignItems === 'stretch' ? 'Stretches items full cell height' : 'Aligns to cell edge'} */
   
   /* Container-Level Track Alignment: */
   justify-content: ${gridJustifyContent}; /* ${gridJustifyContent === 'center' ? 'Centers whole grid system in parent' : 'Positions grid tracks'} */

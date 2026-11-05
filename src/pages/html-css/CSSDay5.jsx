@@ -179,6 +179,7 @@ p::first-letter {
             </div>
 
             <div className="code-example-box">
+              <div className="code-header">CSS Absolute Units</div>
               <div className="code-pane">
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(absoluteUnitsCode, Prism.languages.css, 'css') }}></pre>
               </div>
@@ -221,6 +222,7 @@ p::first-letter {
             </div>
 
             <div className="code-example-box" style={{ marginBottom: '2rem' }}>
+              <div className="code-header">CSS Relative Units</div>
               <div className="code-pane">
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(relativeUnitsCode, Prism.languages.css, 'css') }}></pre>
               </div>
@@ -252,6 +254,7 @@ p::first-letter {
             </ul>
 
             <div className="code-example-box" style={{ marginTop: '2rem' }}>
+              <div className="code-header">CSS Pseudo-Classes Example</div>
               <div className="code-pane">
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(pseudoClassCode, Prism.languages.css, 'css') }}></pre>
               </div>
@@ -283,6 +286,7 @@ p::first-letter {
             </ul>
 
             <div className="code-example-box" style={{ marginTop: '2rem' }}>
+              <div className="code-header">CSS Pseudo-Elements Example</div>
               <div className="code-pane">
                 <pre dangerouslySetInnerHTML={{ __html: Prism.highlight(pseudoElementCode, Prism.languages.css, 'css') }}></pre>
               </div>
