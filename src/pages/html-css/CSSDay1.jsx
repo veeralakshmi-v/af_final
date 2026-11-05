@@ -10,7 +10,7 @@ import 'prismjs/themes/prism-tomorrow.css';
 // Reusable Section Component with Framer Motion
 const Section = ({ id, eyebrow, title, children }) => {
   return (
-    <motion.section 
+    <motion.section
       id={id}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -260,16 +260,16 @@ p {
   background-image: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%), url('pattern.png');
 
   /* 2. Image Sizing & Tiling */
-  background-size: cover;          /* Options: cover, contain, auto, 100% 200px */
-  background-repeat: no-repeat;    /* Options: repeat, no-repeat, repeat-x, repeat-y */
+  background-size: cover; /* Options: cover, contain, auto, 100% 200px */
+  background-repeat: no-repeat; /* Options: repeat, no-repeat, repeat-x, repeat-y */
   background-position: center top; /* Options: center, top right, 50% 50% */
 
   /* 3. Attachment & Scrolling */
-  background-attachment: fixed;    /* Options: scroll, fixed (Parallax effect), local */
+  background-attachment: fixed; /* Options: scroll, fixed (Parallax effect), local */
 
   /* 4. Origin & Clipping Bounds */
   background-origin: padding-box;  /* Options: border-box, padding-box, content-box */
-  background-clip: border-box;     /* Options: border-box, padding-box, content-box, text */
+  background-clip: border-box; /* Options: border-box, padding-box, content-box, text */
 }
 
 /* 5. Shorthand Syntax */
@@ -281,50 +281,50 @@ p {
   /* 1. Font Family, Size & Weight */
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 16px;
-  font-weight: 600;       /* 100 to 900 or normal, bold */
-  font-style: italic;     /* Options: normal, italic, oblique */
-  font-variant: normal;   /* Options: normal, small-caps */
+  font-weight: 600; /* 100 to 900 or normal, bold */
+  font-style: italic; /* Options: normal, italic, oblique */
+  font-variant: normal; /* Options: normal, small-caps */
 
   /* 2. Alignment & Spacing */
-  text-align: justify;    /* Options: left, center, right, justify */
-  line-height: 1.6;       /* Vertical line height (Leading) */
+  text-align: justify; /* Options: left, center, right, justify */
+  line-height: 1.6; /* Vertical line height (Leading) */
   letter-spacing: 0.05em; /* Space between letters (Tracking) */
-  word-spacing: 2px;      /* Space between words */
-  text-indent: 1.5rem;    /* First-line indent */
+  word-spacing: 2px; /* Space between words */
+  text-indent: 1.5rem; /* First-line indent */
 
   /* 3. Decoration & Transformation */
   text-decoration: underline wavy #3b82f6; /* line, color, style */
-  text-transform: capitalize;               /* uppercase, lowercase, capitalize, none */
+  text-transform: capitalize; /* uppercase, lowercase, capitalize, none */
 
   /* 4. Visual Effects & Word Wrapping */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  overflow-wrap: break-word;                /* Prevents long text from clipping */
+  overflow-wrap: break-word; /* Prevents long text from clipping */
 }`;
 
   const listsCode = `/* 1. List Bullet Customization */
 ul.custom-list {
-  list-style-type: square;        /* Options: disc, circle, square, decimal, alpha, none */
-  list-style-position: inside;    /* Options: inside, outside */
-  list-style-image: url('star.png'); /* Custom bullet image (rendered in intrinsic image size) */
+  list-style-type: square; /* Options: disc, circle, square, decimal, alpha, none */
+  list-style-position: inside; /* Options: inside, outside */
+  list-style-image: url('star.png'); /* Custom bullet image */
 }
 
 /* 1b. Resizing Custom Bullet Image (Option 1: Using Background Image) */
 ul.custom-list-resized {
-  list-style-type: none;          /* Remove default bullets */
+  list-style-type: none; /* Remove default bullets */
   padding-left: 0;
 }
 
 ul.custom-list-resized li {
   background-image: url('star.png');
-  background-size: 18px 18px;     /* Resizes custom bullet image */
+  background-size: 18px 18px; /* Resizes custom bullet image */
   background-repeat: no-repeat;
-  background-position: 0 center;  /* Alignment */
-  padding-left: 26px;             /* Space between resized image & text */
+  background-position: 0 center; /* Alignment */
+  padding-left: 26px; /* Space between resized image & text */
 }
 
 /* 1c. Resizing Custom Bullet Image (Option 2: Using ::before Pseudo-Element) */
 ul.custom-list-before {
-  list-style: none;               /* Remove default bullets */
+  list-style: none; /* Remove default bullets */
   padding-left: 0;
 }
 
@@ -339,8 +339,8 @@ ul.custom-list-before li::before {
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 18px;                    /* Resized width */
-  height: 18px;                   /* Resized height */
+  width: 18px; /* Resized width */
+  height: 18px; /* Resized height */
   background-image: url('star.png');
   background-size: contain;
   background-repeat: no-repeat;
@@ -354,11 +354,11 @@ ol.step-list {
 /* 2. Opacity vs Visibility */
 .ghost-card {
   background-color: #0f172a;
-  opacity: 0.85;                  /* Range: 0.0 (transparent) to 1.0 (fully opaque) */
+  opacity: 0.85; /* Range: 0.0 (transparent) to 1.0 (fully opaque) */
 }
 
 .invisible-element {
-  visibility: hidden;             /* Hidden but preserves space in layout */
+  visibility: hidden; /* Hidden but preserves space in layout */
 }
 
 /* 3. Modern CSS Filters */
@@ -491,9 +491,9 @@ ol.step-list {
       {activeTab === 'intro' && (
         <Section key="intro" id="intro" eyebrow="Fundamentals" title="Introduction to CSS">
           <div className="panel">
-            <p><strong>CSS (Cascading Style Sheets)</strong> is the language we use to style an HTML document. It describes how HTML elements should be displayed on screen, transforming a plain webpage into a beautifully designed site.</p>
+            <p><strong>CSS (Cascading Style Sheets)</strong> is the language we use to style an HTML document. It describes how HTML elements should be displayed on screen, transforming a plain webpage into a beautifully designed site.</p><br></br>
             <p>A CSS rule consists of a <strong>selector</strong> and a <strong>declaration block</strong>:</p>
-            <div className="code-pane" style={{ margin: '1rem 0' }}>
+            <div className="code-pane" >
               <pre><code className="language-css">h1 {'{'} color: green; font-family: sans-serif; {'}'}</code></pre>
             </div>
             <ul style={{ paddingLeft: '1.5rem', marginBottom: '2rem' }}>
@@ -910,7 +910,7 @@ ol.step-list {
 
             {/* ─── FEATURE CARDS FOR BACKGROUND CONCEPTS ─── */}
             <h3 style={{ fontSize: '1.4rem', color: '#0f172a', marginBottom: '0.8rem' }}>2. Key Background Concepts Explained</h3>
-            
+
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.2rem', marginBottom: '2rem' }}>
               <div style={{ background: '#fafafa', padding: '1.2rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
                 <h4 style={{ margin: '0 0 0.4rem', color: '#0284c7' }}>🖼️ background-size: cover vs contain</h4>
@@ -1069,7 +1069,7 @@ ol.step-list {
 
             {/* ─── 3 CATEGORY CARDS ─── */}
             <h3 style={{ fontSize: '1.4rem', color: '#0f172a', marginBottom: '0.8rem' }}>2. Typography Categories Breakdown</h3>
-            
+
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.2rem', marginBottom: '2rem' }}>
               <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '10px', border: '1px solid #cbd5e1' }}>
                 <h4 style={{ margin: '0 0 0.4rem', color: '#1e3a8a' }}>🔤 Font Core Properties</h4>

@@ -238,18 +238,33 @@ tr:hover td {
   width: 100%;
 }
 
+.code-content:has(> .code-pane:only-child) {
+  display: block !important;
+}
+
+.code-content > .code-pane:only-child {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+}
+
 .code-pane {
   min-width: 0 !important;
   max-width: 100% !important;
   overflow-x: auto !important;
+  padding: 1.25rem 1.5rem !important;
+  background: #1e1e1e !important;
 }
 
 .code-pane pre {
   margin: 0 !important;
+  padding: 0 !important;
   min-width: 0 !important;
   max-width: 100% !important;
   overflow-x: auto !important;
   white-space: pre !important;
+  font-family: 'Fira Code', Consolas, Monaco, 'Courier New', Courier, monospace !important;
+  font-size: 0.92rem !important;
+  line-height: 1.6 !important;
 }
 
 .preview-pane { 
