@@ -4,6 +4,11 @@ import { toPng } from 'html-to-image';
 import { jsPDF } from 'jspdf';
 import './InvoiceGenerator.css';
 
+const safeToFixed = (val, decimals = 2) => {
+  const num = parseFloat(val);
+  return isNaN(num) ? (0).toFixed(decimals) : num.toFixed(decimals);
+};
+
 const DEFAULT_QR_SVG = `
 <svg class="w-full h-full text-slate-300" viewBox="0 0 100 100" fill="currentColor">
   <path d="M5 5h30v30H5V5zm6 6v18h18V11H11zm6 6h6v6h-6v-6zm48-12h30v30H65V5zm6 6v18h18V11H71zm6 6h6v6h-6v-6zM5 65h30v30H5V65zm6 6v18h18V71H11zm6 6h6v6h-6v-6zm56-8h6v6h-6v-6zm6 6h6v6h-6v-6zm6-6h6v6h-6v-6zm-12 12h6v6h-6v-6zm12 0h6v6h-6v-6zm-6 6h6v6h-6v-6zm-12 6h6v6h-6v-6zm12 0h6v6h-6v-6zm-18 6h6v6h-6v-6zm12 0h6v6h-6v-6zm-6-24h6v6h-6v-6zm12 0h6v6h-6v-6zm-24 12h6v6h-6v-6zm0 12h6v6h-6v-6zm12-6h6v6h-6v-6z" />
@@ -48,7 +53,7 @@ const formatDateDisplay = (dateStr) => {
   return dateStr;
 };
 
-export default function InvoiceGenerator({ session, students = [] }) {
+export default function InvoiceGenerator({ session, students = [], onBack }) {
   // Mobile drawer state
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [showLedgerModal, setShowLedgerModal] = useState(false);
@@ -584,18 +589,18 @@ export default function InvoiceGenerator({ session, students = [] }) {
       text += `\n── Fee Details ──\n`;
       d.items.forEach((item, i) => {
         if (item.description) {
-          const amt = ((parseFloat(item.qty) || 0) * (parseFloat(item.rate) || 0)).toFixed(2);
+          const amt = safeToFixed((parseFloat(item.qty) || 0) * (parseFloat(item.rate) || 0));
           text += `${i + 1}. ${item.description} — ₹${amt}\n`;
         }
       });
     }
 
-    text += `\n💰 Subtotal: ₹${d.subtotal.toFixed(2)}`;
-    if (d.discount > 0) text += ` | Discount: ₹${d.discount.toFixed(2)}`;
+    text += `\n💰 Subtotal: ₹${safeToFixed(d.subtotal)}`;
+    if (parseFloat(d.discount) > 0) text += ` | Discount: ₹${safeToFixed(d.discount)}`;
     text += `\n`;
-    if (d.gstPercent > 0) text += `📊 GST (${d.gstPercent}%): ₹${d.gstAmount.toFixed(2)}\n`;
-    text += `🏷️ Grand Total: ₹${d.grandTotal.toFixed(2)}\n`;
-    text += `💳 Paid: ₹${d.amountPaid.toFixed(2)} | Balance: ₹${d.balanceDue.toFixed(2)}\n`;
+    if (parseFloat(d.gstPercent) > 0) text += `📊 GST (${d.gstPercent}%): ₹${safeToFixed(d.gstAmount)}\n`;
+    text += `🏷️ Grand Total: ₹${safeToFixed(d.grandTotal)}\n`;
+    text += `💳 Paid: ₹${safeToFixed(d.amountPaid)} | Balance: ₹${safeToFixed(d.balanceDue)}\n`;
     text += `📌 Status: ${d.status}\n`;
     if (d.activeModesStr) text += `💰 Payment: ${d.activeModesStr}\n`;
     text += `\n🏫 Alphafly Computer Education, Theni\n📞 8015 8016 89`;
@@ -1292,7 +1297,7 @@ export default function InvoiceGenerator({ session, students = [] }) {
                             />
                           </td>
                           <td className="px-2 py-0.5 text-right text-slate-900 font-semibold px-3 item-amount text-[10px]">
-                            ₹{rowAmount.toFixed(2)}
+                            ₹{safeToFixed(rowAmount)}
                           </td>
                           <td className="px-2 py-1 text-center no-print">
                             <button
@@ -1412,7 +1417,7 @@ export default function InvoiceGenerator({ session, students = [] }) {
                   <div className="flex justify-between items-center text-[10px]">
                     <span className="font-bold text-slate-700">Balance Due:</span>
                     <span id="lbl-balance-due" className={`font-bold ${balanceDue > 0 ? 'text-rose-600' : 'text-slate-800'}`}>
-                      ₹{Math.max(0, balanceDue).toFixed(2)}
+                      ₹{safeToFixed(Math.max(0, balanceDue))}
                     </span>
                   </div>
                 </div>
@@ -1431,7 +1436,7 @@ export default function InvoiceGenerator({ session, students = [] }) {
                 <div className="flex justify-between items-center text-[10px]">
                   <span className="font-medium text-slate-600">Subtotal:</span>
                   <span id="lbl-subtotal" className="font-semibold text-slate-800">
-                    ₹{subtotal.toFixed(2)}
+                    ₹{safeToFixed(subtotal)}
                   </span>
                 </div>
 
@@ -1465,7 +1470,7 @@ export default function InvoiceGenerator({ session, students = [] }) {
                 <div className="flex justify-between items-center text-[10px]">
                   <span className="font-medium text-slate-600">GST Amount:</span>
                   <span id="lbl-gst-amount" className="font-semibold text-slate-800">
-                    ₹{gstAmount.toFixed(2)}
+                    ₹{safeToFixed(gstAmount)}
                   </span>
                 </div>
 
@@ -1476,7 +1481,7 @@ export default function InvoiceGenerator({ session, students = [] }) {
                 <div className="flex justify-between items-center">
                   <span className="text-[10px] font-bold text-primary uppercase">Grand Total:</span>
                   <span id="lbl-grand-total" className="text-xs font-extrabold text-primary">
-                    ₹{grandTotal.toFixed(2)}
+                    ₹{safeToFixed(grandTotal)}
                   </span>
                 </div>
               </div>
@@ -1731,8 +1736,8 @@ export default function InvoiceGenerator({ session, students = [] }) {
                           <td className="py-2 px-3 font-semibold text-slate-900">{item.description || '—'}</td>
                           <td className="py-2 px-3 text-center text-slate-600">{item.duration || '—'}</td>
                           <td className="py-2 px-3 text-center font-medium text-slate-800">{item.qty || '1'}</td>
-                          <td className="py-2 px-3 text-right text-slate-700">{r > 0 ? r.toFixed(2) : '—'}</td>
-                          <td className="py-2 px-3 text-right font-bold text-slate-900">₹{rowAmount.toFixed(2)}</td>
+                          <td className="py-2 px-3 text-right text-slate-700">{r > 0 ? safeToFixed(r) : '—'}</td>
+                          <td className="py-2 px-3 text-right font-bold text-slate-900">₹{safeToFixed(rowAmount)}</td>
                         </tr>
                       );
                     })}
@@ -1772,12 +1777,12 @@ export default function InvoiceGenerator({ session, students = [] }) {
                 <div className="border-t border-slate-100 pt-1.5 mt-2 space-y-1 text-[10.5px]">
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-slate-700">Amount Paid:</span>
-                    <span className="font-extrabold text-emerald-600">₹{amountPaid.toFixed(2)}</span>
+                    <span className="font-extrabold text-emerald-600">₹{safeToFixed(amountPaid)}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="font-bold text-slate-800">Balance Due:</span>
                     <span className={`font-black ${balanceDue > 0 ? 'text-rose-600' : 'text-slate-900'}`}>
-                      ₹{Math.max(0, balanceDue).toFixed(2)}
+                      ₹{safeToFixed(Math.max(0, balanceDue))}
                     </span>
                   </div>
                 </div>
@@ -1792,25 +1797,25 @@ export default function InvoiceGenerator({ session, students = [] }) {
                 <div className="space-y-1 text-[10.5px]">
                   <div className="flex justify-between items-center">
                     <span className="text-slate-600 font-medium">Subtotal:</span>
-                    <span className="font-bold text-slate-900">₹{subtotal.toFixed(2)}</span>
+                    <span className="font-bold text-slate-900">₹{safeToFixed(subtotal)}</span>
                   </div>
                   {discount > 0 && (
                     <div className="flex justify-between items-center text-emerald-700">
                       <span className="font-medium">Discount:</span>
-                      <span className="font-bold">-₹{discount.toFixed(2)}</span>
+                      <span className="font-bold">-₹{safeToFixed(discount)}</span>
                     </div>
                   )}
                   {gstPercent > 0 && (
                     <div className="flex justify-between items-center text-slate-600">
                       <span className="font-medium">GST ({gstPercent}%):</span>
-                      <span className="font-bold text-slate-900">+₹{gstAmount.toFixed(2)}</span>
+                      <span className="font-bold text-slate-900">+₹{safeToFixed(gstAmount)}</span>
                     </div>
                   )}
                 </div>
 
                 <div className="border-t border-slate-200 pt-1.5 mt-2 flex justify-between items-center">
                   <span className="text-[11px] font-extrabold text-[#0A3D91] uppercase">Grand Total:</span>
-                  <span className="text-[14px] font-black text-[#0A3D91]">₹{grandTotal.toFixed(2)}</span>
+                  <span className="text-[14px] font-black text-[#0A3D91]">₹{safeToFixed(grandTotal)}</span>
                 </div>
               </div>
             </section>
@@ -1941,10 +1946,10 @@ export default function InvoiceGenerator({ session, students = [] }) {
                           <td className="p-3 text-slate-400">{inv.invoiceDate}</td>
                           <td className="p-3 font-semibold text-white">{inv.studentName || '—'}</td>
                           <td className="p-3 text-slate-300">{inv.course || '—'}</td>
-                          <td className="p-3 text-right font-bold text-white">₹{(inv.grandTotal || 0).toFixed(2)}</td>
-                          <td className="p-3 text-right font-bold text-emerald-400">₹{(inv.amountPaid || 0).toFixed(2)}</td>
+                          <td className="p-3 text-right font-bold text-white">₹{safeToFixed(inv.grandTotal)}</td>
+                          <td className="p-3 text-right font-bold text-emerald-400">₹{safeToFixed(inv.amountPaid)}</td>
                           <td className={`p-3 text-right font-bold ${(inv.balanceDue || 0) > 0 ? 'text-rose-400' : 'text-slate-400'}`}>
-                            ₹{(inv.balanceDue || 0).toFixed(2)}
+                            ₹{safeToFixed(inv.balanceDue)}
                           </td>
                           <td className="p-3 text-center">
                             <span className={`px-2 py-0.5 text-[9px] font-black rounded-full border status-${(inv.status || 'UNPAID').toLowerCase()}`}>
