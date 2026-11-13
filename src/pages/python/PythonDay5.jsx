@@ -1578,11 +1578,64 @@ print("Set 1 modified:", set1)`}
               &nbsp;&nbsp;&nbsp;&nbsp;{st('"marks"')}: {nm('88')},<br/>
               &nbsp;&nbsp;&nbsp;&nbsp;{st('"city"')}: {st('"Theni"')}<br/>
               {'}'}<br/><br/>
-              {c('# Accessing value by key')}<br/>
+              {c('# 1. Accessing value by key using square brackets [ ]')}<br/>
               {fn('print')}(student[{st('"name"')}]) {ok('# "Priya"')}<br/>
-              {c('# Safe retrieval using .get()')}<br/>
-              {fn('print')}(student.{fn('get')}({st('"rank"')}, {st('"Not Ranked"')})) {ok('# "Not Ranked" (avoid KeyError)')}
+              {c('# student["rank"] would raise KeyError exception!')}<br/><br/>
+              {c('# 2. Safe retrieval using .get() (never crashes)')}<br/>
+              {fn('print')}(student.{fn('get')}({st('"name"')})) {ok('# "Priya"')}<br/>
+              {fn('print')}(student.{fn('get')}({st('"rank"')})) {ok('# None (Key is missing, no error)')}<br/>
+              {fn('print')}(student.{fn('get')}({st('"rank"')}, {st('"Not Ranked"')})) {ok('# "Not Ranked" (Custom default value)')}
             </CodeBlock>
+
+            {/* ─── GET() VS SQUARE BRACKETS ([]) COMPARISON TABLE ─── */}
+            <div style={{ marginTop: '2rem', marginBottom: '2.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
+                <h4 style={{ fontSize: '1.2rem', color: '#0f172a', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <code style={{ background: '#f1f5f9', color: '#0284c7', padding: '0.2rem 0.5rem', borderRadius: '6px' }}>get()</code> vs. Square Brackets ( <code style={{ background: '#f1f5f9', color: '#0284c7', padding: '0.2rem 0.5rem', borderRadius: '6px' }}>[ ]</code> )
+                </h4>
+              </div>
+
+              <div style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.92rem', background: '#ffffff' }}>
+                  <thead>
+                    <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
+                      <th style={{ padding: '0.9rem 1.2rem', color: '#0f172a', fontWeight: 800, width: '22%' }}>Feature</th>
+                      <th style={{ padding: '0.9rem 1.2rem', color: '#0f172a', fontWeight: 800, width: '39%' }}>
+                        <code style={{ background: '#f1f5f9', color: '#0284c7', padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.9rem', fontWeight: 700 }}>dict.get(key)</code>
+                      </th>
+                      <th style={{ padding: '0.9rem 1.2rem', color: '#0f172a', fontWeight: 800, width: '39%' }}>
+                        <code style={{ background: '#f1f5f9', color: '#0284c7', padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.9rem', fontWeight: 700 }}>dict[key]</code>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                      <td style={{ padding: '0.9rem 1.2rem', fontWeight: 700, color: '#0f172a' }}>Key exists</td>
+                      <td style={{ padding: '0.9rem 1.2rem', color: '#334155' }}>Returns the value.</td>
+                      <td style={{ padding: '0.9rem 1.2rem', color: '#334155' }}>Returns the value.</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #e2e8f0', background: '#fafbfc' }}>
+                      <td style={{ padding: '0.9rem 1.2rem', fontWeight: 700, color: '#0f172a' }}>Key is missing</td>
+                      <td style={{ padding: '0.9rem 1.2rem', color: '#334155' }}>
+                        Returns <code style={{ background: '#f1f5f9', color: '#475569', padding: '0.15rem 0.45rem', borderRadius: '4px', fontWeight: 600 }}>None</code> or a custom default.
+                      </td>
+                      <td style={{ padding: '0.9rem 1.2rem', color: '#334155' }}>
+                        Raises a <code style={{ background: '#fee2e2', color: '#dc2626', padding: '0.15rem 0.45rem', borderRadius: '4px', fontWeight: 700 }}>KeyError</code> exception.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: '0.9rem 1.2rem', fontWeight: 700, color: '#0f172a' }}>Best use case</td>
+                      <td style={{ padding: '0.9rem 1.2rem', color: '#334155' }}>
+                        Optional data, counting items, or safe lookups.
+                      </td>
+                      <td style={{ padding: '0.9rem 1.2rem', color: '#334155' }}>
+                        When a missing key indicates a bug that should stop execution.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
             <h3 style={{ fontSize:'1.3rem', color:'#0f172a', marginBottom:'0.5rem' }}>🛠️ 2. Modifying & Removing Entries</h3>
             <p style={{ color:'#475569', fontSize:'0.95rem', marginBottom:'1.5rem' }}>
