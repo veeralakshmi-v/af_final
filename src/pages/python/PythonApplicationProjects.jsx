@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Code, Play, RefreshCw, BookOpen, Cpu, Terminal, Zap, Shield, HelpCircle, Link2, MessageSquare, Timer, Bot, TrendingUp, Activity, AlertTriangle } from 'lucide-react';
+import { ArrowRight, Code, Play, RefreshCw, BookOpen, Cpu, Terminal, Zap, Shield, HelpCircle, Link2, MessageSquare, Timer, Utensils, Car, CreditCard, ShoppingBag, Lightbulb } from 'lucide-react';
 
 /* ─────────────────────────────────────────────
    SHARED UI HELPERS
@@ -770,26 +770,26 @@ export default function PythonApplicationProjects({ activeTab, onNavigate }) {
 
       {/* ─── TAB 1: INTRO ─── */}
       {activeTab === 'intro' && (
-        <Section key="intro" eyebrow="Capstone Suite" title="Python 2027 Real-Time Projects">
+        <Section key="intro" eyebrow="Capstone Suite" title="Python Real-Time Application Projects">
           <div className="panel">
-            <div style={{ background:'linear-gradient(135deg,#0f172a 0%, #1e1b4b 50%, #312e81 100%)', color:'white', padding:'2.2rem', borderRadius:'16px', marginBottom:'2.2rem', boxShadow:'0 10px 25px rgba(49,46,129,0.2)' }}>
-              <h3 style={{ fontSize:'1.7rem', margin:'0 0 0.8rem', fontWeight:900, color:'#a5b4fc' }}>⚡ 2027 Real-Time Python Engineering Suite</h3>
-              <p style={{ color:'#e0e7ff', lineHeight:1.8, margin:0, fontSize:'1.05rem' }}>
-                Welcome to the modern 2027 Application Projects suite. In real-world software engineering, functions are the fundamental building blocks of production systems. Here, you will build and run <strong>5 production-grade, real-time functional applications</strong> spanning Generative AI, IoT Edge Telemetry, Quantitative FinTech, Zero-Trust Cybersecurity, and Clinical HealthTech.
+            <div style={{ background:'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)', color:'white', padding:'2.2rem', borderRadius:'16px', marginBottom:'2.2rem', boxShadow:'0 10px 25px rgba(37,99,235,0.2)' }}>
+              <h3 style={{ fontSize:'1.7rem', margin:'0 0 0.8rem', fontWeight:900, color:'#ffffff' }}>⚡ Everyday Real-Time Python Projects</h3>
+              <p style={{ color:'#dbeafe', lineHeight:1.8, margin:0, fontSize:'1.05rem' }}>
+                Functions are the building blocks of every real-world application you use every day — like Zomato, Uber, GPay, and Amazon. In this project suite, you will build <strong>5 simple, practical, and real-time functional applications</strong> that take user inputs, perform business logic with modular functions, and produce clean real-world receipts and bills.
               </p>
             </div>
 
             <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'2rem' }}>
-              Explore the 5 industry-trend projects below. Each project is constructed using modular, single-responsibility Python functions:
+              Explore the 5 everyday real-time projects below. Each project is constructed using modular, single-responsibility Python functions:
             </p>
 
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(280px, 1fr))', gap:'1.3rem', marginBottom:'2rem' }}>
               {[
-                { title:'🤖 AI Token & Cost Optimizer', icon:<Bot size={20} color="#3b82f6"/>, desc:'Estimates prompt tokens, computes multi-LLM API pricing, and dynamically routes requests to the most cost-efficient model within budget.' },
-                { title:'⚡ IoT Telemetry & Anomaly Detector', icon:<Zap size={20} color="#f59e0b"/>, desc:'Ingests live multi-sensor streams, validates payload integrity, calculates baselines, and triggers automated emergency coolant flushes.' },
-                { title:'📈 Algorithmic Trade Signal Engine', icon:<TrendingUp size={20} color="#10b981"/>, desc:'Computes short vs. long moving averages, identifies golden crosses, calculates position sizing, and triggers automated buy/sell orders.' },
-                { title:'🛡️ Zero-Trust Security & IP Rate Limiter', icon:<Shield size={20} color="#8b5cf6"/>, desc:'Implements token-bucket rate limiting, analyzes brute-force login anomalies, and dynamically enforces ALLOW, THROTTLE, or BLOCK firewall rules.' },
-                { title:'🏥 HealthTech Real-Time Vitals Triage', icon:<Activity size={20} color="#ec4899"/>, desc:'Calculates National Early Warning Scores (NEWS2) from streaming ICU vitals to trigger emergency physician escalation.' }
+                { title:'🍔 Food Delivery Bill Calculator', icon:<Utensils size={20} color="#ea580c"/>, desc:'Calculates item totals, dynamic distance delivery charges, promo discounts (ZOMATO50), and 5% GST to generate customer invoices.' },
+                { title:'🚗 Smart Cab Fare Estimator', icon:<Car size={20} color="#2563eb"/>, desc:'Estimates trip prices across Bike, Auto, and Cab categories with base fares, per-km rates, and peak hour surge pricing.' },
+                { title:'🏧 ATM & Digital Wallet System', icon:<CreditCard size={20} color="#16a34a"/>, desc:'Manages account balance, processes secure deposits, checks minimum balance on withdrawals, and prints wallet statements.' },
+                { title:'🛒 E-Commerce Cart & Discounts', icon:<ShoppingBag size={20} color="#9333ea"/>, desc:'Calculates cart totals, 10% Prime member savings, automated free shipping thresholds, and complete order checkout.' },
+                { title:'⚡ Electricity Utility Bill Calculator', icon:<Zap size={20} color="#ca8a04"/>, desc:'Applies tiered electricity board tariff slabs (first 100 free, tiered kWh rates) plus fixed meter fees to produce bills.' }
               ].map((proj, i) => (
                 <div key={i} style={{ background:'#f8fafc', borderRadius:'12px', padding:'1.3rem', border:'1px solid #e2e8f0', display:'flex', gap:'12px', transition:'transform 0.2s' }}>
                   <div style={{ background:'white', borderRadius:'10px', padding:'0.6rem', border:'1px solid #e2e8f0', display:'flex', alignItems:'center', justifyContent:'center', height:'fit-content' }}>
@@ -804,461 +804,457 @@ export default function PythonApplicationProjects({ activeTab, onNavigate }) {
             </div>
 
             <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('ai_token_optimizer')}>Next: AI Token & Cost Optimizer <ArrowRight size={18}/></button>
+              <button className="btn btn-primary" onClick={() => nav('food_delivery')}>Next: Food Delivery Bill <ArrowRight size={18}/></button>
             </div>
           </div>
         </Section>
       )}
 
-      {/* ─── TAB 2: AI TOKEN & COST OPTIMIZER ─── */}
-      {(activeTab === 'ai_token_optimizer' || activeTab === 'password_gen') && (
-        <Section key="ai_token_optimizer" eyebrow="Project 1 • AI & FinOps" title="🤖 AI Token & Cost Optimizer">
+      {/* ─── TAB 2: FOOD DELIVERY BILL CALCULATOR ─── */}
+      {(activeTab === 'food_delivery' || activeTab === 'ai_token_optimizer' || activeTab === 'password_gen') && (
+        <Section key="food_delivery" eyebrow="Project 1 • Everyday Apps" title="🍔 Food Delivery Bill Calculator">
           <div className="panel">
             <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
-              In modern 2027 enterprise AI engineering, LLM API costs scale rapidly. This real-time application uses modular functions to estimate token consumption, calculate cost across frontier models (GPT-4o, Claude 3.5 Sonnet, Gemini 2.0 Flash), and route execution to the optimal model that strictly respects your financial budget.
+              Apps like Zomato and Swiggy use modular backend functions to calculate food totals, apply promo codes, compute distance-based delivery fees, and add GST.
             </p>
 
-            <CodeBlock title="ai_token_optimizer.py — Modular Token Estimation & Model Routing">
-              {c('# Function 1: Estimate tokens from character count')}<br/>
-              {kw('def')} {fn('estimate_tokens')}(text):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;words = {fn('len')}(text)<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;approx_tokens = {fn('int')}(words / {nm('4')}) + {nm('1')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} approx_tokens<br/><br/>
+            <CodeBlock title="food_delivery.py — Real-Time Zomato/Swiggy Bill Generator">
+              {c('# Function 1: Distance-based delivery fee')}<br/>
+              {kw('def')} {fn('calculate_delivery_fee')}(distance):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} distance &lt;= {nm('3')}: {kw('return')} {nm('25.0')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;extra_km = distance - {nm('3')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {nm('25.0')} + (extra_km * {nm('10.0')})<br/><br/>
 
-              {c('# Function 2: Calculate model API cost per 1K tokens')}<br/>
-              {kw('def')} {fn('calculate_cost')}(model, tokens):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;rate = {nm('0.001')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} model == {st('"Gemini_2_Flash"')}: rate = {nm('0.0001')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} model == {st('"Claude_3_Sonnet"')}: rate = {nm('0.003')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} model == {st('"GPT_4o"')}: rate = {nm('0.010')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} (tokens / {nm('1000')}) * rate<br/><br/>
+              {c('# Function 2: Promo coupon discount')}<br/>
+              {kw('def')} {fn('apply_coupon')}(coupon, subtotal):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} coupon == {st('"ZOMATO50"')} {kw('or')} coupon == {st('"SWIGGY50"')}:<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;discount = subtotal * {nm('0.20')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} discount &gt; {nm('100.0')}: discount = {nm('100.0')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} discount<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {nm('0.0')}<br/><br/>
 
-              {c('# Function 3: High-level routing orchestrator')}<br/>
-              {kw('def')} {fn('route_best_model')}(prompt, budget):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;tokens = {fn('estimate_tokens')}(prompt)<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{c('# Evaluate models against budget constraint...')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} selected_model
+              {c('# Function 3: GST Tax calculation')}<br/>
+              {kw('def')} {fn('calculate_tax')}(amount):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} amount * {nm('0.05')} {ok('# 5% GST')}<br/><br/>
+
+              {c('# Function 4: Main receipt generator')}<br/>
+              {kw('def')} {fn('print_receipt')}(item, price, qty, distance, coupon):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;subtotal = price * qty<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;discount = {fn('apply_coupon')}(coupon, subtotal)<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;delivery = {fn('calculate_delivery_fee')}(distance)<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;tax = {fn('calculate_tax')}(subtotal - discount)<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;total = (subtotal - discount) + delivery + tax
             </CodeBlock>
 
             <Playground
-              id="ai_token_optimizer_play"
-              title="Execute AI Token & Cost Optimizer"
+              id="food_delivery_play"
+              title="Test Food Delivery Bill Console"
               inputs={[
-                { label:'Prompt Text =', default:'Summarize customer support transcript and classify urgency', width:'340px' },
-                { label:'Budget ($) =', default:'0.0005', width:'80px' }
+                { label:'Food Item =', default:'Paneer Butter Masala', width:'180px' },
+                { label:'Price (Rs) =', default:'240', width:'70px' },
+                { label:'Quantity =', default:'2', width:'50px' },
+                { label:'Distance (km) =', default:'4.5', width:'60px' },
+                { label:'Coupon =', default:'ZOMATO50', width:'110px' }
               ]}
-              defaultCode={`def estimate_tokens(text):
-    words = len(text)
-    approx_tokens = int(words / 4) + 1
-    return approx_tokens
+              defaultCode={`def calculate_delivery_fee(distance):
+    if distance <= 3:
+        return 25.0
+    extra_km = distance - 3
+    return 25.0 + (extra_km * 10.0)
 
-def calculate_cost(model, tokens):
-    rate = 0.001
-    if model == "Gemini_2_Flash":
-        rate = 0.0001
-    elif model == "Claude_3_Sonnet":
-        rate = 0.003
-    elif model == "GPT_4o":
-        rate = 0.010
-    cost = (tokens / 1000) * rate
-    return cost
+def apply_coupon(coupon, subtotal):
+    if coupon == "ZOMATO50" or coupon == "SWIGGY50":
+        discount = subtotal * 0.20
+        if discount > 100.0:
+            discount = 100.0
+        return discount
+    return 0.0
 
-def route_best_model(prompt, budget):
-    tokens = estimate_tokens(prompt)
-    print("--- 🤖 AI Token & Cost Optimizer ---")
-    print("Input Prompt Length:", len(prompt), "chars")
-    print("Estimated Token Count:", tokens, "tokens")
-    print("Available Budget: $" + str(budget))
+def calculate_tax(amount):
+    return amount * 0.05
+
+def print_receipt(item, price, qty, distance, coupon):
+    print("================================")
+    print("      🍔 FOOD DELIVERY BILL     ")
+    print("================================")
+    subtotal = price * qty
+    print("Item:", item, "x", qty)
+    print("Food Total:       Rs.", round(subtotal, 2))
+    
+    discount = apply_coupon(coupon, subtotal)
+    if discount > 0:
+        print("Promo (" + coupon + "):   -Rs.", round(discount, 2))
+    
+    delivery = calculate_delivery_fee(distance)
+    print("Delivery Fee (" + str(distance) + " km): Rs.", round(delivery, 2))
+    
+    taxable = subtotal - discount
+    tax = calculate_tax(taxable)
+    print("GST (5%):         Rs.", round(tax, 2))
+    
+    final_total = taxable + delivery + tax
+    print("--------------------------------")
+    print("TOTAL PAYABLE:    Rs.", round(final_total, 2))
+    print("================================")
+
+item_name = input("Food Item: ")
+unit_price = float(input("Item Price (Rs): "))
+quantity = int(input("Quantity: "))
+km_dist = float(input("Distance (km): "))
+promo = input("Coupon Code: ")
+
+print_receipt(item_name, unit_price, quantity, km_dist, promo)`}
+            />
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => nav('cab_fare')}>Next: Cab Fare Estimator <ArrowRight size={18}/></button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ─── TAB 3: CAB FARE ESTIMATOR ─── */}
+      {(activeTab === 'cab_fare' || activeTab === 'iot_anomaly_detector' || activeTab === 'quiz_app') && (
+        <Section key="cab_fare" eyebrow="Project 2 • Everyday Apps" title="🚗 Smart Cab Fare Estimator">
+          <div className="panel">
+            <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
+              Ride hailing apps like Uber, Ola, and Rapido dynamically price rides based on the selected vehicle type, travel distance, and rush-hour peak surge.
+            </p>
+
+            <CodeBlock title="cab_fare.py — Uber / Ola Dynamic Fare Pricing">
+              {c('# Function 1: Vehicle per-kilometer rate')}<br/>
+              {kw('def')} {fn('get_rate_per_km')}(vehicle):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} vehicle == {st('"Bike"')}: {kw('return')} {nm('8.0')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} vehicle == {st('"Auto"')}: {kw('return')} {nm('14.0')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} vehicle == {st('"Cab"')}: {kw('return')} {nm('22.0')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {nm('15.0')}<br/><br/>
+
+              {c('# Function 2: Peak surge multiplier')}<br/>
+              {kw('def')} {fn('calculate_surge')}(fare, is_peak):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} is_peak == {nm('1')}: {kw('return')} fare * {nm('0.25')} {ok('# 25% peak surge')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {nm('0.0')}<br/><br/>
+
+              {c('# Function 3: Estimate trip total')}<br/>
+              {kw('def')} {fn('estimate_ride')}(vehicle, distance, is_rush_hour):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;base_fare = {nm('30.0')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;rate = {fn('get_rate_per_km')}(vehicle)<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;distance_cost = distance * rate<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;surge = {fn('calculate_surge')}(base_fare + distance_cost, is_rush_hour)
+            </CodeBlock>
+
+            <Playground
+              id="cab_fare_play"
+              title="Estimate Cab Fare Live"
+              inputs={[
+                { label:'Vehicle (Bike/Auto/Cab) =', default:'Cab', width:'80px' },
+                { label:'Distance (km) =', default:'12.5', width:'70px' },
+                { label:'Peak Hour (1=Yes, 0=No) =', default:'1', width:'50px' }
+              ]}
+              defaultCode={`def get_rate_per_km(vehicle):
+    if vehicle == "Bike":
+        return 8.0
+    elif vehicle == "Auto":
+        return 14.0
+    elif vehicle == "Cab":
+        return 22.0
+    return 15.0
+
+def calculate_surge(fare, is_peak):
+    if is_peak == 1:
+        return fare * 0.25
+    return 0.0
+
+def estimate_ride(vehicle, distance, is_rush_hour):
+    print("================================")
+    print("     🚗 SMART RIDE ESTIMATOR    ")
+    print("================================")
+    base_fare = 30.0
+    rate = get_rate_per_km(vehicle)
+    distance_cost = distance * rate
+    initial_total = base_fare + distance_cost
+    
+    print("Selected Ride:  ", vehicle)
+    print("Trip Distance:  ", distance, "km")
+    print("Base Fare:       Rs.", base_fare)
+    print("Distance Charge: Rs.", round(distance_cost, 2))
+    
+    surge = calculate_surge(initial_total, is_rush_hour)
+    if surge > 0:
+        print("Peak Surge (25%): Rs.", round(surge, 2))
+    
+    total = initial_total + surge
+    print("--------------------------------")
+    print("ESTIMATED FARE:  Rs.", round(total, 2))
+    print("================================")
+
+v_choice = input("Vehicle: ")
+dist = float(input("Distance: "))
+peak = int(input("Peak: "))
+
+estimate_ride(v_choice, dist, peak)`}
+            />
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => nav('atm_wallet')}>Next: ATM & Digital Wallet <ArrowRight size={18}/></button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ─── TAB 4: ATM & DIGITAL WALLET ─── */}
+      {(activeTab === 'atm_wallet' || activeTab === 'algo_trade_engine' || activeTab === 'url_shortener') && (
+        <Section key="atm_wallet" eyebrow="Project 3 • Everyday Apps" title="🏧 ATM & Digital Wallet System">
+          <div className="panel">
+            <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
+              Digital banking apps and ATMs use functions to securely check balances, deposit money, validate withdrawal limits against a minimum balance, and print instant account updates.
+            </p>
+
+            <CodeBlock title="atm_wallet.py — Account Operations & Transaction Validator">
+              {c('# Function 1: Check balance')}<br/>
+              {kw('def')} {fn('check_balance')}(balance):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Current Wallet Balance: Rs."')}, {fn('round')}(balance, {nm('2')}))<br/><br/>
+
+              {c('# Function 2: Deposit with validation')}<br/>
+              {kw('def')} {fn('deposit_money')}(balance, amount):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} amount &lt;= {nm('0')}: {kw('return')} balance<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} balance + amount<br/><br/>
+
+              {c('# Function 3: Withdrawal with minimum balance check')}<br/>
+              {kw('def')} {fn('withdraw_money')}(balance, amount, min_balance):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} balance - amount &lt; min_balance: {kw('return')} balance<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} balance - amount
+            </CodeBlock>
+
+            <Playground
+              id="atm_wallet_play"
+              title="Run Smart ATM Wallet Session"
+              inputs={[
+                { label:'Balance (Rs) =', default:'5000', width:'80px' },
+                { label:'Action (Deposit/Withdraw/Check) =', default:'Withdraw', width:'110px' },
+                { label:'Amount (Rs) =', default:'1500', width:'80px' }
+              ]}
+              defaultCode={`def check_balance(balance):
+    print("Current Wallet Balance: Rs.", round(balance, 2))
+
+def deposit_money(balance, amount):
+    if amount <= 0:
+        print("❌ Invalid deposit amount!")
+        return balance
+    new_bal = balance + amount
+    print("✅ Rs.", amount, "deposited successfully!")
+    return new_bal
+
+def withdraw_money(balance, amount, min_balance):
+    if amount <= 0:
+        print("❌ Invalid withdrawal amount!")
+        return balance
+    if balance - amount < min_balance:
+        print("❌ Insufficient funds! Minimum balance required.")
+        return balance
+    new_bal = balance - amount
+    print("✅ Rs.", amount, "debited! Cash dispensed.")
+    return new_bal
+
+def run_atm_session(current_balance, action, amount):
+    print("================================")
+    print("       🏧 SMART ATM WALLET      ")
+    print("================================")
+    min_req = 500.0
+    print("Starting Balance: Rs.", current_balance)
+    
+    if action == "Deposit":
+        updated_balance = deposit_money(current_balance, amount)
+    elif action == "Withdraw":
+        updated_balance = withdraw_money(current_balance, amount, min_req)
+    else:
+        updated_balance = current_balance
+        print("Operation: Balance Check")
+
+    print("--------------------------------")
+    check_balance(updated_balance)
+    print("================================")
+
+start_bal = float(input("Balance: "))
+operation = input("Action: ")
+amt = float(input("Amount: "))
+
+run_atm_session(start_bal, operation, amt)`}
+            />
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => nav('ecommerce_cart')}>Next: E-Commerce Cart <ArrowRight size={18}/></button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ─── TAB 5: E-COMMERCE CART ─── */}
+      {(activeTab === 'ecommerce_cart' || activeTab === 'rate_limiter' || activeTab === 'chat_app') && (
+        <Section key="ecommerce_cart" eyebrow="Project 4 • Everyday Apps" title="🛒 E-Commerce Cart & Discount System">
+          <div className="panel">
+            <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
+              Online shopping platforms like Amazon and Flipkart use functions to sum multi-item carts, apply special Prime membership discounts, evaluate free shipping rules, and compute the final payable invoice.
+            </p>
+
+            <CodeBlock title="ecommerce_cart.py — Amazon / Flipkart Checkout Engine">
+              {c('# Function 1: Cart subtotal')}<br/>
+              {kw('def')} {fn('calculate_subtotal')}(price1, qty1, price2, qty2):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} (price1 * qty1) + (price2 * qty2)<br/><br/>
+
+              {c('# Function 2: Prime membership discount')}<br/>
+              {kw('def')} {fn('get_membership_discount')}(subtotal, is_prime):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} is_prime == {nm('1')}: {kw('return')} subtotal * {nm('0.10')} {ok('# 10% Prime off')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {nm('0.0')}<br/><br/>
+
+              {c('# Function 3: Automated free shipping rule')}<br/>
+              {kw('def')} {fn('calculate_shipping')}(amount, is_prime):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} is_prime == {nm('1')} {kw('or')} amount &gt;= {nm('500.0')}: {kw('return')} {nm('0.0')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {nm('40.0')}
+            </CodeBlock>
+
+            <Playground
+              id="ecommerce_cart_play"
+              title="Test E-Commerce Cart Checkout"
+              inputs={[
+                { label:'Item 1 Price =', default:'350', width:'60px' },
+                { label:'Item 1 Qty =', default:'1', width:'45px' },
+                { label:'Item 2 Price =', default:'120', width:'60px' },
+                { label:'Item 2 Qty =', default:'2', width:'45px' },
+                { label:'Prime Member (1=Yes, 0=No) =', default:'1', width:'50px' }
+              ]}
+              defaultCode={`def calculate_subtotal(price1, qty1, price2, qty2):
+    return (price1 * qty1) + (price2 * qty2)
+
+def get_membership_discount(subtotal, is_prime):
+    if is_prime == 1:
+        return subtotal * 0.10
+    return 0.0
+
+def calculate_shipping(amount, is_prime):
+    if is_prime == 1 or amount >= 500.0:
+        return 0.0
+    return 40.0
+
+def process_checkout(p1, q1, p2, q2, prime_user):
+    print("================================")
+    print("    🛒 E-COMMERCE CART INVOICE  ")
+    print("================================")
+    subtotal = calculate_subtotal(p1, q1, p2, q2)
+    print("Cart Subtotal:     Rs.", round(subtotal, 2))
+    
+    discount = get_membership_discount(subtotal, prime_user)
+    if discount > 0:
+        print("Prime Savings (10%): -Rs.", round(discount, 2))
+    
+    shipping = calculate_shipping(subtotal - discount, prime_user)
+    if shipping == 0:
+        print("Shipping Charge:    FREE 🚚")
+    else:
+        print("Shipping Charge:   Rs.", shipping)
+    
+    final_amount = (subtotal - discount) + shipping
+    print("--------------------------------")
+    print("AMOUNT PAYABLE:    Rs.", round(final_amount, 2))
+    print("================================")
+
+p1 = float(input("P1: "))
+q1 = int(input("Q1: "))
+p2 = float(input("P2: "))
+q2 = int(input("Q2: "))
+prime = int(input("Prime: "))
+
+process_checkout(p1, q1, p2, q2, prime)`}
+            />
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => nav('electricity_bill')}>Next: Electricity Bill <ArrowRight size={18}/></button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ─── TAB 6: ELECTRICITY BILL ─── */}
+      {(activeTab === 'electricity_bill' || activeTab === 'health_triage' || activeTab === 'countdown_timer') && (
+        <Section key="electricity_bill" eyebrow="Project 5 • Everyday Apps" title="⚡ Electricity Utility Bill Calculator">
+          <div className="panel">
+            <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
+              State Electricity Boards calculate monthly power bills using slab-based tiered tariffs (first 100 units free with government subsidies, progressive rates for higher usage) plus fixed meter fees.
+            </p>
+
+            <CodeBlock title="electricity_bill.py — Slab-Based Energy Tariff Engine">
+              {c('# Function 1: Tiered energy slab calculation')}<br/>
+              {kw('def')} {fn('calculate_energy_charges')}(units):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} units &lt;= {nm('100')}: {kw('return')} {nm('0.0')} {ok('# 100 units free!')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} units &lt;= {nm('200')}: {kw('return')} (units - {nm('100')}) * {nm('3.50')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} units &lt;= {nm('500')}: {kw('return')} {nm('350.0')} + ((units - {nm('200')}) * {nm('5.00')})<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('else')}: {kw('return')} {nm('1850.0')} + ((units - {nm('500')}) * {nm('7.50')})<br/><br/>
+
+              {c('# Function 2: Connection meter charge')}<br/>
+              {kw('def')} {fn('get_meter_fee')}(consumer_type):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} consumer_type == {st('"Commercial"')}: {kw('return')} {nm('120.0')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {nm('40.0')} {ok('# Domestic')}
+            </CodeBlock>
+
+            <Playground
+              id="electricity_bill_play"
+              title="Generate Electricity Bill Live"
+              inputs={[
+                { label:'Consumer Name =', default:'Priya Sharma', width:'130px' },
+                { label:'Units Consumed =', default:'240', width:'60px' },
+                { label:'Type (Domestic/Commercial) =', default:'Domestic', width:'90px' }
+              ]}
+              defaultCode={`def calculate_energy_charges(units):
+    if units <= 100:
+        return 0.0
+    elif units <= 200:
+        extra = units - 100
+        return extra * 3.50
+    elif units <= 500:
+        base = 100 * 3.50
+        extra = units - 200
+        return base + (extra * 5.00)
+    else:
+        base = (100 * 3.50) + (300 * 5.00)
+        extra = units - 500
+        return base + (extra * 7.50)
+
+def get_meter_fee(consumer_type):
+    if consumer_type == "Commercial":
+        return 120.0
+    return 40.0
+
+def generate_bill(consumer, units, c_type):
+    print("================================")
+    print("   ⚡ ELECTRICITY UTILITY BILL  ")
+    print("================================")
+    print("Consumer Name:  ", consumer)
+    print("Connection Type:", c_type)
+    print("Units Consumed: ", units, "kWh")
     print()
     
-    models = ["GPT_4o", "Claude_3_Sonnet", "Gemini_2_Flash"]
-    selected = "None"
-    for m in models:
-        cost = calculate_cost(m, tokens)
-        print("Model:", m, "-> Est. Cost: $" + str(round(cost, 6)))
-        if cost <= budget and selected == "None":
-            selected = m
+    energy_cost = calculate_energy_charges(units)
+    meter_fee = get_meter_fee(c_type)
+    total_bill = energy_cost + meter_fee
+    
+    if units <= 100:
+        print("Subsidy Status:  100 Units 100% FREE! 🎁")
+    
+    print("Energy Charges:  Rs.", round(energy_cost, 2))
+    print("Fixed Meter Fee: Rs.", round(meter_fee, 2))
+    print("--------------------------------")
+    print("NET BILL AMOUNT: Rs.", round(total_bill, 2))
+    print("================================")
 
-    print()
-    if selected != "None":
-        print("✅ Optimal Route Selected:", selected)
-    else:
-        print("⚠️ Budget exceeded! Consider shortening your prompt.")
+c_name = input("Name: ")
+units = int(input("Units: "))
+c_type = input("Type: ")
 
-prompt_input = input("Enter prompt: ")
-budget_limit = float(input("Budget: "))
-route_best_model(prompt_input, budget_limit)`}
+generate_bill(c_name, units, c_type)`}
             />
 
-            <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('iot_anomaly_detector')}>Next: IoT Anomaly Detector <ArrowRight size={18}/></button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ─── TAB 3: IOT ANOMALY DETECTOR ─── */}
-      {(activeTab === 'iot_anomaly_detector' || activeTab === 'quiz_app') && (
-        <Section key="iot_anomaly_detector" eyebrow="Project 2 • Edge AI & IoT" title="⚡ Real-Time IoT Telemetry & Anomaly Detector">
-          <div className="panel">
-            <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
-              Connected smart devices and industrial IoT edge sensors transmit telemetry data continuously. This application validates packet payloads, performs threshold difference calculations, and triggers automated alerts to prevent hardware meltdowns.
-            </p>
-
-            <CodeBlock title="iot_anomaly_detector.py — Sensor Ingestion & Alert Dispatch">
-              {c('# Function 1: Telemetry packet validation')}<br/>
-              {kw('def')} {fn('validate_packet')}(sensor_id, temp, vibration):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} {fn('len')}(sensor_id) &lt; {nm('3')}: {kw('return')} {kw('False')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} temp &lt; -{nm('50')} {kw('or')} temp &gt; {nm('150')}: {kw('return')} {kw('False')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {kw('True')}<br/><br/>
-
-              {c('# Function 2: Anomaly threshold comparison')}<br/>
-              {kw('def')} {fn('check_anomaly')}(temp, max_temp):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} temp &gt; max_temp<br/><br/>
-
-              {c('# Function 3: Incident response dispatcher')}<br/>
-              {kw('def')} {fn('dispatch_alert')}(sensor_id, temp, is_critical):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} is_critical:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"🚨 CRITICAL OVERHEAT! Initiating coolant flush."')})
-            </CodeBlock>
-
-            <Playground
-              id="iot_anomaly_detector_play"
-              title="Stream Simulated IoT Sensor Data"
-              inputs={[
-                { label:'Sensor ID =', default:'SENS-TURBINE-04', width:'150px' },
-                { label:'Temp (°C) =', default:'88.5', width:'70px' },
-                { label:'Vibration =', default:'1.8', width:'60px' },
-                { label:'Max Safe Temp =', default:'75.0', width:'70px' }
-              ]}
-              defaultCode={`def validate_packet(sensor_id, temp, vibration):
-    if len(sensor_id) < 3:
-        return False
-    if temp < -50 or temp > 150:
-        return False
-    return True
-
-def check_anomaly(temp, max_temp):
-    if temp > max_temp:
-        return True
-    return False
-
-def dispatch_alert(sensor_id, temp, is_critical):
-    if is_critical:
-        print("🚨 [CRITICAL ALERT] Sensor", sensor_id, "OVERHEAT! Temp:", temp, "C")
-        print("Action: Initiating Automated Coolant Flush & SMS to Engineer...")
-    else:
-        print("✅ [TELEMETRY OK] Sensor", sensor_id, "operating normal at", temp, "C")
-
-def process_sensor_stream(sensor_id, temp, vibration, limit):
-    print("--- ⚡ IoT Edge Telemetry Stream ---")
-    if not validate_packet(sensor_id, temp, vibration):
-        print("❌ Packet corrupted! Dropping invalid telemetry frame.")
-        return
-    
-    anomaly = check_anomaly(temp, limit)
-    dispatch_alert(sensor_id, temp, anomaly)
-
-s_id = input("Sensor ID: ")
-current_t = float(input("Current Temp (C): "))
-vib = float(input("Vibration: "))
-threshold = float(input("Max Safe Temp: "))
-
-process_sensor_stream(s_id, current_t, vib, threshold)`}
-            />
-
-            <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('algo_trade_engine')}>Next: Algo Trade Signal Engine <ArrowRight size={18}/></button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ─── TAB 4: ALGO TRADE SIGNAL ENGINE ─── */}
-      {(activeTab === 'algo_trade_engine' || activeTab === 'url_shortener') && (
-        <Section key="algo_trade_engine" eyebrow="Project 3 • Quantitative FinTech" title="📈 Real-Time Algorithmic Trade Signal Engine">
-          <div className="panel">
-            <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
-              FinTech quant desks execute trades algorithmically based on statistical indicators. This project uses functions to compute moving average trends, evaluate trend crossovers, size position risk to a strict 2% account capital rule, and set stop-loss protection.
-            </p>
-
-            <CodeBlock title="algo_trade_engine.py — Moving Averages & Risk Sizing">
-              {c('# Function 1: Mathematical moving average')}<br/>
-              {kw('def')} {fn('calculate_average')}(prices):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} {fn('len')}(prices) == {nm('0')}: {kw('return')} {nm('0')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {fn('sum')}(prices) / {fn('len')}(prices)<br/><br/>
-
-              {c('# Function 2: Trend signal evaluation')}<br/>
-              {kw('def')} {fn('evaluate_trade_signal')}(short_ma, long_ma, current_price):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} short_ma &gt; long_ma {kw('and')} current_price &gt;= short_ma: {kw('return')} {st('"BUY"')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} short_ma &lt; long_ma {kw('and')} current_price &lt;= short_ma: {kw('return')} {st('"SELL"')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('"HOLD"')}<br/><br/>
-
-              {c('# Function 3: Strict risk management & position sizing')}<br/>
-              {kw('def')} {fn('calculate_position')}(capital, risk_pct, entry, stop_loss):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;risk_dollars = capital * (risk_pct / {nm('100')})<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;risk_per_share = {fn('abs')}(entry - stop_loss)<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {fn('int')}(risk_dollars / risk_per_share)
-            </CodeBlock>
-
-            <Playground
-              id="algo_trade_engine_play"
-              title="Run Algorithmic Trade Engine"
-              inputs={[
-                { label:'Ticker =', default:'NVDA', width:'70px' },
-                { label:'Capital ($) =', default:'10000', width:'90px' },
-                { label:'Price ($) =', default:'145.50', width:'80px' },
-                { label:'Stop Loss ($) =', default:'140.00', width:'80px' }
-              ]}
-              defaultCode={`def calculate_average(prices):
-    if len(prices) == 0:
-        return 0
-    total = sum(prices)
-    return total / len(prices)
-
-def evaluate_trade_signal(short_ma, long_ma, current_price):
-    if short_ma > long_ma and current_price >= short_ma:
-        return "BUY"
-    elif short_ma < long_ma and current_price <= short_ma:
-        return "SELL"
-    else:
-        return "HOLD"
-
-def calculate_position(capital, risk_pct, entry, stop_loss):
-    risk_dollars = capital * (risk_pct / 100)
-    risk_per_share = abs(entry - stop_loss)
-    if risk_per_share == 0:
-        return 0
-    shares = int(risk_dollars / risk_per_share)
-    return shares
-
-def run_trading_bot(symbol, capital, current_price, stop_loss):
-    print("--- 📈 FinTech Quantitative Trade Engine ---")
-    print("Asset Symbol:", symbol)
-    print("Portfolio Capital: $" + str(capital))
-    print("Current Price: $" + str(current_price))
-    
-    short_ticks = [current_price * 0.98, current_price * 0.99, current_price]
-    long_ticks = [current_price * 0.94, current_price * 0.95, current_price * 0.96]
-    
-    short_ma = calculate_average(short_ticks)
-    long_ma = calculate_average(long_ticks)
-    
-    print("Short-Term MA (3 ticks): $" + str(round(short_ma, 2)))
-    print("Long-Term MA (3 ticks):  $" + str(round(long_ma, 2)))
-    
-    signal = evaluate_trade_signal(short_ma, long_ma, current_price)
-    print("Generated Signal: " + signal)
-    
-    if signal == "BUY":
-        shares = calculate_position(capital, 2.0, current_price, stop_loss)
-        target = current_price + (abs(current_price - stop_loss) * 2)
-        print("Risk Management: 2% Risk -> Order Size:", shares, "units")
-        print("Target: $" + str(round(target, 2)) + " | Stop Loss: $" + str(round(stop_loss, 2)))
-
-sym = input("Ticker: ")
-cap = float(input("Capital: "))
-price = float(input("Price: "))
-sl = float(input("Stop Loss: "))
-
-run_trading_bot(sym, cap, price, sl)`}
-            />
-
-            <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('rate_limiter')}>Next: Zero-Trust Rate Limiter <ArrowRight size={18}/></button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ─── TAB 5: ZERO-TRUST RATE LIMITER ─── */}
-      {(activeTab === 'rate_limiter' || activeTab === 'chat_app') && (
-        <Section key="rate_limiter" eyebrow="Project 4 • Cloud Cybersecurity" title="🛡️ Zero-Trust Security Threat & IP Rate Limiter">
-          <div className="panel">
-            <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
-              Modern API Gateways and microservices must protect against botnet DDoS floods and credential stuffing attacks. This project implements the token-bucket algorithm, calculates behavioral threat scores, and enforces automated firewall responses.
-            </p>
-
-            <CodeBlock title="zero_trust_rate_limiter.py — Token Bucket & Anomaly Defense">
-              {c('# Function 1: Token-bucket algorithm check')}<br/>
-              {kw('def')} {fn('check_token_bucket')}(tokens, cost):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} tokens &gt;= cost<br/><br/>
-
-              {c('# Function 2: Threat risk score calculator')}<br/>
-              {kw('def')} {fn('compute_threat_score')}(failed_attempts, rps):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;score = failed_attempts * {nm('25')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} rps &gt; {nm('100')}: score = score + {nm('50')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} score<br/><br/>
-
-              {c('# Function 3: Dynamic firewall policy enforcement')}<br/>
-              {kw('def')} {fn('evaluate_firewall_rule')}(threat_score, bucket_passed):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} threat_score &gt;= {nm('75')}: {kw('return')} {st('"BLOCKED (403 Botnet)"')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} {kw('not')} bucket_passed: {kw('return')} {st('"THROTTLED (429 Rate Limit)"')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('"ALLOWED (200 OK)"')}
-            </CodeBlock>
-
-            <Playground
-              id="rate_limiter_play"
-              title="Test Gateway Security Inspector"
-              inputs={[
-                { label:'Client IP =', default:'192.168.1.105', width:'130px' },
-                { label:'Bucket Tokens =', default:'10', width:'60px' },
-                { label:'Failed Logins =', default:'3', width:'60px' },
-                { label:'Reqs/Sec =', default:'120', width:'60px' }
-              ]}
-              defaultCode={`def check_token_bucket(tokens, cost):
-    if tokens >= cost:
-        return True
-    return False
-
-def compute_threat_score(failed_attempts, rps):
-    score = 0
-    score = score + (failed_attempts * 25)
-    if rps > 100:
-        score = score + 50
-    elif rps > 50:
-        score = score + 20
-    return score
-
-def evaluate_firewall_rule(threat_score, bucket_passed):
-    if threat_score >= 75:
-        return "BLOCKED (403 Forbidden - Botnet Behavior)"
-    elif not bucket_passed:
-        return "THROTTLED (429 Too Many Requests - Rate Limit Exceeded)"
-    elif threat_score >= 40:
-        return "CHALLENGE (Trigger Cloudflare MFA / CAPTCHA)"
-    else:
-        return "ALLOWED (200 OK - Legitimate Client Traffic)"
-
-def process_security(ip, tokens, failed_auth, rps):
-    print("--- 🛡️ Zero-Trust Security Inspector ---")
-    print("Inspecting Client IP:", ip)
-    
-    passed_bucket = check_token_bucket(tokens, 1)
-    threat = compute_threat_score(failed_auth, rps)
-    verdict = evaluate_firewall_rule(threat, passed_bucket)
-    
-    print("Threat Risk Score:", threat, "/ 100")
-    print("Firewall Decision:", verdict)
-
-ip_addr = input("Client IP: ")
-cur_tokens = int(input("Bucket Tokens: "))
-fails = int(input("Failed Logins: "))
-rate = int(input("Reqs/Sec: "))
-
-process_security(ip_addr, cur_tokens, fails, rate)`}
-            />
-
-            <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('health_triage')}>Next: HealthTech Vitals Triage <ArrowRight size={18}/></button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ─── TAB 6: HEALTHTECH VITALS TRIAGE ─── */}
-      {(activeTab === 'health_triage' || activeTab === 'countdown_timer') && (
-        <Section key="health_triage" eyebrow="Project 5 • Clinical AI & HealthTech" title="🏥 HealthTech Real-Time Vitals Alert & Triage">
-          <div className="panel">
-            <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
-              ICUs and remote hospital care systems track real-time telemetry from patient vitals. Using the standard clinical <strong>NEWS2 (National Early Warning Score)</strong> framework, this system calculates organ stress scores and determines automated clinical escalation protocols.
-            </p>
-
-            <CodeBlock title="healthtech_triage.py — Clinical Early Warning System (NEWS2)">
-              {c('# Function 1: Heart rate deviation score')}<br/>
-              {kw('def')} {fn('score_heart_rate')}(bpm):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} bpm &lt; {nm('40')} {kw('or')} bpm &gt;= {nm('130')}: {kw('return')} {nm('3')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} bpm &lt;= {nm('50')} {kw('or')} bpm &gt;= {nm('110')}: {kw('return')} {nm('2')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} bpm &lt;= {nm('90')}: {kw('return')} {nm('0')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {nm('1')}<br/><br/>
-
-              {c('# Function 2: Oxygen saturation (SpO2) score')}<br/>
-              {kw('def')} {fn('score_oxygen')}(spo2):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} spo2 &lt;= {nm('91')}: {kw('return')} {nm('3')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} spo2 &lt;= {nm('93')}: {kw('return')} {nm('2')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} spo2 &lt;= {nm('95')}: {kw('return')} {nm('1')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {nm('0')}<br/><br/>
-
-              {c('# Function 3: Aggregate EWS calculation')}<br/>
-              {kw('def')} {fn('calculate_ews')}(bpm, spo2, bp):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {fn('score_heart_rate')}(bpm) + {fn('score_oxygen')}(spo2) + {fn('score_systolic_bp')}(bp)
-            </CodeBlock>
-
-            <Playground
-              id="health_triage_play"
-              title="Execute Clinical Vitals Triage Engine"
-              inputs={[
-                { label:'Patient =', default:'John Doe', width:'100px' },
-                { label:'Heart Rate =', default:'125', width:'60px' },
-                { label:'SpO2 % =', default:'92', width:'60px' },
-                { label:'Systolic BP =', default:'85', width:'60px' }
-              ]}
-              defaultCode={`def score_heart_rate(bpm):
-    if bpm < 40 or bpm >= 130:
-        return 3
-    elif bpm <= 50 or bpm >= 110:
-        return 2
-    elif bpm <= 90:
-        return 0
-    else:
-        return 1
-
-def score_oxygen(spo2):
-    if spo2 <= 91:
-        return 3
-    elif spo2 <= 93:
-        return 2
-    elif spo2 <= 95:
-        return 1
-    return 0
-
-def score_systolic_bp(bp):
-    if bp <= 90 or bp >= 220:
-        return 3
-    elif bp <= 100:
-        return 2
-    elif bp <= 110:
-        return 1
-    return 0
-
-def calculate_ews(bpm, spo2, bp):
-    s1 = score_heart_rate(bpm)
-    s2 = score_oxygen(spo2)
-    s3 = score_systolic_bp(bp)
-    total = s1 + s2 + s3
-    return total
-
-def triage_escalation(patient, bpm, spo2, bp):
-    score = calculate_ews(bpm, spo2, bp)
-    print("--- 🏥 HealthTech Real-Time Clinical Triage ---")
-    print("Patient Name:", patient)
-    print("Vitals: HR=" + str(bpm) + " bpm, SpO2=" + str(spo2) + "%, BP=" + str(bp) + " mmHg")
-    print("Early Warning Score (NEWS2):", score, "/ 9")
-    print()
-    
-    if score >= 7:
-        print("🚨 CODE RED: Critical deterioration!")
-        print("Action: Auto-dispatching Rapid Response Team & ICU Doctor.")
-    elif score >= 5:
-        print("⚠️ CODE ORANGE: Significant instability.")
-        print("Action: Alerting Senior Nurse for bedside evaluation.")
-    elif score >= 3:
-        print("🟡 CODE YELLOW: Mild disturbance.")
-        print("Action: Increasing vitals check frequency to 1 hour.")
-    else:
-        print("🟢 CODE GREEN: Patient vitals normal.")
-
-pat = input("Patient: ")
-hr = int(input("Heart Rate: "))
-ox = int(input("SpO2 %: "))
-sys_bp = int(input("Systolic BP: "))
-
-triage_escalation(pat, hr, ox, sys_bp)`}
-            />
-
-            <div style={{ background:'#eff6ff', borderLeft:'4px solid #3b82f6', padding:'1rem 1.5rem', borderRadius:'8px', marginTop:'2.2rem' }}>
-              <p style={{ margin:0, color:'#1e40af', fontSize:'0.9rem', lineHeight:1.6 }}>
-                💡 <strong>Function Architecture Tip:</strong> Notice how each physiological measurement is decomposed into its own small, single-purpose scoring function (<code>score_heart_rate</code>, <code>score_oxygen</code>, etc.). This makes clinical systems easily testable, auditable, and maintainable.
+            <div style={{ background:'#f0fdf4', borderLeft:'4px solid #10b981', padding:'1rem 1.5rem', borderRadius:'8px', marginTop:'2.2rem' }}>
+              <p style={{ margin:0, color:'#065f46', fontSize:'0.9rem', lineHeight:1.6 }}>
+                💡 <strong>Function Architecture Tip:</strong> Breaking the bill into <code>calculate_energy_charges()</code> and <code>get_meter_fee()</code> allows tariff slabs and meter rates to be updated independently without breaking the rest of the application.
               </p>
             </div>
           </div>

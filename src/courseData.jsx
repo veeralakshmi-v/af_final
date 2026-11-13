@@ -1239,11 +1239,11 @@ export const pythonCourseData = [
     title: 'Application Projects',
     items: [
       { id: 'intro', label: 'Overview', icon: <BookOpen size={18} /> },
-      { id: 'ai_token_optimizer', label: '🤖 AI Token & Cost Optimizer', icon: <Code size={18} /> },
-      { id: 'iot_anomaly_detector', label: '⚡ IoT Anomaly Detector', icon: <Code size={18} /> },
-      { id: 'algo_trade_engine', label: '📈 Algo Trade Signal Engine', icon: <Code size={18} /> },
-      { id: 'rate_limiter', label: '🛡️ Zero-Trust Rate Limiter', icon: <Code size={18} /> },
-      { id: 'health_triage', label: '🏥 HealthTech Vitals Triage', icon: <Code size={18} /> },
+      { id: 'food_delivery', label: '🍔 Food Delivery Bill', icon: <Code size={18} /> },
+      { id: 'cab_fare', label: '🚗 Cab Fare Estimator', icon: <Code size={18} /> },
+      { id: 'atm_wallet', label: '🏧 ATM & Digital Wallet', icon: <Code size={18} /> },
+      { id: 'ecommerce_cart', label: '🛒 E-Commerce Cart', icon: <Code size={18} /> },
+      { id: 'electricity_bill', label: '⚡ Electricity Bill', icon: <Code size={18} /> },
       { id: 'assignment', label: '📝 Project Submission & Staff Review', icon: <PenTool size={18} /> }
     ]
   },
