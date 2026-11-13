@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Code, Play, RefreshCw, BookOpen, Cpu, Terminal, Zap, Shield, HelpCircle, Link2, MessageSquare, Timer } from 'lucide-react';
+import { ArrowRight, Code, Play, RefreshCw, BookOpen, Cpu, Terminal, Zap, Shield, HelpCircle, Link2, MessageSquare, Timer, Bot, TrendingUp, Activity, AlertTriangle } from 'lucide-react';
 
 /* ─────────────────────────────────────────────
    SHARED UI HELPERS
@@ -770,33 +770,33 @@ export default function PythonApplicationProjects({ activeTab, onNavigate }) {
 
       {/* ─── TAB 1: INTRO ─── */}
       {activeTab === 'intro' && (
-        <Section key="intro" eyebrow="Capstone Suite" title="Python Application Projects">
+        <Section key="intro" eyebrow="Capstone Suite" title="Python 2027 Real-Time Projects">
           <div className="panel">
-            <div style={{ background:'linear-gradient(135deg,#1e3a8a,#3b82f6)', color:'white', padding:'2.2rem', borderRadius:'16px', marginBottom:'2.2rem' }}>
-              <h3 style={{ fontSize:'1.7rem', margin:'0 0 0.8rem', fontWeight:900 }}>📦 Real-World Software Suite</h3>
-              <p style={{ color:'#dbeafe', lineHeight:1.8, margin:0, fontSize:'1.05rem' }}>
-                Welcome to the Practical Application Projects suite. Here, we move from writing single lines of code to constructing complete, structured, and modular utility applications in Python.
+            <div style={{ background:'linear-gradient(135deg,#0f172a 0%, #1e1b4b 50%, #312e81 100%)', color:'white', padding:'2.2rem', borderRadius:'16px', marginBottom:'2.2rem', boxShadow:'0 10px 25px rgba(49,46,129,0.2)' }}>
+              <h3 style={{ fontSize:'1.7rem', margin:'0 0 0.8rem', fontWeight:900, color:'#a5b4fc' }}>⚡ 2027 Real-Time Python Engineering Suite</h3>
+              <p style={{ color:'#e0e7ff', lineHeight:1.8, margin:0, fontSize:'1.05rem' }}>
+                Welcome to the modern 2027 Application Projects suite. In real-world software engineering, functions are the fundamental building blocks of production systems. Here, you will build and run <strong>5 production-grade, real-time functional applications</strong> spanning Generative AI, IoT Edge Telemetry, Quantitative FinTech, Zero-Trust Cybersecurity, and Clinical HealthTech.
               </p>
             </div>
 
             <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'2rem' }}>
-              We will build, run, and dissect 5 practical mini-applications that solve real developer tasks:
+              Explore the 5 industry-trend projects below. Each project is constructed using modular, single-responsibility Python functions:
             </p>
 
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(280px, 1fr))', gap:'1.3rem', marginBottom:'2rem' }}>
               {[
-                { title:'🔑 Password Generator', icon:<Shield size={20} color="#10b981"/>, desc:'Assemble secure passwords of custom sizes using randomized character selections.' },
-                { title:'🧠 Quiz Application', icon:<HelpCircle size={20} color="#3b82f6"/>, desc:'A terminal assessment engine tracking user choices, scoring points, and displaying responses.' },
-                { title:'🔗 URL Shortener', icon:<Link2 size={20} color="#f59e0b"/>, desc:'Uses Python dictionaries to associate original websites with unique generated codes.' },
-                { title:'💬 Chat Application', icon:<MessageSquare size={20} color="#a855f7"/>, desc:'Simulates message passing, sender attributes, and formatting logs.' },
-                { title:'⏱️ Countdown Timer', icon:<Timer size={20} color="#ec4899"/>, desc:'Runs tick loops printing remaining duration and raising a finish alarm.' }
+                { title:'🤖 AI Token & Cost Optimizer', icon:<Bot size={20} color="#3b82f6"/>, desc:'Estimates prompt tokens, computes multi-LLM API pricing, and dynamically routes requests to the most cost-efficient model within budget.' },
+                { title:'⚡ IoT Telemetry & Anomaly Detector', icon:<Zap size={20} color="#f59e0b"/>, desc:'Ingests live multi-sensor streams, validates payload integrity, calculates baselines, and triggers automated emergency coolant flushes.' },
+                { title:'📈 Algorithmic Trade Signal Engine', icon:<TrendingUp size={20} color="#10b981"/>, desc:'Computes short vs. long moving averages, identifies golden crosses, calculates position sizing, and triggers automated buy/sell orders.' },
+                { title:'🛡️ Zero-Trust Security & IP Rate Limiter', icon:<Shield size={20} color="#8b5cf6"/>, desc:'Implements token-bucket rate limiting, analyzes brute-force login anomalies, and dynamically enforces ALLOW, THROTTLE, or BLOCK firewall rules.' },
+                { title:'🏥 HealthTech Real-Time Vitals Triage', icon:<Activity size={20} color="#ec4899"/>, desc:'Calculates National Early Warning Scores (NEWS2) from streaming ICU vitals to trigger emergency physician escalation.' }
               ].map((proj, i) => (
-                <div key={i} style={{ background:'#f8fafc', borderRadius:'12px', padding:'1.3rem', border:'1px solid #e2e8f0', display:'flex', gap:'12px' }}>
+                <div key={i} style={{ background:'#f8fafc', borderRadius:'12px', padding:'1.3rem', border:'1px solid #e2e8f0', display:'flex', gap:'12px', transition:'transform 0.2s' }}>
                   <div style={{ background:'white', borderRadius:'10px', padding:'0.6rem', border:'1px solid #e2e8f0', display:'flex', alignItems:'center', justifyContent:'center', height:'fit-content' }}>
                     {proj.icon}
                   </div>
                   <div>
-                    <h4 style={{ margin:'0 0 0.4rem 0', color:'#0f172a' }}>{proj.title}</h4>
+                    <h4 style={{ margin:'0 0 0.4rem 0', color:'#0f172a', fontSize:'1rem' }}>{proj.title}</h4>
                     <p style={{ margin:0, color:'#475569', fontSize:'0.85rem', lineHeight:1.5 }}>{proj.desc}</p>
                   </div>
                 </div>
@@ -804,255 +804,461 @@ export default function PythonApplicationProjects({ activeTab, onNavigate }) {
             </div>
 
             <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('password_gen')}>Next: Password Generator <ArrowRight size={18}/></button>
+              <button className="btn btn-primary" onClick={() => nav('ai_token_optimizer')}>Next: AI Token & Cost Optimizer <ArrowRight size={18}/></button>
             </div>
           </div>
         </Section>
       )}
 
-      {/* ─── TAB 2: PASSWORD GENERATOR ─── */}
-      {activeTab === 'password_gen' && (
-        <Section key="password_gen" eyebrow="Project 1" title="🔑 Random Password Generator">
+      {/* ─── TAB 2: AI TOKEN & COST OPTIMIZER ─── */}
+      {(activeTab === 'ai_token_optimizer' || activeTab === 'password_gen') && (
+        <Section key="ai_token_optimizer" eyebrow="Project 1 • AI & FinOps" title="🤖 AI Token & Cost Optimizer">
           <div className="panel">
             <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
-              This project uses the Python <code>random</code> library and string categories to construct secure passwords of custom length containing letters, digits, and special characters.
+              In modern 2027 enterprise AI engineering, LLM API costs scale rapidly. This real-time application uses modular functions to estimate token consumption, calculate cost across frontier models (GPT-4o, Claude 3.5 Sonnet, Gemini 2.0 Flash), and route execution to the optimal model that strictly respects your financial budget.
             </p>
 
-            <CodeBlock title="password_generator.py">
-              {kw('import')} random<br/>
-              {kw('import')} string<br/><br/>
-              {kw('def')} {fn('generate_password')}(length):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} length &lt; {nm('1')}:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Length must be at least 1."')})<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('""')}<br/><br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{c('# Pool containing letters, digits, and punctuation symbols')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;pool = string.ascii_letters + string.digits + string.punctuation<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;password = {st('""')}<br/><br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{c('# Pick random chars from the pool')}<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('for')} _ {kw('in')} {fn('range')}(length):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;password += random.choice(pool)<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} password<br/><br/>
-              {fn('print')}(generate_password({nm('12')}))
+            <CodeBlock title="ai_token_optimizer.py — Modular Token Estimation & Model Routing">
+              {c('# Function 1: Estimate tokens from character count')}<br/>
+              {kw('def')} {fn('estimate_tokens')}(text):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;words = {fn('len')}(text)<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;approx_tokens = {fn('int')}(words / {nm('4')}) + {nm('1')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} approx_tokens<br/><br/>
+
+              {c('# Function 2: Calculate model API cost per 1K tokens')}<br/>
+              {kw('def')} {fn('calculate_cost')}(model, tokens):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;rate = {nm('0.001')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} model == {st('"Gemini_2_Flash"')}: rate = {nm('0.0001')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} model == {st('"Claude_3_Sonnet"')}: rate = {nm('0.003')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} model == {st('"GPT_4o"')}: rate = {nm('0.010')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} (tokens / {nm('1000')}) * rate<br/><br/>
+
+              {c('# Function 3: High-level routing orchestrator')}<br/>
+              {kw('def')} {fn('route_best_model')}(prompt, budget):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;tokens = {fn('estimate_tokens')}(prompt)<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{c('# Evaluate models against budget constraint...')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} selected_model
             </CodeBlock>
 
             <Playground
-              id="password_gen_play"
-              title="Test Password Generator"
-              inputs={[{ label:'Password Length =', default:'14' }]}
-              defaultCode={`import random
-import string
+              id="ai_token_optimizer_play"
+              title="Execute AI Token & Cost Optimizer"
+              inputs={[
+                { label:'Prompt Text =', default:'Summarize customer support transcript and classify urgency', width:'340px' },
+                { label:'Budget ($) =', default:'0.0005', width:'80px' }
+              ]}
+              defaultCode={`def estimate_tokens(text):
+    words = len(text)
+    approx_tokens = int(words / 4) + 1
+    return approx_tokens
 
-def generate_password(length):
-    if length < 1:
-        return "Invalid length"
+def calculate_cost(model, tokens):
+    rate = 0.001
+    if model == "Gemini_2_Flash":
+        rate = 0.0001
+    elif model == "Claude_3_Sonnet":
+        rate = 0.003
+    elif model == "GPT_4o":
+        rate = 0.010
+    cost = (tokens / 1000) * rate
+    return cost
+
+def route_best_model(prompt, budget):
+    tokens = estimate_tokens(prompt)
+    print("--- 🤖 AI Token & Cost Optimizer ---")
+    print("Input Prompt Length:", len(prompt), "chars")
+    print("Estimated Token Count:", tokens, "tokens")
+    print("Available Budget: $" + str(budget))
+    print()
     
-    # Combined character pool
-    pool = string.ascii_letters + string.digits + string.punctuation
-    password = ""
-    for _ in range(length):
-        password += random.choice(pool)
-    return password
+    models = ["GPT_4o", "Claude_3_Sonnet", "Gemini_2_Flash"]
+    selected = "None"
+    for m in models:
+        cost = calculate_cost(m, tokens)
+        print("Model:", m, "-> Est. Cost: $" + str(round(cost, 6)))
+        if cost <= budget and selected == "None":
+            selected = m
 
-size = int(input("Length: "))
-print("Your Password:", generate_password(size))`}
+    print()
+    if selected != "None":
+        print("✅ Optimal Route Selected:", selected)
+    else:
+        print("⚠️ Budget exceeded! Consider shortening your prompt.")
+
+prompt_input = input("Enter prompt: ")
+budget_limit = float(input("Budget: "))
+route_best_model(prompt_input, budget_limit)`}
             />
 
             <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('quiz_app')}>Next: Quiz App <ArrowRight size={18}/></button>
+              <button className="btn btn-primary" onClick={() => nav('iot_anomaly_detector')}>Next: IoT Anomaly Detector <ArrowRight size={18}/></button>
             </div>
           </div>
         </Section>
       )}
 
-      {/* ─── TAB 3: QUIZ APP ─── */}
-      {activeTab === 'quiz_app' && (
-        <Section key="quiz_app" eyebrow="Project 2" title="🧠 Quiz Application">
+      {/* ─── TAB 3: IOT ANOMALY DETECTOR ─── */}
+      {(activeTab === 'iot_anomaly_detector' || activeTab === 'quiz_app') && (
+        <Section key="iot_anomaly_detector" eyebrow="Project 2 • Edge AI & IoT" title="⚡ Real-Time IoT Telemetry & Anomaly Detector">
           <div className="panel">
             <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
-              Create an interactive multiple-choice quiz engine that loops over questions, presents numbered choices, reads input, matches answers, and prints a final scorecard.
+              Connected smart devices and industrial IoT edge sensors transmit telemetry data continuously. This application validates packet payloads, performs threshold difference calculations, and triggers automated alerts to prevent hardware meltdowns.
             </p>
 
-            <CodeBlock title="quiz_app.py">
-              {kw('def')} {fn('display_question')}(question, options, correct):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}(question)<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('for')} idx, opt {kw('in')} {fn('enumerate')}(options):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}(str(idx + {nm('1')}) + {st('". "')} + opt)<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;user_ans = {fn('input')}({st('"Select option (1-4): "')})<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} user_ans == {fn('str')}(correct)<br/>
+            <CodeBlock title="iot_anomaly_detector.py — Sensor Ingestion & Alert Dispatch">
+              {c('# Function 1: Telemetry packet validation')}<br/>
+              {kw('def')} {fn('validate_packet')}(sensor_id, temp, vibration):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} {fn('len')}(sensor_id) &lt; {nm('3')}: {kw('return')} {kw('False')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} temp &lt; -{nm('50')} {kw('or')} temp &gt; {nm('150')}: {kw('return')} {kw('False')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {kw('True')}<br/><br/>
+
+              {c('# Function 2: Anomaly threshold comparison')}<br/>
+              {kw('def')} {fn('check_anomaly')}(temp, max_temp):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} temp &gt; max_temp<br/><br/>
+
+              {c('# Function 3: Incident response dispatcher')}<br/>
+              {kw('def')} {fn('dispatch_alert')}(sensor_id, temp, is_critical):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} is_critical:<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"🚨 CRITICAL OVERHEAT! Initiating coolant flush."')})
             </CodeBlock>
 
             <Playground
-              id="quiz_app_play"
-              title="Play Quiz App Console"
+              id="iot_anomaly_detector_play"
+              title="Stream Simulated IoT Sensor Data"
               inputs={[
-                { label:'Q1 Answer (1-4) =', default:'3' },
-                { label:'Q2 Answer (1-4) =', default:'1' }
+                { label:'Sensor ID =', default:'SENS-TURBINE-04', width:'150px' },
+                { label:'Temp (°C) =', default:'88.5', width:'70px' },
+                { label:'Vibration =', default:'1.8', width:'60px' },
+                { label:'Max Safe Temp =', default:'75.0', width:'70px' }
               ]}
-              defaultCode={`def run_quiz():
+              defaultCode={`def validate_packet(sensor_id, temp, vibration):
+    if len(sensor_id) < 3:
+        return False
+    if temp < -50 or temp > 150:
+        return False
+    return True
+
+def check_anomaly(temp, max_temp):
+    if temp > max_temp:
+        return True
+    return False
+
+def dispatch_alert(sensor_id, temp, is_critical):
+    if is_critical:
+        print("🚨 [CRITICAL ALERT] Sensor", sensor_id, "OVERHEAT! Temp:", temp, "C")
+        print("Action: Initiating Automated Coolant Flush & SMS to Engineer...")
+    else:
+        print("✅ [TELEMETRY OK] Sensor", sensor_id, "operating normal at", temp, "C")
+
+def process_sensor_stream(sensor_id, temp, vibration, limit):
+    print("--- ⚡ IoT Edge Telemetry Stream ---")
+    if not validate_packet(sensor_id, temp, vibration):
+        print("❌ Packet corrupted! Dropping invalid telemetry frame.")
+        return
+    
+    anomaly = check_anomaly(temp, limit)
+    dispatch_alert(sensor_id, temp, anomaly)
+
+s_id = input("Sensor ID: ")
+current_t = float(input("Current Temp (C): "))
+vib = float(input("Vibration: "))
+threshold = float(input("Max Safe Temp: "))
+
+process_sensor_stream(s_id, current_t, vib, threshold)`}
+            />
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => nav('algo_trade_engine')}>Next: Algo Trade Signal Engine <ArrowRight size={18}/></button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ─── TAB 4: ALGO TRADE SIGNAL ENGINE ─── */}
+      {(activeTab === 'algo_trade_engine' || activeTab === 'url_shortener') && (
+        <Section key="algo_trade_engine" eyebrow="Project 3 • Quantitative FinTech" title="📈 Real-Time Algorithmic Trade Signal Engine">
+          <div className="panel">
+            <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
+              FinTech quant desks execute trades algorithmically based on statistical indicators. This project uses functions to compute moving average trends, evaluate trend crossovers, size position risk to a strict 2% account capital rule, and set stop-loss protection.
+            </p>
+
+            <CodeBlock title="algo_trade_engine.py — Moving Averages & Risk Sizing">
+              {c('# Function 1: Mathematical moving average')}<br/>
+              {kw('def')} {fn('calculate_average')}(prices):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} {fn('len')}(prices) == {nm('0')}: {kw('return')} {nm('0')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {fn('sum')}(prices) / {fn('len')}(prices)<br/><br/>
+
+              {c('# Function 2: Trend signal evaluation')}<br/>
+              {kw('def')} {fn('evaluate_trade_signal')}(short_ma, long_ma, current_price):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} short_ma &gt; long_ma {kw('and')} current_price &gt;= short_ma: {kw('return')} {st('"BUY"')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} short_ma &lt; long_ma {kw('and')} current_price &lt;= short_ma: {kw('return')} {st('"SELL"')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('"HOLD"')}<br/><br/>
+
+              {c('# Function 3: Strict risk management & position sizing')}<br/>
+              {kw('def')} {fn('calculate_position')}(capital, risk_pct, entry, stop_loss):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;risk_dollars = capital * (risk_pct / {nm('100')})<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;risk_per_share = {fn('abs')}(entry - stop_loss)<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {fn('int')}(risk_dollars / risk_per_share)
+            </CodeBlock>
+
+            <Playground
+              id="algo_trade_engine_play"
+              title="Run Algorithmic Trade Engine"
+              inputs={[
+                { label:'Ticker =', default:'NVDA', width:'70px' },
+                { label:'Capital ($) =', default:'10000', width:'90px' },
+                { label:'Price ($) =', default:'145.50', width:'80px' },
+                { label:'Stop Loss ($) =', default:'140.00', width:'80px' }
+              ]}
+              defaultCode={`def calculate_average(prices):
+    if len(prices) == 0:
+        return 0
+    total = sum(prices)
+    return total / len(prices)
+
+def evaluate_trade_signal(short_ma, long_ma, current_price):
+    if short_ma > long_ma and current_price >= short_ma:
+        return "BUY"
+    elif short_ma < long_ma and current_price <= short_ma:
+        return "SELL"
+    else:
+        return "HOLD"
+
+def calculate_position(capital, risk_pct, entry, stop_loss):
+    risk_dollars = capital * (risk_pct / 100)
+    risk_per_share = abs(entry - stop_loss)
+    if risk_per_share == 0:
+        return 0
+    shares = int(risk_dollars / risk_per_share)
+    return shares
+
+def run_trading_bot(symbol, capital, current_price, stop_loss):
+    print("--- 📈 FinTech Quantitative Trade Engine ---")
+    print("Asset Symbol:", symbol)
+    print("Portfolio Capital: $" + str(capital))
+    print("Current Price: $" + str(current_price))
+    
+    short_ticks = [current_price * 0.98, current_price * 0.99, current_price]
+    long_ticks = [current_price * 0.94, current_price * 0.95, current_price * 0.96]
+    
+    short_ma = calculate_average(short_ticks)
+    long_ma = calculate_average(long_ticks)
+    
+    print("Short-Term MA (3 ticks): $" + str(round(short_ma, 2)))
+    print("Long-Term MA (3 ticks):  $" + str(round(long_ma, 2)))
+    
+    signal = evaluate_trade_signal(short_ma, long_ma, current_price)
+    print("Generated Signal: " + signal)
+    
+    if signal == "BUY":
+        shares = calculate_position(capital, 2.0, current_price, stop_loss)
+        target = current_price + (abs(current_price - stop_loss) * 2)
+        print("Risk Management: 2% Risk -> Order Size:", shares, "units")
+        print("Target: $" + str(round(target, 2)) + " | Stop Loss: $" + str(round(stop_loss, 2)))
+
+sym = input("Ticker: ")
+cap = float(input("Capital: "))
+price = float(input("Price: "))
+sl = float(input("Stop Loss: "))
+
+run_trading_bot(sym, cap, price, sl)`}
+            />
+
+            <div className="card-actions">
+              <button className="btn btn-primary" onClick={() => nav('rate_limiter')}>Next: Zero-Trust Rate Limiter <ArrowRight size={18}/></button>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* ─── TAB 5: ZERO-TRUST RATE LIMITER ─── */}
+      {(activeTab === 'rate_limiter' || activeTab === 'chat_app') && (
+        <Section key="rate_limiter" eyebrow="Project 4 • Cloud Cybersecurity" title="🛡️ Zero-Trust Security Threat & IP Rate Limiter">
+          <div className="panel">
+            <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
+              Modern API Gateways and microservices must protect against botnet DDoS floods and credential stuffing attacks. This project implements the token-bucket algorithm, calculates behavioral threat scores, and enforces automated firewall responses.
+            </p>
+
+            <CodeBlock title="zero_trust_rate_limiter.py — Token Bucket & Anomaly Defense">
+              {c('# Function 1: Token-bucket algorithm check')}<br/>
+              {kw('def')} {fn('check_token_bucket')}(tokens, cost):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} tokens &gt;= cost<br/><br/>
+
+              {c('# Function 2: Threat risk score calculator')}<br/>
+              {kw('def')} {fn('compute_threat_score')}(failed_attempts, rps):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;score = failed_attempts * {nm('25')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} rps &gt; {nm('100')}: score = score + {nm('50')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} score<br/><br/>
+
+              {c('# Function 3: Dynamic firewall policy enforcement')}<br/>
+              {kw('def')} {fn('evaluate_firewall_rule')}(threat_score, bucket_passed):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} threat_score &gt;= {nm('75')}: {kw('return')} {st('"BLOCKED (403 Botnet)"')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} {kw('not')} bucket_passed: {kw('return')} {st('"THROTTLED (429 Rate Limit)"')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('"ALLOWED (200 OK)"')}
+            </CodeBlock>
+
+            <Playground
+              id="rate_limiter_play"
+              title="Test Gateway Security Inspector"
+              inputs={[
+                { label:'Client IP =', default:'192.168.1.105', width:'130px' },
+                { label:'Bucket Tokens =', default:'10', width:'60px' },
+                { label:'Failed Logins =', default:'3', width:'60px' },
+                { label:'Reqs/Sec =', default:'120', width:'60px' }
+              ]}
+              defaultCode={`def check_token_bucket(tokens, cost):
+    if tokens >= cost:
+        return True
+    return False
+
+def compute_threat_score(failed_attempts, rps):
     score = 0
-    # Questions format: (question_text, [options], correct_index)
-    questions = [
-        ("What is the capital of France?", ["Berlin", "London", "Paris", "Madrid"], 3),
-        ("What is the capital of Germany?", ["Berlin", "London", "Paris", "Madrid"], 1)
-    ]
+    score = score + (failed_attempts * 25)
+    if rps > 100:
+        score = score + 50
+    elif rps > 50:
+        score = score + 20
+    return score
+
+def evaluate_firewall_rule(threat_score, bucket_passed):
+    if threat_score >= 75:
+        return "BLOCKED (403 Forbidden - Botnet Behavior)"
+    elif not bucket_passed:
+        return "THROTTLED (429 Too Many Requests - Rate Limit Exceeded)"
+    elif threat_score >= 40:
+        return "CHALLENGE (Trigger Cloudflare MFA / CAPTCHA)"
+    else:
+        return "ALLOWED (200 OK - Legitimate Client Traffic)"
+
+def process_security(ip, tokens, failed_auth, rps):
+    print("--- 🛡️ Zero-Trust Security Inspector ---")
+    print("Inspecting Client IP:", ip)
     
-    for idx, (q, opts, correct) in enumerate(questions):
-        print("Question", idx + 1, ":", q)
-        for i, opt in enumerate(opts):
-            print(str(i+1) + ")", opt)
-        
-        user_val = input("Your answer: ")
-        if user_val == str(correct):
-            print("Correct!\\n")
-            score += 1
-        else:
-            print("Wrong!\\n")
-            
-    print("Final Score:", score, "out of", len(questions))
+    passed_bucket = check_token_bucket(tokens, 1)
+    threat = compute_threat_score(failed_auth, rps)
+    verdict = evaluate_firewall_rule(threat, passed_bucket)
+    
+    print("Threat Risk Score:", threat, "/ 100")
+    print("Firewall Decision:", verdict)
 
-run_quiz()`}
+ip_addr = input("Client IP: ")
+cur_tokens = int(input("Bucket Tokens: "))
+fails = int(input("Failed Logins: "))
+rate = int(input("Reqs/Sec: "))
+
+process_security(ip_addr, cur_tokens, fails, rate)`}
             />
 
             <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('url_shortener')}>Next: URL Shortener <ArrowRight size={18}/></button>
+              <button className="btn btn-primary" onClick={() => nav('health_triage')}>Next: HealthTech Vitals Triage <ArrowRight size={18}/></button>
             </div>
           </div>
         </Section>
       )}
 
-      {/* ─── TAB 4: URL SHORTENER ─── */}
-      {activeTab === 'url_shortener' && (
-        <Section key="url_shortener" eyebrow="Project 3" title="🔗 Dictionary URL Shortener">
+      {/* ─── TAB 6: HEALTHTECH VITALS TRIAGE ─── */}
+      {(activeTab === 'health_triage' || activeTab === 'countdown_timer') && (
+        <Section key="health_triage" eyebrow="Project 5 • Clinical AI & HealthTech" title="🏥 HealthTech Real-Time Vitals Alert & Triage">
           <div className="panel">
             <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
-              This application uses a Python dictionary (acting as a local lookup database) to map short alphanumeric codes to long destination website links.
+              ICUs and remote hospital care systems track real-time telemetry from patient vitals. Using the standard clinical <strong>NEWS2 (National Early Warning Score)</strong> framework, this system calculates organ stress scores and determines automated clinical escalation protocols.
             </p>
 
-            <CodeBlock title="url_shortener.py">
-              {kw('import')} random<br/>
-              {kw('import')} string<br/><br/>
-              url_db = {}<br/><br/>
-              {kw('def')} {fn('shorten')}(url):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;chars = string.ascii_letters + string.digits<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;code = {st('""')}.join(random.choice(chars) {kw('for')} _ {kw('in')} {fn('range')}({nm('6')}))<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;url_db[code] = url<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} code
+            <CodeBlock title="healthtech_triage.py — Clinical Early Warning System (NEWS2)">
+              {c('# Function 1: Heart rate deviation score')}<br/>
+              {kw('def')} {fn('score_heart_rate')}(bpm):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} bpm &lt; {nm('40')} {kw('or')} bpm &gt;= {nm('130')}: {kw('return')} {nm('3')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} bpm &lt;= {nm('50')} {kw('or')} bpm &gt;= {nm('110')}: {kw('return')} {nm('2')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} bpm &lt;= {nm('90')}: {kw('return')} {nm('0')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {nm('1')}<br/><br/>
+
+              {c('# Function 2: Oxygen saturation (SpO2) score')}<br/>
+              {kw('def')} {fn('score_oxygen')}(spo2):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} spo2 &lt;= {nm('91')}: {kw('return')} {nm('3')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} spo2 &lt;= {nm('93')}: {kw('return')} {nm('2')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('elif')} spo2 &lt;= {nm('95')}: {kw('return')} {nm('1')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {nm('0')}<br/><br/>
+
+              {c('# Function 3: Aggregate EWS calculation')}<br/>
+              {kw('def')} {fn('calculate_ews')}(bpm, spo2, bp):<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {fn('score_heart_rate')}(bpm) + {fn('score_oxygen')}(spo2) + {fn('score_systolic_bp')}(bp)
             </CodeBlock>
 
             <Playground
-              id="url_shortener_play"
-              title="Test URL Shortener Lookup"
-              inputs={[{ label:'Long URL =', default:'https://google.com/search?q=python', width:'250px' }]}
-              defaultCode={`import random
-import string
-
-url_db = {}
-
-def shorten(long_url):
-    chars = string.ascii_letters + string.digits
-    # Generate a random 6-character short code
-    code = ""
-    for _ in range(6):
-        code += random.choice(chars)
-    url_db[code] = long_url
-    return code
-
-destination = input("Enter destination: ")
-short_code = shorten(destination)
-
-print("Shortened Url: http://short.ly/" + short_code)
-print("Looking up database: key [" + short_code + "] maps to:", url_db[short_code])`}
-            />
-
-            <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('chat_app')}>Next: Chat Application <ArrowRight size={18}/></button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ─── TAB 5: CHAT APP ─── */}
-      {activeTab === 'chat_app' && (
-        <Section key="chat_app" eyebrow="Project 4" title="💬 Interactive Chat Simulation">
-          <div className="panel">
-            <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
-              Simulates a terminal chat interface where messages are stored dynamically inside a log history array. Users can send messages under distinct aliases.
-            </p>
-
-            <CodeBlock title="chat_application.py">
-              chat_logs = []<br/><br/>
-              {kw('def')} {fn('post_message')}(user, message):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;chat_logs.append(user + {st('": "')} + message)<br/><br/>
-              {fn('post_message')}({st('"Alice"')}, {st('"Hi Bob!"')})<br/>
-              {fn('post_message')}({st('"Bob"')}, {st('"Hey Alice!"')})
-            </CodeBlock>
-
-            <Playground
-              id="chat_app_play"
-              title="Run Chat Simulator"
+              id="health_triage_play"
+              title="Execute Clinical Vitals Triage Engine"
               inputs={[
-                { label:'Message 1 (Alice) =', default:'Hello there!', width:'200px' },
-                { label:'Message 2 (Bob) =', default:'Hey Alice, how is Day 7 going?', width:'200px' }
+                { label:'Patient =', default:'John Doe', width:'100px' },
+                { label:'Heart Rate =', default:'125', width:'60px' },
+                { label:'SpO2 % =', default:'92', width:'60px' },
+                { label:'Systolic BP =', default:'85', width:'60px' }
               ]}
-              defaultCode={`chat_history = []
+              defaultCode={`def score_heart_rate(bpm):
+    if bpm < 40 or bpm >= 130:
+        return 3
+    elif bpm <= 50 or bpm >= 110:
+        return 2
+    elif bpm <= 90:
+        return 0
+    else:
+        return 1
 
-def send_msg(sender, body):
-    chat_history.append("[" + sender + "]: " + body)
+def score_oxygen(spo2):
+    if spo2 <= 91:
+        return 3
+    elif spo2 <= 93:
+        return 2
+    elif spo2 <= 95:
+        return 1
+    return 0
 
-# Get simulated messages from console inputs
-m1 = input("Alice msg: ")
-send_msg("Alice", m1)
+def score_systolic_bp(bp):
+    if bp <= 90 or bp >= 220:
+        return 3
+    elif bp <= 100:
+        return 2
+    elif bp <= 110:
+        return 1
+    return 0
 
-m2 = input("Bob msg: ")
-send_msg("Bob", m2)
+def calculate_ews(bpm, spo2, bp):
+    s1 = score_heart_rate(bpm)
+    s2 = score_oxygen(spo2)
+    s3 = score_systolic_bp(bp)
+    total = s1 + s2 + s3
+    return total
 
-# Print log logs
-print("\\n--- Simulation History ---")
-for entry in chat_history:
-    print(entry)`}
+def triage_escalation(patient, bpm, spo2, bp):
+    score = calculate_ews(bpm, spo2, bp)
+    print("--- 🏥 HealthTech Real-Time Clinical Triage ---")
+    print("Patient Name:", patient)
+    print("Vitals: HR=" + str(bpm) + " bpm, SpO2=" + str(spo2) + "%, BP=" + str(bp) + " mmHg")
+    print("Early Warning Score (NEWS2):", score, "/ 9")
+    print()
+    
+    if score >= 7:
+        print("🚨 CODE RED: Critical deterioration!")
+        print("Action: Auto-dispatching Rapid Response Team & ICU Doctor.")
+    elif score >= 5:
+        print("⚠️ CODE ORANGE: Significant instability.")
+        print("Action: Alerting Senior Nurse for bedside evaluation.")
+    elif score >= 3:
+        print("🟡 CODE YELLOW: Mild disturbance.")
+        print("Action: Increasing vitals check frequency to 1 hour.")
+    else:
+        print("🟢 CODE GREEN: Patient vitals normal.")
+
+pat = input("Patient: ")
+hr = int(input("Heart Rate: "))
+ox = int(input("SpO2 %: "))
+sys_bp = int(input("Systolic BP: "))
+
+triage_escalation(pat, hr, ox, sys_bp)`}
             />
 
-            <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('countdown_timer')}>Next: Countdown Timer <ArrowRight size={18}/></button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ─── TAB 6: COUNTDOWN TIMER ─── */}
-      {activeTab === 'countdown_timer' && (
-        <Section key="countdown_timer" eyebrow="Project 5" title="⏱️ Countdown Timer">
-          <div className="panel">
-            <p style={{ color:'#475569', fontSize:'1.05rem', lineHeight:1.7, marginBottom:'1.5rem' }}>
-              This project implements a numerical loop that counts down from a specified start duration, reporting the seconds left before outputting a sound alert signal.
-            </p>
-
-            <CodeBlock title="countdown_timer.py">
-              {kw('def')} {fn('start_timer')}(seconds):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Timer started!"')})<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{kw('for')} sec {kw('in')} {fn('range')}(seconds, {nm('0')}, -{nm('1')}):<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({fn('str')}(sec) + {st('" seconds left..."')})<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Time is up! ⏰"')})<br/><br/>
-              start_timer({nm('5')})
-            </CodeBlock>
-
-            <Playground
-              id="countdown_timer_play"
-              title="Test Countdown Loop"
-              inputs={[{ label:'Timer Seconds =', default:'6' }]}
-              defaultCode={`def timer(duration):
-    print("COUNTDOWN TICK:")
-    for remaining in range(duration, 0, -1):
-        print(remaining, "...")
-    print("⏰ TIME IS UP! Beep beep!")
-
-seconds = int(input("Start duration: "))
-timer(seconds)`}
-            />
-
-            <div style={{ background:'#f0fdf4', borderLeft:'4px solid #10b981', padding:'1rem 1.5rem', borderRadius:'8px', marginTop:'2.2rem' }}>
-              <p style={{ margin:0, color:'#065f46', fontSize:'0.9rem', lineHeight:1.6 }}>
-                💡 <strong>Code Dissection:</strong> Note the parameters of the <code>range()</code> function: <code>range(duration, 0, -1)</code>. The step size of <code>-1</code> makes the range count backwards rather than forwards, which is ideal for timers!
+            <div style={{ background:'#eff6ff', borderLeft:'4px solid #3b82f6', padding:'1rem 1.5rem', borderRadius:'8px', marginTop:'2.2rem' }}>
+              <p style={{ margin:0, color:'#1e40af', fontSize:'0.9rem', lineHeight:1.6 }}>
+                💡 <strong>Function Architecture Tip:</strong> Notice how each physiological measurement is decomposed into its own small, single-purpose scoring function (<code>score_heart_rate</code>, <code>score_oxygen</code>, etc.). This makes clinical systems easily testable, auditable, and maintainable.
               </p>
             </div>
           </div>
