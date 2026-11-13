@@ -5,8 +5,9 @@ import { jsPDF } from 'jspdf';
 import './InvoiceGenerator.css';
 
 const safeToFixed = (val, decimals = 2) => {
-  const num = parseFloat(val);
-  return isNaN(num) ? (0).toFixed(decimals) : num.toFixed(decimals);
+  const num = Number(parseFloat(val));
+  const d = typeof decimals === 'number' && !isNaN(decimals) ? decimals : 2;
+  return isNaN(num) ? (0).toFixed(d) : num.toFixed(d);
 };
 
 const DEFAULT_QR_SVG = `

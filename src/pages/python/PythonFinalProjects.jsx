@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Code, Play, RefreshCw, BookOpen, Terminal, CheckCircle, XCircle, Sliders, Cpu, Filter, Zap, Bot, Database } from 'lucide-react';
+import { ArrowRight, Code, Play, RefreshCw, BookOpen, Cpu, Terminal, Zap, Bot, Database, Sliders, CheckCircle, PenTool, Smartphone } from 'lucide-react';
 
+/* ─────────────────────────────────────────────
+   SHARED UI HELPERS
+───────────────────────────────────────────── */
 const Section = ({ eyebrow, title, children }) => (
   <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:-20 }} className="learning-card">
     <div style={{ marginBottom:'1.5rem' }}>
@@ -31,78 +34,163 @@ const cm = t => <span style={{ color:'#6b7280', fontStyle:'italic' }}>{t}</span>
 export default function PythonFinalProjects({ activeTab, onNavigate, openAITutor }) {
   const nav = tab => onNavigate('python_final_projects', tab);
 
-  // Playgrounds States
+  // ─── PLAYGROUND DEFAULT CODES ───
   const [p1Code, setP1Code] = useState(`class BankAccount:
-    def __init__(self, account_holder, initial_balance=0.0):
+    def __init__(self, account_holder, account_number, initial_balance=0.0):
         self.account_holder = account_holder
-        self.balance = initial_balance
+        self.account_number = account_number
+        self.balance = float(initial_balance)
         self.transactions = []
-        self.record_transaction("Account Opened", initial_balance)
+        self._record_transaction("Account Opened", self.balance)
 
-    def record_transaction(self, note, amount):
-        entry = f"{note}: Rs. {amount:.2f} | Balance: Rs. {self.balance:.2f}"
+    def _record_transaction(self, tx_type, amount):
+        entry = {
+            "type": tx_type,
+            "amount": amount,
+            "balance": self.balance
+        }
         self.transactions.append(entry)
 
     def deposit(self, amount):
         if amount <= 0:
-            return "❌ Deposit amount must be positive!"
+            return "❌ Error: Deposit amount must be greater than 0."
         self.balance += amount
-        self.record_transaction("Deposit", amount)
-        return f"✅ Successfully deposited Rs. {amount:.2f}. New Balance: Rs. {self.balance:.2f}"
+        self._record_transaction("Deposit (+)", amount)
+        return f"✅ Deposited Rs. {amount:.2f} | New Balance: Rs. {self.balance:.2f}"
 
     def withdraw(self, amount):
         if amount <= 0:
-            return "❌ Withdrawal amount must be positive!"
+            return "❌ Error: Withdrawal amount must be greater than 0."
         if amount > self.balance:
-            return f"❌ Insufficient funds! Current balance is Rs. {self.balance:.2f}"
+            return f"❌ Insufficient Funds! Requested Rs. {amount:.2f}, available Rs. {self.balance:.2f}"
         self.balance -= amount
-        self.record_transaction("Withdrawal", amount)
-        return f"✅ Successfully withdrew Rs. {amount:.2f}. Remaining Balance: Rs. {self.balance:.2f}"
+        self._record_transaction("Withdrawal (-)", amount)
+        return f"✅ Withdrew Rs. {amount:.2f} | Remaining Balance: Rs. {self.balance:.2f}"
 
-    def get_statement(self):
-        print(f"\n===== 🏦 BANK STATEMENT FOR {self.account_holder.upper()} =====")
-        for t in self.transactions:
-            print(" •", t)
-        print("==================================================")
-        return f"Current Balance: Rs. {self.balance:.2f}"
+    def check_balance(self):
+        return f"💰 Available Balance: Rs. {self.balance:.2f}"
 
-# Instantiate and test BankAccount
-acc = BankAccount("Priya Sharma", 5000.0)
-print(acc.deposit(2500.0))
-print(acc.withdraw(1200.0))
-print(acc.withdraw(8000.0))
-acc.get_statement()`);
+    def print_statement(self):
+        print(f"\\n{'='*48}")
+        print(f"       🏦 STATE BANK MINI-STATEMENT")
+        print(f"{'='*48}")
+        print(f"Account Holder: {self.account_holder}")
+        print(f"Account Number: {self.account_number}")
+        print(f"{'-'*48}")
+        for idx, t in enumerate(self.transactions, 1):
+            print(f"{idx}. {t['type']:<16} : Rs. {t['amount']:>8.2f} (Bal: Rs. {t['balance']:.2f})")
+        print(f"{'='*48}")
+        print(f"CLOSING BALANCE: Rs. {self.balance:.2f}\\n")
+
+# --- Test BankAccount Execution ---
+account = BankAccount("Priya Sharma", "SB-IN-40912", 5000.0)
+print(account.deposit(2500.0))
+print(account.withdraw(1200.0))
+print(account.withdraw(9000.0))
+account.print_statement()`);
 
   const [p2Code, setP2Code] = useState(`class DatabaseManager:
-    def __init__(self):
-        self.db = {}
+    def __init__(self, table_name):
+        self.table_name = table_name
+        self.records = {}
 
-    def insert(self, key, value):
-        self.db[key] = value
-        return f"Inserted {key} -> {value}"
+    def insert(self, record_id, data_dict):
+        if record_id in self.records:
+            return f"❌ Conflict: Record '{record_id}' already exists!"
+        self.records[record_id] = data_dict
+        return f"✅ Inserted record [{record_id}] into '{self.table_name}'."
 
-    def select(self, key):
-        if key in self.db:
-            return f"Found: {key} = {self.db[key]}"
-        return "Record not found"
+    def select(self, record_id):
+        if record_id in self.records:
+            return self.records[record_id]
+        return f"❌ Error: Record '{record_id}' not found."
 
-db = DatabaseManager()
-print(db.insert("user101", "Alice"))
-print(db.select("user101"))
-print(db.select("user102"))`);
+    def update(self, record_id, updated_fields):
+        if record_id not in self.records:
+            return f"❌ Error: Cannot update. Record '{record_id}' does not exist."
+        self.records[record_id].update(updated_fields)
+        return f"✅ Record [{record_id}] successfully updated."
+
+    def delete(self, record_id):
+        if record_id in self.records:
+            deleted_item = self.records.pop(record_id)
+            return f"🗑️ Record [{record_id}] removed successfully."
+        return f"❌ Error: Cannot delete. Record '{record_id}' not found."
+
+    def list_all(self):
+        print(f"\\n{'='*48}")
+        print(f"     🗄️ DATABASE TABLE: {self.table_name.upper()} ({len(self.records)} records)")
+        print(f"{'='*48}")
+        if not self.records:
+            print(" (Table is currently empty)")
+        for r_id, details in self.records.items():
+            print(f" • Key: {r_id:<10} | Data: {details}")
+        print(f"{'='*48}\\n")
+
+# --- Test DatabaseManager Execution ---
+db = DatabaseManager("users")
+print(db.insert("usr_101", {"name": "Alice", "role": "Engineer", "dept": "AI"}))
+print(db.insert("usr_102", {"name": "Bob", "role": "Designer", "dept": "UI/UX"}))
+print(db.insert("usr_101", {"name": "Duplicate"}))
+print("Fetch usr_101:", db.select("usr_101"))
+print(db.update("usr_101", {"role": "Senior Engineer"}))
+print(db.delete("usr_102"))
+db.list_all()`);
 
   const [p3Code, setP3Code] = useState(`class APIDashboard:
-    def __init__(self):
-        # Simulated temperature metrics API response
-        self.data = {"status": 200, "city": "Bengaluru", "temp": 28.5}
+    def __init__(self, service_name, base_url):
+        self.service_name = service_name
+        self.base_url = base_url
+        # Simulated cloud service endpoints database
+        self.endpoints = {
+            "/api/v1/weather": {
+                "status": 200,
+                "city": "Bengaluru",
+                "temp_c": 28.5,
+                "humidity": 65,
+                "condition": "Partly Cloudy ⛅"
+            },
+            "/api/v1/system": {
+                "status": 200,
+                "cpu_usage": 42.1,
+                "memory_mb": 1024,
+                "active_users": 1580,
+                "server_health": "Healthy 🟢"
+            },
+            "/api/v1/payments": {
+                "status": 503,
+                "error": "Payment Gateway Temporarily Unavailable 🔴"
+            }
+        }
 
-    def fetch_metrics(self):
-        if self.data["status"] == 200:
-            return f"Weather API Success: {self.data['city']} is {self.data['temp']}°C"
-        return "API Error: Status 500"
+    def get(self, endpoint):
+        if endpoint not in self.endpoints:
+            return {"status": 404, "error": f"Endpoint '{endpoint}' not found"}
+        return self.endpoints[endpoint]
 
-api = APIDashboard()
-print(api.fetch_metrics())`);
+    def render_dashboard(self):
+        print(f"\\n{'='*52}")
+        print(f"      📊 {self.service_name.upper()} - CLOUD API DASHBOARD")
+        print(f"      Base URL: {self.base_url}")
+        print(f"{'='*52}")
+        
+        for ep, res in self.endpoints.items():
+            status_code = res.get("status", 500)
+            if status_code == 200:
+                print(f"[HTTP {status_code} OK] {ep}")
+                for key, val in res.items():
+                    if key != "status":
+                        print(f"   ↳ {key:<14}: {val}")
+            else:
+                print(f"[HTTP {status_code} ERROR] {ep}")
+                print(f"   ↳ error: {res.get('error', 'Unknown Error')}")
+            print(f"{'-'*52}")
+
+# --- Test APIDashboard Execution ---
+dashboard = APIDashboard("CloudMetrics Suite", "https://api.cloudmetrics.internal")
+print("Single Fetch /weather:", dashboard.get("/api/v1/weather"))
+print("Single Fetch /unknown:", dashboard.get("/api/v1/orders"))
+dashboard.render_dashboard()`);
 
   const [p1Out, setP1Out] = useState('');
   const [p2Out, setP2Out] = useState('');
@@ -122,13 +210,65 @@ print(api.fetch_metrics())`);
 
   const runSimulated = (projectNum) => {
     if (projectNum === 1) {
-      setP1Out("✅ Successfully deposited Rs. 2500.00. New Balance: Rs. 7500.00\n✅ Successfully withdrew Rs. 1200.00. Remaining Balance: Rs. 6300.00\n❌ Insufficient funds! Current balance is Rs. 6300.00\n\n===== 🏦 BANK STATEMENT FOR PRIYA SHARMA =====\n • Account Opened: Rs. 5000.00 | Balance: Rs. 5000.00\n • Deposit: Rs. 2500.00 | Balance: Rs. 7500.00\n • Withdrawal: Rs. 1200.00 | Balance: Rs. 6300.00\n==================================================\nCurrent Balance: Rs. 6300.00\n\n✨ Process finished with exit code 0");
+      setP1Out(`✅ Deposited Rs. 2500.00 | New Balance: Rs. 7500.00
+✅ Withdrew Rs. 1200.00 | Remaining Balance: Rs. 6300.00
+❌ Insufficient Funds! Requested Rs. 9000.00, available Rs. 6300.00
+
+================================================
+       🏦 STATE BANK MINI-STATEMENT
+================================================
+Account Holder: Priya Sharma
+Account Number: SB-IN-40912
+------------------------------------------------
+1. Account Opened   : Rs.  5000.00 (Bal: Rs. 5000.00)
+2. Deposit (+)      : Rs.  2500.00 (Bal: Rs. 7500.00)
+3. Withdrawal (-)   : Rs.  1200.00 (Bal: Rs. 6300.00)
+================================================
+CLOSING BALANCE: Rs. 6300.00
+
+✨ Process finished with exit code 0`);
       setP1Tab('output');
     } else if (projectNum === 2) {
-      setP2Out("Inserted user101 -> Alice\nFound: user101 = Alice\nRecord not found\n\n✨ Process finished with exit code 0");
+      setP2Out(`✅ Inserted record [usr_101] into 'users'.
+✅ Inserted record [usr_102] into 'users'.
+❌ Conflict: Record 'usr_101' already exists!
+Fetch usr_101: {'name': 'Alice', 'role': 'Engineer', 'dept': 'AI'}
+✅ Record [usr_101] successfully updated.
+🗑️ Record [usr_102] removed successfully.
+
+================================================
+     🗄️ DATABASE TABLE: USERS (1 records)
+================================================
+ • Key: usr_101    | Data: {'name': 'Alice', 'role': 'Senior Engineer', 'dept': 'AI'}
+================================================
+
+✨ Process finished with exit code 0`);
       setP2Tab('output');
     } else if (projectNum === 3) {
-      setP3Out("Weather API Success: Bengaluru is 28.5°C\n\n✨ Process finished with exit code 0");
+      setP3Out(`Single Fetch /weather: {'status': 200, 'city': 'Bengaluru', 'temp_c': 28.5, 'humidity': 65, 'condition': 'Partly Cloudy ⛅'}
+Single Fetch /unknown: {'status': 404, 'error': "Endpoint '/api/v1/orders' not found"}
+
+====================================================
+      📊 CLOUDMETRICS SUITE - CLOUD API DASHBOARD
+      Base URL: https://api.cloudmetrics.internal
+====================================================
+[HTTP 200 OK] /api/v1/weather
+   ↳ city          : Bengaluru
+   ↳ temp_c        : 28.5
+   ↳ humidity      : 65
+   ↳ condition     : Partly Cloudy ⛅
+----------------------------------------------------
+[HTTP 200 OK] /api/v1/system
+   ↳ cpu_usage     : 42.1
+   ↳ memory_mb     : 1024
+   ↳ active_users  : 1580
+   ↳ server_health : Healthy 🟢
+----------------------------------------------------
+[HTTP 503 ERROR] /api/v1/payments
+   ↳ error: Payment Gateway Temporarily Unavailable 🔴
+----------------------------------------------------
+
+✨ Process finished with exit code 0`);
       setP3Tab('output');
     }
   };
@@ -156,7 +296,7 @@ print(api.fetch_metrics())`);
       } else if (colonError) {
         feedback = "⚠️ **AI Co-Pilot Alert: Missing Colon (:)**\n\nCheck your conditional statements (`if`), constructor definition (`__init__`), or class headers. They must end with a colon `:` character.";
       } else {
-        feedback = `🤖 **AI Co-Pilot Project Code Review:**\n\nYour Project ${projectNum} code looks clean and runs successfully!\n\n- **OOP Design**: Solid class encapsulation separating initialization state and operations.\n- **Data Operations**: Clean use of dictionaries/mappings to retrieve simulated records.\n- **Readability**: High quality structure. Ready to deploy to your portfolio!`;
+        feedback = `🤖 **AI Co-Pilot Project Code Review:**\n\nYour Project ${projectNum} code looks clean, robust, and runs successfully!\n\n- **OOP Encapsulation**: Solid class architecture separating state initialization, validation, and operations.\n- **Data Integrity**: Clean handling of edge cases, dictionary records, and error messages.\n- **Production Readiness**: High quality structure ready to add to your engineering portfolio!`;
       }
       setFeedback(feedback);
       setLoading(false);
@@ -173,7 +313,7 @@ print(api.fetch_metrics())`);
         <div style={{ background:'linear-gradient(135deg, #1e1b4b 0%, #311042 100%)', color:'white', padding:'2rem', borderRadius:'16px', marginBottom:'2rem', boxShadow:'0 10px 25px rgba(0,0,0,0.1)' }}>
           <h3 style={{ fontSize: '1.4rem', color: '#fcd34d', marginBottom: '0.8rem', fontWeight: 700 }}>🏆 Graduation Challenges</h3>
           <p style={{ color: '#e2e8f0', margin: 0, lineHeight: 1.7 }}>
-            Explore our 3 built-in AI-powered Python demo projects. Each project simulates real-world tasks that you will encounter as a full-stack engineer: smart banking accounts, dictionary databases, and REST API dashboard monitors.
+            Explore our 3 built-in Python demo projects. Each project simulates real-world tasks that you will encounter as a full-stack engineer: smart banking accounts, dictionary databases, and REST API dashboard monitors.
           </p>
         </div>
         <div style={{ display:'flex', gap:'1rem', justifyContent:'flex-end', marginTop:'1.5rem' }}>
@@ -188,20 +328,56 @@ print(api.fetch_metrics())`);
         <p style={{ color:'#475569', lineHeight:1.8, marginBottom:'1.5rem' }}>
           This project demonstrates real-world Object-Oriented Programming (OOP) in banking. The <code>BankAccount</code> class encapsulates account holder data, tracks a running balance, validates transactions (rejecting negative inputs and overdrafts), and maintains an audit trail transaction statement.
         </p>
-        <CodeBlock title="bank_account.py — Smart Bank Account Class">
+        
+        {/* Full Complete Code Display */}
+        <CodeBlock title="bank_account.py — Full Complete BankAccount Class">
+          {cm('# Complete Object-Oriented BankAccount Implementation')}<br/>
           {kw('class')} {fn('BankAccount')}:<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('__init__')}(self, account_holder, initial_balance={nm('0.0')}):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('__init__')}(self, account_holder, account_number, initial_balance={nm('0.0')}):<br/>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.account_holder = account_holder<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.balance = initial_balance<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.transactions = []<br/><br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.account_number = account_number<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.balance = {fn('float')}(initial_balance)<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.transactions = []<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self._record_transaction({st('"Account Opened"')}, self.balance)<br/><br/>
+
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('_record_transaction')}(self, tx_type, amount):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entry = &#123;{st('"type"')}: tx_type, {st('"amount"')}: amount, {st('"balance"')}: self.balance&#125;<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.transactions.append(entry)<br/><br/>
+
           &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('deposit')}(self, amount):<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} amount &lt;= {nm('0')}: {kw('return')} {st('"Invalid amount"')}<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} amount &lt;= {nm('0')}:<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('"❌ Error: Deposit amount must be greater than 0."')}<br/>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.balance += amount<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"Deposited Rs. {amount:.2f}"')}<br/><br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self._record_transaction({st('"Deposit (+)"')}, amount)<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"✅ Deposited Rs. {amount:.2f} | New Balance: Rs. {self.balance:.2f}"')}<br/><br/>
+
           &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('withdraw')}(self, amount):<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} amount &gt; self.balance: {kw('return')} {st('"Insufficient funds"')}<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} amount &lt;= {nm('0')}:<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('"❌ Error: Withdrawal amount must be greater than 0."')}<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} amount &gt; self.balance:<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"❌ Insufficient Funds! Requested Rs. {amount:.2f}, available Rs. {self.balance:.2f}"')}<br/>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.balance -= amount<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"Withdrew Rs. {amount:.2f}"')}
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self._record_transaction({st('"Withdrawal (-)"')}, amount)<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"✅ Withdrew Rs. {amount:.2f} | Remaining Balance: Rs. {self.balance:.2f}"')}<br/><br/>
+
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('print_statement')}(self):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"\\n================================================"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"       🏦 STATE BANK MINI-STATEMENT"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"================================================"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('f"Account Holder: {self.account_holder}"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('f"Account Number: {self.account_number}"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"------------------------------------------------"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('for')} idx, t {kw('in')} {fn('enumerate')}(self.transactions, {nm('1')}):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('f"{idx}. {t[\\"type\\"]:<16} : Rs. {t[\\"amount\\"]:>8.2f} (Bal: Rs. {t[\\"balance\\"]:.2f})"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"================================================"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('f"CLOSING BALANCE: Rs. {self.balance:.2f}\\n"')})<br/><br/>
+
+          {cm('# --- Test Execution ---')}<br/>
+          account = {fn('BankAccount')}({st('"Priya Sharma"')}, {st('"SB-IN-40912"')}, {nm('5000.0')})<br/>
+          {fn('print')}(account.{fn('deposit')}({nm('2500.0')}))<br/>
+          {fn('print')}(account.{fn('withdraw')}({nm('1200.0')}))<br/>
+          {fn('print')}(account.{fn('withdraw')}({nm('9000.0')}))<br/>
+          account.{fn('print_statement')}()
         </CodeBlock>
         
         {/* Playground */}
@@ -215,7 +391,7 @@ print(api.fetch_metrics())`);
               <button className="btn btn-primary" onClick={() => runSimulated(1)} style={{ padding:'0.3rem 0.9rem', fontSize:'0.82rem' }}><Play size={13}/> Run</button>
             </div>
           </div>
-          <textarea value={p1Code} onChange={e=>setP1Code(e.target.value)} style={{ width:'100%', minHeight:200, fontFamily:'monospace', fontSize:'0.88rem', padding:'0.9rem', borderRadius:10, border:'1.5px solid #334155', background:'#0f172a', color:'#f8fafc', lineHeight:1.7, resize:'vertical', outline:'none', boxSizing:'border-box' }} spellCheck={false}/>
+          <textarea value={p1Code} onChange={e=>setP1Code(e.target.value)} style={{ width:'100%', minHeight:280, fontFamily:'monospace', fontSize:'0.88rem', padding:'0.9rem', borderRadius:10, border:'1.5px solid #334155', background:'#0f172a', color:'#f8fafc', lineHeight:1.7, resize:'vertical', outline:'none', boxSizing:'border-box' }} spellCheck={false}/>
           
           <div style={{ display: 'flex', borderBottom: '1px solid #334155', marginTop: '0.6rem', background: '#1e293b', borderTopLeftRadius: 8, borderTopRightRadius: 8, overflow: 'hidden' }}>
             <button onClick={() => setP1Tab('output')} style={{ padding: '0.6rem 1.2rem', background: p1Tab === 'output' ? '#0f172a' : 'transparent', color: p1Tab === 'output' ? '#10b981' : '#94a3b8', border: 'none', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}><Terminal size={14} /> Output</button>
@@ -233,14 +409,61 @@ print(api.fetch_metrics())`);
     ),
 
     project2: (
-      <Section key="project2" eyebrow="Project 2" title="🗄️ Project 2: Database Manager">
+      <Section key="project2" eyebrow="Project 2 • Data Systems" title="🗄️ Project 2: In-Memory Database Manager">
         <p style={{ color:'#475569', lineHeight:1.8, marginBottom:'1.5rem' }}>
-          This project simulates record transactions inside a key-value dictionary database structure, enabling inserts and lookups via class instances.
+          Real backend frameworks use data access layers to manage data records. The <code>DatabaseManager</code> class implements complete <strong>CRUD operations (Create, Read, Update, Delete)</strong> with primary-key uniqueness validation, record retrieval, and formatted table exports.
         </p>
-        <CodeBlock title="db_manager.py">
+
+        {/* Full Complete Code Display */}
+        <CodeBlock title="db_manager.py — Complete CRUD DatabaseManager Class">
+          {cm('# Complete Object-Oriented DatabaseManager Implementation')}<br/>
           {kw('class')} {fn('DatabaseManager')}:<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('__init__')}(self):<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.db = &#123;&#125;<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('__init__')}(self, table_name):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.table_name = table_name<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.records = &#123;&#125;<br/><br/>
+
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('insert')}(self, record_id, data_dict):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} record_id {kw('in')} self.records:<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"❌ Conflict: Record \\"{record_id}\\" already exists!"')}<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.records[record_id] = data_dict<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"✅ Inserted record [{record_id}] into \\"{self.table_name}\\"."')}<br/><br/>
+
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('select')}(self, record_id):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} record_id {kw('in')} self.records:<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} self.records[record_id]<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"❌ Error: Record \\"{record_id}\\" not found."')}<br/><br/>
+
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('update')}(self, record_id, updated_fields):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} record_id {kw('not in')} self.records:<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"❌ Error: Cannot update. Record \\"{record_id}\\" does not exist."')}<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.records[record_id].update(updated_fields)<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"✅ Record [{record_id}] successfully updated."')}<br/><br/>
+
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('delete')}(self, record_id):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} record_id {kw('in')} self.records:<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deleted_item = self.records.pop(record_id)<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"🗑️ Record [{record_id}] removed successfully."')}<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"❌ Error: Cannot delete. Record \\"{record_id}\\" not found."')}<br/><br/>
+
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('list_all')}(self):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"\\n================================================"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('f"     🗄️ DATABASE TABLE: {self.table_name.upper()} ({len(self.records)} records)"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"================================================"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} {kw('not')} self.records:<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('" (Table is currently empty)"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('for')} r_id, details {kw('in')} self.records.items():<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('f" • Key: {r_id:<10} | Data: {details}"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"================================================\\n"')})<br/><br/>
+
+          {cm('# --- Test Execution ---')}<br/>
+          db = {fn('DatabaseManager')}({st('"users"')})<br/>
+          {fn('print')}(db.{fn('insert')}({st('"usr_101"')}, &#123;{st('"name"')}: {st('"Alice"')}, {st('"role"')}: {st('"Engineer"')}&#125;))<br/>
+          {fn('print')}(db.{fn('insert')}({st('"usr_102"')}, &#123;{st('"name"')}: {st('"Bob"')}, {st('"role"')}: {st('"Designer"')}&#125;))<br/>
+          {fn('print')}(db.{fn('insert')}({st('"usr_101"')}, &#123;{st('"name"')}: {st('"Duplicate"')}&#125;))<br/>
+          {fn('print')}({st('"Fetch usr_101:"')}, db.{fn('select')}({st('"usr_101"')}))<br/>
+          {fn('print')}(db.{fn('update')}({st('"usr_101"')}, &#123;{st('"role"')}: {st('"Senior Engineer"')}&#125;))<br/>
+          {fn('print')}(db.{fn('delete')}({st('"usr_102"')}))<br/>
+          db.{fn('list_all')}()
         </CodeBlock>
 
         {/* Playground */}
@@ -254,7 +477,7 @@ print(api.fetch_metrics())`);
               <button className="btn btn-primary" onClick={() => runSimulated(2)} style={{ padding:'0.3rem 0.9rem', fontSize:'0.82rem' }}><Play size={13}/> Run</button>
             </div>
           </div>
-          <textarea value={p2Code} onChange={e=>setP2Code(e.target.value)} style={{ width:'100%', minHeight:200, fontFamily:'monospace', fontSize:'0.88rem', padding:'0.9rem', borderRadius:10, border:'1.5px solid #334155', background:'#0f172a', color:'#f8fafc', lineHeight:1.7, resize:'vertical', outline:'none', boxSizing:'border-box' }} spellCheck={false}/>
+          <textarea value={p2Code} onChange={e=>setP2Code(e.target.value)} style={{ width:'100%', minHeight:280, fontFamily:'monospace', fontSize:'0.88rem', padding:'0.9rem', borderRadius:10, border:'1.5px solid #334155', background:'#0f172a', color:'#f8fafc', lineHeight:1.7, resize:'vertical', outline:'none', boxSizing:'border-box' }} spellCheck={false}/>
           
           <div style={{ display: 'flex', borderBottom: '1px solid #334155', marginTop: '0.6rem', background: '#1e293b', borderTopLeftRadius: 8, borderTopRightRadius: 8, overflow: 'hidden' }}>
             <button onClick={() => setP2Tab('output')} style={{ padding: '0.6rem 1.2rem', background: p2Tab === 'output' ? '#0f172a' : 'transparent', color: p2Tab === 'output' ? '#10b981' : '#94a3b8', border: 'none', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}><Terminal size={14} /> Output</button>
@@ -272,14 +495,59 @@ print(api.fetch_metrics())`);
     ),
 
     project3: (
-      <Section key="project3" eyebrow="Project 3" title="📊 Project 3: API Data Dashboard">
+      <Section key="project3" eyebrow="Project 3 • Backend Microservices" title="📊 Project 3: API Data Dashboard & Health Monitor">
         <p style={{ color:'#475569', lineHeight:1.8, marginBottom:'1.5rem' }}>
-          This project loads weather metrics from a dictionary matching API payload responses, parsing outcomes dynamically.
+          Microservice web architectures communicate over REST APIs. The <code>APIDashboard</code> class models a multi-endpoint REST gateway that handles routing requests (<code>/weather</code>, <code>/system</code>, <code>/payments</code>), parses JSON responses, formats status codes (200 OK, 404 Not Found, 503 Unavailable), and outputs a visual system health board.
         </p>
-        <CodeBlock title="api_dashboard.py">
+
+        {/* Full Complete Code Display */}
+        <CodeBlock title="api_dashboard.py — Complete REST API Dashboard Class">
+          {cm('# Complete Object-Oriented APIDashboard Implementation')}<br/>
           {kw('class')} {fn('APIDashboard')}:<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('__init__')}(self):<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.data = &#123;{st('"status"')}: {nm('200')}, {st('"city"')}: {st('"Bengaluru"')}, {st('"temp"')}: {nm('28.5')}&#125;<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('__init__')}(self, service_name, base_url):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.service_name = service_name<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.base_url = base_url<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.endpoints = &#123;<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{st('"/api/v1/weather"')}: &#123;<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{st('"status"')}: {nm('200')}, {st('"city"')}: {st('"Bengaluru"')},<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{st('"temp_c"')}: {nm('28.5')}, {st('"condition"')}: {st('"Partly Cloudy ⛅"')}<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#125;,<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{st('"/api/v1/system"')}: &#123;<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{st('"status"')}: {nm('200')}, {st('"cpu_usage"')}: {nm('42.1')},<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{st('"server_health"')}: {st('"Healthy 🟢"')}<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#125;,<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{st('"/api/v1/payments"')}: &#123;<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{st('"status"')}: {nm('503')}, {st('"error"')}: {st('"Payment Gateway Unavailable 🔴"')}<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#125;<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#125;<br/><br/>
+
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('get')}(self, endpoint):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} endpoint {kw('not in')} self.endpoints:<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} &#123;{st('"status"')}: {nm('404')}, {st('"error"')}: {st('f"Endpoint \\"{endpoint}\\" not found"')}&#125;<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} self.endpoints[endpoint]<br/><br/>
+
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('render_dashboard')}(self):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"\\n===================================================="')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('f"      📊 {self.service_name.upper()} - CLOUD API DASHBOARD"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('f"      Base URL: {self.base_url}"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"===================================================="')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('for')} ep, res {kw('in')} self.endpoints.items():<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;code = res.get({st('"status"')}, {nm('500')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} code == {nm('200')}:<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('f"[HTTP {code} OK] {ep}"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('for')} k, v {kw('in')} res.items():<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} k != {st('"status"')}:<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('f"   ↳ {k:<14}: {v}"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('else')}:<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('f"[HTTP {code} ERROR] {ep}"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('f"   ↳ error: {res.get(\\"error\\", \\"Unknown\\")}"')})<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"----------------------------------------------------"')})<br/><br/>
+
+          {cm('# --- Test Execution ---')}<br/>
+          dashboard = {fn('APIDashboard')}({st('"CloudMetrics Suite"')}, {st('"https://api.cloudmetrics.internal"')})<br/>
+          {fn('print')}({st('"Single Fetch /weather:"')}, dashboard.{fn('get')}({st('"/api/v1/weather"')}))<br/>
+          {fn('print')}({st('"Single Fetch /unknown:"')}, dashboard.{fn('get')}({st('"/api/v1/orders"')}))<br/>
+          dashboard.{fn('render_dashboard')}()
         </CodeBlock>
 
         {/* Playground */}
@@ -293,7 +561,7 @@ print(api.fetch_metrics())`);
               <button className="btn btn-primary" onClick={() => runSimulated(3)} style={{ padding:'0.3rem 0.9rem', fontSize:'0.82rem' }}><Play size={13}/> Run</button>
             </div>
           </div>
-          <textarea value={p3Code} onChange={e=>setP3Code(e.target.value)} style={{ width:'100%', minHeight:200, fontFamily:'monospace', fontSize:'0.88rem', padding:'0.9rem', borderRadius:10, border:'1.5px solid #334155', background:'#0f172a', color:'#f8fafc', lineHeight:1.7, resize:'vertical', outline:'none', boxSizing:'border-box' }} spellCheck={false}/>
+          <textarea value={p3Code} onChange={e=>setP3Code(e.target.value)} style={{ width:'100%', minHeight:280, fontFamily:'monospace', fontSize:'0.88rem', padding:'0.9rem', borderRadius:10, border:'1.5px solid #334155', background:'#0f172a', color:'#f8fafc', lineHeight:1.7, resize:'vertical', outline:'none', boxSizing:'border-box' }} spellCheck={false}/>
           
           <div style={{ display: 'flex', borderBottom: '1px solid #334155', marginTop: '0.6rem', background: '#1e293b', borderTopLeftRadius: 8, borderTopRightRadius: 8, overflow: 'hidden' }}>
             <button onClick={() => setP3Tab('output')} style={{ padding: '0.6rem 1.2rem', background: p3Tab === 'output' ? '#0f172a' : 'transparent', color: p3Tab === 'output' ? '#10b981' : '#94a3b8', border: 'none', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}><Terminal size={14} /> Output</button>
