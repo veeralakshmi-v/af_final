@@ -579,8 +579,8 @@ print("Python data types checked:", type(name), type(age))
             </div>
 
             <div className="card-actions" style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('ai_superpowers')}>
-                Next: AI Python Superpowers <ArrowRight size={18} />
+              <button className="btn btn-primary" onClick={() => handleContinue('playground')}>
+                Next: Live Python Playground <ArrowRight size={18} />
               </button>
               <button className="btn btn-outline" onClick={() => openAITutor("How does type casting work in Python, and what is the difference between explicit and implicit casting?")}>
                 Ask AI Tutor: Explain Type Casting
@@ -590,73 +590,7 @@ print("Python data types checked:", type(name), type(age))
         </Section>
       )}
 
-      {/* 6. AI PYTHON SUPERPOWERS */}
-      {activeTab === 'ai_superpowers' && (
-        <Section key="ai_superpowers" id="ai_superpowers" eyebrow="Day 1 • AI Advantage" title="🤖 AI Python Superpowers">
-          <div className="panel">
-            <div style={{ background: 'linear-gradient(135deg, #4c1d95 0%, #3b0764 100%)', color: 'white', padding: '2rem', borderRadius: '16px', marginBottom: '2rem', boxShadow: '0 10px 25px rgba(76,29,149,0.2)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.8rem' }}>
-                <Zap size={28} color="#facc15" />
-                <h3 style={{ fontSize: '1.8rem', margin: 0, color: 'white', fontWeight: 800 }}>How AI Transform Python Coding</h3>
-              </div>
-              <p style={{ color: '#e9d5ff', fontSize: '1.1rem', lineHeight: 1.7, margin: 0 }}>
-                In this course, you are learning the modern **AI-Powered** development workflow. Why spend 3 hours debugging a typo when AI can find and fix syntax errors in 0.2 seconds? Here is how professional engineers use AI tools on Day 1:
-              </p>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.8rem', marginBottom: '2.5rem' }}>
-              
-              <div style={{ border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.5rem', background: '#ffffff', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
-                  <div style={{ background: '#eff6ff', padding: '0.6rem', borderRadius: '10px', color: '#3b82f6' }}>
-                    <Code size={22} />
-                  </div>
-                  <h4 style={{ margin: 0, fontSize: '1.15rem', color: '#0f172a' }}>1. GitHub Copilot Autocomplete</h4>
-                </div>
-                <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  As you type comments like <code># Calculate area of circle</code>, AI instantly writes the complete Python formula for you. It acts as an expert pair programmer sitting right next to you!
-                </p>
-              </div>
-
-              <div style={{ border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.5rem', background: '#ffffff', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
-                  <div style={{ background: '#f0fdf4', padding: '0.6rem', borderRadius: '10px', color: '#10b981' }}>
-                    <CheckCircle size={22} />
-                  </div>
-                  <h4 style={{ margin: 0, fontSize: '1.15rem', color: '#0f172a' }}>2. Instant Traceback Debugging</h4>
-                </div>
-                <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  Got a <code>ValueError: invalid literal for int()</code>? Just paste your terminal error into ChatGPT or Claude, and ask: *"Why did my script fail?"* AI explains the exact line number and gives the fix!
-                </p>
-              </div>
-
-              <div style={{ border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.5rem', background: '#ffffff', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
-                  <div style={{ background: '#fffbeb', padding: '0.6rem', borderRadius: '10px', color: '#d97706' }}>
-                    <Lightbulb size={22} />
-                  </div>
-                  <h4 style={{ margin: 0, fontSize: '1.15rem', color: '#0f172a' }}>3. Automated Docstrings & Comments</h4>
-                </div>
-                <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  Select any block of Python code and use AI shortcut commands to automatically generate clean enterprise documentation and inline explanations for your team.
-                </p>
-              </div>
-
-            </div>
-
-            <div className="card-actions" style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-              <button className="btn btn-primary" onClick={() => handleContinue('playground')}>
-                Next: Live Python Playground <ArrowRight size={18} />
-              </button>
-              <button className="btn btn-outline" onClick={() => openAITutor("How can I write code faster using AI pair programmers like Copilot?")}>
-                Ask AI Tutor: AI Code Superpowers
-              </button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* 7. LIVE PYTHON PLAYGROUND */}
+      {/* 6. LIVE PYTHON PLAYGROUND */}
       {activeTab === 'playground' && (
         <Section key="playground" id="playground" eyebrow="Day 1 • Interactive Practice" title="💻 Live Python Playground">
           <div className="panel">
@@ -768,7 +702,7 @@ print("Python data types checked:", type(name), type(age))
             <div style={{ background: '#eff6ff', padding: '1.5rem', borderRadius: '12px', border: '1px solid #3b82f6', textAlign: 'center' }}>
               <h4 style={{ color: '#1d4ed8', margin: '0 0 0.5rem 0', fontSize: '1.2rem' }}>🎉 Day 1 Completed! You are now a Python Programmer!</h4>
               <p style={{ color: '#1e3a8a', margin: 0, fontSize: '1rem' }}>
-                You have mastered variables, syntax, input/output functions, explicit type casting, and AI superpowers. Get ready for Day 2: Operators & Conditional Statements!
+                You have mastered variables, syntax, input/output functions, and explicit type casting. Get ready for Day 2: Operators & Conditional Statements!
               </p>
             </div>
 
