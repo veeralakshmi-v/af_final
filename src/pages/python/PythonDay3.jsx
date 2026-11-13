@@ -337,8 +337,8 @@ export default function PythonDay3({ activeTab, onNavigate }) {
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px,1fr))', gap:'1.2rem', marginBottom:'2.5rem' }}>
               {[
                 { n:'01', icon:'1️⃣', kw:'if',         desc:'Execute a block ONLY when condition is True',                col:'#3b82f6', bg:'#eff6ff' },
-                { n:'02', icon:'2️⃣', kw:'elif',        desc:'Check another condition if the first if was False',         col:'#10b981', bg:'#f0fdf4' },
-                { n:'03', icon:'🪜', kw:'elif ladder',  desc:'Chain many conditions one after another',                   col:'#f59e0b', bg:'#fffbeb' },
+                { n:'02', icon:'2️⃣', kw:'if / else',   desc:'Execute alternate code when condition is False',             col:'#06b6d4', bg:'#ecfeff' },
+                { n:'03', icon:'🪜', kw:'elif (ladder)',desc:'Chain multiple conditions sequentially top-to-bottom',       col:'#10b981', bg:'#f0fdf4' },
                 { n:'04', icon:'🪆', kw:'nested if',    desc:'An if statement placed inside another if block',            col:'#8b5cf6', bg:'#f5f3ff' },
               ].map(i => (
                 <div key={i.n} style={{ background:i.bg, borderRadius:'12px', padding:'1.4rem', border:`1px solid ${i.col}25` }}>
@@ -530,121 +530,70 @@ else:
             />
 
             <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('elif_statement')}>Next: elif Statement <ArrowRight size={18}/></button>
+              <button className="btn btn-primary" onClick={() => nav('elif_statement')}>Next: elif Statement (elif Ladder) <ArrowRight size={18}/></button>
             </div>
           </div>
         </Section>
       )}
 
       {/* ══════════════════════════════════════════
-          TAB 4: elif
+          TAB 4: elif STATEMENT & LADDER
       ══════════════════════════════════════════ */}
-      {activeTab === 'elif_statement' && (
-        <Section key="elif_statement" eyebrow="Day 3 • Conditionals" title="The elif Statement">
+      {(activeTab === 'elif_statement' || activeTab === 'elif_ladder') && (
+        <Section key="elif_statement" eyebrow="Day 3 • Conditionals" title="The elif Statement (elif Ladder)">
           <div className="panel">
             <div style={{ background:'#f0fdf4', borderLeft:'4px solid #10b981', padding:'1.2rem 1.5rem', borderRadius:'10px', marginBottom:'2rem' }}>
               <p style={{ margin:0, color:'#065f46', lineHeight:1.7 }}>
-                <code>elif</code> = <strong>"else if"</strong>. It checks a <em>second condition</em> only when the first <code>if</code> was False. You can have <strong>any number</strong> of <code>elif</code> blocks between one <code>if</code> and one optional <code>else</code>.
+                <code>elif</code> stands for <strong>"else if"</strong>. When you chain multiple <code>elif</code> blocks together, it forms an <strong>elif ladder</strong>. Python evaluates conditions sequentially from <em>top to bottom</em> — executing only the <strong>first matching True condition</strong> and skipping all remaining ones.
               </p>
             </div>
 
-            {/* Syntax */}
-            <div style={{ background:'#0f172a', borderRadius:'12px', padding:'1.5rem', marginBottom:'2rem', border:'2px dashed #334155' }}>
-              <div style={{ color:'#94a3b8', fontSize:'0.8rem', marginBottom:'0.8rem', textTransform:'uppercase' }}>Syntax</div>
-              <div style={{ fontFamily:'monospace', fontSize:'0.95rem', lineHeight:2 }}>
-                <span style={{ color:'#f472b6' }}>if </span><span style={{ color:'#fbbf24' }}>condition1</span><span style={{ color:'#94a3b8' }}>:</span><br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;<span style={{ color:'#94a3b8' }}>...</span><br/>
-                <span style={{ color:'#f472b6' }}>elif </span><span style={{ color:'#fbbf24' }}>condition2</span><span style={{ color:'#94a3b8' }}>:</span><br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;<span style={{ color:'#94a3b8' }}>...</span><br/>
-                <span style={{ color:'#f472b6' }}>else</span><span style={{ color:'#94a3b8' }}>:</span><br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;<span style={{ color:'#94a3b8' }}>...</span>
+            {/* Syntax & Visual Ladder Grid */}
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(290px, 1fr))', gap:'1.5rem', marginBottom:'2rem' }}>
+              {/* Syntax */}
+              <div style={{ background:'#0f172a', borderRadius:'12px', padding:'1.5rem', border:'2px dashed #334155' }}>
+                <div style={{ color:'#94a3b8', fontSize:'0.8rem', marginBottom:'0.8rem', textTransform:'uppercase', fontWeight:700 }}>Syntax</div>
+                <div style={{ fontFamily:'monospace', fontSize:'0.92rem', lineHeight:2 }}>
+                  <span style={{ color:'#f472b6' }}>if </span><span style={{ color:'#fbbf24' }}>condition1</span><span style={{ color:'#94a3b8' }}>:</span><br/>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span style={{ color:'#94a3b8' }}># Executes if condition1 is True</span><br/>
+                  <span style={{ color:'#f472b6' }}>elif </span><span style={{ color:'#fbbf24' }}>condition2</span><span style={{ color:'#94a3b8' }}>:</span><br/>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span style={{ color:'#94a3b8' }}># Executes if condition2 is True</span><br/>
+                  <span style={{ color:'#f472b6' }}>elif </span><span style={{ color:'#fbbf24' }}>condition3</span><span style={{ color:'#94a3b8' }}>:</span><br/>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span style={{ color:'#94a3b8' }}># Executes if condition3 is True</span><br/>
+                  <span style={{ color:'#f472b6' }}>else</span><span style={{ color:'#94a3b8' }}>:</span><br/>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span style={{ color:'#94a3b8' }}># Executes if none of the above are True</span>
+                </div>
+              </div>
+
+              {/* Visual Ladder */}
+              <div style={{ background:'#0f172a', borderRadius:'12px', padding:'1.5rem' }}>
+                <div style={{ color:'#94a3b8', fontSize:'0.8rem', marginBottom:'0.8rem', textTransform:'uppercase', fontWeight:700 }}>How the Ladder Works (Top to Bottom)</div>
+                {[
+                  { label:'if   marks >= 90', badge:'A+', col:'#f59e0b' },
+                  { label:'elif marks >= 80', badge:'A',  col:'#10b981' },
+                  { label:'elif marks >= 70', badge:'B+', col:'#3b82f6' },
+                  { label:'elif marks >= 60', badge:'B',  col:'#8b5cf6' },
+                  { label:'elif marks >= 45', badge:'C',  col:'#ec4899' },
+                  { label:'else            ', badge:'F',  col:'#ef4444' },
+                ].map((r, i) => (
+                  <div key={i} style={{ display:'flex', alignItems:'center', gap:'12px', padding:'0.45rem 0', borderBottom: i < 5 ? '1px solid #1e293b':'' }}>
+                    <span style={{ color:'#64748b', fontSize:'0.78rem', minWidth:'20px' }}>{i+1}</span>
+                    <code style={{ color:'#e2e8f0', fontSize:'0.88rem', flex:1 }}>{r.label}:</code>
+                    <span style={{ background:r.col, color:'white', padding:'0.15rem 0.6rem', borderRadius:'6px', fontSize:'0.8rem', fontWeight:700 }}>→ "{r.badge}"</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <CodeBlock title="elif_example.py — Month season + BMI classifier">
-              {c('# Example 1: BMI Category')}<br/>
-              bmi = {nm('22.5')}<br/>
-              {kw('if')} bmi &lt; {nm('18.5')}:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Underweight"')})<br/>
-              {kw('elif')} bmi &lt; {nm('25')}:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Normal weight"')}) {ok('# → runs (18.5 <= 22.5 < 25)')}<br/>
-              {kw('elif')} bmi &lt; {nm('30')}:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Overweight"')})<br/>
-              {kw('else')}:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Obese"')})<br/><br/>
-
-              {c('# Example 2: Traffic light')}<br/>
-              signal = {st('"Green"')}<br/>
-              {kw('if')} signal == {st('"Red"')}:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"STOP 🔴"')})<br/>
-              {kw('elif')} signal == {st('"Yellow"')}:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"SLOW DOWN 🟡"')})<br/>
-              {kw('elif')} signal == {st('"Green"')}:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"GO 🟢"')}) {ok('# → GO 🟢')}
-            </CodeBlock>
-
-            <Playground
-              id="elif"
-              title="Playground — elif Statement"
-              inputs={[{ label:'bmi =', default:'22.5', width:'70px' }]}
-              defaultCode={`bmi = 22.5   # Try: 15, 20, 22.5, 27, 35
-
-if bmi < 18.5:
-    print("Category: Underweight")
-elif bmi < 25:
-    print("Category: Normal weight ✅")
-elif bmi < 30:
-    print("Category: Overweight")
-else:
-    print("Category: Obese")`}
-            />
-
-            <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => nav('elif_ladder')}>Next: elif Ladder <ArrowRight size={18}/></button>
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {/* ══════════════════════════════════════════
-          TAB 5: elif LADDER
-      ══════════════════════════════════════════ */}
-      {activeTab === 'elif_ladder' && (
-        <Section key="elif_ladder" eyebrow="Day 3 • Conditionals" title="elif Ladder">
-          <div className="panel">
-            <div style={{ background:'#fffbeb', borderLeft:'4px solid #f59e0b', padding:'1.2rem 1.5rem', borderRadius:'10px', marginBottom:'2rem' }}>
-              <p style={{ margin:0, color:'#78350f', lineHeight:1.7 }}>
-                An <strong>elif ladder</strong> is a series of <code>elif</code> conditions chained one after another — like rungs on a ladder. Python tests each rung <em>top to bottom</em> and executes only the <em>first matching one</em>.
-              </p>
-            </div>
-
-            {/* Visual ladder */}
-            <div style={{ background:'#0f172a', borderRadius:'12px', padding:'1.5rem', marginBottom:'2rem' }}>
-              {[
-                { label:'if   marks >= 90', badge:'A+', col:'#f59e0b' },
-                { label:'elif marks >= 80', badge:'A',  col:'#10b981' },
-                { label:'elif marks >= 70', badge:'B+', col:'#3b82f6' },
-                { label:'elif marks >= 60', badge:'B',  col:'#8b5cf6' },
-                { label:'elif marks >= 45', badge:'C',  col:'#ec4899' },
-                { label:'else            ', badge:'F',  col:'#ef4444' },
-              ].map((r, i) => (
-                <div key={i} style={{ display:'flex', alignItems:'center', gap:'12px', padding:'0.5rem 0', borderBottom: i < 5 ? '1px solid #1e293b':'' }}>
-                  <span style={{ color:'#64748b', fontSize:'0.78rem', minWidth:'20px' }}>{i+1}</span>
-                  <code style={{ color:'#e2e8f0', fontSize:'0.88rem', flex:1 }}>{r.label}:</code>
-                  <span style={{ background:r.col, color:'white', padding:'0.15rem 0.6rem', borderRadius:'6px', fontSize:'0.8rem', fontWeight:700 }}>→ "{r.badge}"</span>
-                </div>
-              ))}
-            </div>
-
-            <CodeBlock title="elif_ladder.py — Full grading system and shift classifier">
-              {c('# Grading system using elif ladder')}<br/>
+            <CodeBlock title="elif_ladder_examples.py — Grading system, traffic signals & BMI">
+              {c('# Example 1: Student Grading System (elif Ladder)')}<br/>
               marks = {nm('72')}<br/><br/>
               {kw('if')} marks &gt;= {nm('90')}:<br/>
               &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Grade: A+"')})<br/>
               {kw('elif')} marks &gt;= {nm('80')}:<br/>
               &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Grade: A"')})<br/>
               {kw('elif')} marks &gt;= {nm('70')}:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Grade: B+"')}) {ok('# → B+ (72 >= 70)')}<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Grade: B+"')}) {ok('# → B+ (72 >= 70, stops here!)')}<br/>
               {kw('elif')} marks &gt;= {nm('60')}:<br/>
               &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Grade: B"')})<br/>
               {kw('elif')} marks &gt;= {nm('45')}:<br/>
@@ -652,16 +601,25 @@ else:
               {kw('else')}:<br/>
               &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Grade: F — Fail"')})<br/><br/>
 
-              {c('# Work shift classifier')}<br/>
-              hour = {nm('14')}<br/>
-              {kw('if')} hour &lt; {nm('6')}:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Night shift 🌙"')})<br/>
-              {kw('elif')} hour &lt; {nm('12')}:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Morning shift ☀️"')})<br/>
-              {kw('elif')} hour &lt; {nm('18')}:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Afternoon shift 🌤️"')}) {ok('# → 14 < 18')}<br/>
+              {c('# Example 2: Traffic Light Control')}<br/>
+              signal = {st('"Green"')}<br/>
+              {kw('if')} signal == {st('"Red"')}:<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"STOP 🔴"')})<br/>
+              {kw('elif')} signal == {st('"Yellow"')}:<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"SLOW DOWN 🟡"')})<br/>
+              {kw('elif')} signal == {st('"Green"')}:<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"GO 🟢"')}) {ok('# → GO 🟢')}<br/><br/>
+
+              {c('# Example 3: BMI Category Classifier')}<br/>
+              bmi = {nm('22.5')}<br/>
+              {kw('if')} bmi &lt; {nm('18.5')}:<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Underweight"')})<br/>
+              {kw('elif')} bmi &lt; {nm('25')}:<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Normal weight"')}) {ok('# → Normal weight')}<br/>
+              {kw('elif')} bmi &lt; {nm('30')}:<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Overweight"')})<br/>
               {kw('else')}:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Evening shift 🌆"')})
+              &nbsp;&nbsp;&nbsp;&nbsp;{fn('print')}({st('"Obese"')})
             </CodeBlock>
 
             <Playground
@@ -692,7 +650,7 @@ else:
       )}
 
       {/* ══════════════════════════════════════════
-          TAB 6: NESTED if
+          TAB 5: NESTED if
       ══════════════════════════════════════════ */}
       {activeTab === 'nested_if' && (
         <Section key="nested_if" eyebrow="Day 3 • Conditionals" title="Nested if Statements">
@@ -775,7 +733,7 @@ else:
       )}
 
       {/* ══════════════════════════════════════════
-          TAB 7: PRACTICE PROJECT
+          TAB 6: PRACTICE PROJECT
       ══════════════════════════════════════════ */}
       {activeTab === 'practice' && (
         <Section key="practice" eyebrow="Day 3 • Capstone" title="🎓 Student Grade System">
@@ -886,7 +844,7 @@ else:
       )}
 
       {/* ══════════════════════════════════════════
-          TAB 8: ASSIGNMENT
+          TAB 7: ASSIGNMENT
       ══════════════════════════════════════════ */}
       {activeTab === 'assignment_work' && (
         <Section key="assignment_work" eyebrow="Day 3 • Assignment" title="📝 Day 3 Assignment">
@@ -928,7 +886,7 @@ else:
       )}
 
       {/* ══════════════════════════════════════════
-          TAB 9: QUIZ
+          TAB 8: QUIZ
       ══════════════════════════════════════════ */}
       {activeTab === 'quiz' && (
         <Section key="quiz" eyebrow="Day 3 • Assessment" title="🧠 Quiz — Conditional Statements">
