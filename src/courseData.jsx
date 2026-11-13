@@ -1343,7 +1343,7 @@ export const pythonCourseData = [
     title: 'Final Demo Projects',
     items: [
       { id: 'intro', label: 'Overview', icon: <BookOpen size={18} /> },
-      { id: 'project1', label: '🤖 AI Chat Assistant', icon: <Cpu size={18} /> },
+      { id: 'project1', label: '📱 Smart Bank Account', icon: <Smartphone size={18} /> },
       { id: 'project2', label: '🗄️ Database Manager', icon: <Database size={18} /> },
       { id: 'project3', label: '📊 API Data Dashboard', icon: <Sliders size={18} /> },
       { id: 'tasks', label: '📝 3 Final Project Tasks', icon: <CheckCircle size={18} /> },

@@ -32,25 +32,46 @@ export default function PythonFinalProjects({ activeTab, onNavigate, openAITutor
   const nav = tab => onNavigate('python_final_projects', tab);
 
   // Playgrounds States
-  const [p1Code, setP1Code] = useState(`class AIChatbot:
-    def __init__(self, bot_name):
-        self.bot_name = bot_name
-        self.knowledge = {
-            "hello": "Hello! I am your AI assistant. How can I help you today?",
-            "python": "Python is a high-level language, perfect for AI and Web apps!",
-            "oop": "OOP stands for Object-Oriented Programming, using classes and objects."
-        }
+  const [p1Code, setP1Code] = useState(`class BankAccount:
+    def __init__(self, account_holder, initial_balance=0.0):
+        self.account_holder = account_holder
+        self.balance = initial_balance
+        self.transactions = []
+        self.record_transaction("Account Opened", initial_balance)
 
-    def get_response(self, user_msg):
-        msg = user_msg.lower().strip()
-        if msg in self.knowledge:
-            return self.knowledge[msg]
-        return "I am still learning! Ask me about: hello, python, oop"
+    def record_transaction(self, note, amount):
+        entry = f"{note}: Rs. {amount:.2f} | Balance: Rs. {self.balance:.2f}"
+        self.transactions.append(entry)
 
-# Instantiate and test
-bot = AIChatbot("Nexus")
-print("Response 1:", bot.get_response("hello"))
-print("Response 2:", bot.get_response("python"))`);
+    def deposit(self, amount):
+        if amount <= 0:
+            return "❌ Deposit amount must be positive!"
+        self.balance += amount
+        self.record_transaction("Deposit", amount)
+        return f"✅ Successfully deposited Rs. {amount:.2f}. New Balance: Rs. {self.balance:.2f}"
+
+    def withdraw(self, amount):
+        if amount <= 0:
+            return "❌ Withdrawal amount must be positive!"
+        if amount > self.balance:
+            return f"❌ Insufficient funds! Current balance is Rs. {self.balance:.2f}"
+        self.balance -= amount
+        self.record_transaction("Withdrawal", amount)
+        return f"✅ Successfully withdrew Rs. {amount:.2f}. Remaining Balance: Rs. {self.balance:.2f}"
+
+    def get_statement(self):
+        print(f"\n===== 🏦 BANK STATEMENT FOR {self.account_holder.upper()} =====")
+        for t in self.transactions:
+            print(" •", t)
+        print("==================================================")
+        return f"Current Balance: Rs. {self.balance:.2f}"
+
+# Instantiate and test BankAccount
+acc = BankAccount("Priya Sharma", 5000.0)
+print(acc.deposit(2500.0))
+print(acc.withdraw(1200.0))
+print(acc.withdraw(8000.0))
+acc.get_statement()`);
 
   const [p2Code, setP2Code] = useState(`class DatabaseManager:
     def __init__(self):
@@ -101,7 +122,7 @@ print(api.fetch_metrics())`);
 
   const runSimulated = (projectNum) => {
     if (projectNum === 1) {
-      setP1Out("Response 1: Hello! I am your AI assistant. How can I help you today?\nResponse 2: Python is a high-level language, perfect for AI and Web apps!\n\n✨ Process finished with exit code 0");
+      setP1Out("✅ Successfully deposited Rs. 2500.00. New Balance: Rs. 7500.00\n✅ Successfully withdrew Rs. 1200.00. Remaining Balance: Rs. 6300.00\n❌ Insufficient funds! Current balance is Rs. 6300.00\n\n===== 🏦 BANK STATEMENT FOR PRIYA SHARMA =====\n • Account Opened: Rs. 5000.00 | Balance: Rs. 5000.00\n • Deposit: Rs. 2500.00 | Balance: Rs. 7500.00\n • Withdrawal: Rs. 1200.00 | Balance: Rs. 6300.00\n==================================================\nCurrent Balance: Rs. 6300.00\n\n✨ Process finished with exit code 0");
       setP1Tab('output');
     } else if (projectNum === 2) {
       setP2Out("Inserted user101 -> Alice\nFound: user101 = Alice\nRecord not found\n\n✨ Process finished with exit code 0");
@@ -152,35 +173,41 @@ print(api.fetch_metrics())`);
         <div style={{ background:'linear-gradient(135deg, #1e1b4b 0%, #311042 100%)', color:'white', padding:'2rem', borderRadius:'16px', marginBottom:'2rem', boxShadow:'0 10px 25px rgba(0,0,0,0.1)' }}>
           <h3 style={{ fontSize: '1.4rem', color: '#fcd34d', marginBottom: '0.8rem', fontWeight: 700 }}>🏆 Graduation Challenges</h3>
           <p style={{ color: '#e2e8f0', margin: 0, lineHeight: 1.7 }}>
-            Explore our 3 built-in AI-powered Python demo projects. Each project simulates real-world tasks that you will encounter as a full-stack engineer: natural language chatbots, dictionary databases, and REST API dashboard monitors.
+            Explore our 3 built-in AI-powered Python demo projects. Each project simulates real-world tasks that you will encounter as a full-stack engineer: smart banking accounts, dictionary databases, and REST API dashboard monitors.
           </p>
         </div>
         <div style={{ display:'flex', gap:'1rem', justifyContent:'flex-end', marginTop:'1.5rem' }}>
           <button className="btn btn-outline" onClick={() => openAITutor("What kind of portfolio projects should I build as a beginner Python developer?")}>Ask AI Tutor: Portfolio Ideas</button>
-          <button className="btn btn-primary" onClick={()=>nav('project1')}>Next: AI Chatbot Project <ArrowRight size={16}/></button>
+          <button className="btn btn-primary" onClick={()=>nav('project1')}>Next: Smart Bank Account <ArrowRight size={16}/></button>
         </div>
       </Section>
     ),
 
     project1: (
-      <Section key="project1" eyebrow="Project 1" title="🤖 Project 1: AI Chat Assistant">
+      <Section key="project1" eyebrow="Project 1 • Object-Oriented Banking" title="📱 Project 1: Smart Bank Account & ATM">
         <p style={{ color:'#475569', lineHeight:1.8, marginBottom:'1.5rem' }}>
-          This project demonstrates a console-based conversational AI agent. The `AIChatbot` class stores knowledge keys and responses, handling case insensitivity and input cleaning.
+          This project demonstrates real-world Object-Oriented Programming (OOP) in banking. The <code>BankAccount</code> class encapsulates account holder data, tracks a running balance, validates transactions (rejecting negative inputs and overdrafts), and maintains an audit trail transaction statement.
         </p>
-        <CodeBlock title="ai_chatbot.py">
-          {kw('class')} {fn('AIChatbot')}:<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('__init__')}(self, bot_name):<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.bot_name = bot_name<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.knowledge = &#123;<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{st('"hello"')}: {st('"Hello! I am your AI assistant..."')},<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{st('"python"')}: {st('"Python is a high-level language..."')}<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#125;<br/>
+        <CodeBlock title="bank_account.py — Smart Bank Account Class">
+          {kw('class')} {fn('BankAccount')}:<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('__init__')}(self, account_holder, initial_balance={nm('0.0')}):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.account_holder = account_holder<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.balance = initial_balance<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.transactions = []<br/><br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('deposit')}(self, amount):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} amount &lt;= {nm('0')}: {kw('return')} {st('"Invalid amount"')}<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.balance += amount<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"Deposited Rs. {amount:.2f}"')}<br/><br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;{kw('def')} {fn('withdraw')}(self, amount):<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('if')} amount &gt; self.balance: {kw('return')} {st('"Insufficient funds"')}<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.balance -= amount<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{kw('return')} {st('f"Withdrew Rs. {amount:.2f}"')}
         </CodeBlock>
         
         {/* Playground */}
         <div style={{ marginTop:'1.5rem' }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'0.75rem' }}>
-            <span style={{ fontWeight:700, color:'#0f172a' }}>🧪 AI Chatbot Playground</span>
+            <span style={{ fontWeight:700, color:'#0f172a' }}>🧪 Smart Bank Account Playground</span>
             <div style={{ display:'flex', gap:'0.5rem' }}>
               <button className="btn btn-outline" onClick={() => getAIFeedback(1, p1Code, setP1Feedback, setP1Loading, setP1Tab)} style={{ padding:'0.3rem 0.8rem', fontSize:'0.82rem', borderColor: '#8b5cf6', color: '#8b5cf6' }}>
                 <Bot size={13} /> {p1Loading ? 'Analyzing...' : 'AI Co-pilot'}
@@ -199,7 +226,7 @@ print(api.fetch_metrics())`);
         </div>
 
         <div style={{ display:'flex', gap:'1rem', justifyContent:'flex-end', marginTop:'1.5rem' }}>
-          <button className="btn btn-outline" onClick={() => openAITutor("How can I expand this AI Chatbot database or add custom rules?")}>Ask AI Tutor: Chatbot Tips</button>
+          <button className="btn btn-outline" onClick={() => openAITutor("How can I add interest calculation or pin authentication to the BankAccount class?")}>Ask AI Tutor: OOP Tips</button>
           <button className="btn btn-primary" onClick={()=>nav('project2')}>Next: Database Manager <ArrowRight size={16}/></button>
         </div>
       </Section>
