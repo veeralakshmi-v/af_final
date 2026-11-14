@@ -27,8 +27,9 @@ const localDbPath = process.env.VERCEL
   ? '/tmp/students.json'
   : path.join(__dirname, 'students.json');
 
-// MongoDB Atlas URI — loaded from environment variable (never hardcode credentials!)
-const MONGO_URI = process.env.MONGODB_URI;
+// MongoDB Atlas URI — loaded from environment variable with cluster fallback
+const DEFAULT_ATLAS_URI = 'mongodb+srv://kumudhalaxmi_db_user:99Cx3r5QGr9BsZqG@lms.pyzasj1.mongodb.net/lmsdb?retryWrites=true&w=majority';
+const MONGO_URI = process.env.MONGODB_URI || DEFAULT_ATLAS_URI;
 
 let connectionPromise = null;
 
@@ -37,7 +38,7 @@ if (!MONGO_URI) {
   console.warn('⚠️ MONGODB_URI environment variable is not set!');
   console.warn('🔄 Falling back to local offline JSON storage database (students.json).');
 } else {
-  connectionPromise = mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 5000 })
+  connectionPromise = mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 8000 })
     .then(() => {
       console.log('📡 Connected successfully to MongoDB Atlas Cloud Database!');
       connectionPromise = null;
@@ -442,6 +443,22 @@ const seedAtlasAdmissionsIfEmpty = async () => {
 };
 
 // 3. API ROUTES
+
+// 0. Health & Live Database Connection Status Check
+app.get('/api/health', async (req, res) => {
+  try {
+    const isDbConnected = await checkDbConnection();
+    return res.json({
+      status: 'ok',
+      database: isDbConnected ? 'connected' : 'offline_fallback',
+      cluster: isDbConnected ? 'MongoDB Atlas (lmsdb)' : 'Local JSON Fallback',
+      readyState: mongoose.connection.readyState,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    return res.status(500).json({ status: 'error', message: err.message });
+  }
+});
 
 // A. Get all students
 app.get('/api/students', async (req, res) => {
