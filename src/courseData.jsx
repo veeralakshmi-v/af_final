@@ -2293,7 +2293,7 @@ export const coreJsCourseData = [
     title: 'Day 2 - JavaScript Operators',
     items: [
       { id: 'intro', label: 'Operators Overview', icon: <BookOpen size={18} /> },
-      { id: 'assignment_arithmetic', label: 'Assignment & Arithmetic', icon: <Layers size={18} /> },
+      { id: 'assignment_arithmetic', label: 'Arithmetic & Assignment', icon: <Layers size={18} /> },
       { id: 'comparison_logical', label: 'Comparison & Logical', icon: <Database size={18} /> },
       { id: 'bitwise_string_ternary', label: 'Bitwise, String & Ternary', icon: <Zap size={18} /> },
       { id: 'expressions', label: 'Expressions', icon: <RefreshCw size={18} /> },

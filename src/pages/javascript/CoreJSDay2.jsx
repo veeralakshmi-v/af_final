@@ -342,21 +342,24 @@ console.log('10 + 5 =',    10 + 5);`);
             </p>
 
             <h3 style={{ marginBottom: '1rem', color: '#1e293b' }}>Operator Categories</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(256px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
               {[
-                { icon: '📝', title: 'Assignment Operators', desc: 'Assign values to variables. e.g. =, +=, -=, *=, /=, %=, **=', color: '#fef9c3' },
-                { icon: '🔍', title: 'Comparison Operators', desc: 'Compare two values and return boolean. e.g. ==, ===, !=, !==, >, <, >=, <=', color: '#eff6ff' },
-                { icon: '➕', title: 'Arithmetic Operators', desc: 'Perform math on numbers. e.g. +, -, *, /, %, **, ++, --', color: '#f0fdf4' },
-                { icon: '🔌', title: 'Bitwise Operators',   desc: 'Work on 32-bit integers at bit level. e.g. &, |, ^, ~, <<, >>', color: '#fdf4ff' },
-                { icon: '🔗', title: 'Logical Operators',   desc: 'Combine boolean conditions. e.g. &&, ||, !', color: '#fff7ed' },
-                { icon: '🔤', title: 'String Operator',     desc: 'Concatenate strings using + and +=', color: '#ecfdf5' },
-                { icon: '❓', title: 'Ternary Operator',    desc: 'Inline condition: condition ? valueIfTrue : valueIfFalse', color: '#fef2f2' },
-              ].map(card => (
-                <div key={card.title} style={{ background: card.color, border: '1px solid #e2e8f0', borderRadius: '10px', padding: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                  <span style={{ fontSize: '1.4rem' }}>{card.icon}</span>
-                  <div>
-                    <div style={{ fontWeight: 700, color: '#0f172a', marginBottom: '0.25rem', fontSize: '0.95rem' }}>{card.title}</div>
-                    <div style={{ fontSize: '0.82rem', color: '#475569' }}>{card.desc}</div>
+                { icon: '➕', title: 'Arithmetic Operators', desc: 'Perform math on numbers. e.g. +, -, *, /, %, **, ++, --', color: '#f0fdf4', border: '#bbf7d0' },
+                { icon: '🔍', title: 'Comparison Operators', desc: 'Compare two values and return boolean. e.g. ==, ===, !=, !==, >, <, >=, <=', color: '#eff6ff', border: '#bfdbfe' },
+                { icon: '📝', title: 'Assignment Operators', desc: 'Assign values to variables. e.g. =, +=, -=, *=, /=, %=, **=', color: '#fef9c3', border: '#fef08a' },
+                { icon: '🔗', title: 'Logical Operators',   desc: 'Combine boolean conditions. e.g. &&, ||, !', color: '#fff7ed', border: '#fed7aa' },
+                { icon: '🔌', title: 'Bitwise Operators',   desc: 'Work on 32-bit integers at bit level. e.g. &, |, ^, ~, <<, >>', color: '#fdf4ff', border: '#f5d0fe' },
+                { icon: '🔤', title: 'String Operator',     desc: 'Concatenate strings using + and +=', color: '#ecfdf5', border: '#a7f3d0' },
+                { icon: '❓', title: 'Ternary Operator',    desc: 'Inline condition: condition ? valueIfTrue : valueIfFalse', color: '#fef2f2', border: '#fecaca' },
+              ].map((card, idx) => (
+                <div key={card.title} style={{ background: card.color, border: `1px solid ${card.border}`, borderRadius: '10px', padding: '1rem 1.15rem', display: 'flex', gap: '0.85rem', alignItems: 'flex-start', minHeight: '96px', boxSizing: 'border-box' }}>
+                  <span style={{ fontSize: '1.4rem', lineHeight: 1 }}>{card.icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700, color: '#0f172a', marginBottom: '0.3rem', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '7px' }}>
+                      <span style={{ background: '#0f172a', color: '#fff', borderRadius: '50%', width: '19px', height: '19px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>{idx + 1}</span>
+                      <span>{card.title}</span>
+                    </div>
+                    <div style={{ fontSize: '0.82rem', color: '#475569', lineHeight: 1.5 }}>{card.desc}</div>
                   </div>
                 </div>
               ))}
@@ -380,18 +383,77 @@ x++;         // operand: x (increment by 1)
           </div>
           <div style={{ marginTop: '2rem', textAlign: 'right' }}>
             <button style={{ background: '#ca8a04', color: '#fff', border: 'none', padding: '0.6rem 2rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }} onClick={() => handleContinue('assignment_arithmetic')}>
-              Next: Assignment &amp; Arithmetic →
+              Next: Arithmetic &amp; Assignment →
             </button>
           </div>
         </Section>
       )}
 
-      {/* ── TAB 2: ASSIGNMENT & ARITHMETIC ──────────────── */}
+      {/* ── TAB 2: ARITHMETIC & ASSIGNMENT ──────────────── */}
       {activeTab === 'assignment_arithmetic' && (
-        <Section key="assignment_arithmetic" eyebrow="Day 2 • Operators" title="Assignment & Arithmetic Operators">
+        <Section key="assignment_arithmetic" eyebrow="Day 2 • Operators" title="Arithmetic & Assignment Operators">
 
           <div className="panel" style={{ marginBottom: '1.5rem' }}>
-            <h3 style={{ marginBottom: '1rem', color: '#1e293b' }}>1. Assignment Operators</h3>
+            <h3 style={{ marginBottom: '1rem', color: '#1e293b' }}>1. Arithmetic Operators</h3>
+            <p style={{ color: '#475569', marginBottom: '1rem', lineHeight: 1.7 }}>
+              Arithmetic operators perform mathematical calculations on numeric operands (constants and variables).
+            </p>
+            <div style={{ overflowX: 'auto', marginBottom: '1.5rem' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+                <thead>
+                  <tr style={{ background: '#f0fdf4' }}>
+                    {['Op', 'Name', 'Example', 'Result'].map(h => (
+                      <th key={h} style={{ padding: '10px 14px', textAlign: 'left', borderBottom: '2px solid #10b981' }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ['+',  'Addition',       '10 + 3',  '13'],
+                    ['-',  'Subtraction',    '10 - 3',  '7'],
+                    ['*',  'Multiplication', '10 * 3',  '30'],
+                    ['/',  'Division',       '10 / 3',  '3.333…'],
+                    ['%',  'Modulus',        '10 % 3',  '1'],
+                    ['**', 'Exponentiation', '2 ** 10', '1024'],
+                    ['++', 'Increment',      'x++',     'x + 1'],
+                    ['--', 'Decrement',      'x--',     'x - 1'],
+                  ].map(([op, name, ex, res], i) => (
+                    <tr key={op + name} style={{ background: i % 2 === 0 ? '#fff' : '#f8fafc' }}>
+                      <td style={{ ...cell(null), fontWeight: 700, color: '#10b981' }}>{op}</td>
+                      <td style={{ padding: '8px 14px', fontWeight: 600, color: '#1e293b', borderBottom: '1px solid #f1f5f9' }}>{name}</td>
+                      <td style={{ ...cell(null), color: '#1e40af' }}>{ex}</td>
+                      <td style={{ ...cell(null), fontWeight: 700, color: '#ca8a04' }}>{res}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Interactive Calculator */}
+            <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '10px', padding: '1.2rem' }}>
+              <h4 style={{ marginBottom: '0.75rem', color: '#1e293b' }}>🧮 Interactive Arithmetic Calculator</h4>
+              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem' }}>
+                <input type="number" value={calcLeft} onChange={e => setCalcLeft(e.target.value)} style={{ width: '90px', padding: '0.5rem', border: '1px solid #ca8a04', borderRadius: '6px', textAlign: 'center', fontWeight: 700, fontSize: '1rem' }} />
+                <select value={calcOp} onChange={e => setCalcOp(e.target.value)} style={{ padding: '0.5rem 0.75rem', border: '1px solid #ca8a04', borderRadius: '6px', fontWeight: 700, fontSize: '1rem', color: '#ca8a04' }}>
+                  {['+', '-', '*', '/', '%', '**', '++', '--'].map(op => <option key={op} value={op}>{op}</option>)}
+                </select>
+                {calcOp !== '++' && calcOp !== '--' && (
+                  <input type="number" value={calcRight} onChange={e => setCalcRight(e.target.value)} style={{ width: '90px', padding: '0.5rem', border: '1px solid #ca8a04', borderRadius: '6px', textAlign: 'center', fontWeight: 700, fontSize: '1rem' }} />
+                )}
+                <button onClick={runCalc} style={{ background: '#ca8a04', color: '#fff', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>
+                  = Calculate
+                </button>
+              </div>
+              {calcResult !== null && (
+                <div style={{ background: '#fff', border: '2px solid #ca8a04', borderRadius: '8px', padding: '1rem', display: 'inline-block', fontSize: '1.3rem', fontWeight: 700, color: '#ca8a04', fontFamily: 'monospace' }}>
+                  Result: {calcResult}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="panel" style={{ marginBottom: '1.5rem' }}>
+            <h3 style={{ marginBottom: '1rem', color: '#1e293b' }}>2. Assignment Operators</h3>
             <p style={{ color: '#475569', marginBottom: '1rem', lineHeight: 1.7 }}>
               Assignment operators assign values to JavaScript variables. The basic assignment operator is <code style={{ background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>=</code>. Compound operators perform an operation AND assign the result in one step.
             </p>
@@ -424,62 +486,6 @@ x++;         // operand: x (increment by 1)
                 </tbody>
               </table>
             </div>
-          </div>
-
-          <div className="panel" style={{ marginBottom: '1.5rem' }}>
-            <h3 style={{ marginBottom: '1rem', color: '#1e293b' }}>2. Arithmetic Operators</h3>
-            <div style={{ overflowX: 'auto', marginBottom: '1.5rem' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
-                <thead>
-                  <tr style={{ background: '#f0fdf4' }}>
-                    {['Op', 'Name', 'Example', 'Result'].map(h => (
-                      <th key={h} style={{ padding: '10px 14px', textAlign: 'left', borderBottom: '2px solid #10b981' }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    ['+',  'Addition',       '10 + 3',  '13'],
-                    ['-',  'Subtraction',    '10 - 3',  '7'],
-                    ['*',  'Multiplication', '10 * 3',  '30'],
-                    ['/',  'Division',       '10 / 3',  '3.333…'],
-                    ['%',  'Modulus',        '10 % 3',  '1'],
-                    ['**', 'Exponentiation', '2 ** 10', '1024'],
-                    ['++', 'Increment',      'x++',     'x + 1'],
-                    ['--', 'Decrement',      'x--',     'x - 1'],
-                  ].map(([op, name, ex, res], i) => (
-                    <tr key={op + name} style={{ background: i % 2 === 0 ? '#fff' : '#f8fafc' }}>
-                      <td style={{ ...cell(null), fontWeight: 700, color: '#10b981' }}>{op}</td>
-                      <td style={{ padding: '8px 14px', fontWeight: 600, color: '#1e293b', borderBottom: '1px solid #f1f5f9' }}>{name}</td>
-                      <td style={{ ...cell(null), color: '#1e40af' }}>{ex}</td>
-                      <td style={{ ...cell(null), fontWeight: 700, color: '#ca8a04' }}>{res}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Interactive Calculator */}
-          <div className="panel" style={{ background: '#fffbeb', border: '1px solid #fde68a' }}>
-            <h3 style={{ marginBottom: '1rem', color: '#1e293b' }}>🧮 Interactive Arithmetic Calculator</h3>
-            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem' }}>
-              <input type="number" value={calcLeft} onChange={e => setCalcLeft(e.target.value)} style={{ width: '90px', padding: '0.5rem', border: '1px solid #ca8a04', borderRadius: '6px', textAlign: 'center', fontWeight: 700, fontSize: '1rem' }} />
-              <select value={calcOp} onChange={e => setCalcOp(e.target.value)} style={{ padding: '0.5rem 0.75rem', border: '1px solid #ca8a04', borderRadius: '6px', fontWeight: 700, fontSize: '1rem', color: '#ca8a04' }}>
-                {['+', '-', '*', '/', '%', '**', '++', '--'].map(op => <option key={op} value={op}>{op}</option>)}
-              </select>
-              {calcOp !== '++' && calcOp !== '--' && (
-                <input type="number" value={calcRight} onChange={e => setCalcRight(e.target.value)} style={{ width: '90px', padding: '0.5rem', border: '1px solid #ca8a04', borderRadius: '6px', textAlign: 'center', fontWeight: 700, fontSize: '1rem' }} />
-              )}
-              <button onClick={runCalc} style={{ background: '#ca8a04', color: '#fff', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>
-                = Calculate
-              </button>
-            </div>
-            {calcResult !== null && (
-              <div style={{ background: '#fff', border: '2px solid #ca8a04', borderRadius: '8px', padding: '1rem', display: 'inline-block', fontSize: '1.3rem', fontWeight: 700, color: '#ca8a04', fontFamily: 'monospace' }}>
-                Result: {calcResult}
-              </div>
-            )}
           </div>
 
           <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
@@ -832,8 +838,8 @@ console.log(x);   // function call statement`} />
             <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
               {[
                 ['arithmetic',  '➕ Arithmetic'],
-                ['assignment',  '📝 Assignment'],
                 ['comparison',  '🔍 Comparison'],
+                ['assignment',  '📝 Assignment'],
                 ['logical',     '🔗 Logical'],
                 ['string',      '🔤 String'],
                 ['calculator',  '🧮 Calculator (Slide Demo)'],
