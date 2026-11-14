@@ -30,9 +30,8 @@ const localDbPath = isServerless
   ? '/tmp/students.json'
   : path.join(__dirname, 'students.json');
 
-// MongoDB Atlas URI — loaded from environment variable with cluster fallback
-const DEFAULT_ATLAS_URI = 'mongodb+srv://kumudhalaxmi_db_user:99Cx3r5QGr9BsZqG@lms.pyzasj1.mongodb.net/lmsdb?retryWrites=true&w=majority';
-const MONGO_URI = process.env.MONGODB_URI || DEFAULT_ATLAS_URI;
+// MongoDB Atlas URI — loaded securely from environment variable (configured in Netlify / .env)
+const MONGO_URI = process.env.MONGODB_URI;
 
 let connectionPromise = null;
 
