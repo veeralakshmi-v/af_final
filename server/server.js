@@ -15,8 +15,11 @@ try {
 }
 
 
-const currentFilename = fileURLToPath(import.meta.url);
-const currentDir = path.dirname(currentFilename);
+const currentDir = typeof __dirname !== 'undefined'
+  ? __dirname
+  : (typeof import.meta !== 'undefined' && import.meta && import.meta.url)
+    ? path.dirname(fileURLToPath(import.meta.url))
+    : process.cwd();
 
 const app = express();
 app.use(cors());
