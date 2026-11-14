@@ -22,8 +22,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Fallback JSON DB path (Vercel serverless has write permissions only inside '/tmp')
-const localDbPath = process.env.VERCEL
+// Detect serverless execution environments (Vercel, Netlify Functions, AWS Lambda)
+const isServerless = Boolean(process.env.VERCEL || process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.SERVERLESS);
+
+// Fallback JSON DB path (Serverless cloud functions have write permissions only inside '/tmp')
+const localDbPath = isServerless
   ? '/tmp/students.json'
   : path.join(__dirname, 'students.json');
 
@@ -310,7 +313,7 @@ const saveLocalStudents = (data) => {
   fs.writeFileSync(localDbPath, JSON.stringify(data, null, 2));
 };
 
-const localStaffDbPath = process.env.VERCEL
+const localStaffDbPath = isServerless
   ? '/tmp/staff.json'
   : path.join(__dirname, 'staff.json');
 
@@ -329,7 +332,7 @@ const saveLocalStaff = (data) => {
   fs.writeFileSync(localStaffDbPath, JSON.stringify(data, null, 2));
 };
 
-const localInvoiceDbPath = process.env.VERCEL
+const localInvoiceDbPath = isServerless
   ? '/tmp/invoices.json'
   : path.join(__dirname, 'invoices.json');
 
@@ -348,7 +351,7 @@ const saveLocalInvoices = (data) => {
   fs.writeFileSync(localInvoiceDbPath, JSON.stringify(data, null, 2));
 };
 
-const localAdmissionsDbPath = process.env.VERCEL
+const localAdmissionsDbPath = isServerless
   ? '/tmp/admissions.json'
   : path.join(__dirname, 'admissions.json');
 
@@ -2848,7 +2851,7 @@ app.get('/api/students/:id/course-access', async (req, res) => {
 });
 
 // Start Server locally (if not running in serverless cloud environments or test mode)
-if (!process.env.VERCEL && !process.env.TEST_MODE) {
+if (!isServerless && !process.env.TEST_MODE) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`🚀 LMS Backend listening live on http://localhost:${PORT}`);
