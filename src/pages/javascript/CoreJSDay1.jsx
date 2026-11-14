@@ -57,8 +57,19 @@ export default function CoreJSDay1({ activeTab, onNavigate, openAITutor: _openAI
   const [checkedQuestions, setCheckedQuestions] = useState({});
   const [score, setScore] = useState(null);
 
-  // Tab 1.5: Connecting JS State
+  // Tab 1.5: Connecting JS & Output Simulator States
   const [selectedJsConnectMethod, setSelectedJsConnectMethod] = useState('inline');
+  const [simPrintMode, setSimPrintMode] = useState('console'); // 'console' | 'docwrite' | 'lifecycle'
+  const [simConsoleLogs, setSimConsoleLogs] = useState([
+    { id: 1, type: 'log', text: 'Hello, World! — printed via console.log()' },
+    { id: 2, type: 'info', text: 'JavaScript is executing at Runtime (Execution Phase)' }
+  ]);
+  const [simDocLines, setSimDocLines] = useState([
+    '<h3>AlphaFly Computer Education</h3>',
+    '<p>Welcome to Core JavaScript Day 1!</p>'
+  ]);
+  const [isPageOverwritten, setIsPageOverwritten] = useState(false);
+  const [lifecycleCase, setLifecycleCase] = useState('compile');
 
   // Tab 2: Scope Inspector States
   const [activeScopeType, setActiveScopeType] = useState('block');
@@ -586,7 +597,7 @@ console.log("typeof grade   →", typeof grade);    // object (JS quirk!)`);
                 style={{ background: '#ca8a04', color: '#fff', padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
                 onClick={() => handleContinue('connecting_js')}
               >
-                Continue to Connecting JS & innerHTML (+10 XP)
+                Continue to Connecting JS, Output & innerHTML (+10 XP)
               </button>
             </div>
           </div>
@@ -595,18 +606,415 @@ console.log("typeof grade   →", typeof grade);    // object (JS quirk!)`);
 
       {/* CONNECTING JS & INNERHTML TAB */}
       {activeTab === 'connecting_js' && (
-        <Section key="connecting_js" id="connecting_js" eyebrow="HTML & JS Integration" title="Connecting JavaScript in HTML & innerHTML DOM Manipulation">
+        <Section key="connecting_js" id="connecting_js" eyebrow="HTML & JS Integration • Output Methods" title="JavaScript Execution Lifecycle, Print Statements & DOM innerHTML">
           <div className="panel">
             
-            <div style={{ background: 'linear-gradient(135deg, #0f172a, #1e293b)', color: 'white', padding: '1.8rem', borderRadius: '14px', marginBottom: '2rem', border: '1px solid #334155' }}>
-              <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.8rem', fontWeight: 800 }}>🔌 How JavaScript Connects to HTML Documents</h3>
+            <div style={{ background: 'linear-gradient(135deg, #0f172a, #1e293b)', color: 'white', padding: '1.8rem', borderRadius: '14px', marginBottom: '2.5rem', border: '1px solid #334155' }}>
+              <div style={{ display: 'inline-block', background: '#3b82f6', color: '#fff', fontSize: '0.75rem', fontWeight: 800, padding: '0.2rem 0.6rem', borderRadius: '4px', textTransform: 'uppercase', marginBottom: '0.6rem' }}>Day 1 Foundation</div>
+              <h3 style={{ fontSize: '1.6rem', margin: '0 0 0.8rem', fontWeight: 800 }}>⚡ Understanding How JavaScript Runs &amp; Prints Output</h3>
               <p style={{ color: '#94a3b8', lineHeight: 1.7, margin: 0, fontSize: '1.02rem' }}>
-                JavaScript needs to be embedded inside or linked to an HTML document to execute in a web browser. There are 3 main methods to include JS code into HTML: <strong>Inline</strong>, <strong>Internal</strong>, and <strong>External</strong>, plus key DOM properties like <strong><code>innerHTML</code></strong> to manipulate page content dynamically!
+                Before manipulating web pages, every developer must master two fundamental pillars: <strong>how JavaScript processes code across Compile Time and Run Time</strong>, and how to output data using <strong><code>console.log()</code></strong>, <strong><code>document.write()</code></strong>, and <strong><code>innerHTML</code></strong>.
               </p>
             </div>
 
-            {/* SECTION 1: 3 WAYS TO CONNECT JS */}
-            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.8rem' }}>1. Three Ways to Include JavaScript in HTML</h3>
+            {/* ═══════════════════════════════════════════════════════════
+                TOPIC 1: COMPILE TIME VS. RUN TIME
+            ═══════════════════════════════════════════════════════════ */}
+            <div style={{ marginBottom: '3rem', paddingBottom: '2.5rem', borderBottom: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.6rem' }}>
+                <span style={{ background: '#2563eb', color: '#fff', borderRadius: '50%', width: '26px', height: '26px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: 800 }}>1</span>
+                <h3 style={{ fontSize: '1.35rem', color: '#0f172a', margin: 0, fontWeight: 800 }}>JavaScript Execution Lifecycle: Compile Time vs. Run Time</h3>
+              </div>
+              <p style={{ color: '#475569', lineHeight: 1.7, marginBottom: '1.5rem', fontSize: '0.96rem' }}>
+                JavaScript is a <strong>Just-In-Time (JIT) compiled</strong> language. The JavaScript engine (such as Google Chrome's <strong>V8</strong> or Firefox's <strong>SpiderMonkey</strong>) executes your script in two consecutive phases:
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '1.8rem' }}>
+                
+                {/* Compile Time Card */}
+                <div style={{ background: '#eff6ff', borderRadius: '12px', border: '1px solid #bfdbfe', borderTop: '4px solid #3b82f6', padding: '1.4rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.6rem' }}>
+                    <span style={{ fontSize: '1.4rem' }}>⚙️</span>
+                    <h4 style={{ margin: 0, color: '#1e40af', fontSize: '1.15rem', fontWeight: 800 }}>Phase 1: Compile Time (Creation Phase)</h4>
+                  </div>
+                  <p style={{ fontSize: '0.88rem', color: '#334155', lineHeight: 1.6, marginBottom: '1rem' }}>
+                    Occurs <strong>before any line of code actually runs</strong>. The JavaScript engine reads the entire script to parse tokens, check grammar, and allocate memory.
+                  </p>
+                  <ul style={{ margin: 0, paddingLeft: '1.2rem', color: '#1e3a8a', fontSize: '0.86rem', lineHeight: 1.7 }}>
+                    <li><strong>Tokenizing &amp; Parsing:</strong> Turns code into an Abstract Syntax Tree (AST).</li>
+                    <li><strong>Syntax Validation:</strong> Detects invalid keywords, unclosed brackets, or bad syntax.</li>
+                    <li><strong>Memory Allocation &amp; Hoisting:</strong> Reserves memory for variables (<code>var</code>, <code>let</code>, <code>const</code>) and function declarations.</li>
+                    <li><strong>JIT Bytecode Generation:</strong> Translates AST into CPU-executable bytecode.</li>
+                  </ul>
+                  <div style={{ marginTop: '1rem', background: '#dbeafe', padding: '0.6rem 0.8rem', borderRadius: '6px', fontSize: '0.8rem', color: '#1e40af', fontWeight: 600 }}>
+                    🛑 If a SyntaxError occurs here, <strong>0% of your code will run</strong>!
+                  </div>
+                </div>
+
+                {/* Run Time Card */}
+                <div style={{ background: '#f0fdf4', borderRadius: '12px', border: '1px solid #bbf7d0', borderTop: '4px solid #10b981', padding: '1.4rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.6rem' }}>
+                    <span style={{ fontSize: '1.4rem' }}>🏃</span>
+                    <h4 style={{ margin: 0, color: '#065f46', fontSize: '1.15rem', fontWeight: 800 }}>Phase 2: Run Time (Execution Phase)</h4>
+                  </div>
+                  <p style={{ fontSize: '0.88rem', color: '#334155', lineHeight: 1.6, marginBottom: '1rem' }}>
+                    The engine steps through your compiled bytecode <strong>line-by-line on the Call Stack</strong>, performing computations and executing statements.
+                  </p>
+                  <ul style={{ margin: 0, paddingLeft: '1.2rem', color: '#064e3b', fontSize: '0.86rem', lineHeight: 1.7 }}>
+                    <li><strong>Value Assignment:</strong> Binds actual data (e.g. <code>name = "Alex"</code>) into memory slots.</li>
+                    <li><strong>Arithmetic &amp; Logic:</strong> Calculates math, evaluates boolean conditions, and loops.</li>
+                    <li><strong>Output Statements:</strong> Sends text to <code>console.log()</code> or writes to <code>document.write()</code>.</li>
+                    <li><strong>Event Handling &amp; DOM:</strong> Responds to button clicks, timers, and updates web content.</li>
+                  </ul>
+                  <div style={{ marginTop: '1rem', background: '#dcfce7', padding: '0.6rem 0.8rem', borderRadius: '6px', fontSize: '0.8rem', color: '#047857', fontWeight: 600 }}>
+                    ⚡ Runtime errors (like <code>ReferenceError</code>) only crash when reached!
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Comparison Table: Compile Time vs Run Time */}
+              <div style={{ overflowX: 'auto', borderRadius: '10px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem', textAlign: 'left', background: '#fff' }}>
+                  <thead>
+                    <tr style={{ background: '#f8fafc', borderBottom: '2px solid #cbd5e1' }}>
+                      <th style={{ padding: '10px 14px', color: '#0f172a', fontWeight: 800, width: '22%' }}>Feature</th>
+                      <th style={{ padding: '10px 14px', color: '#1e40af', fontWeight: 800, width: '39%' }}>⚙️ Compile Time (Creation Phase)</th>
+                      <th style={{ padding: '10px 14px', color: '#065f46', fontWeight: 800, width: '39%' }}>🏃 Run Time (Execution Phase)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '10px 14px', fontWeight: 700, color: '#334155' }}>When it Happens</td>
+                      <td style={{ padding: '10px 14px', color: '#475569' }}>Initial script loading before execution</td>
+                      <td style={{ padding: '10px 14px', color: '#475569' }}>During sequential line-by-line execution</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9', background: '#f8fafc' }}>
+                      <td style={{ padding: '10px 14px', fontWeight: 700, color: '#334155' }}>Primary Tasks</td>
+                      <td style={{ padding: '10px 14px', color: '#475569' }}>Lexical parsing, syntax checking, variable hoisting</td>
+                      <td style={{ padding: '10px 14px', color: '#475569' }}>Value assignment, math evaluation, calling functions, outputting text</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '10px 14px', fontWeight: 700, color: '#334155' }}>Errors Detected</td>
+                      <td style={{ padding: '10px 14px', color: '#dc2626', fontWeight: 600 }}><code>SyntaxError</code> (e.g. <code>var = 10;</code>)</td>
+                      <td style={{ padding: '10px 14px', color: '#dc2626', fontWeight: 600 }}><code>ReferenceError</code>, <code>TypeError</code> (e.g. calling undefined variable)</td>
+                    </tr>
+                    <tr style={{ background: '#f8fafc' }}>
+                      <td style={{ padding: '10px 14px', fontWeight: 700, color: '#334155' }}>Output Produced</td>
+                      <td style={{ padding: '10px 14px', color: '#475569' }}>None (Internal preparation of memory and bytecode)</td>
+                      <td style={{ padding: '10px 14px', color: '#059669', fontWeight: 600 }}>Prints to <code>console.log()</code> or writes to <code>document.write()</code></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* ═══════════════════════════════════════════════════════════
+                TOPIC 2: PRINT STATEMENTS (console.log vs document.write)
+            ═══════════════════════════════════════════════════════════ */}
+            <div style={{ marginBottom: '3rem', paddingBottom: '2.5rem', borderBottom: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.6rem' }}>
+                <span style={{ background: '#ca8a04', color: '#fff', borderRadius: '50%', width: '26px', height: '26px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: 800 }}>2</span>
+                <h3 style={{ fontSize: '1.35rem', color: '#0f172a', margin: 0, fontWeight: 800 }}>Print &amp; Output Statements: console.log() vs. document.write()</h3>
+              </div>
+              <p style={{ color: '#475569', lineHeight: 1.7, marginBottom: '1.5rem', fontSize: '0.96rem' }}>
+                Unlike languages like Python (which uses <code>print()</code> to print to terminal) or Java (<code>System.out.println()</code>), JavaScript runs inside browsers. Therefore, JavaScript provides different print statements depending on <em>where</em> you want to send your output:
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+                
+                {/* console.log Card */}
+                <div style={{ background: '#ffffff', borderRadius: '12px', border: '1.5px solid #0284c7', padding: '1.5rem', boxShadow: '0 2px 8px rgba(2,132,199,0.06)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.6rem' }}>
+                    <span style={{ fontSize: '1.5rem' }}>🖥️</span>
+                    <div>
+                      <h4 style={{ margin: 0, color: '#0369a1', fontSize: '1.15rem', fontWeight: 800 }}>console.log()</h4>
+                      <span style={{ fontSize: '0.78rem', color: '#64748b' }}>Developer Console Output</span>
+                    </div>
+                  </div>
+                  <p style={{ fontSize: '0.88rem', color: '#475569', lineHeight: 1.6, marginBottom: '1rem' }}>
+                    Prints messages directly to the <strong>Browser Developer Tools Console</strong> (press <code>F12</code> or <code>Ctrl+Shift+I</code> &rarr; <em>Console</em>).
+                  </p>
+                  <div style={{ background: '#0f172a', padding: '0.9rem', borderRadius: '8px', marginBottom: '1rem' }}>
+                    <SyntaxHighlighter code={`// 1. Simple text log
+console.log("Hello, AlphaFly!");
+
+// 2. Logging variables and arithmetic
+var score = 95;
+console.log("Student Score:", score);
+
+// 3. Inspecting complex objects
+console.log({ user: "Kowsalya", role: "Developer" });`} />
+                  </div>
+                  <div style={{ background: '#f0f9ff', padding: '0.75rem', borderRadius: '6px', fontSize: '0.82rem', color: '#0369a1', lineHeight: 1.5 }}>
+                    <strong>✅ Why Developers Use It:</strong> Invisible to end-users, doesn't break webpage layout, supports objects, arrays, and companion methods (<code>console.warn</code>, <code>console.error</code>, <code>console.table</code>).
+                  </div>
+                </div>
+
+                {/* document.write Card */}
+                <div style={{ background: '#ffffff', borderRadius: '12px', border: '1.5px solid #d97706', padding: '1.5rem', boxShadow: '0 2px 8px rgba(217,119,6,0.06)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.6rem' }}>
+                    <span style={{ fontSize: '1.5rem' }}>📄</span>
+                    <div>
+                      <h4 style={{ margin: 0, color: '#b45309', fontSize: '1.15rem', fontWeight: 800 }}>document.write()</h4>
+                      <span style={{ fontSize: '0.78rem', color: '#64748b' }}>Rendered Webpage Body Output</span>
+                    </div>
+                  </div>
+                  <p style={{ fontSize: '0.88rem', color: '#475569', lineHeight: 1.6, marginBottom: '1rem' }}>
+                    Writes text or raw HTML elements directly into the <strong>visible webpage stream</strong> while the page is being parsed.
+                  </p>
+                  <div style={{ background: '#0f172a', padding: '0.9rem', borderRadius: '8px', marginBottom: '1rem' }}>
+                    <SyntaxHighlighter code={`// 1. Write plain text to webpage
+document.write("Hello from JavaScript!<br>");
+
+// 2. Write rendered HTML elements
+document.write("<h3 style='color:#ca8a04;'>Welcome Student</h3>");
+
+// 3. Output dynamic calculation
+document.write("Sum of 10 + 20 is: " + (10 + 20));`} />
+                  </div>
+                  <div style={{ background: '#fef2f2', border: '1px solid #fecaca', padding: '0.75rem', borderRadius: '6px', fontSize: '0.82rem', color: '#991b1b', lineHeight: 1.5 }}>
+                    <strong>⚠️ CRITICAL OVERWRITE WARNING:</strong> If <code>document.write()</code> is executed <em>after</em> the HTML page has finished loading (e.g. on a button click), <strong>it will wipe and replace the entire webpage!</strong>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Comprehensive Comparison Table */}
+              <div style={{ overflowX: 'auto', borderRadius: '10px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem', textAlign: 'left', background: '#fff' }}>
+                  <thead>
+                    <tr style={{ background: '#f8fafc', borderBottom: '2px solid #cbd5e1' }}>
+                      <th style={{ padding: '10px 14px', color: '#0f172a', fontWeight: 800, width: '22%' }}>Comparison Criteria</th>
+                      <th style={{ padding: '10px 14px', color: '#0284c7', fontWeight: 800, width: '39%' }}>🖥️ console.log()</th>
+                      <th style={{ padding: '10px 14px', color: '#d97706', fontWeight: 800, width: '39%' }}>📄 document.write()</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '10px 14px', fontWeight: 700, color: '#334155' }}>Output Destination</td>
+                      <td style={{ padding: '10px 14px', color: '#475569' }}>Browser DevTools Console tab (Press F12)</td>
+                      <td style={{ padding: '10px 14px', color: '#475569' }}>Visible Webpage Viewport (HTML body)</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9', background: '#f8fafc' }}>
+                      <td style={{ padding: '10px 14px', fontWeight: 700, color: '#334155' }}>Visibility</td>
+                      <td style={{ padding: '10px 14px', color: '#475569' }}>Private to developers inspecting code</td>
+                      <td style={{ padding: '10px 14px', color: '#475569' }}>Public to every visitor visiting the website</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '10px 14px', fontWeight: 700, color: '#334155' }}>HTML Tag Support</td>
+                      <td style={{ padding: '10px 14px', color: '#475569' }}>Prints tags as raw literal text string</td>
+                      <td style={{ padding: '10px 14px', color: '#059669', fontWeight: 600 }}>Parses and renders HTML tags (e.g. <code>&lt;h1&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;br&gt;</code>)</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9', background: '#f8fafc' }}>
+                      <td style={{ padding: '10px 14px', fontWeight: 700, color: '#334155' }}>Page Overwrite Danger</td>
+                      <td style={{ padding: '10px 14px', color: '#059669', fontWeight: 700 }}>🟢 0% Danger — Never destroys DOM</td>
+                      <td style={{ padding: '10px 14px', color: '#dc2626', fontWeight: 700 }}>🔴 High Danger — Clears page if called after load</td>
+                    </tr>
+                    <tr style={{ background: '#fff' }}>
+                      <td style={{ padding: '10px 14px', fontWeight: 700, color: '#334155' }}>Industry Recommendation</td>
+                      <td style={{ padding: '10px 14px', color: '#0284c7', fontWeight: 700 }}>✅ Universal Standard for all apps</td>
+                      <td style={{ padding: '10px 14px', color: '#d97706', fontWeight: 700 }}>⚠️ Legacy practice (use <code>innerHTML</code> instead)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* ═══════════════════════════════════════════════════════════
+                TOPIC 3: INTERACTIVE OUTPUT & LIFECYCLE SIMULATOR
+            ═══════════════════════════════════════════════════════════ */}
+            <div style={{ marginBottom: '3.5rem', background: '#f8fafc', padding: '1.8rem', borderRadius: '14px', border: '1px solid #cbd5e1' }}>
+              <h3 style={{ fontSize: '1.3rem', color: '#0f172a', margin: '0 0 0.5rem', fontWeight: 800 }}>
+                🎮 Interactive Simulator: Output Statements &amp; Execution Lifecycle
+              </h3>
+              <p style={{ color: '#64748b', fontSize: '0.92rem', marginBottom: '1.5rem' }}>
+                Test how <code>console.log()</code> and <code>document.write()</code> behave in real time, or inspect the difference between Compile-Time and Run-Time errors:
+              </p>
+
+              {/* Mode Selector Tabs */}
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+                {[
+                  { id: 'console', label: '🖥️ console.log() Console', color: '#0284c7' },
+                  { id: 'docwrite', label: '📄 document.write() Canvas', color: '#d97706' },
+                  { id: 'lifecycle', label: '⚡ Compile vs. Run Time Inspector', color: '#7c3aed' }
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => setSimPrintMode(item.id)}
+                    style={{
+                      padding: '0.55rem 1.1rem',
+                      borderRadius: '8px',
+                      fontWeight: 700,
+                      fontSize: '0.88rem',
+                      cursor: 'pointer',
+                      border: simPrintMode === item.id ? `2px solid ${item.color}` : '1px solid #cbd5e1',
+                      background: simPrintMode === item.id ? item.color : '#fff',
+                      color: simPrintMode === item.id ? '#fff' : '#1e293b'
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* TAB A: CONSOLE.LOG SIMULATOR */}
+              {simPrintMode === 'console' && (
+                <div style={{ background: '#0f172a', borderRadius: '10px', padding: '1.2rem', border: '1px solid #334155' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid #1e293b', paddingBottom: '0.6rem' }}>
+                    <span style={{ color: '#94a3b8', fontSize: '0.82rem', fontFamily: 'monospace' }}>🛠️ Browser DevTools &gt; Console</span>
+                    <button onClick={handleClearConsole} style={{ background: '#334155', color: '#cbd5e1', border: 'none', padding: '3px 10px', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer' }}>
+                      Clear Console
+                    </button>
+                  </div>
+                  
+                  {/* Console Output Screen */}
+                  <div style={{ minHeight: '160px', maxHeight: '220px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.86rem', display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '1rem' }}>
+                    {simConsoleLogs.length === 0 ? (
+                      <span style={{ color: '#64748b', fontStyle: 'italic' }}>&gt; Console is empty. Click one of the buttons below to log messages!</span>
+                    ) : (
+                      simConsoleLogs.map(log => (
+                        <div key={log.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: log.type === 'error' ? '#f87171' : log.type === 'info' ? '#38bdf8' : '#e2e8f0', borderBottom: '1px solid #1e293b', paddingBottom: '4px' }}>
+                          <span style={{ color: '#64748b', fontSize: '0.78rem' }}>&gt;</span>
+                          <span>{log.text}</span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', paddingTop: '0.8rem', borderTop: '1px solid #1e293b' }}>
+                    <button onClick={() => handleAddConsoleLog('User Kowsalya logged in successfully', 'log')} style={{ background: '#0284c7', color: '#fff', border: 'none', padding: '0.45rem 0.9rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer' }}>
+                      + console.log("User logged in")
+                    </button>
+                    <button onClick={() => handleAddConsoleLog('Calculation: 10 * 5 = ' + (10 * 5), 'log')} style={{ background: '#0284c7', color: '#fff', border: 'none', padding: '0.45rem 0.9rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer' }}>
+                      + console.log("10 * 5 = 50")
+                    </button>
+                    <button onClick={() => handleAddConsoleLog('API Status: 200 OK | Response Time: 42ms', 'info')} style={{ background: '#0369a1', color: '#fff', border: 'none', padding: '0.45rem 0.9rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer' }}>
+                      + console.info("API Status 200")
+                    </button>
+                    <button onClick={() => handleAddConsoleLog('TypeError: Failed to fetch undefined resource', 'error')} style={{ background: '#dc2626', color: '#fff', border: 'none', padding: '0.45rem 0.9rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer' }}>
+                      + console.error("Simulate Error")
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB B: DOCUMENT.WRITE CANVAS */}
+              {simPrintMode === 'docwrite' && (
+                <div style={{ background: '#fff', borderRadius: '10px', padding: '1.2rem', border: '2px solid #ca8a04' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.6rem' }}>
+                    <span style={{ color: '#0f172a', fontSize: '0.82rem', fontWeight: 700 }}>🌐 Rendered Webpage Viewport</span>
+                    <button onClick={handleResetDocLines} style={{ background: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1', padding: '3px 10px', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>
+                      Reset Page
+                    </button>
+                  </div>
+
+                  {/* Rendered HTML Area */}
+                  <div style={{ minHeight: '160px', padding: '1rem', background: '#fafbfc', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '1rem' }}>
+                    {simDocLines.map((line, idx) => (
+                      <div key={idx} dangerouslySetInnerHTML={{ __html: line }} />
+                    ))}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', paddingTop: '0.6rem' }}>
+                    <button onClick={() => handleAddDocLine('<p style="color:#0284c7; margin:4px 0;"><strong>+ Output:</strong> New text appended via document.write()</p>')} style={{ background: '#d97706', color: '#fff', border: 'none', padding: '0.45rem 0.9rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer' }}>
+                      + document.write("&lt;p&gt;New Text&lt;/p&gt;")
+                    </button>
+                    <button onClick={() => handleAddDocLine('<h4 style="color:#059669; margin:6px 0;">🎉 Dynamic HTML Subheading</h4>')} style={{ background: '#059669', color: '#fff', border: 'none', padding: '0.45rem 0.9rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer' }}>
+                      + document.write("&lt;h4&gt;Heading&lt;/h4&gt;")
+                    </button>
+                    <button onClick={handleSimulateOverwrite} style={{ background: '#dc2626', color: '#fff', border: 'none', padding: '0.45rem 0.9rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer' }}>
+                      ⚠️ Click to Simulate document.write() after Page Load (Overwrite)
+                    </button>
+                  </div>
+                  {isPageOverwritten && (
+                    <div style={{ marginTop: '0.8rem', fontSize: '0.8rem', color: '#b91c1c', fontWeight: 600 }}>
+                      Notice how the entire previous page was wiped out! This is why modern frameworks use DOM innerHTML instead of document.write.
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* TAB C: LIFECYCLE CASE INSPECTOR */}
+              {simPrintMode === 'lifecycle' && (
+                <div style={{ background: '#fff', borderRadius: '10px', padding: '1.4rem', border: '1px solid #cbd5e1' }}>
+                  <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '1rem' }}>
+                    <button
+                      onClick={() => setLifecycleCase('compile')}
+                      style={{
+                        padding: '0.4rem 0.9rem',
+                        borderRadius: '6px',
+                        border: '1px solid #cbd5e1',
+                        background: lifecycleCase === 'compile' ? '#ef4444' : '#f8fafc',
+                        color: lifecycleCase === 'compile' ? '#fff' : '#1e293b',
+                        fontWeight: 700,
+                        fontSize: '0.82rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Case A: Compile-Time Error (SyntaxError)
+                    </button>
+                    <button
+                      onClick={() => setLifecycleCase('runtime')}
+                      style={{
+                        padding: '0.4rem 0.9rem',
+                        borderRadius: '6px',
+                        border: '1px solid #cbd5e1',
+                        background: lifecycleCase === 'runtime' ? '#f59e0b' : '#f8fafc',
+                        color: lifecycleCase === 'runtime' ? '#fff' : '#1e293b',
+                        fontWeight: 700,
+                        fontSize: '0.82rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Case B: Run-Time Error (ReferenceError)
+                    </button>
+                  </div>
+
+                  {lifecycleCase === 'compile' ? (
+                    <div>
+                      <h4 style={{ color: '#991b1b', margin: '0 0 0.5rem', fontSize: '1rem' }}>🛑 Compile-Time Syntax Error (Parsing Failure)</h4>
+                      <p style={{ color: '#475569', fontSize: '0.87rem', lineHeight: 1.6, marginBottom: '0.8rem' }}>
+                        Because JavaScript checks grammar during <strong>Compile Time</strong>, a syntax error halts everything immediately before line 1 can even execute:
+                      </p>
+                      <div style={{ background: '#0f172a', padding: '0.9rem', borderRadius: '8px', marginBottom: '0.8rem' }}>
+                        <SyntaxHighlighter code={`console.log("Starting code..."); // Line 1: Will this run?
+var total = ;                      // Line 2: Missing expression!
+console.log("Done!");              // Line 3`} />
+                      </div>
+                      <div style={{ background: '#fef2f2', border: '1px solid #fecaca', padding: '0.8rem', borderRadius: '6px', color: '#991b1b', fontSize: '0.85rem' }}>
+                        <strong>Terminal Result:</strong> <code>Uncaught SyntaxError: Unexpected token ';'</code><br/>
+                        Notice: <code>Line 1 ("Starting code...")</code> was <strong>NEVER logged</strong>! The compiler rejected the entire file during compilation.
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <h4 style={{ color: '#92400e', margin: '0 0 0.5rem', fontSize: '1rem' }}>⚠️ Run-Time Error (Execution Failure)</h4>
+                      <p style={{ color: '#475569', fontSize: '0.87rem', lineHeight: 1.6, marginBottom: '0.8rem' }}>
+                        The syntax is 100% grammatically correct, so the compiler accepts the code. The error only happens when the Call Stack reaches line 2 at <strong>Run Time</strong>:
+                      </p>
+                      <div style={{ background: '#0f172a', padding: '0.9rem', borderRadius: '8px', marginBottom: '0.8rem' }}>
+                        <SyntaxHighlighter code={`console.log("Step 1: Starting code..."); // Line 1: Executes successfully!
+printNonExistentVariable();            // Line 2: Function does not exist!
+console.log("Step 3: Finished!");        // Line 3: Never reached!`} />
+                      </div>
+                      <div style={{ background: '#fffbeb', border: '1px solid #fde68a', padding: '0.8rem', borderRadius: '6px', color: '#78350f', fontSize: '0.85rem' }}>
+                        <strong>Terminal Result:</strong><br/>
+                        &gt; <code>Step 1: Starting code...</code> &larr; <span style={{ color: '#059669', fontWeight: 600 }}>Executed at Run Time before error!</span><br/>
+                        &gt; <code>Uncaught ReferenceError: printNonExistentVariable is not defined</code> &larr; <span style={{ color: '#dc2626', fontWeight: 600 }}>Crashed at Line 2</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* ═══════════════════════════════════════════════════════════
+                TOPIC 4: 3 WAYS TO CONNECT JS
+            ═══════════════════════════════════════════════════════════ */}
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.8rem' }}>3. Three Ways to Include JavaScript in HTML</h3>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
               
@@ -655,7 +1063,7 @@ console.log("typeof grade   →", typeof grade);    // object (JS quirk!)`);
             </div>
 
             {/* SECTION 2: DOM & INNERHTML EXPLANATION */}
-            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.8rem' }}>2. DOM Manipulation & `innerHTML`</h3>
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.8rem' }}>4. DOM Manipulation & `innerHTML`</h3>
             <p style={{ color: '#475569', lineHeight: 1.6, marginBottom: '1.5rem' }}>
               The <strong>Document Object Model (DOM)</strong> allows JavaScript to read, edit, add, or delete HTML elements dynamically while the page is running in the browser!
             </p>
@@ -706,7 +1114,7 @@ console.log("typeof grade   →", typeof grade);    // object (JS quirk!)`);
             </div>
 
             {/* SECTION 3: INTERACTIVE DOM SIMULATOR */}
-            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.6rem' }}>🎮 Interactive JS Connection & innerHTML Simulator</h3>
+            <h3 style={{ fontSize: '1.3rem', color: '#0f172a', marginBottom: '0.6rem' }}>5. 🎮 Interactive JS Connection & innerHTML Simulator</h3>
             <p style={{ color: '#64748b', fontSize: '0.92rem', marginBottom: '1.5rem' }}>
               Select a JavaScript connection method below to test how `innerHTML` modifies the rendered HTML output in real time!
             </p>

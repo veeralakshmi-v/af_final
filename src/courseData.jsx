@@ -2280,7 +2280,7 @@ export const coreJsCourseData = [
     title: 'Day 1 - JavaScript Basics',
     items: [
       { id: 'intro', label: 'Introduction to JS', icon: <BookOpen size={18} /> },
-      { id: 'connecting_js', label: 'Connecting JS & innerHTML', icon: <Link size={18} /> },
+      { id: 'connecting_js', label: 'Connecting JS, Output & innerHTML', icon: <Link size={18} /> },
       { id: 'variables', label: 'JS Variables & Scope', icon: <Layers size={18} /> },
       { id: 'datatypes', label: 'JS Data Types', icon: <Database size={18} /> },
       { id: 'conversions', label: 'Type Conversions & Equality', icon: <RefreshCw size={18} /> },
