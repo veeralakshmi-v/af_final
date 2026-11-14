@@ -1959,10 +1959,24 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       if (res.ok) {
         const data = await res.json();
         setStudents(data);
+        try {
+          localStorage.setItem('lms_cached_students', JSON.stringify(data));
+        } catch (storageErr) {}
+        return;
       }
     } catch (e) {
-      console.warn('API error fetching students:', e);
+      console.warn('API error fetching students, falling back to cache:', e);
     }
+    // Offline cached student fallback
+    try {
+      const cached = localStorage.getItem('lms_cached_students');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setStudents(parsed);
+        }
+      }
+    } catch (cacheErr) {}
   };
 
   const fetchStudentCertificate = async (studentId) => {

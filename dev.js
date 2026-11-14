@@ -6,9 +6,12 @@ const server = spawn('node', ['--watch', 'server/server.js'], { stdio: 'inherit'
 const vite = spawn('npx', ['vite'], { stdio: 'inherit', shell: true });
 
 server.on('exit', (code) => {
-  console.log(`Backend server exited with code ${code}. Terminating frontend...`);
-  vite.kill();
-  process.exit(code || 0);
+  if (code && code !== 0) {
+    console.warn(`\n⚠️ Backend server exited with code ${code}.`);
+    console.warn('💡 If port 5000 was already in use (EADDRINUSE), run:');
+    console.warn('   Get-Process -Name node | Stop-Process -Force   (PowerShell)');
+    console.warn('   Or in CMD: taskkill /F /IM node.exe\n');
+  }
 });
 
 vite.on('exit', (code) => {
