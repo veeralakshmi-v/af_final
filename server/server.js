@@ -15,8 +15,8 @@ try {
 }
 
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const currentFilename = fileURLToPath(import.meta.url);
+const currentDir = path.dirname(currentFilename);
 
 const app = express();
 app.use(cors());
@@ -28,7 +28,7 @@ const isServerless = Boolean(process.env.VERCEL || process.env.NETLIFY || proces
 // Fallback JSON DB path (Serverless cloud functions have write permissions only inside '/tmp')
 const localDbPath = isServerless
   ? '/tmp/students.json'
-  : path.join(__dirname, 'students.json');
+  : path.join(currentDir, 'students.json');
 
 // MongoDB Atlas URI — loaded securely from environment variable (configured in Netlify / .env)
 const MONGO_URI = process.env.MONGODB_URI;
@@ -314,7 +314,7 @@ const saveLocalStudents = (data) => {
 
 const localStaffDbPath = isServerless
   ? '/tmp/staff.json'
-  : path.join(__dirname, 'staff.json');
+  : path.join(currentDir, 'staff.json');
 
 const getLocalStaff = () => {
   if (!fs.existsSync(localStaffDbPath)) {
@@ -333,7 +333,7 @@ const saveLocalStaff = (data) => {
 
 const localInvoiceDbPath = isServerless
   ? '/tmp/invoices.json'
-  : path.join(__dirname, 'invoices.json');
+  : path.join(currentDir, 'invoices.json');
 
 const getLocalInvoices = () => {
   if (!fs.existsSync(localInvoiceDbPath)) {
@@ -352,7 +352,7 @@ const saveLocalInvoices = (data) => {
 
 const localAdmissionsDbPath = isServerless
   ? '/tmp/admissions.json'
-  : path.join(__dirname, 'admissions.json');
+  : path.join(currentDir, 'admissions.json');
 
 const getLocalAdmissions = () => {
   if (!fs.existsSync(localAdmissionsDbPath)) {
