@@ -1275,67 +1275,120 @@ export default function LandingPage({ onLoginSuccess }) {
         )}
       </header>
 
-      {/* 🚀 HERO SECTION */}
+      {/* 🚀 HERO SECTION (PREMIUM THEME WITH BACKGROUND IMAGE) */}
       <section style={{
-        background: 'linear-gradient(180deg, #1e3a8a 0%, #1e40af 50%, #172554 100%)',
-        color: '#ffffff',
-        padding: isMobile ? '3.5rem 1.25rem 4rem' : '5rem 2rem 5.5rem',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        color: '#ffffff',
+        padding: isMobile ? '4.5rem 1.25rem 4.5rem' : '6.5rem 2rem 6.5rem',
+        background: '#070b14',
+        minHeight: isMobile ? 'auto' : '640px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
       }}>
-        {/* Subtle grid background */}
+        {/* 1. High-Resolution Tech Backdrop Image */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          opacity: 0.07,
-          backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
-          backgroundSize: "28px 28px"
+          backgroundImage: "url('/images/hero_code_bg.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+          backgroundRepeat: 'no-repeat',
+          transform: 'scale(1.04)',
+          filter: 'brightness(0.32) contrast(1.2) saturate(1.2)',
+          zIndex: 1
         }} />
 
-        <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center', zIndex: 10, position: 'relative' }}>
-          
-          {/* Badge */}
+        {/* 2. Deep Atmospheric Glass & Tech Gradient Layer */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(7, 11, 20, 0.88) 0%, rgba(10, 18, 36, 0.82) 45%, rgba(6, 10, 18, 0.96) 100%)',
+          zIndex: 2
+        }} />
+
+        {/* 3. Ambient Cyber Glow Spheres */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'radial-gradient(circle at 20% 15%, rgba(56, 189, 248, 0.22), transparent 45%), radial-gradient(circle at 80% 85%, rgba(129, 140, 248, 0.2), transparent 45%), radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.12), transparent 60%)',
+          zIndex: 3
+        }} />
+
+        {/* 4. Fine Grid Overlay */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          opacity: 0.12,
+          backgroundImage: 'radial-gradient(#38bdf8 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
+          zIndex: 4
+        }} />
+
+        {/* Hero Content Container */}
+        <div style={{ maxWidth: '1140px', width: '100%', margin: '0 auto', textAlign: 'center', zIndex: 10, position: 'relative' }}>
+
+          {/* Glowing Top Pill Badge */}
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '8px',
-            background: 'rgba(255, 255, 255, 0.12)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(255, 255, 255, 0.25)',
-            padding: '0.45rem 1.2rem',
+            gap: '10px',
+            background: 'rgba(15, 23, 42, 0.78)',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(56, 189, 248, 0.35)',
+            padding: '0.5rem 1.3rem',
             borderRadius: '9999px',
-            fontSize: '0.82rem',
+            fontSize: '0.8rem',
             fontWeight: 800,
-            letterSpacing: '0.04em',
+            letterSpacing: '0.06em',
             textTransform: 'uppercase',
-            color: '#facc15',
-            marginBottom: '1.5rem',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+            color: '#38bdf8',
+            marginBottom: '1.8rem',
+            boxShadow: '0 0 25px rgba(56, 189, 248, 0.25), inset 0 1px 0 rgba(255,255,255,0.1)'
           }}>
-            <Sparkles size={16} />
-            AI-Powered Career Transformation Platform
+            <span style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              background: '#38bdf8',
+              boxShadow: '0 0 10px #38bdf8',
+              display: 'inline-block'
+            }} />
+            <span>AI-Powered Career Transformation Platform</span>
+            <Sparkles size={15} style={{ color: '#facc15' }} />
           </div>
 
           {/* Headline */}
           <h1 style={{
-            fontSize: isMobile ? '2.2rem' : '3.6rem',
+            fontSize: isMobile ? '2.4rem' : '4rem',
             fontWeight: 900,
-            lineHeight: 1.15,
-            marginBottom: '1.2rem',
-            letterSpacing: '-0.025em',
-            color: '#ffffff'
+            lineHeight: 1.12,
+            marginBottom: '1.3rem',
+            letterSpacing: '-0.03em',
+            color: '#ffffff',
+            textShadow: '0 4px 30px rgba(0,0,0,0.6)'
           }}>
-            Next Generation <span style={{ background: 'linear-gradient(135deg, #60a5fa 0%, #93c5fd 50%, #ffffff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Learning Space</span>
+            Next Generation{' '}
+            <span style={{
+              background: 'linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              display: 'inline-block'
+            }}>
+              Learning Space
+            </span>
           </h1>
 
           {/* Subtitle */}
           <p style={{
             fontSize: isMobile ? '1.05rem' : '1.25rem',
-            color: '#e2e8f0',
-            maxWidth: '750px',
-            margin: '0 auto 2.2rem',
-            lineHeight: 1.6,
-            fontWeight: 400
+            color: '#cbd5e1',
+            maxWidth: '760px',
+            margin: '0 auto 2.5rem',
+            lineHeight: 1.65,
+            fontWeight: 400,
+            textShadow: '0 2px 10px rgba(0,0,0,0.5)'
           }}>
             Master industry-demanded tech skills through structured daily roadmaps, hands-on capstone projects, real-time staff reviews, and career placement mentorship.
           </p>
@@ -1343,35 +1396,37 @@ export default function LandingPage({ onLoginSuccess }) {
           {/* Action CTAs */}
           <div style={{
             display: 'flex',
-            gap: '1rem',
+            gap: '1.2rem',
             justifyContent: 'center',
             alignItems: 'center',
             flexWrap: 'wrap',
-            marginBottom: '3rem'
+            marginBottom: '3.8rem'
           }}>
+            {/* Primary Action Button */}
             <a
               href="#courses"
               style={{
                 textDecoration: 'none',
-                background: '#ffffff',
-                color: '#1e40af',
+                background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%)',
+                color: '#ffffff',
                 fontWeight: 800,
                 fontSize: '1rem',
-                padding: '0.85rem 2rem',
-                borderRadius: '12px',
-                boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+                padding: '0.95rem 2.4rem',
+                borderRadius: '14px',
+                boxShadow: '0 12px 28px -4px rgba(37, 99, 235, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '8px',
-                transition: 'all 0.2s ease'
+                gap: '10px',
+                transition: 'all 0.25s ease',
+                border: '1px solid rgba(255, 255, 255, 0.25)'
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 14px 30px rgba(0,0,0,0.25)';
+                e.currentTarget.style.boxShadow = '0 16px 36px -4px rgba(37, 99, 235, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.45)';
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+                e.currentTarget.style.boxShadow = '0 12px 28px -4px rgba(37, 99, 235, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3)';
               }}
             >
               <BookOpen size={18} />
@@ -1379,88 +1434,132 @@ export default function LandingPage({ onLoginSuccess }) {
               <ArrowRight size={18} />
             </a>
 
+            {/* Secondary Glassmorphic Button */}
             <button
               onClick={() => setIsLoginModalOpen(true)}
               style={{
-                background: 'rgba(255, 255, 255, 0.12)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
+                background: 'rgba(15, 23, 42, 0.72)',
+                border: '1px solid rgba(255, 255, 255, 0.22)',
                 color: '#ffffff',
                 fontWeight: 800,
                 fontSize: '1rem',
-                padding: '0.85rem 2rem',
-                borderRadius: '12px',
+                padding: '0.95rem 2.4rem',
+                borderRadius: '14px',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '8px',
-                backdropFilter: 'blur(8px)',
-                transition: 'all 0.2s ease'
+                gap: '10px',
+                backdropFilter: 'blur(16px)',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
+                transition: 'all 0.25s ease'
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.22)';
+                e.currentTarget.style.background = 'rgba(30, 41, 59, 0.9)';
+                e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.55)';
                 e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 12px 30px rgba(56, 189, 248, 0.2)';
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)';
+                e.currentTarget.style.background = 'rgba(15, 23, 42, 0.72)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.22)';
                 e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.35)';
               }}
             >
-              <LogIn size={18} />
+              <LogIn size={18} style={{ color: '#38bdf8' }} />
               Student Portal Login
             </button>
           </div>
 
-          {/* Key Metric & Feature Highlights Banner */}
+          {/* 4 Feature Look-and-Feel Glass Cards */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)',
-            gap: '1rem',
-            background: 'rgba(255, 255, 255, 0.08)',
-            border: '1px solid rgba(255, 255, 255, 0.16)',
-            borderRadius: '20px',
-            padding: '1.5rem',
-            backdropFilter: 'blur(12px)',
-            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.18)'
+            gap: '1.25rem',
+            textAlign: 'left'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left', padding: '0.5rem' }}>
-              <div style={{ background: 'rgba(59, 130, 246, 0.3)', padding: '10px', borderRadius: '12px', color: '#93c5fd' }}>
-                <Code size={22} />
+            {[
+              {
+                icon: <Code size={22} />,
+                title: "Project-Driven",
+                desc: "Real-time coding & portfolios",
+                accent: "#38bdf8",
+                bg: "rgba(56, 189, 248, 0.12)",
+                border: "rgba(56, 189, 248, 0.25)"
+              },
+              {
+                icon: <CheckCircle size={22} />,
+                title: "Staff Reviewed",
+                desc: "1-on-1 task evaluation",
+                accent: "#4ade80",
+                bg: "rgba(74, 222, 128, 0.12)",
+                border: "rgba(74, 222, 128, 0.25)"
+              },
+              {
+                icon: <Award size={22} />,
+                title: "Certification",
+                desc: "Verified course credentials",
+                accent: "#facc15",
+                bg: "rgba(250, 204, 21, 0.12)",
+                border: "rgba(250, 204, 21, 0.25)"
+              },
+              {
+                icon: <Briefcase size={22} />,
+                title: "Placement Support",
+                desc: "Resume & mock interview prep",
+                accent: "#c084fc",
+                bg: "rgba(192, 132, 252, 0.12)",
+                border: "rgba(192, 132, 252, 0.25)"
+              }
+            ].map((item, idx) => (
+              <div
+                key={idx}
+                style={{
+                  background: 'rgba(15, 23, 42, 0.72)',
+                  border: `1px solid ${item.border}`,
+                  borderRadius: '16px',
+                  padding: '1.25rem 1.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '14px',
+                  backdropFilter: 'blur(16px)',
+                  boxShadow: '0 12px 30px -5px rgba(0, 0, 0, 0.35)',
+                  transition: 'all 0.25s ease'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-3px)';
+                  e.currentTarget.style.borderColor = item.accent;
+                  e.currentTarget.style.boxShadow = `0 18px 35px -5px rgba(0, 0, 0, 0.45), 0 0 20px ${item.bg}`;
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.borderColor = item.border;
+                  e.currentTarget.style.boxShadow = '0 12px 30px -5px rgba(0, 0, 0, 0.35)';
+                }}
+              >
+                <div style={{
+                  background: item.bg,
+                  border: `1px solid ${item.border}`,
+                  color: item.accent,
+                  padding: '10px',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  {item.icon}
+                </div>
+                <div>
+                  <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.01em' }}>
+                    {item.title}
+                  </h4>
+                  <p style={{ margin: '3px 0 0', fontSize: '0.8rem', color: '#94a3b8', lineHeight: 1.35 }}>
+                    {item.desc}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>Project-Driven</h4>
-                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#cbd5e1' }}>Real-time coding & portfolios</p>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left', padding: '0.5rem' }}>
-              <div style={{ background: 'rgba(34, 197, 94, 0.3)', padding: '10px', borderRadius: '12px', color: '#86efac' }}>
-                <CheckCircle size={22} />
-              </div>
-              <div>
-                <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>Staff Reviewed</h4>
-                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#cbd5e1' }}>1-on-1 task evaluation</p>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left', padding: '0.5rem' }}>
-              <div style={{ background: 'rgba(234, 179, 8, 0.3)', padding: '10px', borderRadius: '12px', color: '#fde047' }}>
-                <Award size={22} />
-              </div>
-              <div>
-                <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>Certification</h4>
-                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#cbd5e1' }}>Verified course credential</p>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left', padding: '0.5rem' }}>
-              <div style={{ background: 'rgba(168, 85, 247, 0.3)', padding: '10px', borderRadius: '12px', color: '#d8b4fe' }}>
-                <Briefcase size={22} />
-              </div>
-              <div>
-                <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>Placement Support</h4>
-                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#cbd5e1' }}>Resume & mock interview prep</p>
-              </div>
-            </div>
+            ))}
           </div>
 
         </div>
