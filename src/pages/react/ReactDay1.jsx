@@ -27,11 +27,11 @@ export default function ReactDay1({ activeTab, onNavigate }) {
   const [activeLifecycleStage, setActiveLifecycleStage] = useState('mounting');
   const [zoomedImage, setZoomedImage] = useState(null);
   const [vdomStep, setVdomStep] = useState(1);
-  
+
   // JSX Playground states
   const [jsxUserText, setJsxUserText] = useState('Student');
   const [jsxBtnColor, setJsxBtnColor] = useState('#6366f1');
-  
+
   // Quiz states
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizChecked, setQuizChecked] = useState(false);
@@ -45,13 +45,13 @@ export default function ReactDay1({ activeTab, onNavigate }) {
     if (!newItem.trim()) return;
     const oldList = [...vdomList];
     const newList = [...vdomList, newItem.trim()];
-    
+
     const logs = [];
     logs.push(`[Virtual DOM Snapshot]: Created new virtual tree representation.`);
     logs.push(`[VDOM Comparison]: Diffing old tree (${oldList.length} nodes) vs new tree (${newList.length} nodes).`);
     logs.push(`[VDOM Reconciliation]: Identified single new element "${newItem.trim()}" at index ${oldList.length}.`);
     logs.push(`[DOM Sync]: Patched changed node to Actual DOM without full page refresh.`);
-    
+
     setVdomList(newList);
     setUpdatesLog(logs);
     setNewItem('');
@@ -111,7 +111,7 @@ export default function ReactDay1({ activeTab, onNavigate }) {
 
   return (
     <AnimatePresence mode="wait">
-      
+
       {/* 1. INTRODUCTION */}
       {activeTab === 'intro_react' && (
         <Section key="intro_react" id="intro_react" eyebrow="React JS • Module 01" title="Introduction to React">
@@ -295,13 +295,13 @@ export default function ReactDay1({ activeTab, onNavigate }) {
       {activeTab === 'react_jsx' && (
         <Section key="react_jsx" id="react_jsx" eyebrow="React JS • Module 02b" title="React JSX Syntax">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.7 }}>
-            
-             <div style={{ background: 'linear-gradient(135deg,#4f46e5,#6366f1)', borderRadius: 12, padding: '1.25rem 1.5rem', marginBottom: '1.5rem', color: '#ffffff' }}>
-               <h3 style={{ margin: '0 0 0.5rem', fontWeight: 800, color: '#ffffff' }}>⚡ What is JSX?</h3>
-               <p style={{ margin: 0, fontSize: '0.92rem', opacity: 0.95, lineHeight: 1.6, color: '#ffffff' }}>
-                 <strong style={{ color: '#ffffff' }}>JSX</strong> stands for <strong style={{ color: '#ffffff' }}>JavaScript XML</strong>. It is a syntax extension to JavaScript that allows you to write HTML-like structures directly inside your React Javascript code, which is then compiled into standard JS.
-               </p>
-             </div>
+
+            <div style={{ background: 'linear-gradient(135deg,#4f46e5,#6366f1)', borderRadius: 12, padding: '1.25rem 1.5rem', marginBottom: '1.5rem', color: '#ffffff' }}>
+              <h3 style={{ margin: '0 0 0.5rem', fontWeight: 800, color: '#ffffff' }}>⚡ What is JSX?</h3>
+              <p style={{ margin: 0, fontSize: '0.92rem', opacity: 0.95, lineHeight: 1.6, color: '#ffffff' }}>
+                <strong style={{ color: '#ffffff' }}>JSX</strong> stands for <strong style={{ color: '#ffffff' }}>JavaScript XML</strong>. It is a syntax extension to JavaScript that allows you to write HTML-like structures directly inside your React Javascript code, which is then compiled into standard JS.
+              </p>
+            </div>
 
             <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.75rem' }}>Fundamental Rules of JSX</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
@@ -320,12 +320,12 @@ export default function ReactDay1({ activeTab, onNavigate }) {
 
             <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>JSX Under the Hood (Compilation)</h3>
             <p style={{ margin: '0 0 1rem', fontSize: '0.88rem' }}>Browsers do not understand JSX. Compilers like Babel translate JSX tags into standard <code>React.createElement()</code> functions before execution:</p>
-            
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
               <div>
                 <strong style={{ fontSize: '0.8rem', color: '#64748b', display: 'block', marginBottom: 4 }}>What you write (JSX):</strong>
                 <pre style={{ background: '#0f172a', color: '#f8fafc', padding: 12, borderRadius: 8, fontSize: '0.82rem', fontFamily: 'monospace', margin: 0 }}>
-{`const element = (
+                  {`const element = (
   <div className="card">
     <h1>Hello, World!</h1>
   </div>
@@ -335,7 +335,7 @@ export default function ReactDay1({ activeTab, onNavigate }) {
               <div>
                 <strong style={{ fontSize: '0.8rem', color: '#64748b', display: 'block', marginBottom: 4 }}>Compiled JavaScript:</strong>
                 <pre style={{ background: '#0f172a', color: '#f8fafc', padding: 12, borderRadius: 8, fontSize: '0.82rem', fontFamily: 'monospace', margin: 0 }}>
-{`const element = React.createElement(
+                  {`const element = React.createElement(
   'div',
   { className: 'card' },
   React.createElement('h1', null, 'Hello, World!')
@@ -423,21 +423,21 @@ export default function ReactDay1({ activeTab, onNavigate }) {
 
             <div style={{ marginTop: '2.5rem', textAlign: 'center' }}>
               <h4 style={{ fontSize: '1.1rem', color: '#1e293b', fontWeight: 800, marginBottom: '1rem', textAlign: 'left' }}>Visual Architecture Breakdown:</h4>
-              <img 
-                src={componentTreeImg} 
-                alt="React Component Tree Infographic" 
+              <img
+                src={componentTreeImg}
+                alt="React Component Tree Infographic"
                 onClick={() => setZoomedImage(componentTreeImg)}
-                style={{ 
-                  width: '100%', 
-                  maxWidth: '540px', 
-                  display: 'block', 
-                  margin: '1.5rem auto 0', 
-                  borderRadius: '16px', 
-                  border: '1px solid #e2e8f0', 
+                style={{
+                  width: '100%',
+                  maxWidth: '540px',
+                  display: 'block',
+                  margin: '1.5rem auto 0',
+                  borderRadius: '16px',
+                  border: '1px solid #e2e8f0',
                   boxShadow: '0 10px 15px -3px rgba(0,0,0,0.05)',
                   cursor: 'zoom-in',
                   transition: 'transform 0.25s ease-out'
-                }} 
+                }}
                 onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.025)'}
                 onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
               />
@@ -483,7 +483,7 @@ export default function ReactDay1({ activeTab, onNavigate }) {
                 <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 1rem 0' }}>
                   Add items to simulate state mutation and see how React's VDOM diffing isolates modifications.
                 </p>
-                
+
                 <div style={{ display: 'flex', gap: '8px', marginBottom: '1rem' }}>
                   <input
                     type="text"
@@ -509,7 +509,7 @@ export default function ReactDay1({ activeTab, onNavigate }) {
                       </ul>
                     )}
                   </div>
-                  
+
                   <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.8rem', background: '#0f172a', color: '#38bdf8', fontFamily: 'monospace', overflowY: 'auto', maxHeight: '120px' }}>
                     <strong>Reconciliation log:</strong>
                     <div style={{ fontSize: '0.72rem', marginTop: '0.3rem', lineHeight: 1.4, color: '#a5d6ff' }}>
@@ -524,21 +524,21 @@ export default function ReactDay1({ activeTab, onNavigate }) {
 
             <div style={{ marginTop: '2.5rem', textAlign: 'center' }}>
               <h4 style={{ fontSize: '1.1rem', color: '#1e293b', fontWeight: 800, marginBottom: '1rem', textAlign: 'left' }}>Visual VDOM Diffing & Reconciliation:</h4>
-              <img 
-                src={virtualDomImg} 
-                alt="React Virtual DOM Infographic" 
+              <img
+                src={virtualDomImg}
+                alt="React Virtual DOM Infographic"
                 onClick={() => setZoomedImage(virtualDomImg)}
-                style={{ 
-                  width: '100%', 
-                  maxWidth: '540px', 
-                  display: 'block', 
-                  margin: '1.5rem auto 0', 
-                  borderRadius: '12px', 
-                  border: '1px solid #e2e8f0', 
+                style={{
+                  width: '100%',
+                  maxWidth: '540px',
+                  display: 'block',
+                  margin: '1.5rem auto 0',
+                  borderRadius: '12px',
+                  border: '1px solid #e2e8f0',
                   boxShadow: '0 4px 6px rgba(0,0,0,0.02)',
                   cursor: 'zoom-in',
                   transition: 'transform 0.25s ease-out'
-                }} 
+                }}
                 onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.025)'}
                 onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
               />
@@ -720,7 +720,7 @@ export default function ReactDay1({ activeTab, onNavigate }) {
             </div>
 
             <CodeBlock title="Terminal Setup Commands" code={`# Step 2: Initialize project folder
-npm create vite@latest my-react-app -- --template react
+npm create vite@latest my-react-app 
 
 # Navigate into project directory
 cd my-react-app
@@ -768,7 +768,7 @@ npm run dev`} />
                   <p style={{ margin: '0 0 0.8rem 0', fontSize: '0.9rem', color: '#475569' }}>
                     Open your terminal and run the creation script command to scaffold a new project directory.
                   </p>
-                  <CodeBlock title="Terminal" code={`npm create vite@latest my-react-app -- --template react`} />
+                  <CodeBlock title="Terminal" code={`npm create vite@latest my-react-app `} />
                 </div>
 
                 <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', borderLeft: '4px solid #2563eb' }}>
@@ -829,7 +829,7 @@ export default App;`} />
       {activeTab === 'quiz' && (
         <Section key="quiz" id="quiz" eyebrow="Assessment" title="Day 1 Quiz: React Foundations">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.7 }}>
-            
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {quizQuestions.map((q, qIdx) => (
                 <div key={q.key} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '1.5rem', borderRadius: '16px' }}>
@@ -847,15 +847,15 @@ export default App;`} />
                           onClick={() => handleQuizAnswer(q.key, optIdx)}
                           style={{
                             textAlign: 'left',
-                            background: isSelected 
-                              ? (quizChecked ? (isCorrect ? '#dcfce7' : '#fee2e2') : '#e0e7ff') 
+                            background: isSelected
+                              ? (quizChecked ? (isCorrect ? '#dcfce7' : '#fee2e2') : '#e0e7ff')
                               : '#ffffff',
-                            color: isSelected 
-                              ? (quizChecked ? (isCorrect ? '#15803d' : '#b91c1c') : '#312e81') 
+                            color: isSelected
+                              ? (quizChecked ? (isCorrect ? '#15803d' : '#b91c1c') : '#312e81')
                               : '#334155',
                             border: '1px solid',
-                            borderColor: isSelected 
-                              ? (quizChecked ? (isCorrect ? '#86efac' : '#fca5a5') : '#818cf8') 
+                            borderColor: isSelected
+                              ? (quizChecked ? (isCorrect ? '#86efac' : '#fca5a5') : '#818cf8')
                               : '#cbd5e1',
                             borderRadius: '10px',
                             padding: '0.75rem 1rem',
@@ -924,11 +924,11 @@ export default App;`} />
           <div className="panel" style={{ color: '#334155', lineHeight: 1.7 }}>
             <h3 style={{ marginBottom: '1rem', color: '#0f172a' }}>Review & Practice: Build Your First React Component</h3>
             <p>To reinforce what you've learned today, complete the following assignment tasks:</p>
-            
+
             <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', borderLeft: '4px solid #4f46e5', marginTop: '1.5rem', marginBottom: '1.5rem' }}>
               <h4 style={{ marginBottom: '0.5rem', color: '#1e293b', fontWeight: 800 }}>Task 1: Environment Setup</h4>
               <p style={{ color: '#475569', fontSize: '0.9rem', margin: 0 }}>
-                Set up your React project using Vite by running <code>npm create vite@latest my-react-app -- --template react</code>. Verify that the development server starts successfully and you can load the default page on <code>http://localhost:5173/</code>.
+                Set up your React project using Vite by running <code>npm create vite@latest my-react-app </code>. Verify that the development server starts successfully and you can load the default page on <code>http://localhost:5173/</code>.
               </p>
             </div>
 
@@ -956,7 +956,7 @@ export default App;`} />
       )}
 
       {zoomedImage && (
-        <div 
+        <div
           onClick={() => setZoomedImage(null)}
           style={{
             position: 'fixed',
@@ -973,16 +973,16 @@ export default App;`} />
             padding: '2rem'
           }}
         >
-          <img 
-            src={zoomedImage} 
-            alt="Zoomed Diagram" 
-            style={{ 
-              maxWidth: '95%', 
-              maxHeight: '95%', 
-              borderRadius: '16px', 
+          <img
+            src={zoomedImage}
+            alt="Zoomed Diagram"
+            style={{
+              maxWidth: '95%',
+              maxHeight: '95%',
+              borderRadius: '16px',
               boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
               border: '1px solid rgba(255,255,255,0.1)'
-            }} 
+            }}
           />
           <div style={{
             position: 'absolute',

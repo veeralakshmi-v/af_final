@@ -1432,7 +1432,7 @@ function NotFound() {
 
             {/* Simulated Browser Window Chrome */}
             <div style={{ border: '1px solid #cbd5e1', borderRadius: 16, overflow: 'hidden', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
-              
+
               {/* Browser Address Bar Header */}
               <div style={{ background: '#f1f5f9', borderBottom: '1px solid #cbd5e1', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{ display: 'flex', gap: 6 }}>
@@ -1445,7 +1445,7 @@ function NotFound() {
                   <button onClick={() => capstoneNavigate('/')} style={{ background: 'white', border: '1px solid #cbd5e1', borderRadius: 4, padding: '2px 6px', fontSize: '0.75rem', cursor: 'pointer' }}>
                     <Home size={12} />
                   </button>
-                  <button onClick={() => {}} style={{ background: 'white', border: '1px solid #cbd5e1', borderRadius: 4, padding: '2px 6px', fontSize: '0.75rem', cursor: 'pointer' }}>
+                  <button onClick={() => { }} style={{ background: 'white', border: '1px solid #cbd5e1', borderRadius: 4, padding: '2px 6px', fontSize: '0.75rem', cursor: 'pointer' }}>
                     <RefreshCw size={12} />
                   </button>
                 </div>
@@ -1466,7 +1466,7 @@ function NotFound() {
 
               {/* Browser Body */}
               <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', minHeight: 340, background: 'white' }}>
-                
+
                 {/* Simulated Sidebar with NavLink */}
                 <div style={{ borderRight: '1px solid #e2e8f0', background: '#f8fafc', padding: '1.25rem 1rem', display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>
@@ -1519,7 +1519,7 @@ function NotFound() {
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10, marginBottom: '2rem' }}>
               {[
-                { step: '1', title: 'Initialize Vite Project', desc: 'npm create vite@latest my-app -- --template react' },
+                { step: '1', title: 'Initialize Vite Project', desc: 'npm create vite@latest my-app' },
                 { step: '2', title: 'Install Router', desc: 'npm install react-router-dom' },
                 { step: '3', title: 'Configure App.jsx', desc: 'Wrap in BrowserRouter, Routes, and Route tags' },
                 { step: '4', title: 'Create NavLink Header', desc: 'Use NavLink with isActive styling for menu' },
@@ -1557,7 +1557,7 @@ function NotFound() {
       {activeTab === 'quiz' && (
         <Section key="quiz" eyebrow="Knowledge Check" title="Day 11 Quiz — React Router Masterclass">
           <div className="panel" style={{ color: '#334155', lineHeight: 1.8 }}>
-            
+
             <p style={{ margin: '0 0 1.5rem', fontSize: '0.92rem', color: '#475569' }}>
               Test your understanding of client-side routing, hooks (<code>useParams</code>, <code>useNavigate</code>), active link styling, route guards, and 404 handling.
             </p>
