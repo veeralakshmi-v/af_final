@@ -131,77 +131,8 @@ function CountdownTimer() {
   );
 }
 
-// --- 2. VIDEO CARD COMPONENT ---
-function VideoCard({ video }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const videoRef = useRef(null);
 
-  const handlePlay = () => {
-    if (videoRef.current) {
-      videoRef.current.play();
-      setIsPlaying(true);
-    }
-  };
-
-  const handlePause = () => {
-    setIsPlaying(false);
-  };
-
-  return (
-    <div style={{
-      background: 'rgba(255, 255, 255, 0.08)',
-      backdropFilter: 'blur(8px)',
-      border: '1px solid rgba(255, 255, 255, 0.15)',
-      borderRadius: '16px',
-      overflow: 'hidden',
-      transition: 'all 0.3s ease',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
-      <div style={{ position: 'relative', width: '100%', height: '220px' }}>
-        <video
-          ref={videoRef}
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          controls
-          preload="none"
-          poster={video.thumbnail}
-          onPause={handlePause}
-        >
-          <source src={video.src} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-
-        {!isPlaying && (
-          <div
-            onClick={handlePlay}
-            style={{
-              position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.35)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
-            }}
-          >
-            <div style={{
-              background: '#ffffff', borderRadius: '50%', width: '56px', height: '56px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
-            }}>
-              <Play className="h-6 w-6" style={{ fill: '#1e40af', color: '#1e40af', marginLeft: '3px' }} />
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div style={{ padding: '1.5rem' }}>
-        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#ffffff', marginBottom: '0.4rem' }}>
-          {video.title}
-        </h4>
-        <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.88rem', margin: 0, lineHeight: 1.45 }}>
-          Experience our hands-on approach to learning with real-world projects.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// --- 3. FEATURES SECTION ---
+// --- 2. FEATURES SECTION ---
 function FeaturesSection() {
   const features = [
     { icon: Award, title: "Industry Experts", description: "Learn from professionals with 10+ years of real-world experience", color: "linear-gradient(135deg, #facc15 0%, #ca8a04 100%)" },
@@ -1240,12 +1171,6 @@ export default function LandingPage({ onLoginSuccess }) {
     setPassword('');
   };
 
-  const videos = [
-    { id: 1, title: "Programming Fundamentals", src: "/videos/alphavideo1.mp4", thumbnail: "/thumbnails/a11.jpg" },
-    { id: 2, title: "Web Development Mastery", src: "/videos/alphavideo2.mp4", thumbnail: "/thumbnails/a10.jpg" },
-    { id: 3, title: "Data Science Excellence", src: "/videos/alphavideo3.mp4", thumbnail: "/thumbnails/a7.png" }
-  ];
-
   return (
     <div style={{ fontFamily: 'var(--font-family)', background: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
@@ -1350,28 +1275,194 @@ export default function LandingPage({ onLoginSuccess }) {
         )}
       </header>
 
-      {/* 🚀 HERO BLUE SPACE BANNER & DEMO GALLERY */}
-      <section style={{ background: '#1e40af', color: '#ffffff', padding: '4rem 2rem 5rem', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.05, backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1' fill='%23ffffff'/%3E%3C/svg%3E\")" }} />
+      {/* 🚀 HERO SECTION */}
+      <section style={{
+        background: 'linear-gradient(180deg, #1e3a8a 0%, #1e40af 50%, #172554 100%)',
+        color: '#ffffff',
+        padding: isMobile ? '3.5rem 1.25rem 4rem' : '5rem 2rem 5.5rem',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {/* Subtle grid background */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          opacity: 0.07,
+          backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
+          backgroundSize: "28px 28px"
+        }} />
 
-        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center', zIndex: 10, position: 'relative' }}>
-          <h1 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '0.8rem', letterSpacing: '-0.02em', color: '#ffffff' }}>
-            Next Generation Learning Space
+        <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center', zIndex: 10, position: 'relative' }}>
+          
+          {/* Badge */}
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: 'rgba(255, 255, 255, 0.12)',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(255, 255, 255, 0.25)',
+            padding: '0.45rem 1.2rem',
+            borderRadius: '9999px',
+            fontSize: '0.82rem',
+            fontWeight: 800,
+            letterSpacing: '0.04em',
+            textTransform: 'uppercase',
+            color: '#facc15',
+            marginBottom: '1.5rem',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+          }}>
+            <Sparkles size={16} />
+            AI-Powered Career Transformation Platform
+          </div>
+
+          {/* Headline */}
+          <h1 style={{
+            fontSize: isMobile ? '2.2rem' : '3.6rem',
+            fontWeight: 900,
+            lineHeight: 1.15,
+            marginBottom: '1.2rem',
+            letterSpacing: '-0.025em',
+            color: '#ffffff'
+          }}>
+            Next Generation <span style={{ background: 'linear-gradient(135deg, #60a5fa 0%, #93c5fd 50%, #ffffff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Learning Space</span>
           </h1>
-          <p style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.9)', marginBottom: '1.5rem' }}>
-            Unlocking the Power of Minds
+
+          {/* Subtitle */}
+          <p style={{
+            fontSize: isMobile ? '1.05rem' : '1.25rem',
+            color: '#e2e8f0',
+            maxWidth: '750px',
+            margin: '0 auto 2.2rem',
+            lineHeight: 1.6,
+            fontWeight: 400
+          }}>
+            Master industry-demanded tech skills through structured daily roadmaps, hands-on capstone projects, real-time staff reviews, and career placement mentorship.
           </p>
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '3.5rem' }}>
-            <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#00FF00', background: 'rgba(0,0,0,0.2)', padding: '0.5rem 1.2rem', borderRadius: '9999px' }}>📚 Enrolled Students: 300+</span>
-            <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#00FF00', background: 'rgba(0,0,0,0.2)', padding: '0.5rem 1.2rem', borderRadius: '9999px' }}>✅ Success Rate: 90%+</span>
+
+          {/* Action CTAs */}
+          <div style={{
+            display: 'flex',
+            gap: '1rem',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            marginBottom: '3rem'
+          }}>
+            <a
+              href="#courses"
+              style={{
+                textDecoration: 'none',
+                background: '#ffffff',
+                color: '#1e40af',
+                fontWeight: 800,
+                fontSize: '1rem',
+                padding: '0.85rem 2rem',
+                borderRadius: '12px',
+                boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 14px 30px rgba(0,0,0,0.25)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+              }}
+            >
+              <BookOpen size={18} />
+              Explore Courses
+              <ArrowRight size={18} />
+            </a>
+
+            <button
+              onClick={() => setIsLoginModalOpen(true)}
+              style={{
+                background: 'rgba(255, 255, 255, 0.12)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                color: '#ffffff',
+                fontWeight: 800,
+                fontSize: '1rem',
+                padding: '0.85rem 2rem',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                backdropFilter: 'blur(8px)',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.22)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <LogIn size={18} />
+              Student Portal Login
+            </button>
           </div>
 
-          {/* Videos gallery row */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', textAlign: 'left' }}>
-            {videos.map(v => (
-              <VideoCard key={v.id} video={v} />
-            ))}
+          {/* Key Metric & Feature Highlights Banner */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)',
+            gap: '1rem',
+            background: 'rgba(255, 255, 255, 0.08)',
+            border: '1px solid rgba(255, 255, 255, 0.16)',
+            borderRadius: '20px',
+            padding: '1.5rem',
+            backdropFilter: 'blur(12px)',
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.18)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left', padding: '0.5rem' }}>
+              <div style={{ background: 'rgba(59, 130, 246, 0.3)', padding: '10px', borderRadius: '12px', color: '#93c5fd' }}>
+                <Code size={22} />
+              </div>
+              <div>
+                <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>Project-Driven</h4>
+                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#cbd5e1' }}>Real-time coding & portfolios</p>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left', padding: '0.5rem' }}>
+              <div style={{ background: 'rgba(34, 197, 94, 0.3)', padding: '10px', borderRadius: '12px', color: '#86efac' }}>
+                <CheckCircle size={22} />
+              </div>
+              <div>
+                <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>Staff Reviewed</h4>
+                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#cbd5e1' }}>1-on-1 task evaluation</p>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left', padding: '0.5rem' }}>
+              <div style={{ background: 'rgba(234, 179, 8, 0.3)', padding: '10px', borderRadius: '12px', color: '#fde047' }}>
+                <Award size={22} />
+              </div>
+              <div>
+                <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>Certification</h4>
+                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#cbd5e1' }}>Verified course credential</p>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left', padding: '0.5rem' }}>
+              <div style={{ background: 'rgba(168, 85, 247, 0.3)', padding: '10px', borderRadius: '12px', color: '#d8b4fe' }}>
+                <Briefcase size={22} />
+              </div>
+              <div>
+                <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>Placement Support</h4>
+                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#cbd5e1' }}>Resume & mock interview prep</p>
+              </div>
+            </div>
           </div>
+
         </div>
       </section>
 
