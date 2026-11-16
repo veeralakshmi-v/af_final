@@ -1275,13 +1275,13 @@ export default function LandingPage({ onLoginSuccess }) {
         )}
       </header>
 
-      {/* 🚀 HERO SECTION (PREMIUM THEME WITH BACKGROUND IMAGE) */}
+      {/* 🚀 HERO SECTION (META LOGO BLUE THEME WITH BACKGROUND IMAGE) */}
       <section style={{
         position: 'relative',
         overflow: 'hidden',
         color: '#ffffff',
         padding: isMobile ? '4.5rem 1.25rem 4.5rem' : '6.5rem 2rem 6.5rem',
-        background: '#070b14',
+        background: '#0064e0',
         minHeight: isMobile ? 'auto' : '640px',
         display: 'flex',
         alignItems: 'center',
@@ -1296,23 +1296,25 @@ export default function LandingPage({ onLoginSuccess }) {
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
           transform: 'scale(1.04)',
-          filter: 'brightness(0.32) contrast(1.2) saturate(1.2)',
+          filter: 'brightness(0.65) contrast(1.15) saturate(1.2)',
+          opacity: 0.32,
+          mixBlendMode: 'luminosity',
           zIndex: 1
         }} />
 
-        {/* 2. Deep Atmospheric Glass & Tech Gradient Layer */}
+        {/* 2. Signature Meta Logo Blue Dynamic Gradient Layer */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(7, 11, 20, 0.88) 0%, rgba(10, 18, 36, 0.82) 45%, rgba(6, 10, 18, 0.96) 100%)',
+          background: 'linear-gradient(135deg, rgba(0, 80, 200, 0.92) 0%, rgba(0, 100, 224, 0.88) 40%, rgba(0, 129, 251, 0.84) 75%, rgba(0, 70, 185, 0.94) 100%)',
           zIndex: 2
         }} />
 
-        {/* 3. Ambient Cyber Glow Spheres */}
+        {/* 3. Ambient Meta Lighting Spheres */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: 'radial-gradient(circle at 20% 15%, rgba(56, 189, 248, 0.22), transparent 45%), radial-gradient(circle at 80% 85%, rgba(129, 140, 248, 0.2), transparent 45%), radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.12), transparent 60%)',
+          backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.2), transparent 45%), radial-gradient(circle at 80% 80%, rgba(0, 210, 255, 0.28), transparent 50%), radial-gradient(circle at 50% 50%, rgba(8, 102, 255, 0.15), transparent 60%)',
           zIndex: 3
         }} />
 
@@ -1320,9 +1322,9 @@ export default function LandingPage({ onLoginSuccess }) {
         <div style={{
           position: 'absolute',
           inset: 0,
-          opacity: 0.12,
-          backgroundImage: 'radial-gradient(#38bdf8 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
+          opacity: 0.08,
+          backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)',
+          backgroundSize: '30px 30px',
           zIndex: 4
         }} />
 
@@ -1334,29 +1336,29 @@ export default function LandingPage({ onLoginSuccess }) {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '10px',
-            background: 'rgba(15, 23, 42, 0.78)',
+            background: 'rgba(255, 255, 255, 0.18)',
             backdropFilter: 'blur(16px)',
-            border: '1px solid rgba(56, 189, 248, 0.35)',
+            border: '1px solid rgba(255, 255, 255, 0.35)',
             padding: '0.5rem 1.3rem',
             borderRadius: '9999px',
             fontSize: '0.8rem',
             fontWeight: 800,
             letterSpacing: '0.06em',
             textTransform: 'uppercase',
-            color: '#38bdf8',
+            color: '#ffffff',
             marginBottom: '1.8rem',
-            boxShadow: '0 0 25px rgba(56, 189, 248, 0.25), inset 0 1px 0 rgba(255,255,255,0.1)'
+            boxShadow: '0 8px 24px rgba(0, 30, 90, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.35)'
           }}>
             <span style={{
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              background: '#38bdf8',
-              boxShadow: '0 0 10px #38bdf8',
+              background: '#00ffcc',
+              boxShadow: '0 0 10px #00ffcc',
               display: 'inline-block'
             }} />
             <span>AI-Powered Career Transformation Platform</span>
-            <Sparkles size={15} style={{ color: '#facc15' }} />
+            <Sparkles size={15} style={{ color: '#fde047' }} />
           </div>
 
           {/* Headline */}
@@ -1367,11 +1369,11 @@ export default function LandingPage({ onLoginSuccess }) {
             marginBottom: '1.3rem',
             letterSpacing: '-0.03em',
             color: '#ffffff',
-            textShadow: '0 4px 30px rgba(0,0,0,0.6)'
+            textShadow: '0 4px 25px rgba(0, 35, 110, 0.5)'
           }}>
             Next Generation{' '}
             <span style={{
-              background: 'linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%)',
+              background: 'linear-gradient(135deg, #ffffff 0%, #e0f2fe 50%, #bae6fd 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               display: 'inline-block'
@@ -1383,12 +1385,12 @@ export default function LandingPage({ onLoginSuccess }) {
           {/* Subtitle */}
           <p style={{
             fontSize: isMobile ? '1.05rem' : '1.25rem',
-            color: '#cbd5e1',
+            color: 'rgba(255, 255, 255, 0.92)',
             maxWidth: '760px',
             margin: '0 auto 2.5rem',
             lineHeight: 1.65,
             fontWeight: 400,
-            textShadow: '0 2px 10px rgba(0,0,0,0.5)'
+            textShadow: '0 2px 12px rgba(0, 30, 90, 0.4)'
           }}>
             Master industry-demanded tech skills through structured daily roadmaps, hands-on capstone projects, real-time staff reviews, and career placement mentorship.
           </p>
@@ -1402,31 +1404,31 @@ export default function LandingPage({ onLoginSuccess }) {
             flexWrap: 'wrap',
             marginBottom: '3.8rem'
           }}>
-            {/* Primary Action Button */}
+            {/* Primary Action Button (White with Meta Blue Text) */}
             <a
               href="#courses"
               style={{
                 textDecoration: 'none',
-                background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%)',
-                color: '#ffffff',
+                background: '#ffffff',
+                color: '#0064e0',
                 fontWeight: 800,
                 fontSize: '1rem',
                 padding: '0.95rem 2.4rem',
                 borderRadius: '14px',
-                boxShadow: '0 12px 28px -4px rgba(37, 99, 235, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 12px 28px -4px rgba(0, 30, 90, 0.35), 0 4px 12px rgba(0, 0, 0, 0.12)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '10px',
                 transition: 'all 0.25s ease',
-                border: '1px solid rgba(255, 255, 255, 0.25)'
+                border: '1px solid rgba(255, 255, 255, 0.8)'
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 16px 36px -4px rgba(37, 99, 235, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.45)';
+                e.currentTarget.style.boxShadow = '0 18px 36px -4px rgba(0, 30, 90, 0.45), 0 6px 16px rgba(0, 0, 0, 0.18)';
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 12px 28px -4px rgba(37, 99, 235, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3)';
+                e.currentTarget.style.boxShadow = '0 12px 28px -4px rgba(0, 30, 90, 0.35), 0 4px 12px rgba(0, 0, 0, 0.12)';
               }}
             >
               <BookOpen size={18} />
@@ -1438,8 +1440,8 @@ export default function LandingPage({ onLoginSuccess }) {
             <button
               onClick={() => setIsLoginModalOpen(true)}
               style={{
-                background: 'rgba(15, 23, 42, 0.72)',
-                border: '1px solid rgba(255, 255, 255, 0.22)',
+                background: 'rgba(255, 255, 255, 0.16)',
+                border: '1px solid rgba(255, 255, 255, 0.45)',
                 color: '#ffffff',
                 fontWeight: 800,
                 fontSize: '1rem',
@@ -1450,23 +1452,23 @@ export default function LandingPage({ onLoginSuccess }) {
                 alignItems: 'center',
                 gap: '10px',
                 backdropFilter: 'blur(16px)',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
+                boxShadow: '0 8px 24px rgba(0, 30, 90, 0.25)',
                 transition: 'all 0.25s ease'
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.background = 'rgba(30, 41, 59, 0.9)';
-                e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.55)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.28)';
+                e.currentTarget.style.borderColor = '#ffffff';
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 12px 30px rgba(56, 189, 248, 0.2)';
+                e.currentTarget.style.boxShadow = '0 12px 30px rgba(0, 30, 90, 0.35)';
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.background = 'rgba(15, 23, 42, 0.72)';
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.22)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.16)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.45)';
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.35)';
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 30, 90, 0.25)';
               }}
             >
-              <LogIn size={18} style={{ color: '#38bdf8' }} />
+              <LogIn size={18} style={{ color: '#ffffff' }} />
               Student Portal Login
             </button>
           </div>
@@ -1482,65 +1484,55 @@ export default function LandingPage({ onLoginSuccess }) {
               {
                 icon: <Code size={22} />,
                 title: "Project-Driven",
-                desc: "Real-time coding & portfolios",
-                accent: "#38bdf8",
-                bg: "rgba(56, 189, 248, 0.12)",
-                border: "rgba(56, 189, 248, 0.25)"
+                desc: "Real-time coding & portfolios"
               },
               {
                 icon: <CheckCircle size={22} />,
                 title: "Staff Reviewed",
-                desc: "1-on-1 task evaluation",
-                accent: "#4ade80",
-                bg: "rgba(74, 222, 128, 0.12)",
-                border: "rgba(74, 222, 128, 0.25)"
+                desc: "1-on-1 task evaluation"
               },
               {
                 icon: <Award size={22} />,
                 title: "Certification",
-                desc: "Verified course credentials",
-                accent: "#facc15",
-                bg: "rgba(250, 204, 21, 0.12)",
-                border: "rgba(250, 204, 21, 0.25)"
+                desc: "Verified course credentials"
               },
               {
                 icon: <Briefcase size={22} />,
                 title: "Placement Support",
-                desc: "Resume & mock interview prep",
-                accent: "#c084fc",
-                bg: "rgba(192, 132, 252, 0.12)",
-                border: "rgba(192, 132, 252, 0.25)"
+                desc: "Resume & mock interview prep"
               }
             ].map((item, idx) => (
               <div
                 key={idx}
                 style={{
-                  background: 'rgba(15, 23, 42, 0.72)',
-                  border: `1px solid ${item.border}`,
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  border: '1px solid rgba(255, 255, 255, 0.28)',
                   borderRadius: '16px',
                   padding: '1.25rem 1.25rem',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '14px',
                   backdropFilter: 'blur(16px)',
-                  boxShadow: '0 12px 30px -5px rgba(0, 0, 0, 0.35)',
+                  boxShadow: '0 12px 28px rgba(0, 25, 80, 0.18)',
                   transition: 'all 0.25s ease'
                 }}
                 onMouseEnter={e => {
                   e.currentTarget.style.transform = 'translateY(-3px)';
-                  e.currentTarget.style.borderColor = item.accent;
-                  e.currentTarget.style.boxShadow = `0 18px 35px -5px rgba(0, 0, 0, 0.45), 0 0 20px ${item.bg}`;
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.24)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                  e.currentTarget.style.boxShadow = '0 18px 36px rgba(0, 25, 80, 0.28)';
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.borderColor = item.border;
-                  e.currentTarget.style.boxShadow = '0 12px 30px -5px rgba(0, 0, 0, 0.35)';
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.28)';
+                  e.currentTarget.style.boxShadow = '0 12px 28px rgba(0, 25, 80, 0.18)';
                 }}
               >
                 <div style={{
-                  background: item.bg,
-                  border: `1px solid ${item.border}`,
-                  color: item.accent,
+                  background: 'rgba(255, 255, 255, 0.22)',
+                  border: '1px solid rgba(255, 255, 255, 0.4)',
+                  color: '#ffffff',
                   padding: '10px',
                   borderRadius: '12px',
                   display: 'flex',
@@ -1554,7 +1546,7 @@ export default function LandingPage({ onLoginSuccess }) {
                   <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.01em' }}>
                     {item.title}
                   </h4>
-                  <p style={{ margin: '3px 0 0', fontSize: '0.8rem', color: '#94a3b8', lineHeight: 1.35 }}>
+                  <p style={{ margin: '3px 0 0', fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.88)', lineHeight: 1.35 }}>
                     {item.desc}
                   </p>
                 </div>
