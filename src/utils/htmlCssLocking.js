@@ -593,19 +593,24 @@ export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations,
   const prevValidation = validations[prevModuleId];
   const prevTask = Array.isArray(taskSubmissions) ? taskSubmissions.find(t => t.moduleId === prevModuleId) : null;
 
-  // Next day is unlocked if staff approved OR if completedLessons contains items for prevModuleId/targetModuleId!
+  // Next day is unlocked ONLY IF staff approved previous day assignment!
   const isApprovedByValidation = prevValidation && (prevValidation.status === 'approved' || prevValidation.status === 'Approved');
   const isApprovedByTask = prevTask && (prevTask.status === 'Approved' || prevTask.status === 'approved');
-  const isCompletedByLesson = Array.isArray(completedLessons) && completedLessons.some(c => 
-    typeof c === 'string' && (c.includes(prevModuleId) || c.startsWith(prevModuleId) || c.includes(targetModuleId) || c.endsWith(`:${prevModuleId}`))
-  );
 
-  if (isApprovedByValidation || isApprovedByTask || isCompletedByLesson) {
-    return false;
+  let isApproved = isApprovedByValidation || isApprovedByTask;
+
+  // For module3 (CSS Day 3), allow unlock if either html_project OR module2 was approved by staff
+  if (!isApproved && targetModuleId === 'module3') {
+    const mod2Task = Array.isArray(taskSubmissions) ? taskSubmissions.find(t => t.moduleId === 'module2') : null;
+    const mod2Val = validations && validations['module2'];
+    if ((mod2Task && (mod2Task.status === 'Approved' || mod2Task.status === 'approved')) ||
+        (mod2Val && (mod2Val.status === 'approved' || mod2Val.status === 'Approved'))) {
+      isApproved = true;
+    }
   }
 
-  // Without staff approval, next day is LOCKED for student!
-  return true;
+  // Without staff approval, next day is strictly LOCKED for student!
+  return !isApproved;
 }
 
 export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, maybeValidations, maybeSession, completedLessons = [], taskSubmissions = []) {
@@ -687,7 +692,17 @@ export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, 
   const isApprovedByValidation = prevValidation && (prevValidation.status === 'approved' || prevValidation.status === 'Approved');
   const isApprovedByTask = prevTask && (prevTask.status === 'Approved' || prevTask.status === 'approved');
 
-  if (isApprovedByValidation || isApprovedByTask) return null;
+  let isApproved = isApprovedByValidation || isApprovedByTask;
+  if (!isApproved && targetModuleId === 'module3') {
+    const mod2Task = Array.isArray(taskSubmissions) ? taskSubmissions.find(t => t.moduleId === 'module2') : null;
+    const mod2Val = validations && validations['module2'];
+    if ((mod2Task && (mod2Task.status === 'Approved' || mod2Task.status === 'approved')) ||
+        (mod2Val && (mod2Val.status === 'approved' || mod2Val.status === 'Approved'))) {
+      isApproved = true;
+    }
+  }
+
+  if (isApproved) return null;
 
   // Check if student submitted but pending staff evaluation
   const isPending = (prevValidation && (prevValidation.status === 'pending' || prevValidation.status === 'Submitted')) || 
