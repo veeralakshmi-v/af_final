@@ -1275,254 +1275,257 @@ export default function LandingPage({ onLoginSuccess }) {
         )}
       </header>
 
-      {/* 🚀 HERO SECTION (INSPIRED BY REFERENCE DESIGN WITH #1e40af COLOR) */}
+      {/* 🚀 HERO SECTION (PERFECTLY ALIGNED & 100% RESPONSIVE) */}
       <section style={{
         background: '#ffffff',
-        padding: isMobile ? '1.5rem 1rem 2rem' : '2.5rem 2rem 3rem',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontFamily: 'var(--font-family)',
+        padding: isMobile ? '1.5rem 1rem' : '2.5rem 2rem 3.5rem',
+        width: '100%',
         boxSizing: 'border-box'
       }}>
         <div style={{
           width: '100%',
-          maxWidth: '1240px',
+          maxWidth: '1200px',
           margin: '0 auto',
           position: 'relative',
-          borderRadius: isMobile ? '24px' : '40px',
-          background: '#1e40af',
+          borderRadius: isMobile ? '24px' : '36px',
+          background: 'linear-gradient(135deg, #1e40af 0%, #1d4ed8 50%, #1e3a8a 100%)',
           overflow: 'hidden',
-          boxShadow: '0 25px 60px -15px rgba(30, 64, 175, 0.35)',
-          display: 'grid',
+          boxShadow: '0 20px 50px -10px rgba(30, 64, 175, 0.35)',
+          display: isMobile ? 'flex' : 'grid',
+          flexDirection: 'column',
           gridTemplateColumns: isMobile ? '1fr' : '1.15fr 0.85fr',
-          minHeight: isMobile ? 'auto' : '580px'
+          alignItems: 'center',
+          boxSizing: 'border-box'
         }}>
-          {/* Subtle background tech texture on the blue card */}
+          {/* Subtle tech grid background texture */}
           <div style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: "url('/images/hero_code_bg.jpg')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'brightness(0.6) contrast(1.15)',
-            opacity: 0.14,
-            mixBlendMode: 'luminosity',
+            opacity: 0.08,
+            backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
             pointerEvents: 'none',
             zIndex: 1
           }} />
 
-          {/* Organic Right Scoop Cutout (creates that exact curved shape where student stands) */}
-          {!isMobile && (
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              width: '45%',
-              height: '50%',
-              background: '#ffffff',
-              borderBottomLeftRadius: '56px',
-              zIndex: 2,
-              pointerEvents: 'none'
-            }} />
-          )}
-
-          {/* LEFT COLUMN: Main content */}
+          {/* LEFT COLUMN: Main Hero Content */}
           <div style={{
-            padding: isMobile ? '2.5rem 1.5rem 2rem' : '3.8rem 3.5rem 3.5rem',
+            padding: isMobile ? '2.5rem 1.5rem 1.5rem' : '4rem 2rem 4rem 3.5rem',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             zIndex: 10,
-            position: 'relative'
+            position: 'relative',
+            boxSizing: 'border-box'
           }}>
-            <div>
-              {/* Pill Badge */}
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                background: 'rgba(255, 255, 255, 0.14)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                padding: '0.45rem 1.2rem',
-                borderRadius: '9999px',
-                fontSize: '0.78rem',
-                fontWeight: 800,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: 'rgba(255, 255, 255, 0.95)',
-                marginBottom: '1.5rem'
-              }}>
-                <Sparkles size={14} style={{ color: '#fde047' }} />
-                <span>ENHANCE YOUR LIFE</span>
-              </div>
+            {/* Pill Tag */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: 'rgba(255, 255, 255, 0.12)',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              padding: '0.45rem 1.2rem',
+              borderRadius: '9999px',
+              fontSize: '0.78rem',
+              fontWeight: 800,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              color: 'rgba(255, 255, 255, 0.95)',
+              marginBottom: '1.25rem',
+              width: 'fit-content'
+            }}>
+              <Sparkles size={14} style={{ color: '#fde047' }} />
+              <span>ENHANCE YOUR LIFE</span>
+            </div>
 
-              {/* Bold Headline (Solid White - NO gradient text, with hand-drawn curved underline) */}
-              <h1 style={{
-                fontSize: isMobile ? '2.3rem' : '3.8rem',
-                fontWeight: 900,
-                lineHeight: 1.15,
-                margin: '0 0 1.2rem',
-                letterSpacing: '-0.025em',
-                color: '#ffffff'
-              }}>
-                Transform<br />
-                Your Skills and<br />
-                <span style={{ position: 'relative', display: 'inline-block' }}>
-                  Career!
-                  {/* Decorative curved brush stroke under Career! */}
-                  <svg
-                    style={{
-                      position: 'absolute',
-                      bottom: '-8px',
-                      left: '0',
-                      width: '100%',
-                      height: '14px',
-                      overflow: 'visible'
-                    }}
-                    viewBox="0 0 200 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M 2 8 C 50 14, 150 14, 198 4"
-                      stroke="#38bdf8"
-                      strokeWidth="5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </span>
-              </h1>
-
-              {/* Subtitle */}
-              <p style={{
-                fontSize: isMobile ? '0.96rem' : '1.08rem',
-                color: 'rgba(255, 255, 255, 0.88)',
-                maxWidth: '470px',
-                margin: '0 0 2.2rem',
-                lineHeight: 1.6
-              }}>
-                Meet the platform for modern technical education. Master technical skills and hands-on projects taught by industry experts.
-              </p>
-
-              {/* Buttons */}
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
-                <a
-                  href="#courses"
+            {/* Bold Headline (Solid White, NO gradient text, with hand-drawn brush stroke) */}
+            <h1 style={{
+              fontSize: 'clamp(2.2rem, 3.8vw, 3.6rem)',
+              fontWeight: 900,
+              lineHeight: 1.15,
+              margin: '0 0 1.25rem',
+              letterSpacing: '-0.025em',
+              color: '#ffffff'
+            }}>
+              Transform<br />
+              Your Skills and<br />
+              <span style={{ position: 'relative', display: 'inline-block' }}>
+                Career!
+                {/* Curved underline */}
+                <svg
                   style={{
-                    textDecoration: 'none',
-                    background: '#00e599',
-                    color: '#0f172a',
-                    fontWeight: 800,
-                    fontSize: '1rem',
-                    padding: '0.9rem 2.4rem',
-                    borderRadius: '9999px',
-                    boxShadow: '0 10px 25px -4px rgba(0, 229, 153, 0.45)',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    transition: 'all 0.2s ease'
+                    position: 'absolute',
+                    bottom: '-6px',
+                    left: '0',
+                    width: '100%',
+                    height: '14px',
+                    overflow: 'visible'
                   }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 14px 30px -4px rgba(0, 229, 153, 0.6)';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 10px 25px -4px rgba(0, 229, 153, 0.45)';
-                  }}
+                  viewBox="0 0 200 14"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  Browse Courses
-                  <ArrowRight size={18} />
-                </a>
+                  <path
+                    d="M 2 8 C 50 14, 150 14, 198 4"
+                    stroke="#38bdf8"
+                    strokeWidth="5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>
+            </h1>
 
-                <button
-                  onClick={() => setIsLoginModalOpen(true)}
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.16)',
-                    border: '1px solid rgba(255, 255, 255, 0.4)',
-                    color: '#ffffff',
-                    fontWeight: 800,
-                    fontSize: '0.95rem',
-                    padding: '0.9rem 2rem',
-                    borderRadius: '9999px',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.26)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.16)'}
-                >
-                  <LogIn size={16} />
-                  Student Login
-                </button>
-              </div>
+            {/* Subtitle */}
+            <p style={{
+              fontSize: isMobile ? '0.95rem' : '1.08rem',
+              color: 'rgba(255, 255, 255, 0.88)',
+              maxWidth: '480px',
+              margin: '0 0 2.2rem',
+              lineHeight: 1.6
+            }}>
+              Meet the platform for modern technical education. Master technical skills and hands-on projects taught by industry experts.
+            </p>
+
+            {/* Action Buttons */}
+            <div style={{
+              display: 'flex',
+              gap: '1rem',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              marginBottom: '2.5rem'
+            }}>
+              <a
+                href="#courses"
+                style={{
+                  textDecoration: 'none',
+                  background: '#00e599',
+                  color: '#0f172a',
+                  fontWeight: 800,
+                  fontSize: '0.98rem',
+                  padding: '0.9rem 2.2rem',
+                  borderRadius: '9999px',
+                  boxShadow: '0 10px 25px -4px rgba(0, 229, 153, 0.45)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 14px 30px -4px rgba(0, 229, 153, 0.6)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 10px 25px -4px rgba(0, 229, 153, 0.45)';
+                }}
+              >
+                Browse Courses
+                <ArrowRight size={18} />
+              </a>
+
+              <button
+                onClick={() => setIsLoginModalOpen(true)}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.16)',
+                  border: '1px solid rgba(255, 255, 255, 0.4)',
+                  color: '#ffffff',
+                  fontWeight: 800,
+                  fontSize: '0.95rem',
+                  padding: '0.9rem 2rem',
+                  borderRadius: '9999px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.26)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.16)'}
+              >
+                <LogIn size={16} />
+                Student Login
+              </button>
             </div>
 
             {/* Bottom Stats Row */}
             <div style={{
               display: 'flex',
-              gap: isMobile ? '1.5rem' : '2.8rem',
+              gap: isMobile ? '1.5rem' : '2.5rem',
               borderTop: '1px solid rgba(255, 255, 255, 0.18)',
               paddingTop: '1.8rem',
               flexWrap: 'wrap'
             }}>
               <div>
-                <h3 style={{ margin: 0, fontSize: isMobile ? '1.6rem' : '2.1rem', fontWeight: 900, color: '#ffffff' }}>769+</h3>
+                <h3 style={{ margin: 0, fontSize: isMobile ? '1.5rem' : '1.9rem', fontWeight: 900, color: '#ffffff' }}>769+</h3>
                 <span style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>Recorded Tasks</span>
               </div>
               <div>
-                <h3 style={{ margin: 0, fontSize: isMobile ? '1.6rem' : '2.1rem', fontWeight: 900, color: '#ffffff' }}>1200+</h3>
+                <h3 style={{ margin: 0, fontSize: isMobile ? '1.5rem' : '1.9rem', fontWeight: 900, color: '#ffffff' }}>1200+</h3>
                 <span style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>Happy Students</span>
               </div>
               <div>
-                <h3 style={{ margin: 0, fontSize: isMobile ? '1.6rem' : '2.1rem', fontWeight: 900, color: '#ffffff' }}>10+</h3>
+                <h3 style={{ margin: 0, fontSize: isMobile ? '1.5rem' : '1.9rem', fontWeight: 900, color: '#ffffff' }}>10+</h3>
                 <span style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.8)', fontWeight: 500 }}>Course Topics</span>
               </div>
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Student Photo & Floating Testimonial */}
+          {/* RIGHT COLUMN: Transparent Student & Floating Testimonial */}
           <div style={{
             position: 'relative',
             display: 'flex',
             alignItems: 'flex-end',
             justifyContent: 'center',
-            minHeight: isMobile ? '380px' : 'auto',
-            zIndex: 10
+            padding: isMobile ? '0 1.5rem 1.5rem' : '2rem 2.5rem 0 0',
+            zIndex: 10,
+            boxSizing: 'border-box'
           }}>
-            {/* Student Image */}
+            {/* Ambient Lighting Behind Student */}
+            <div style={{
+              position: 'absolute',
+              width: isMobile ? '260px' : '360px',
+              height: isMobile ? '260px' : '360px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(56, 189, 248, 0.28) 0%, rgba(30, 64, 175, 0) 70%)',
+              bottom: '10%',
+              zIndex: 1,
+              pointerEvents: 'none'
+            }} />
+
+            {/* Seamless Transparent Student Image */}
             <img
-              src="/images/hero_student_model.jpg"
-              alt="Happy Student"
+              src="/images/hero_student_transparent.png"
+              alt="Alpha Fly Student"
               style={{
-                width: isMobile ? '90%' : '100%',
-                maxWidth: '480px',
+                width: '100%',
+                maxWidth: isMobile ? '320px' : '440px',
                 height: 'auto',
-                maxHeight: isMobile ? '400px' : '560px',
+                maxHeight: isMobile ? '380px' : '540px',
                 objectFit: 'contain',
                 objectPosition: 'bottom center',
-                zIndex: 12,
+                zIndex: 2,
                 display: 'block',
-                filter: 'drop-shadow(0 20px 30px rgba(0, 0, 0, 0.25))'
+                filter: 'drop-shadow(0 20px 30px rgba(0, 0, 0, 0.35))'
               }}
             />
 
             {/* Floating Student Testimonial Card */}
             <div style={{
-              position: 'absolute',
-              bottom: isMobile ? '1rem' : '2.2rem',
-              left: isMobile ? '1rem' : '-4rem',
-              zIndex: 25,
+              position: isMobile ? 'relative' : 'absolute',
+              bottom: isMobile ? '0' : '2rem',
+              left: isMobile ? 'auto' : '-1rem',
+              marginTop: isMobile ? '1rem' : '0',
+              zIndex: 15,
               background: '#ffffff',
               color: '#0f172a',
               borderRadius: '20px',
-              padding: '1.25rem 1.5rem',
-              maxWidth: '280px',
-              boxShadow: '0 20px 45px -10px rgba(0, 0, 0, 0.3)',
-              border: '1px solid rgba(0, 0, 0, 0.06)'
+              padding: '1.1rem 1.3rem',
+              maxWidth: isMobile ? '100%' : '260px',
+              width: isMobile ? '100%' : 'auto',
+              boxShadow: '0 20px 45px -10px rgba(0, 0, 0, 0.35)',
+              border: '1px solid rgba(0, 0, 0, 0.06)',
+              boxSizing: 'border-box'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
                 <img
