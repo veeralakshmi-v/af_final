@@ -8,7 +8,7 @@ import 'prismjs/themes/prism-tomorrow.css';
 // Reusable Section Component with Framer Motion
 const Section = ({ id, eyebrow, title, children }) => {
   return (
-    <motion.div 
+    <motion.div
       id={id}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -383,7 +383,7 @@ export default function Day2({ activeTab, onNavigate }) {
       {activeTab === 'tables' && (
         <Section key="tables" id="tables" eyebrow="Layout" title="HTML Tables">
           <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Tables allow you to arrange data into rows and columns using <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code> (table row), <code>&lt;th&gt;</code> (table header), and <code>&lt;td&gt;</code> (table cell).</p>
-          
+
           <div className="code-example-box">
             <div className="code-header">Basic Table: Student Marks Summary</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
@@ -553,7 +553,7 @@ export default function Day2({ activeTab, onNavigate }) {
         <Section key="meta_iframes" id="meta_iframes" eyebrow="Head & Embeds" title="Meta Tags & Iframes">
           <h3 style={{ fontSize: '1.3rem', color: 'var(--text-primary)', marginBottom: '0.75rem' }}>1. Meta Tags (Document Metadata)</h3>
           <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}><strong>Meta tags</strong> provide metadata about the HTML document (like description, character encoding, keywords, and author). They are placed inside the <code>&lt;head&gt;</code> element and are invisible on the screen, but critical for browser rendering and Search Engine Optimization (SEO).</p>
-          
+
           <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
             <div className="code-header">Common Meta Tags inside &lt;head&gt;</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
@@ -576,7 +576,7 @@ export default function Day2({ activeTab, onNavigate }) {
 
           <h3 style={{ fontSize: '1.3rem', color: 'var(--text-primary)', marginBottom: '0.75rem' }}>2. Iframes (Inline Frames)</h3>
           <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>An <strong>Iframe</strong> (inline frame) is used to embed another document or webpage entirely within the current HTML page. This is commonly used for embedding interactive maps, third-party widgets, or external tools.</p>
-          
+
           <div className="code-example-box" style={{ marginBottom: '2.5rem' }}>
             <div className="code-header">Iframe Embed Code</div>
             <div className="code-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 0 }}>
@@ -586,10 +586,10 @@ export default function Day2({ activeTab, onNavigate }) {
               <div className="preview-pane" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
                 <div style={{ width: '100%' }}>
                   <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Live Embedded Preview:</div>
-                  <iframe 
-                    src="https://example.com" 
-                    width="100%" 
-                    height="180" 
+                  <iframe
+                    src="https://example.com"
+                    width="100%"
+                    height="180"
                     title="Iframe Live Demo"
                     style={{ border: '2px solid #3b82f6', borderRadius: '8px', background: 'white' }}>
                   </iframe>
