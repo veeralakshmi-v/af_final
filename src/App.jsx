@@ -37,6 +37,9 @@ const PowerBIDay7 = lazy(() => import('./pages/powerbi/PowerBIDay7'));
 const PowerBIDay8 = lazy(() => import('./pages/powerbi/PowerBIDay8'));
 const PowerBIProjects = lazy(() => import('./pages/powerbi/PowerBIProjects'));
 const AgenticAIDemo = lazy(() => import('./pages/agentic-ai/AgenticAIDemo'));
+const AgenticAIDay1 = lazy(() => import('./pages/agentic-ai/AgenticAIDay1'));
+const AgenticAIInductionDemo = lazy(() => import('./pages/agentic-ai/AgenticAIInductionDemo'));
+const AgenticAIModule2Project = lazy(() => import('./pages/agentic-ai/AgenticAIModule2Project'));
 const AgenticAIDay2 = lazy(() => import('./pages/agentic-ai/AgenticAIDay2'));
 const AgenticAIDay3 = lazy(() => import('./pages/agentic-ai/AgenticAIDay3'));
 const AgenticAIDay4 = lazy(() => import('./pages/agentic-ai/AgenticAIDay4'));
@@ -943,7 +946,7 @@ function App() {
                 )}
 
                 {/* Agentic AI Course Rendering */}
-                {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day1' && <AgenticAIDemo activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day1' && <AgenticAIDay1 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day2' && <AgenticAIDay2 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day3' && <AgenticAIDay3 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'agentic_ai_foundation' && activeNode.tabId === 'day4' && <AgenticAIDay4 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
@@ -951,57 +954,60 @@ function App() {
 
                 {/* Agentic AI Module 2 & 3 Course Rendering */}
                 {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day6' && <AgenticAIDay6 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day7' && <AgenticAIDay7 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day8' && <AgenticAIDay8 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day9' && <AgenticAIDay9 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day10' && <AgenticAIDay10 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'module2_project' && <GenAIModule2Project />}
-                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day11' && <AgenticAIDay11 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day12' && <AgenticAIDay12 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day13' && <AgenticAIDay13 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day14' && <AgenticAIDay14 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day15' && <AgenticAIDay15 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day7' && <AgenticAIDay7 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day8' && <AgenticAIDay8 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day9' && <AgenticAIDay9 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'day10' && <AgenticAIDay10 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module2' && activeNode.tabId === 'module2_project' && <AgenticAIModule2Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day11' && <AgenticAIDay11 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day12' && <AgenticAIDay12 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day13' && <AgenticAIDay13 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day14' && <AgenticAIDay14 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'day15' && <AgenticAIDay15 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'agentic_ai_module3' && activeNode.tabId === 'module3_project' && <AgenticAIModule3Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
                 {/* Agentic AI Module 4 — Flowise & Visual AI Agents */}
-                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day16' && <AgenticAIDay16 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day17' && <AgenticAIDay17 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day18' && <AgenticAIDay18 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day19' && <AgenticAIDay19 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day20' && <AgenticAIDay20 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day16' && <AgenticAIDay16 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day17' && <AgenticAIDay17 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day18' && <AgenticAIDay18 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day19' && <AgenticAIDay19 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'day20' && <AgenticAIDay20 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'agentic_ai_module4' && activeNode.tabId === 'module4_project' && <AgenticAIModule4Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
                 {/* Agentic AI Module 5 — LangChain & Agent Development */}
-                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day21' && <AgenticAIDay21 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day22' && <AgenticAIDay22 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day23' && <AgenticAIDay23 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day24' && <AgenticAIDay24 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day25' && <AgenticAIDay25 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day21' && <AgenticAIDay21 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day22' && <AgenticAIDay22 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day23' && <AgenticAIDay23 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day24' && <AgenticAIDay24 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'day25' && <AgenticAIDay25 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'agentic_ai_module5' && activeNode.tabId === 'module5_project' && <AgenticAIModule5Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
                 {/* Agentic AI Module 6 — LangGraph & Stateful Agents */}
-                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day26' && <AgenticAIDay26 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day27' && <AgenticAIDay27 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day28' && <AgenticAIDay28 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day29' && <AgenticAIDay29 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day30' && <AgenticAIDay30 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day26' && <AgenticAIDay26 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day27' && <AgenticAIDay27 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day28' && <AgenticAIDay28 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day29' && <AgenticAIDay29 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'day30' && <AgenticAIDay30 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'agentic_ai_module6' && activeNode.tabId === 'module6_project' && <AgenticAIModule6Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
                 {/* Agentic AI Module 7 — CrewAI Multi-Agent Systems */}
-                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day31' && <AgenticAIDay31 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day32' && <AgenticAIDay32 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day33' && <AgenticAIDay33 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day34' && <AgenticAIDay34 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day35' && <AgenticAIDay35 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day31' && <AgenticAIDay31 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day32' && <AgenticAIDay32 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day33' && <AgenticAIDay33 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day34' && <AgenticAIDay34 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'day35' && <AgenticAIDay35 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'agentic_ai_module7' && activeNode.tabId === 'module7_project' && <AgenticAIModule7Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
                 {/* Agentic AI Module 8 — Agno AI & Advanced Agent Development */}
-                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day36' && <AgenticAIDay36 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day37' && <AgenticAIDay37 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day38' && <AgenticAIDay38 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day39' && <AgenticAIDay39 onNavigate={handleNavClick} openAITutor={openAITutor} />}
-                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day40' && <AgenticAIDay40 onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day36' && <AgenticAIDay36 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day37' && <AgenticAIDay37 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day38' && <AgenticAIDay38 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day39' && <AgenticAIDay39 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
+                {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'day40' && <AgenticAIDay40 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'agentic_ai_module8' && activeNode.tabId === 'module8_project' && <AgenticAIModule8Project onNavigate={handleNavClick} openAITutor={openAITutor} />}
+
+                {/* Agentic AI Induction Demo Rendering */}
+                {activeNode.moduleId === 'agentic_ai_demo' && <AgenticAIInductionDemo activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
 
                 {activeNode.moduleId === 'generative_ai_demo' && <GenerativeAIDemo activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
 

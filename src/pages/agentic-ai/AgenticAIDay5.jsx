@@ -1045,17 +1045,26 @@ def run_agent_booking_workflow(customer_name, customer_email, preferred_time, ba
               )}
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
               <button className="btn btn-outline" onClick={() => handleSubTabChange('assignment')} style={{ fontSize: '1.05rem', padding: '0.75rem 1.5rem' }}>
                 Back to Assignment
               </button>
-              <button
-                className="btn btn-primary"
-                onClick={() => onNavigate('dashboard')}
-                style={{ background: '#0f172a', borderColor: '#0f172a', fontSize: '1.05rem', padding: '0.75rem 1.5rem' }}
-              >
-                Return to Dashboard
-              </button>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <button
+                  className="btn btn-outline"
+                  onClick={() => onNavigate && onNavigate('dashboard')}
+                  style={{ fontSize: '1.05rem', padding: '0.75rem 1.5rem' }}
+                >
+                  Return to Dashboard
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => onNavigate && onNavigate('agentic_ai_module2', 'day6')}
+                  style={{ background: '#7c3aed', borderColor: '#7c3aed', fontSize: '1.05rem', padding: '0.75rem 1.5rem', fontWeight: 700 }}
+                >
+                  Next Module (Day 6: System Prompts) →
+                </button>
+              </div>
             </div>
           </motion.div>
         )}

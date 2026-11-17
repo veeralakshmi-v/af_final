@@ -594,17 +594,26 @@ export default function AgenticAIDay9({ onNavigate, openAITutor }) {
               )}
             </div>
 
-            <div style={{ background: '#dbeafe', border: '1px solid #bfdbfe', padding: '1.5rem', borderRadius: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ background: '#dbeafe', border: '1px solid #bfdbfe', padding: '1.5rem', borderRadius: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
                 <h4 style={{ margin: '0 0 0.2rem 0', color: '#1e3a8a' }}>🎉 Day 9 Complete!</h4>
                 <p style={{ margin: 0, color: '#64748b', fontSize: '0.88rem' }}>You've successfully completed the structured outputs and Pydantic validation syllabus.</p>
               </div>
-              <button
-                onClick={() => handleContinue('intro')}
-                style={{ background: '#3b82f6', color: 'white', border: 'none', padding: '0.6rem 1.3rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }}
-              >
-                Back to Overview
-              </button>
+              <div style={{ display: 'flex', gap: '0.8rem' }}>
+                <button
+                  className="btn btn-outline"
+                  onClick={() => onNavigate && onNavigate('dashboard')}
+                  style={{ background: 'white' }}
+                >
+                  Return to Dashboard
+                </button>
+                <button
+                  onClick={() => onNavigate && onNavigate('agentic_ai_module2', 'day10')}
+                  style={{ background: '#3b82f6', color: 'white', border: 'none', padding: '0.6rem 1.3rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }}
+                >
+                  Next Day (Day 10: Real-Time Agent Project) →
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
