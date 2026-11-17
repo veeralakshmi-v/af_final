@@ -1003,18 +1003,30 @@ function CourseCarouselSection() {
                     onClick={() => setSelectedCourse(null)}
                     style={{
                       flex: 1,
-                      background: '#0f172a',
+                      background: '#1e40af',
                       color: '#ffffff',
                       border: 'none',
-                      padding: '0.85rem',
-                      borderRadius: '12px',
+                      padding: '0.7rem 1.6rem',
+                      borderRadius: '8px',
                       fontWeight: 800,
                       fontSize: '0.92rem',
                       cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 4px 12px rgba(30, 64, 175, 0.25)',
                       transition: 'all 0.2s ease'
                     }}
-                    onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1e293b'}
-                    onMouseLeave={e => e.currentTarget.style.backgroundColor = '#0f172a'}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.backgroundColor = '#1d4ed8';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(30, 64, 175, 0.35)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.backgroundColor = '#1e40af';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(30, 64, 175, 0.25)';
+                    }}
                   >
                     Close Syllabus
                   </button>
@@ -1156,7 +1168,41 @@ function ContactSection() {
                 />
               </div>
 
-              <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', fontSize: '1rem' }} disabled={isSubmitting}>
+              <button
+                type="submit"
+                style={{
+                  width: '100%',
+                  background: '#1e40af',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.7rem 1.6rem',
+                  borderRadius: '8px',
+                  fontSize: '0.92rem',
+                  fontWeight: 800,
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(30, 64, 175, 0.25)',
+                  transition: 'all 0.2s ease',
+                  opacity: isSubmitting ? 0.7 : 1
+                }}
+                disabled={isSubmitting}
+                onMouseEnter={e => {
+                  if (!isSubmitting) {
+                    e.currentTarget.style.backgroundColor = '#1d4ed8';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                    e.currentTarget.style.boxShadow = '0 6px 16px rgba(30, 64, 175, 0.35)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!isSubmitting) {
+                    e.currentTarget.style.backgroundColor = '#1e40af';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(30, 64, 175, 0.25)';
+                  }
+                }}
+              >
                 {isSubmitting ? 'Sending Message...' : 'Send Message'}
               </button>
             </form>
@@ -1644,11 +1690,30 @@ export default function LandingPage({ onLoginSuccess }) {
               <button
                 onClick={() => setIsLoginModalOpen(true)}
                 style={{
-                  background: '#1e40af', color: '#ffffff', border: 'none', padding: '0.6rem 1.4rem',
-                  fontSize: '0.9rem', fontWeight: 800, borderRadius: '8px', cursor: 'pointer', transition: 'var(--transition)'
+                  background: '#1e40af',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.7rem 1.6rem',
+                  fontSize: '0.92rem',
+                  fontWeight: 800,
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(30, 64, 175, 0.25)',
+                  transition: 'all 0.2s ease'
                 }}
-                onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1d4ed8'}
-                onMouseLeave={e => e.currentTarget.style.backgroundColor = '#1e40af'}
+                onMouseEnter={e => {
+                  e.currentTarget.style.backgroundColor = '#1d4ed8';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(30, 64, 175, 0.35)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = '#1e40af';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(30, 64, 175, 0.25)';
+                }}
               >
                 LOGIN
               </button>
@@ -1697,9 +1762,23 @@ export default function LandingPage({ onLoginSuccess }) {
                 setIsLoginModalOpen(true);
               }}
               style={{
-                background: '#1e40af', color: '#ffffff', border: 'none', padding: '0.6rem 1.4rem',
-                fontSize: '0.95rem', fontWeight: 800, borderRadius: '8px', cursor: 'pointer', width: 'fit-content'
+                background: '#1e40af',
+                color: '#ffffff',
+                border: 'none',
+                padding: '0.7rem 1.6rem',
+                fontSize: '0.92rem',
+                fontWeight: 800,
+                borderRadius: '8px',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(30, 64, 175, 0.25)',
+                transition: 'all 0.2s ease',
+                width: 'fit-content'
               }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1d4ed8'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#1e40af'}
             >
               LOGIN
             </button>
@@ -1791,57 +1870,59 @@ export default function LandingPage({ onLoginSuccess }) {
                 href="#courses"
                 style={{
                   textDecoration: 'none',
-                  background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                  background: '#1e40af',
                   color: '#ffffff',
                   fontWeight: 800,
-                  fontSize: '1rem',
-                  padding: '0.95rem 2.4rem',
-                  borderRadius: '9999px',
-                  boxShadow: '0 10px 25px -4px rgba(2, 132, 199, 0.45)',
+                  fontSize: '0.92rem',
+                  padding: '0.7rem 1.6rem',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 12px rgba(30, 64, 175, 0.25)',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
                   transition: 'all 0.2s ease'
                 }}
                 onMouseEnter={e => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 14px 30px -4px rgba(2, 132, 199, 0.6)';
+                  e.currentTarget.style.backgroundColor = '#1d4ed8';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(30, 64, 175, 0.35)';
                 }}
                 onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = '#1e40af';
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 10px 25px -4px rgba(2, 132, 199, 0.45)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(30, 64, 175, 0.25)';
                 }}
               >
                 Enquire Now
-                <ArrowRight size={18} />
+                <ArrowRight size={16} />
               </a>
 
               <button
                 onClick={() => setIsLoginModalOpen(true)}
                 style={{
-                  background: '#ffffff',
-                  border: '1.5px solid #cbd5e1',
-                  color: '#0f172a',
+                  background: '#1e40af',
+                  border: 'none',
+                  color: '#ffffff',
                   fontWeight: 800,
-                  fontSize: '0.96rem',
-                  padding: '0.9rem 2rem',
-                  borderRadius: '9999px',
+                  fontSize: '0.92rem',
+                  padding: '0.7rem 1.6rem',
+                  borderRadius: '8px',
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)'
+                  boxShadow: '0 4px 12px rgba(30, 64, 175, 0.25)',
+                  transition: 'all 0.2s ease'
                 }}
                 onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = '#0284c7';
-                  e.currentTarget.style.color = '#0284c7';
-                  e.currentTarget.style.background = '#f8fafc';
+                  e.currentTarget.style.backgroundColor = '#1d4ed8';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(30, 64, 175, 0.35)';
                 }}
                 onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = '#cbd5e1';
-                  e.currentTarget.style.color = '#0f172a';
-                  e.currentTarget.style.background = '#ffffff';
+                  e.currentTarget.style.backgroundColor = '#1e40af';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(30, 64, 175, 0.25)';
                 }}
               >
                 <LogIn size={16} />
@@ -1867,7 +1948,7 @@ export default function LandingPage({ onLoginSuccess }) {
                 <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Practical Labs</span>
               </div>
               <div>
-                <h4 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 900, color: '#0284c7' }}>5/5 ★</h4>
+                <h4 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 900, color: '#1e40af' }}>5/5 ★</h4>
                 <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Google Rating</span>
               </div>
             </div>
@@ -2019,7 +2100,41 @@ export default function LandingPage({ onLoginSuccess }) {
 
                 {errorMsg && <div style={{ color: '#ef4444', fontSize: '0.82rem', fontWeight: 700 }}>⚠️ {errorMsg}</div>}
 
-                <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', borderRadius: '12px', fontSize: '0.95rem' }} disabled={isLoading}>
+                <button
+                  type="submit"
+                  style={{
+                    width: '100%',
+                    background: '#1e40af',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '0.7rem 1.6rem',
+                    borderRadius: '8px',
+                    fontSize: '0.92rem',
+                    fontWeight: 800,
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 12px rgba(30, 64, 175, 0.25)',
+                    transition: 'all 0.2s ease',
+                    opacity: isLoading ? 0.7 : 1
+                  }}
+                  disabled={isLoading}
+                  onMouseEnter={e => {
+                    if (!isLoading) {
+                      e.currentTarget.style.backgroundColor = '#1d4ed8';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(30, 64, 175, 0.35)';
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!isLoading) {
+                      e.currentTarget.style.backgroundColor = '#1e40af';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(30, 64, 175, 0.25)';
+                    }
+                  }}
+                >
                   {isLoading ? 'Verifying access key...' : 'Access LMS Portal'}
                 </button>
               </form>
@@ -2056,7 +2171,41 @@ export default function LandingPage({ onLoginSuccess }) {
 
                 {errorMsg && <div style={{ color: '#ef4444', fontSize: '0.82rem', fontWeight: 700 }}>⚠️ {errorMsg}</div>}
 
-                <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', borderRadius: '12px', fontSize: '0.95rem' }} disabled={isLoading}>
+                <button
+                  type="submit"
+                  style={{
+                    width: '100%',
+                    background: '#1e40af',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '0.7rem 1.6rem',
+                    borderRadius: '8px',
+                    fontSize: '0.92rem',
+                    fontWeight: 800,
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 12px rgba(30, 64, 175, 0.25)',
+                    transition: 'all 0.2s ease',
+                    opacity: isLoading ? 0.7 : 1
+                  }}
+                  disabled={isLoading}
+                  onMouseEnter={e => {
+                    if (!isLoading) {
+                      e.currentTarget.style.backgroundColor = '#1d4ed8';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(30, 64, 175, 0.35)';
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!isLoading) {
+                      e.currentTarget.style.backgroundColor = '#1e40af';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(30, 64, 175, 0.25)';
+                    }
+                  }}
+                >
                   {isLoading ? 'Verifying credentials...' : `Authenticate as ${activeTab}`}
                 </button>
               </form>
