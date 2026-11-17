@@ -183,314 +183,544 @@ function FeaturesSection() {
   );
 }
 
-// --- 4. COURSE CAROUSEL / AVAILABLE COURSES ---
+// --- 4. COURSE CAROUSEL / AVAILABLE COURSES (IMAGE THEMED CARDS & SMOOTH CAROUSEL) ---
+
+const ComputerCourseIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <rect x="7" y="9" width="34" height="24" rx="4" fill="#60a5fa" stroke="#ffffff" strokeWidth="2.5" />
+    <rect x="11" y="13" width="26" height="16" rx="2" fill="#93c5fd" />
+    <path d="M19 33L16 41H32L29 33" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    <line x1="13" y1="41" x2="35" y2="41" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
+  </svg>
+);
+
+const OfficeCourseIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <rect x="9" y="7" width="30" height="34" rx="5" fill="#ffffff" />
+    <line x1="14" y1="13" x2="26" y2="13" stroke="#cbd5e1" strokeWidth="2.5" strokeLinecap="round" />
+    <rect x="14" y="24" width="5.5" height="12" rx="2" fill="#ec4899" />
+    <rect x="21.5" y="18" width="5.5" height="18" rx="2" fill="#10b981" />
+    <rect x="29" y="14" width="5.5" height="22" rx="2" fill="#3b82f6" />
+  </svg>
+);
+
+const TallyCourseIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <path d="M12 7H36V41L32 38L28 41L24 38L20 41L16 38L12 41V7Z" fill="#ffffff" />
+    <line x1="17" y1="14" x2="31" y2="14" stroke="#0f766e" strokeWidth="2.5" strokeLinecap="round" />
+    <line x1="17" y1="20" x2="31" y2="20" stroke="#0f766e" strokeWidth="2.5" strokeLinecap="round" />
+    <line x1="17" y1="26" x2="26" y2="26" stroke="#0f766e" strokeWidth="2.5" strokeLinecap="round" />
+    <line x1="17" y1="32" x2="24" y2="32" stroke="#0f766e" strokeWidth="2.5" strokeLinecap="round" />
+  </svg>
+);
+
+const PythonCourseIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <path d="M23.5 7C17.5 7 14 10.5 14 15.5H23.5V17H11.5C9.5 21 9.5 27 15.5 28.5V25C15.5 21.5 18.5 19 22.5 19H31.5C34 19 36 17 36 14.5C36 10 30.5 7 23.5 7Z" fill="#86efac" />
+    <circle cx="18.5" cy="11.5" r="1.5" fill="#064e3b" />
+    <path d="M24.5 41C30.5 41 34 37.5 34 32.5H24.5V31H36.5C38.5 27 38.5 21 32.5 19.5V23C32.5 26.5 29.5 29 25.5 29H16.5C14 29 12 31 12 33.5C12 38 17.5 41 24.5 41Z" fill="#fde047" />
+    <circle cx="29.5" cy="36.5" r="1.5" fill="#713f12" />
+  </svg>
+);
+
+const WebDesignCourseIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <circle cx="24" cy="24" r="17" stroke="#ffffff" strokeWidth="2.5" fill="rgba(255,255,255,0.15)" />
+    <ellipse cx="24" cy="24" rx="9" ry="17" stroke="#ffffff" strokeWidth="2" />
+    <line x1="7" y1="24" x2="41" y2="24" stroke="#ffffff" strokeWidth="2" />
+    <line x1="10" y1="16" x2="38" y2="16" stroke="#ffffff" strokeWidth="1.6" />
+    <line x1="10" y1="32" x2="38" y2="32" stroke="#ffffff" strokeWidth="1.6" />
+  </svg>
+);
+
+const MarketingCourseIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <path d="M11 27V19C11 17.9 11.9 17 13 17H17L31 10V36L17 29H13C11.9 29 11 28.1 11 27Z" fill="#fef08a" stroke="#ffffff" strokeWidth="2.2" />
+    <path d="M17 29L19 39H24L22 29" fill="#fde047" stroke="#ffffff" strokeWidth="2" />
+    <path d="M35 18C37.5 20.2 38.5 22.5 38.5 24C38.5 25.5 37.5 27.8 35 30" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
+    <path d="M39 14C42.5 17.5 43.5 21 43.5 24C43.5 27 42.5 30.5 39 34" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
+  </svg>
+);
+
+const DesignCourseIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <path d="M24 7C14 7 7 14 7 24C7 32 12.5 37.5 20 37.5C22.5 37.5 24 36 24 34C24 33 23.5 32 23 31C22.5 30 22 29 22 27.5C22 25 24 23 26.5 23H30C36.5 23 41 19 41 13.5C41 9.5 33.5 7 24 7Z" fill="#fed7aa" stroke="#ffffff" strokeWidth="2.2" />
+    <circle cx="16" cy="18" r="3" fill="#ef4444" />
+    <circle cx="24" cy="14" r="3" fill="#3b82f6" />
+    <circle cx="32" cy="17" r="3" fill="#eab308" />
+    <circle cx="16" cy="27" r="3" fill="#10b981" />
+    <circle cx="33" cy="29" r="3.2" fill="#78350f" />
+  </svg>
+);
+
+const DiplomaCourseIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <path d="M24 8L6 18L24 28L42 18L24 8Z" fill="#0f172a" stroke="#ffffff" strokeWidth="2.2" />
+    <path d="M12 21.5V31C12 35.5 17 38.5 24 38.5C31 38.5 36 35.5 36 31V21.5" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
+    <path d="M40 20V32L38 34" stroke="#fbbf24" strokeWidth="2.5" strokeLinecap="round" />
+    <circle cx="38" cy="34" r="2.2" fill="#fbbf24" />
+  </svg>
+);
+
+const FullStackCourseIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <rect x="8" y="9" width="32" height="12" rx="3" fill="rgba(255,255,255,0.2)" stroke="#ffffff" strokeWidth="2.2" />
+    <circle cx="14" cy="15" r="2" fill="#38bdf8" />
+    <circle cx="20" cy="15" r="2" fill="#38bdf8" />
+    <rect x="8" y="27" width="32" height="12" rx="3" fill="rgba(255,255,255,0.2)" stroke="#ffffff" strokeWidth="2.2" />
+    <circle cx="14" cy="33" r="2" fill="#38bdf8" />
+    <circle cx="20" cy="33" r="2" fill="#38bdf8" />
+    <line x1="24" y1="21" x2="24" y2="27" stroke="#ffffff" strokeWidth="2.5" />
+  </svg>
+);
+
+const DataAnalyticsCourseIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <rect x="8" y="8" width="32" height="32" rx="6" fill="rgba(255,255,255,0.18)" stroke="#ffffff" strokeWidth="2.2" />
+    <path d="M14 32L21 23L27 27L34 16" stroke="#facc15" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="34" cy="16" r="2.5" fill="#ffffff" />
+    <line x1="14" y1="34" x2="34" y2="34" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
+  </svg>
+);
+
+const SpokoCourseIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <rect x="10" y="8" width="28" height="32" rx="4" fill="#ffffff" stroke="#d97706" strokeWidth="2.2" />
+    <path d="M16 16H32M16 22H32M16 28H26" stroke="#d97706" strokeWidth="2.5" strokeLinecap="round" />
+    <circle cx="34" cy="34" r="8" fill="#f59e0b" />
+    <path d="M31 34L33 36L37 32" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const AICourseIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <circle cx="24" cy="24" r="16" fill="rgba(255,255,255,0.18)" stroke="#ffffff" strokeWidth="2.2" />
+    <path d="M24 13V35M13 24H35M16 16L32 32M32 16L16 32" stroke="#f0abfc" strokeWidth="2.5" strokeLinecap="round" />
+    <circle cx="24" cy="24" r="5" fill="#ffffff" />
+  </svg>
+);
+
 function CourseCarouselSection() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isHovered, setIsHovered] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const coursesCatalog = [
     {
-      title: 'Professional Track (Soft Skills & Workplace Mastery)',
-      modules: '15 Topics (Professional Track)',
-      desc: 'Master executive self-introductions, ATS resumes, LinkedIn networking, corporate email & meeting etiquette, client management, negotiation, and workplace AI.',
-      icon: <Briefcase size={24} />,
-      color: '#059669', bg: 'rgba(5, 150, 105, 0.08)', accent: '#10b981',
-      topics: ['Professional Self-Introduction & Executive Pitches', 'ATS Resume Engineering & Portfolio Building', 'LinkedIn Profile Optimization & InMail Outreach', 'Corporate Email Etiquette & Teams/Slack Protocols', 'Meeting Etiquette, PowerPoint Storytelling & Conflict Resolution', 'Workplace AI Prompts & Practical Staff Reviews']
+      title: 'Basic Computer Course',
+      duration: '2 months',
+      desc: 'Keyboard, mouse, internet, email and the basics of Windows.',
+      bannerColor: '#1d4ed8',
+      icon: <ComputerCourseIcon />,
+      topics: [
+        'Computer Fundamentals & Hardware Architecture',
+        'Windows 10/11 OS Navigation & File Management',
+        'Touch Typing Mastery & Keyboard Shortcuts',
+        'Internet Browsing, Online Safety & Google Search',
+        'Email Etiquette, Attachments & Gmail Management',
+        'MS Paint, Notepad & Essential System Utilities'
+      ]
     },
     {
-      title: 'Story-Based Learning (Spoko English)',
-      modules: '6 Days Active (Story-Based English Course)',
-      desc: 'Master English fluency through story reading immersion, bilingual vocabulary, dialogues, reading speed highlighter, video stories, and observation studio.',
-      icon: <BookOpen size={24} />,
-      color: '#ea580c', bg: 'rgba(234, 88, 12, 0.08)', accent: '#f97316',
-      topics: ['Story Reading with Audio Narration & Instant Meaning', 'Vocabulary Flashcards & Tamil Interactive Quiz', 'Multi-Character Conversation Audio & Dialogue Flow', 'Reading Speed Voice Recognition & Live Highlighter', '60s Speaking Challenge & Story Moral', 'Video Story Presentation & Staff Observation Review']
+      title: 'MS Office',
+      duration: '2 months',
+      desc: 'Word, Excel, PowerPoint and Outlook for office work.',
+      bannerColor: '#2563eb',
+      icon: <OfficeCourseIcon />,
+      topics: [
+        'MS Word: Professional Documentation, Tables & Mail Merge',
+        'MS Excel: Data Entry, Formulas (SUM, IF, VLOOKUP, XLOOKUP)',
+        'MS Excel: Pivot Tables, Conditional Formatting & Charts',
+        'MS PowerPoint: Business Presentations & Storytelling Decks',
+        'MS Outlook: Corporate Email, Calendars & Scheduling',
+        'Office Printing, PDF Publishing & OneDrive Cloud Sync'
+      ]
     },
     {
-      title: 'Web Design (HTML, CSS & Bootstrap)',
-      modules: '12 Modules',
-      desc: 'Build responsive layouts using semantic structures, CSS Grid, Flexbox, and Bootstrap.',
-      icon: <Layers size={24} />,
-      color: '#2563eb', bg: 'rgba(37, 99, 235, 0.08)', accent: '#3b82f6',
-      topics: ['HTML5 Semantic Elements & Media Tags', 'CSS3 Selectors & Box Model Layouts', 'Flexbox & CSS Grid Alignment', 'Bootstrap Grid System & Utility Classes', 'Responsive Media Queries & Custom Portfolios']
+      title: 'Tally with GST',
+      duration: '3 months',
+      desc: 'Accounting, billing and GST returns in Tally Prime.',
+      bannerColor: '#0f766e',
+      icon: <TallyCourseIcon />,
+      topics: [
+        'Fundamentals of Accounting & Double-Entry Bookkeeping',
+        'Company Creation & Chart of Accounts in Tally Prime',
+        'Accounting Vouchers: Sales, Purchase, Payment & Receipt',
+        'GST Invoicing, CGST, SGST, IGST Calculation & Rates',
+        'E-Way Bill Generation & GSTR-1, GSTR-3B Tax Filing Reports',
+        'Bank Reconciliation (BRS), Inventory & Balance Sheet'
+      ]
     },
     {
-      title: 'AI-Powered SQL Course',
-      modules: '9 Modules',
-      desc: 'Master relational databases, write DDL/DML, and optimize statements with AI assistants.',
-      icon: <Database size={24} />,
-      color: '#059669', bg: 'rgba(5, 150, 105, 0.08)', accent: '#10b981',
-      topics: ['Introduction to Relational DB & DDL Queries', 'DML Statements (Insert, Update, Delete)', 'SELECT Queries, WHERE Filters & ORDER BY', 'Relational Joins & Set Operations', 'Database Views, Subqueries & Indexes']
+      title: 'Python Programming',
+      duration: '4 months',
+      desc: 'Learn to code from scratch and build small projects.',
+      bannerColor: '#7c3aed',
+      icon: <PythonCourseIcon />,
+      topics: [
+        'Python Setup, Variables, Data Types & Operators',
+        'Control Flow: Conditional Logic & Loops (for, while)',
+        'Data Structures: Lists, Tuples, Dictionaries & Sets',
+        'Functions, Scopes, Lambdas & Modular Python Code',
+        'Object-Oriented Programming (Classes & Inheritance)',
+        'File Handling, JSON Parsing & Hands-on Capstone Projects'
+      ]
     },
     {
-      title: 'SQL for Data Analytics',
-      modules: '8 Modules + Capstone',
-      desc: 'Solve real-world sales and retail problems using SQL joins, aggregates, and window functions.',
-      icon: <Database size={24} />,
-      color: '#0284c7', bg: 'rgba(2, 132, 199, 0.08)', accent: '#0ea5e9',
-      topics: ['Analytic SQL Functions & GROUP BY Queries', 'Advanced Window Functions (ROW_NUMBER, RANK)', 'Common Table Expressions (CTEs) & Subqueries', 'Data Normalization & Star Schema Design', 'Sales Performance Analytics Capstone']
+      title: 'Web Design & Development',
+      duration: '4 months',
+      desc: 'HTML, CSS and JavaScript to build real websites.',
+      bannerColor: '#ea580c',
+      icon: <WebDesignCourseIcon />,
+      topics: [
+        'HTML5 Semantic Structure, Forms & Media Elements',
+        'CSS3 Box Model, Typography, Colors & Modern Layouts',
+        'Responsive Web Design with Flexbox & CSS Grid',
+        'JavaScript Fundamentals: DOM Events & Interactivity',
+        'Bootstrap 5 Framework & Component Utility Systems',
+        'Live Website Hosting on Netlify & GitHub Pages'
+      ]
     },
     {
-      title: 'Python Core & OOPs Course',
-      modules: '13 Modules',
-      desc: 'Master variables, loops, file streams, regex, and core object-oriented structures in Python.',
-      icon: <Terminal size={24} />,
-      color: '#d97706', bg: 'rgba(217, 119, 6, 0.08)', accent: '#f59e0b',
-      topics: ['Python Syntax, Variables & Dynamic Typing', 'Control Flow Statements & Loop Loops', 'Functions, Return Values & Scope Limits', 'Object-Oriented Programming (Classes, Inheritance)', 'File Handling Operations & Regular Expressions']
+      title: 'Digital Marketing',
+      duration: '3 months',
+      desc: 'SEO, social media and ads to grow a business online.',
+      bannerColor: '#be185d',
+      icon: <MarketingCourseIcon />,
+      topics: [
+        'Digital Marketing Fundamentals & Target Audience Strategy',
+        'Search Engine Optimization (On-Page, Off-Page & SEO Audits)',
+        'Google Ads: Search Campaigns, Keyword Bidding & Ads Copy',
+        'Meta Ads: Facebook & Instagram Lead Generation Campaigns',
+        'Content Strategy, Canva Creatives & Video Marketing',
+        'Google Analytics 4 (GA4) Tracking & Performance Metrics'
+      ]
     },
     {
-      title: 'Python for Data Analytics',
-      modules: '8 Modules',
-      desc: 'Master core programming constructs, files, regex, and data manipulation setups for analysts.',
-      icon: <Terminal size={24} />,
-      color: '#b45309', bg: 'rgba(180, 83, 9, 0.08)', accent: '#d97706',
-      topics: ['Introduction to Python for Data Analysis', 'Advanced List Comprehensions & Lambdas', 'Data Streams & Text Processing Pipelines', 'Exception Handling & Clean Code Rules', 'Data Extraction Case Studies']
+      title: 'Graphic Design',
+      duration: '3 months',
+      desc: 'Photoshop, Illustrator and Canva for posters and logos.',
+      bannerColor: '#b45309',
+      icon: <DesignCourseIcon />,
+      topics: [
+        'Design Principles: Color Theory, Visual Contrast & Fonts',
+        'Adobe Photoshop: Photo Retouching, Masking & Layers',
+        'Adobe Illustrator: Vector Graphics, Pen Tool & Logo Systems',
+        'Canva Pro: Social Media Posts, Flyers & Marketing Banners',
+        'Print Production (CMYK vs RGB, Bleed & Resolution Standards)',
+        'Client Branding Projects & Professional Portfolio Deck'
+      ]
     },
     {
-      title: 'JavaScript Programming Course',
-      modules: '10 Modules',
-      desc: 'Learn core scripting logic, variables, complex data types, and ES6+ features with modern tools.',
-      icon: <Code size={24} />,
-      color: '#ca8a04', bg: 'rgba(202, 138, 4, 0.08)', accent: '#eab308',
-      topics: ['Variables (var, let, const) & Data Types', 'Conditional Logic & Loop Iterators', 'Functions, Parameters & Execution Scopes', 'DOM Manipulations & Event Listeners', 'ES6 Modules & Package Import/Exports']
+      title: 'DCA / PGDCA',
+      duration: '6 to 12 months',
+      desc: 'Diploma programs covering software, programming and computer applications.',
+      bannerColor: '#1e3a8a',
+      icon: <DiplomaCourseIcon />,
+      topics: [
+        'Diploma in Computer Applications (DCA/PGDCA) Comprehensive Track',
+        'Computer Architecture, Hardware Maintenance & Windows OS',
+        'Complete Office Suite: MS Word, Excel, PowerPoint & Access',
+        'Database Management Systems (DBMS) & SQL Foundations',
+        'Programming Fundamentals in C / Python Scripting',
+        'Practical Lab Examination, Project Submission & Certification'
+      ]
     },
     {
-      title: 'Core JavaScript',
-      modules: '1 Day (1 Module)',
-      desc: 'Master JavaScript fundamentals, variable scopes, data types, and execution context.',
-      icon: <Code size={24} />,
-      color: '#854d0e', bg: 'rgba(133, 77, 14, 0.08)', accent: '#ca8a04',
-      topics: ['Execution Context & Scope Chains', 'Functional Scope vs Block Scopes', 'DOM Dynamic Nodes Manipulation', 'ES6 Variables & Native Arrays Methods']
+      title: 'Full Stack Web Development',
+      duration: '6 months',
+      desc: 'Master frontend React, backend APIs, databases, and production hosting.',
+      bannerColor: '#0284c7',
+      icon: <FullStackCourseIcon />,
+      topics: [
+        'Frontend Architecture with React, Hooks & State Management',
+        'Responsive UI with CSS Grid, Flexbox & Component Frameworks',
+        'Backend API Development with Node/Express & Python Django',
+        'Database Design with PostgreSQL & MongoDB Collections',
+        'JWT Authentication, RESTful API Design & Web Security',
+        'Full Stack Production Capstone Deployed to Cloud'
+      ]
     },
     {
-      title: 'React JS Development',
-      modules: '15 Modules',
-      desc: 'Master component-driven architecture, declarative state models, DOM reconciliation, and Vite.',
-      icon: <Layers size={24} />,
-      color: '#0891b2', bg: 'rgba(8, 145, 178, 0.08)', accent: '#06b6d4',
-      topics: ['React Component Trees & Props Structures', 'Declarative Local States & Event Handling', 'React Hooks (useState, useEffect, useRef)', 'Vite Bundler & Dynamic Import Splits', 'Single Page Application Routing Hooks']
+      title: 'Data Analytics & Power BI',
+      duration: '4 months',
+      desc: 'Solve real-world business problems with SQL, Power BI, and Python.',
+      bannerColor: '#059669',
+      icon: <DataAnalyticsCourseIcon />,
+      topics: [
+        'Advanced SQL: Relational Joins, Window Functions & CTEs',
+        'Power BI Desktop: Power Query Data Transformation (ETL)',
+        'DAX Modeling: Calculated Measures, Time Intelligence & KPIs',
+        'Executive Dashboard Reporting & Drill-Through Analytics',
+        'Python for Data Analysis with Pandas, NumPy & Matplotlib',
+        'End-to-End Business Performance Analytics Capstone'
+      ]
     },
     {
-      title: 'Git & GitHub',
-      modules: '2 Modules',
-      desc: 'Master local Git version control histories, branch merging, conflicts, and remote pushes.',
-      icon: <GitBranch size={24} />,
-      color: '#4f46e5', bg: 'rgba(79, 70, 229, 0.08)', accent: '#6366f1',
-      topics: ['Git Repository Init & Local Commits', 'Staging Area, git diff & Working Directories', 'GitHub Remotes, Repository Push & Pulls', 'Branch Management, Merging & Conflicts Resolution']
+      title: 'Spoko English & Workplace Mastery',
+      duration: '2 months',
+      desc: 'Story-based English fluency, corporate communication, and HR interviews.',
+      bannerColor: '#d97706',
+      icon: <SpokoCourseIcon />,
+      topics: [
+        'Daily Story-Based English Immersion & Voice Speed Highlighter',
+        'Bilingual Vocabulary Expansion & Tamil-to-English Idioms',
+        'Executive Self-Introduction & Confident Public Speaking',
+        'Corporate Email Writing & Meeting Etiquette Protocols',
+        'ATS Resume Engineering & LinkedIn Profile Optimization',
+        'Mock HR Interviews & 1-on-1 Staff Feedback Reviews'
+      ]
     },
     {
-      title: 'JSON Essentials',
-      modules: '1 Module',
-      desc: 'Learn standard JSON schema specifications, serialization, parsing, and validations.',
-      icon: <Code size={24} />,
-      color: '#be185d', bg: 'rgba(190, 24, 93, 0.08)', accent: '#ec4899',
-      topics: ['JSON Schema Specifications & Syntaxes', 'JSON Serialization & De-serialization Maps', 'Client-Server JSON Data Transfer Schemas']
-    },
-    {
-      title: 'Django Framework',
-      modules: '10 Modules',
-      desc: 'Master Python backend servers, MVT model systems, ORM databases, and built-in Admin portal.',
-      icon: <Server size={24} />,
-      color: '#15803d', bg: 'rgba(21, 128, 61, 0.08)', accent: '#22c55e',
-      topics: ['Django MVT (Model-View-Template) Pattern', 'Routing and URLs Mapping Parameters', 'Django ORM Models & SQLite Configurations', 'Built-in Admin Panel Dashboards Customization', 'Template Context Variables & Template Tags']
-    },
-    {
-      title: 'DevOps & Cloud Deploy',
-      modules: '3 Modules',
-      desc: 'Master continuous deployments, web servers config, lock configs, and cloud hosting.',
-      icon: <Server size={24} />,
-      color: '#7c3aed', bg: 'rgba(124, 58, 237, 0.08)', accent: '#8b5cf6',
-      topics: ['Local Hosting Servers Setup & Configurations', 'Server Configuration Locking Strategies', 'Vite App Bundles Production Deployment']
-    },
-    {
-      title: 'Summer SQL Crash Course',
-      modules: '7 Modules',
-      desc: 'Learn primary relational commands, simple select filters, group calculations, and database structures.',
-      icon: <Database size={24} />,
-      color: '#c2410c', bg: 'rgba(194, 65, 12, 0.08)', accent: '#f97316',
-      topics: ['Relational Database Entities & Primary Keys', 'Relational Table Schema Configurations', 'Filtering Operators & Basic Join Queries', 'Aggregations & Math Analysis Operations']
-    },
-    {
-      title: 'Generative AI Masterclass',
-      modules: '20 Days (4 Modules)',
-      desc: 'Master prompt structuring, token contexts, API structures, context constraints, and ethics.',
-      icon: <Bot size={24} />,
-      color: '#6d28d9', bg: 'rgba(109, 40, 217, 0.08)', accent: '#7c3aed',
-      topics: ['Prompt Construction Systems & Engineering Rules', 'Tokenizer Systems & Word Token Map Visuals', 'In-Context Examples & Output Constraints', 'AI Ethics, Privacy & Safety Guidelines']
-    },
-    {
-      title: 'Agentic AI Engineering',
-      modules: '40 Days (8 Modules)',
-      desc: 'Master multi-agent systems, CrewAI schemas, Agno AI tools calling, and LangChain loops.',
-      icon: <Brain size={24} />,
-      color: '#4338ca', bg: 'rgba(67, 56, 202, 0.08)', accent: '#4f46e5',
-      topics: ['Multi-Agent Collaborative Design Patterns', 'CrewAI Agent Roles & Tasks Definitions', 'Tool Calling Orchestrations & Custom APIs', 'Agentic Router Workflows & Loop Control']
-    },
-    {
-      title: 'Power BI Data Analytics',
-      modules: '8 Days (8 Modules)',
-      desc: 'Master data modeling, ETL Power Query pipelines, DAX metrics engineering, and dashboard reports.',
-      icon: <BarChart3 size={24} />,
-      color: '#a21caf', bg: 'rgba(162, 28, 175, 0.08)', accent: '#d946ef',
-      topics: ['ETL Data Pipelines & Power Query Editors', 'Relational Data Modeling & Star Schemas', 'Calculated Columns vs Measures Calculations', 'DAX Syntax Rules & Math Formulations', 'Dynamic Visualizations & Report Dashboards']
-    },
-    {
-      title: 'Statistics for Data Analytics',
-      modules: '17 Days',
-      desc: 'Master descriptive & inferential stats, probability, hypothesis testing, and regressions.',
-      icon: <BarChart3 size={24} />,
-      color: '#0369a1', bg: 'rgba(3, 105, 161, 0.08)', accent: '#0284c7',
-      topics: ['Descriptive Stats (Mean, Median, Mode)', 'Measures of Dispersion (Variance, StdDev)', 'Probability Theories & Central Limit Theorem', 'Hypothesis Testing Frameworks & P-Values', 'Confidence Intervals & Data Skewness Checks']
-    },
-    {
-      title: 'NumPy for Data Science',
-      modules: '1 Day (Module 1)',
-      desc: 'Master multi-dimensional array operations, scientific calculations, indexing, and masking.',
-      icon: <Code size={24} />,
-      color: '#475569', bg: 'rgba(71, 85, 105, 0.08)', accent: '#64748b',
-      topics: ['Vectorized Array Calculations & Memory Layouts', 'Array Slicing, Reshaping & Transformations', 'Boolean Masking Filters & Mathematical Operations']
-    },
-    {
-      title: 'Pandas for Data Science',
-      modules: '6 Days (6 Modules)',
-      desc: 'Master DataFrame operations, Series, data ingestion, filtering, grouping, and EDA in Pandas.',
-      icon: <Database size={24} />,
-      color: '#1e3a8a', bg: 'rgba(30, 58, 138, 0.08)', accent: '#1e40af',
-      topics: ['Pandas Series & DataFrames Data Ingestions', 'DataFrame Filtering, Slicing & Subsettings', 'Null Data Cleaning & Typings Replacements', 'Grouping Data & Advanced Aggregations Methods', 'Exploratory Data Analysis Case Studies']
-    },
-    {
-      title: 'Matplotlib for Data Science',
-      modules: '5 Days (5 Modules)',
-      desc: 'Master data visualization, line/bar/scatter charting styles, subplots, and annotations.',
-      icon: <BarChart3 size={24} />,
-      color: '#e11d48', bg: 'rgba(225, 29, 72, 0.08)', accent: '#f43f5e',
-      topics: ['Custom Line & Bar Charts Layouts Customization', 'Scatter Plotting & Data Distributions Mappings', 'Subplots Grids Configurations & Layout Padding', 'Dynamic Annotations & Legends Formatting']
-    },
-    {
-      title: 'Seaborn for Data Science',
-      modules: '4 Days (4 Modules)',
-      desc: 'Master professional statistical plots, categorical box/violin charts, and heatmaps.',
-      icon: <Layers size={24} />,
-      color: '#0f766e', bg: 'rgba(15, 118, 110, 0.08)', accent: '#14b8a6',
-      topics: ['Statistical Grid Plots & Relationships Mappings', 'Categorical Box Plots & Violin Curves Charts', 'Correlation Matrix Heatmaps Color Customization', 'Clean Grid Themes & Color Palettes Configurations']
-    },
-    {
-      title: 'AI powered Tally',
-      modules: '5 Modules',
-      desc: 'Master double-entry accounting, GST, TDS, inventory audits, bank reconciliation, and AI-assisted financial checking.',
-      icon: <Database size={24} />,
-      color: '#047857', bg: 'rgba(4, 120, 87, 0.08)', accent: '#10b981',
-      topics: ['Double-Entry Ledger & Voucher Entries', 'Educational Mode Multi-currency Transactions', 'Statutory GST & TDS Return Fillings Diagnostics', 'Bank Reconciliations & Cost Center Budgets', 'AI-Powered Accounting Audits & Capstone Review']
+      title: 'Generative AI & Agentic AI',
+      duration: '3 months',
+      desc: 'Prompt engineering, LLM integration, automated workflows, and AI agents.',
+      bannerColor: '#6d28d9',
+      icon: <AICourseIcon />,
+      topics: [
+        'Prompt Engineering Principles & Context Window Strategies',
+        'Building with OpenAI, Anthropic & Gemini APIs',
+        'Autonomous Agentic Systems: CrewAI & LangChain Loops',
+        'Retrieval-Augmented Generation (RAG) with Vector Databases',
+        'No-Code & Low-Code AI Automation with n8n & Flowise',
+        'Enterprise AI Safety, Guardrails & Production Deployment'
+      ]
     }
   ];
 
-  const visibleCardsCount = isMobile ? 1 : 3;
-  const maxIndex = coursesCatalog.length - visibleCardsCount;
+  const visibleCardsCount = windowWidth >= 1100 ? 4 : windowWidth >= 768 ? 2 : 1;
+  const maxIndex = Math.max(0, coursesCatalog.length - visibleCardsCount);
 
+  // Auto-advance carousel smoothly, pause on hover or when modal is open
   useEffect(() => {
-    if (selectedCourse) return;
+    if (selectedCourse || isHovered) return;
     const interval = setInterval(() => {
-      setCurrentIndex(prev => {
-        if (prev >= maxIndex) {
-          return 0;
-        } else {
-          return prev + 1;
-        }
-      });
-    }, 4000);
+      setCurrentIndex(prev => (prev >= maxIndex ? 0 : prev + 1));
+    }, 4500);
     return () => clearInterval(interval);
-  }, [maxIndex, selectedCourse]);
+  }, [maxIndex, selectedCourse, isHovered]);
 
   const handlePrev = () => {
-    setCurrentIndex(prev => Math.max(0, prev - 1));
+    setCurrentIndex(prev => (prev > 0 ? prev - 1 : maxIndex));
   };
+
   const handleNext = () => {
-    setCurrentIndex(prev => Math.min(maxIndex, prev + 1));
+    setCurrentIndex(prev => (prev < maxIndex ? prev + 1 : 0));
   };
+
+  const isMobile = windowWidth < 768;
 
   return (
-    <section id="courses" style={{ padding: '5rem 2rem', background: '#f8fafc' }}>
+    <section id="courses" style={{ padding: isMobile ? '3.5rem 1rem' : '5rem 2rem', background: '#f8fafc' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
 
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+        {/* Section Header */}
+        <div style={{ textAlign: 'center', marginBottom: isMobile ? '2.5rem' : '3.5rem' }}>
           <span style={{
-            background: 'rgba(59, 130, 246, 0.08)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.15)',
-            fontSize: '0.78rem', fontWeight: 800, padding: '0.3rem 0.8rem', borderRadius: '20px', textTransform: 'uppercase', display: 'inline-block', marginBottom: '1rem'
+            background: 'rgba(30, 64, 175, 0.08)',
+            color: '#1e40af',
+            border: '1px solid rgba(30, 64, 175, 0.18)',
+            fontSize: '0.8rem',
+            fontWeight: 800,
+            padding: '0.35rem 1rem',
+            borderRadius: '9999px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.06em',
+            display: 'inline-block',
+            marginBottom: '1rem'
           }}>
-            Featured Courses
+            Explore Programs
           </span>
-          <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#0f172a', margin: '0 0 0.5rem 0' }}>Available Courses</h2>
-          <p style={{ color: '#64748b', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
-            Explore our comprehensive courses designed to help you master new skills.
+          <h2 style={{
+            fontSize: isMobile ? '2rem' : '2.6rem',
+            fontWeight: 900,
+            color: '#0f172a',
+            margin: '0 0 0.6rem 0',
+            letterSpacing: '-0.02em'
+          }}>
+            Our Courses
+          </h2>
+          <p style={{
+            color: '#64748b',
+            fontSize: isMobile ? '0.95rem' : '1.08rem',
+            maxWidth: '620px',
+            margin: '0 auto',
+            lineHeight: 1.6
+          }}>
+            Industry-aligned curriculum designed to take you from foundational basics to real-world career success.
           </p>
         </div>
 
-        {/* Carousel Container */}
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', padding: '0 1rem' }}>
-          {/* Left Arrow */}
+        {/* Carousel Wrapper */}
+        <div
+          style={{ position: 'relative', padding: isMobile ? '0 4px' : '0 12px' }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* Left Arrow Button */}
           <button
             onClick={handlePrev}
-            disabled={currentIndex === 0}
+            aria-label="Previous Courses"
             style={{
-              position: 'absolute', left: '-15px', zIndex: 10,
-              background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '50%',
-              width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.08)', cursor: currentIndex === 0 ? 'not-allowed' : 'pointer', opacity: currentIndex === 0 ? 0.3 : 1,
-              transition: 'var(--transition)'
+              position: 'absolute',
+              left: isMobile ? '-6px' : '-20px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 20,
+              background: '#ffffff',
+              border: '1px solid #e2e8f0',
+              borderRadius: '50%',
+              width: '46px',
+              height: '46px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 6px 18px rgba(0, 0, 0, 0.12)',
+              cursor: 'pointer',
+              color: '#0f172a',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
+              e.currentTarget.style.borderColor = '#1e40af';
+              e.currentTarget.style.color = '#1e40af';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+              e.currentTarget.style.borderColor = '#e2e8f0';
+              e.currentTarget.style.color = '#0f172a';
             }}
           >
-            <ChevronLeft size={22} style={{ color: '#0f172a' }} />
+            <ChevronLeft size={22} />
           </button>
 
           {/* Carousel Slider Window */}
-          <div style={{ width: '100%', overflow: 'hidden' }}>
+          <div style={{ width: '100%', overflow: 'hidden', padding: '10px 0 16px' }}>
             <div style={{
               display: 'flex',
-              transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+              transition: 'transform 0.45s cubic-bezier(0.25, 1, 0.5, 1)',
               transform: `translateX(-${currentIndex * (100 / visibleCardsCount)}%)`
             }}>
               {coursesCatalog.map((c, i) => (
                 <div key={i} style={{
                   flex: `0 0 ${100 / visibleCardsCount}%`,
-                  padding: '0 12px',
+                  padding: '0 10px',
                   boxSizing: 'border-box'
                 }}>
                   <div
                     onClick={() => setSelectedCourse(c)}
                     style={{
-                      background: '#ffffff', border: '1px solid #e2e8f0', borderTop: `4px solid ${c.accent}`, borderRadius: '24px', padding: '2rem',
-                      boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '270px',
-                      cursor: 'pointer', transition: 'var(--transition)', position: 'relative', height: '100%'
+                      background: '#ffffff',
+                      borderRadius: '20px',
+                      border: '1px solid #e2e8f0',
+                      overflow: 'hidden',
+                      boxShadow: '0 4px 18px rgba(0, 0, 0, 0.05)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      height: '100%',
+                      minHeight: '350px',
+                      cursor: 'pointer',
+                      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                      position: 'relative'
                     }}
                     onMouseEnter={e => {
                       e.currentTarget.style.transform = 'translateY(-6px)';
-                      e.currentTarget.style.boxShadow = `0 12px 24px ${c.bg}`;
-                      e.currentTarget.style.borderColor = c.accent;
+                      e.currentTarget.style.boxShadow = '0 16px 32px rgba(30, 64, 175, 0.12)';
+                      e.currentTarget.style.borderColor = '#cbd5e1';
                     }}
                     onMouseLeave={e => {
                       e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                      e.currentTarget.style.boxShadow = '0 4px 18px rgba(0, 0, 0, 0.05)';
                       e.currentTarget.style.borderColor = '#e2e8f0';
                     }}
                   >
-                    <div>
-                      <div style={{ background: c.bg, color: c.color, width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.2rem' }}>
+                    {/* Top Colored Header Banner with Centered Icon */}
+                    <div style={{
+                      height: '120px',
+                      background: c.bannerColor,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      position: 'relative',
+                      borderTopLeftRadius: '19px',
+                      borderTopRightRadius: '19px'
+                    }}>
+                      <div style={{
+                        filter: 'drop-shadow(0 6px 12px rgba(0, 0, 0, 0.18))',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
                         {c.icon}
                       </div>
-                      <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem', lineHeight: 1.3 }}>{c.title}</h3>
-                      <p style={{ fontSize: '0.84rem', color: '#64748b', margin: 0, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{c.desc}</p>
                     </div>
-                    <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '1.2rem', marginTop: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748b' }}>{c.modules}</span>
-                      <span style={{ fontSize: '0.82rem', fontWeight: 800, color: c.accent, display: 'flex', alignItems: 'center', gap: '2px' }}>
-                        View Syllabus
-                      </span>
+
+                    {/* Card Body */}
+                    <div style={{
+                      padding: '1.4rem 1.4rem 1.5rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      flex: 1
+                    }}>
+                      <div>
+                        {/* Duration Tag */}
+                        <div style={{
+                          fontSize: '0.82rem',
+                          fontWeight: 700,
+                          color: '#1e40af',
+                          marginBottom: '0.45rem'
+                        }}>
+                          {c.duration}
+                        </div>
+
+                        {/* Title */}
+                        <h3 style={{
+                          fontSize: '1.2rem',
+                          fontWeight: 800,
+                          color: '#0f172a',
+                          margin: '0 0 0.55rem',
+                          lineHeight: 1.3
+                        }}>
+                          {c.title}
+                        </h3>
+
+                        {/* Description */}
+                        <p style={{
+                          fontSize: '0.86rem',
+                          color: '#64748b',
+                          lineHeight: 1.55,
+                          margin: '0 0 1.25rem',
+                          minHeight: '44px',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden'
+                        }}>
+                          {c.desc}
+                        </p>
+                      </div>
+
+                      {/* "Learn more" Action */}
+                      <div style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        color: '#1e40af',
+                        fontWeight: 800,
+                        fontSize: '0.92rem'
+                      }}>
+                        <span>Learn more</span>
+                        <ChevronRight size={15} />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -498,96 +728,252 @@ function CourseCarouselSection() {
             </div>
           </div>
 
-          {/* Right Arrow */}
+          {/* Right Arrow Button */}
           <button
             onClick={handleNext}
-            disabled={currentIndex === maxIndex}
+            aria-label="Next Courses"
             style={{
-              position: 'absolute', right: '-15px', zIndex: 10,
-              background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '50%',
-              width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.08)', cursor: currentIndex === maxIndex ? 'not-allowed' : 'pointer', opacity: currentIndex === maxIndex ? 0.3 : 1,
-              transition: 'var(--transition)'
+              position: 'absolute',
+              right: isMobile ? '-6px' : '-20px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 20,
+              background: '#ffffff',
+              border: '1px solid #e2e8f0',
+              borderRadius: '50%',
+              width: '46px',
+              height: '46px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 6px 18px rgba(0, 0, 0, 0.12)',
+              cursor: 'pointer',
+              color: '#0f172a',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
+              e.currentTarget.style.borderColor = '#1e40af';
+              e.currentTarget.style.color = '#1e40af';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+              e.currentTarget.style.borderColor = '#e2e8f0';
+              e.currentTarget.style.color = '#0f172a';
             }}
           >
-            <ChevronRight size={22} style={{ color: '#0f172a' }} />
+            <ChevronRight size={22} />
           </button>
+        </div>
+
+        {/* Carousel Pagination Indicator Dots */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '8px',
+          marginTop: '1.5rem'
+        }}>
+          {Array.from({ length: maxIndex + 1 }).map((_, dotIdx) => (
+            <button
+              key={dotIdx}
+              onClick={() => setCurrentIndex(dotIdx)}
+              aria-label={`Go to slide ${dotIdx + 1}`}
+              style={{
+                border: 'none',
+                height: '8px',
+                width: currentIndex === dotIdx ? '28px' : '8px',
+                borderRadius: '9999px',
+                background: currentIndex === dotIdx ? '#1e40af' : '#cbd5e1',
+                cursor: 'pointer',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                padding: 0
+              }}
+            />
+          ))}
         </div>
 
         {/* Modal Overlay for Course Overview Syllabus */}
         {selectedCourse && (
-          <div style={{
-            position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(8px)',
-            zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem'
-          }}>
-            <div style={{
-              background: '#ffffff', borderRadius: '24px', border: '1px solid #e2e8f0', padding: '2.5rem',
-              maxWidth: '560px', width: '100%', display: 'flex', flexDirection: 'column', gap: '1.5rem',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.15)', maxHeight: '90vh', overflowY: 'auto', position: 'relative'
-            }}>
-              {/* Close Icon Button */}
-              <button
-                onClick={() => setSelectedCourse(null)}
-                style={{
-                  position: 'absolute', top: '1.25rem', right: '1.25rem', background: 'none', border: 'none',
-                  color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                }}
-              >
-                <X size={20} />
-              </button>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ background: 'rgba(59, 130, 246, 0.08)', color: '#3b82f6', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {selectedCourse.icon}
-                </div>
-                <div>
-                  <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>{selectedCourse.title}</h3>
-                  <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 700 }}>{selectedCourse.modules} • Alpha Fly Syllabus</span>
-                </div>
-              </div>
-
-              <div>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#1e293b', marginBottom: '0.5rem' }}>Course Overview</h4>
-                <p style={{ fontSize: '0.88rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>{selectedCourse.desc}</p>
-              </div>
-
-              <div>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#1e293b', marginBottom: '0.6rem' }}>Core Modules Syllabus</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {selectedCourse.topics.map((topic, index) => (
-                    <div key={index} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                      <span style={{ color: '#10b981', fontWeight: 'bold', fontSize: '0.9rem', lineHeight: 1.2 }}>✓</span>
-                      <span style={{ fontSize: '0.88rem', color: '#334155', lineHeight: 1.4 }}>{topic}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Warning Alert Banner - Self-Enrollment Disabled */}
+          <div
+            onClick={() => setSelectedCourse(null)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(15, 23, 42, 0.65)',
+              backdropFilter: 'blur(8px)',
+              zIndex: 9999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1.5rem'
+            }}
+          >
+            <div
+              onClick={e => e.stopPropagation()}
+              style={{
+                background: '#ffffff',
+                borderRadius: '24px',
+                border: '1px solid #e2e8f0',
+                maxWidth: '560px',
+                width: '100%',
+                overflow: 'hidden',
+                boxShadow: '0 25px 60px rgba(0, 0, 0, 0.2)',
+                maxHeight: '90vh',
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'relative'
+              }}
+            >
+              {/* Modal Top Header matching the course banner color */}
               <div style={{
-                display: 'flex', gap: '12px', padding: '1rem', background: '#fef2f2', border: '1px solid #fecaca',
-                borderRadius: '12px', color: '#991b1b', fontSize: '0.85rem', lineHeight: 1.4
+                background: selectedCourse.bannerColor,
+                padding: '1.8rem 2rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                position: 'relative'
               }}>
-                <ShieldAlert size={20} style={{ flexShrink: 0 }} />
-                <div>
-                  <span style={{ fontWeight: 800 }}>Enrollment Policy:</span> Direct self-enrollment is disabled for this syllabus. Registration is handled manually by counselor staff at the campus office.
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    borderRadius: '14px',
+                    padding: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backdropFilter: 'blur(4px)'
+                  }}>
+                    {selectedCourse.icon}
+                  </div>
+                  <div>
+                    <span style={{
+                      background: '#ffffff',
+                      color: selectedCourse.bannerColor,
+                      fontWeight: 800,
+                      fontSize: '0.75rem',
+                      padding: '0.2rem 0.65rem',
+                      borderRadius: '9999px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.04em',
+                      display: 'inline-block',
+                      marginBottom: '4px'
+                    }}>
+                      {selectedCourse.duration} Track
+                    </span>
+                    <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 900, color: '#ffffff' }}>
+                      {selectedCourse.title}
+                    </h3>
+                  </div>
                 </div>
-              </div>
 
-              <div style={{ display: 'flex', gap: '12px', marginTop: '0.5rem' }}>
+                {/* Close Button */}
                 <button
                   onClick={() => setSelectedCourse(null)}
+                  aria-label="Close modal"
                   style={{
-                    flex: 1, background: '#0f172a', color: '#ffffff', border: 'none', padding: '0.8rem',
-                    borderRadius: '12px', fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer', transition: 'var(--transition)'
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '36px',
+                    height: '36px',
+                    color: '#ffffff',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'background 0.2s ease'
                   }}
-                  onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1e293b'}
-                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#0f172a'}
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.35)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)'}
                 >
-                  Close Overview
+                  <X size={20} />
                 </button>
               </div>
 
+              {/* Modal Scrollable Body */}
+              <div style={{ padding: '2rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div>
+                  <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#1e293b', marginBottom: '0.4rem' }}>
+                    Course Overview
+                  </h4>
+                  <p style={{ fontSize: '0.9rem', color: '#475569', margin: 0, lineHeight: 1.6 }}>
+                    {selectedCourse.desc}
+                  </p>
+                </div>
+
+                <div>
+                  <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#1e293b', marginBottom: '0.75rem' }}>
+                    Core Curriculum Syllabus
+                  </h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {selectedCourse.topics.map((topic, idx) => (
+                      <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                        <span style={{
+                          color: '#10b981',
+                          background: 'rgba(16, 185, 129, 0.1)',
+                          borderRadius: '50%',
+                          width: '20px',
+                          height: '20px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          fontWeight: 900,
+                          flexShrink: 0,
+                          marginTop: '1px'
+                        }}>
+                          ✓
+                        </span>
+                        <span style={{ fontSize: '0.88rem', color: '#334155', lineHeight: 1.45, fontWeight: 500 }}>
+                          {topic}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Enrollment Guidance Banner */}
+                <div style={{
+                  display: 'flex',
+                  gap: '12px',
+                  padding: '1rem',
+                  background: '#eff6ff',
+                  border: '1px solid #bfdbfe',
+                  borderRadius: '14px',
+                  color: '#1e40af',
+                  fontSize: '0.85rem',
+                  lineHeight: 1.45
+                }}>
+                  <ShieldAlert size={20} style={{ flexShrink: 0, color: '#1e40af' }} />
+                  <div>
+                    <span style={{ fontWeight: 800 }}>Campus Registration:</span> Batch admissions, practical lab access, and official certificates are coordinated directly at our Alpha Fly Theni campus. Walk in or contact our counselor desk.
+                  </div>
+                </div>
+
+                {/* Bottom Actions */}
+                <div style={{ display: 'flex', gap: '10px', marginTop: '0.5rem' }}>
+                  <button
+                    onClick={() => setSelectedCourse(null)}
+                    style={{
+                      flex: 1,
+                      background: '#0f172a',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '0.85rem',
+                      borderRadius: '12px',
+                      fontWeight: 800,
+                      fontSize: '0.92rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1e293b'}
+                    onMouseLeave={e => e.currentTarget.style.backgroundColor = '#0f172a'}
+                  >
+                    Close Syllabus
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -1051,7 +1437,7 @@ export default function LandingPage({ onLoginSuccess }) {
             return;
           }
         }
-      } catch (cacheErr) {}
+      } catch (cacheErr) { }
 
       if (code === 'STU-1001' || code === 'DEMO' || code === 'STU-DEMO') {
         onLoginSuccess({
