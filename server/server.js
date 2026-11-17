@@ -289,6 +289,51 @@ const admissionSchema = new mongoose.Schema({
 
 const Admission = mongoose.model('Admission', admissionSchema);
 
+// --- COURSE CONTENT SCHEMA & MODEL ---
+const courseSchema = new mongoose.Schema({
+  courseId: { type: String, required: true, unique: true },
+  title: { type: String, required: true },
+  category: { type: String, default: 'General' },
+  duration: { type: String, default: '3 months' },
+  desc: { type: String, default: '' },
+  bannerColor: { type: String, default: '#1e40af' },
+  iconKey: { type: String, default: 'BookOpen' },
+  badge: { type: String, default: '' },
+  order: { type: Number, default: 0 },
+  isPublished: { type: Boolean, default: true },
+  isFeaturedLanding: { type: Boolean, default: true },
+  topics: { type: [String], default: [] },
+  modules: { type: [mongoose.Schema.Types.Mixed], default: [] },
+  fee: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const Course = mongoose.models.Course || mongoose.model('Course', courseSchema);
+
+const coursesJsonPath = isServerless
+  ? '/tmp/courses.json'
+  : path.join(currentDir, 'courses.json');
+
+const getLocalCourses = () => {
+  if (fs.existsSync(coursesJsonPath)) {
+    try {
+      return JSON.parse(fs.readFileSync(coursesJsonPath, 'utf8'));
+    } catch (e) {
+      console.warn('⚠️ Error parsing local courses.json:', e.message);
+    }
+  }
+  const fallbackPath = path.join(currentDir, 'courses.json');
+  if (fs.existsSync(fallbackPath)) {
+    try {
+      return JSON.parse(fs.readFileSync(fallbackPath, 'utf8'));
+    } catch (e) {
+      console.warn('⚠️ Error parsing fallback courses.json:', e.message);
+    }
+  }
+  return [];
+};
+
 // Helper to manage local JSON files
 const getLocalStudents = () => {
   if (!fs.existsSync(localDbPath)) {
@@ -462,6 +507,129 @@ app.get('/api/health', async (req, res) => {
     });
   } catch (err) {
     return res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// --- COURSES API (DATABASE-POWERED) ---
+// 0.1. Get all published courses (MongoDB with offline JSON fallback)
+app.get('/api/courses', async (req, res) => {
+  try {
+    const { featured } = req.query;
+    const filter = { isPublished: { $ne: false } };
+    if (featured === 'true') {
+      filter.isFeaturedLanding = true;
+    }
+
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      const courses = await Course.find(filter).sort({ order: 1, createdAt: 1 }).lean();
+      if (courses && courses.length > 0) {
+        return res.json(courses);
+      }
+    }
+
+    // Fallback to local JSON storage
+    let localCourses = getLocalCourses();
+    if (featured === 'true') {
+      localCourses = localCourses.filter(c => c.isFeaturedLanding);
+    }
+    localCourses.sort((a, b) => (a.order || 0) - (b.order || 0));
+    return res.json(localCourses);
+  } catch (err) {
+    console.error('Error fetching courses:', err);
+    const localCourses = getLocalCourses();
+    return res.json(localCourses);
+  }
+});
+
+// 0.2. Get specific course by courseId or _id with modules and syllabus
+app.get('/api/courses/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      let course = await Course.findOne({ courseId: id }).lean();
+      if (!course && mongoose.Types.ObjectId.isValid(id)) {
+        course = await Course.findById(id).lean();
+      }
+      if (course) {
+        return res.json(course);
+      }
+    }
+
+    // Fallback
+    const localCourses = getLocalCourses();
+    const found = localCourses.find(c => c.courseId === id || c._id === id);
+    if (found) {
+      return res.json(found);
+    }
+    return res.status(404).json({ error: `Course not found for ID: ${id}` });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// 0.3. Create or update course content
+app.post('/api/courses', async (req, res) => {
+  try {
+    const courseData = req.body;
+    if (!courseData.courseId || !courseData.title) {
+      return res.status(400).json({ error: 'courseId and title are required.' });
+    }
+
+    const isDbConnected = await checkDbConnection();
+    let savedCourse = null;
+    if (isDbConnected) {
+      savedCourse = await Course.findOneAndUpdate(
+        { courseId: courseData.courseId },
+        { $set: { ...courseData, updatedAt: new Date() } },
+        { new: true, upsert: true }
+      );
+    }
+
+    // Update local JSON mirror
+    const localCourses = getLocalCourses();
+    const idx = localCourses.findIndex(c => c.courseId === courseData.courseId);
+    if (idx >= 0) {
+      localCourses[idx] = { ...localCourses[idx], ...courseData, updatedAt: new Date().toISOString() };
+    } else {
+      localCourses.push({ ...courseData, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+    }
+    fs.writeFileSync(coursesJsonPath, JSON.stringify(localCourses, null, 2), 'utf8');
+
+    return res.json({ success: true, course: savedCourse || courseData });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// 0.4. Database Seed Endpoint
+app.post('/api/courses/seed', async (req, res) => {
+  try {
+    const isDbConnected = await checkDbConnection();
+    if (!isDbConnected) {
+      return res.status(503).json({ error: 'Database is not connected.' });
+    }
+
+    const localCourses = getLocalCourses();
+    let inserted = 0;
+    let updated = 0;
+
+    for (const c of localCourses) {
+      const existing = await Course.findOne({ courseId: c.courseId });
+      if (existing) {
+        await Course.updateOne({ courseId: c.courseId }, { $set: { ...c, updatedAt: new Date() } });
+        updated++;
+      } else {
+        await Course.create({ ...c, createdAt: new Date(), updatedAt: new Date() });
+        inserted++;
+      }
+    }
+
+    const total = await Course.countDocuments();
+    return res.json({ success: true, message: 'Courses seeded into MongoDB Atlas!', inserted, updated, total });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
 });
 

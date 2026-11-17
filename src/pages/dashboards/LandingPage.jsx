@@ -5,6 +5,7 @@ import {
   Database, Code, Bot, Brain, Terminal, Layers, ArrowRight, BarChart3, Clock, MessageCircle, Send,
   MapPin, GitBranch, Server, Briefcase
 } from 'lucide-react';
+import { getCoursesFromDb } from '../../services/courseService';
 
 // --- 1. COUNTDOWN TIMER BANNER WITH GOOGLE RATING & SCROLLING MARQUEE ---
 function CountdownTimer() {
@@ -350,7 +351,28 @@ const AICourseIcon = () => (
   </svg>
 );
 
+const courseSvgIconMap = {
+  Monitor: <ComputerCourseIcon />,
+  FileSpreadsheet: <OfficeCourseIcon />,
+  Calculator: <TallyCourseIcon />,
+  Code: <PythonCourseIcon />,
+  Globe: <WebDesignCourseIcon />,
+  Megaphone: <MarketingCourseIcon />,
+  Palette: <DesignCourseIcon />,
+  GraduationCap: <DiplomaCourseIcon />,
+  Layers: <FullStackCourseIcon />,
+  BarChart3: <DataAnalyticsCourseIcon />,
+  MessageCircle: <SpokoCourseIcon />,
+  Bot: <AICourseIcon />
+};
+
+function renderLandingCourseIcon(iconKey) {
+  return courseSvgIconMap[iconKey] || <ComputerCourseIcon />;
+}
+
 function CourseCarouselSection() {
+  const [coursesCatalog, setCoursesCatalog] = useState([]);
+  const [isLoadingCourses, setIsLoadingCourses] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -362,188 +384,19 @@ function CourseCarouselSection() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const coursesCatalog = [
-    {
-      title: 'Basic Computer Course',
-      duration: '2 months',
-      desc: 'Keyboard, mouse, internet, email and the basics of Windows.',
-      bannerColor: '#1d4ed8',
-      icon: <ComputerCourseIcon />,
-      topics: [
-        'Computer Fundamentals & Hardware Architecture',
-        'Windows 10/11 OS Navigation & File Management',
-        'Touch Typing Mastery & Keyboard Shortcuts',
-        'Internet Browsing, Online Safety & Google Search',
-        'Email Etiquette, Attachments & Gmail Management',
-        'MS Paint, Notepad & Essential System Utilities'
-      ]
-    },
-    {
-      title: 'MS Office',
-      duration: '2 months',
-      desc: 'Word, Excel, PowerPoint and Outlook for office work.',
-      bannerColor: '#2563eb',
-      icon: <OfficeCourseIcon />,
-      topics: [
-        'MS Word: Professional Documentation, Tables & Mail Merge',
-        'MS Excel: Data Entry, Formulas (SUM, IF, VLOOKUP, XLOOKUP)',
-        'MS Excel: Pivot Tables, Conditional Formatting & Charts',
-        'MS PowerPoint: Business Presentations & Storytelling Decks',
-        'MS Outlook: Corporate Email, Calendars & Scheduling',
-        'Office Printing, PDF Publishing & OneDrive Cloud Sync'
-      ]
-    },
-    {
-      title: 'Tally with GST',
-      duration: '3 months',
-      desc: 'Accounting, billing and GST returns in Tally Prime.',
-      bannerColor: '#0f766e',
-      icon: <TallyCourseIcon />,
-      topics: [
-        'Fundamentals of Accounting & Double-Entry Bookkeeping',
-        'Company Creation & Chart of Accounts in Tally Prime',
-        'Accounting Vouchers: Sales, Purchase, Payment & Receipt',
-        'GST Invoicing, CGST, SGST, IGST Calculation & Rates',
-        'E-Way Bill Generation & GSTR-1, GSTR-3B Tax Filing Reports',
-        'Bank Reconciliation (BRS), Inventory & Balance Sheet'
-      ]
-    },
-    {
-      title: 'Python Programming',
-      duration: '4 months',
-      desc: 'Learn to code from scratch and build small projects.',
-      bannerColor: '#7c3aed',
-      icon: <PythonCourseIcon />,
-      topics: [
-        'Python Setup, Variables, Data Types & Operators',
-        'Control Flow: Conditional Logic & Loops (for, while)',
-        'Data Structures: Lists, Tuples, Dictionaries & Sets',
-        'Functions, Scopes, Lambdas & Modular Python Code',
-        'Object-Oriented Programming (Classes & Inheritance)',
-        'File Handling, JSON Parsing & Hands-on Capstone Projects'
-      ]
-    },
-    {
-      title: 'Web Design & Development',
-      duration: '4 months',
-      desc: 'HTML, CSS and JavaScript to build real websites.',
-      bannerColor: '#ea580c',
-      icon: <WebDesignCourseIcon />,
-      topics: [
-        'HTML5 Semantic Structure, Forms & Media Elements',
-        'CSS3 Box Model, Typography, Colors & Modern Layouts',
-        'Responsive Web Design with Flexbox & CSS Grid',
-        'JavaScript Fundamentals: DOM Events & Interactivity',
-        'Bootstrap 5 Framework & Component Utility Systems',
-        'Live Website Hosting on Netlify & GitHub Pages'
-      ]
-    },
-    {
-      title: 'Digital Marketing',
-      duration: '3 months',
-      desc: 'SEO, social media and ads to grow a business online.',
-      bannerColor: '#be185d',
-      icon: <MarketingCourseIcon />,
-      topics: [
-        'Digital Marketing Fundamentals & Target Audience Strategy',
-        'Search Engine Optimization (On-Page, Off-Page & SEO Audits)',
-        'Google Ads: Search Campaigns, Keyword Bidding & Ads Copy',
-        'Meta Ads: Facebook & Instagram Lead Generation Campaigns',
-        'Content Strategy, Canva Creatives & Video Marketing',
-        'Google Analytics 4 (GA4) Tracking & Performance Metrics'
-      ]
-    },
-    {
-      title: 'Graphic Design',
-      duration: '3 months',
-      desc: 'Photoshop, Illustrator and Canva for posters and logos.',
-      bannerColor: '#b45309',
-      icon: <DesignCourseIcon />,
-      topics: [
-        'Design Principles: Color Theory, Visual Contrast & Fonts',
-        'Adobe Photoshop: Photo Retouching, Masking & Layers',
-        'Adobe Illustrator: Vector Graphics, Pen Tool & Logo Systems',
-        'Canva Pro: Social Media Posts, Flyers & Marketing Banners',
-        'Print Production (CMYK vs RGB, Bleed & Resolution Standards)',
-        'Client Branding Projects & Professional Portfolio Deck'
-      ]
-    },
-    {
-      title: 'DCA / PGDCA',
-      duration: '6 to 12 months',
-      desc: 'Diploma programs covering software, programming and computer applications.',
-      bannerColor: '#1e3a8a',
-      icon: <DiplomaCourseIcon />,
-      topics: [
-        'Diploma in Computer Applications (DCA/PGDCA) Comprehensive Track',
-        'Computer Architecture, Hardware Maintenance & Windows OS',
-        'Complete Office Suite: MS Word, Excel, PowerPoint & Access',
-        'Database Management Systems (DBMS) & SQL Foundations',
-        'Programming Fundamentals in C / Python Scripting',
-        'Practical Lab Examination, Project Submission & Certification'
-      ]
-    },
-    {
-      title: 'Full Stack Web Development',
-      duration: '6 months',
-      desc: 'Master frontend React, backend APIs, databases, and production hosting.',
-      bannerColor: '#0284c7',
-      icon: <FullStackCourseIcon />,
-      topics: [
-        'Frontend Architecture with React, Hooks & State Management',
-        'Responsive UI with CSS Grid, Flexbox & Component Frameworks',
-        'Backend API Development with Node/Express & Python Django',
-        'Database Design with PostgreSQL & MongoDB Collections',
-        'JWT Authentication, RESTful API Design & Web Security',
-        'Full Stack Production Capstone Deployed to Cloud'
-      ]
-    },
-    {
-      title: 'Data Analytics & Power BI',
-      duration: '4 months',
-      desc: 'Solve real-world business problems with SQL, Power BI, and Python.',
-      bannerColor: '#059669',
-      icon: <DataAnalyticsCourseIcon />,
-      topics: [
-        'Advanced SQL: Relational Joins, Window Functions & CTEs',
-        'Power BI Desktop: Power Query Data Transformation (ETL)',
-        'DAX Modeling: Calculated Measures, Time Intelligence & KPIs',
-        'Executive Dashboard Reporting & Drill-Through Analytics',
-        'Python for Data Analysis with Pandas, NumPy & Matplotlib',
-        'End-to-End Business Performance Analytics Capstone'
-      ]
-    },
-    {
-      title: 'Spoko English & Workplace Mastery',
-      duration: '2 months',
-      desc: 'Story-based English fluency, corporate communication, and HR interviews.',
-      bannerColor: '#d97706',
-      icon: <SpokoCourseIcon />,
-      topics: [
-        'Daily Story-Based English Immersion & Voice Speed Highlighter',
-        'Bilingual Vocabulary Expansion & Tamil-to-English Idioms',
-        'Executive Self-Introduction & Confident Public Speaking',
-        'Corporate Email Writing & Meeting Etiquette Protocols',
-        'ATS Resume Engineering & LinkedIn Profile Optimization',
-        'Mock HR Interviews & 1-on-1 Staff Feedback Reviews'
-      ]
-    },
-    {
-      title: 'Generative AI & Agentic AI',
-      duration: '3 months',
-      desc: 'Prompt engineering, LLM integration, automated workflows, and AI agents.',
-      bannerColor: '#6d28d9',
-      icon: <AICourseIcon />,
-      topics: [
-        'Prompt Engineering Principles & Context Window Strategies',
-        'Building with OpenAI, Anthropic & Gemini APIs',
-        'Autonomous Agentic Systems: CrewAI & LangChain Loops',
-        'Retrieval-Augmented Generation (RAG) with Vector Databases',
-        'No-Code & Low-Code AI Automation with n8n & Flowise',
-        'Enterprise AI Safety, Guardrails & Production Deployment'
-      ]
-    }
-  ];
+  // Fetch courses dynamically from the MongoDB database
+  useEffect(() => {
+    let isMounted = true;
+    getCoursesFromDb(true).then(data => {
+      if (isMounted) {
+        if (Array.isArray(data) && data.length > 0) {
+          setCoursesCatalog(data);
+        }
+        setIsLoadingCourses(false);
+      }
+    });
+    return () => { isMounted = false; };
+  }, []);
 
   const visibleCardsCount = windowWidth >= 1100 ? 4 : windowWidth >= 768 ? 2 : 1;
   const maxIndex = Math.max(0, coursesCatalog.length - visibleCardsCount);
@@ -702,7 +555,7 @@ function CourseCarouselSection() {
                         alignItems: 'center',
                         justifyContent: 'center'
                       }}>
-                        {c.icon}
+                        {c.icon || renderLandingCourseIcon(c.iconKey)}
                       </div>
                     </div>
 
@@ -890,7 +743,7 @@ function CourseCarouselSection() {
                     justifyContent: 'center',
                     backdropFilter: 'blur(4px)'
                   }}>
-                    {selectedCourse.icon}
+                    {selectedCourse.icon || renderLandingCourseIcon(selectedCourse.iconKey)}
                   </div>
                   <div>
                     <span style={{
@@ -1820,26 +1673,6 @@ export default function LandingPage({ onLoginSuccess }) {
             alignItems: isMobile ? 'center' : 'flex-start',
             textAlign: isMobile ? 'center' : 'left'
           }}>
-            {/* Pill Tag */}
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: 'rgba(30, 64, 175, 0.08)',
-              border: '1px solid rgba(30, 64, 175, 0.22)',
-              padding: '0.45rem 1.15rem',
-              borderRadius: '9999px',
-              fontSize: '0.8rem',
-              fontWeight: 800,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              color: '#1e40af',
-              marginBottom: '1.25rem',
-              width: 'fit-content'
-            }}>
-              <Sparkles size={14} style={{ color: '#1e40af' }} />
-              <span>THENI'S LEADING COMPUTER & TECH ACADEMY</span>
-            </div>
 
             {/* Sub-headline / Kicker */}
             <h2 style={{
