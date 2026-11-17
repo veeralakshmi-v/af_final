@@ -71,6 +71,35 @@ export default function CoreJSDay1({ activeTab, onNavigate, openAITutor: _openAI
   const [isPageOverwritten, setIsPageOverwritten] = useState(false);
   const [lifecycleCase, setLifecycleCase] = useState('compile');
 
+  // Handlers for Output Simulator (Console & document.write)
+  const handleClearConsole = () => {
+    setSimConsoleLogs([]);
+  };
+
+  const handleAddConsoleLog = (text, type = 'log') => {
+    setSimConsoleLogs(prev => [...prev, { id: Date.now() + Math.random(), text, type }]);
+  };
+
+  const handleAddDocLine = (line) => {
+    setSimDocLines(prev => [...prev, line]);
+  };
+
+  const handleResetDocLines = () => {
+    setSimDocLines([
+      '<h3>AlphaFly Computer Education</h3>',
+      '<p>Welcome to Core JavaScript Day 1!</p>'
+    ]);
+    setIsPageOverwritten(false);
+  };
+
+  const handleSimulateOverwrite = () => {
+    setSimDocLines([
+      '<h2 style="color: #dc2626; margin-top: 20px;">⚠️ Entire Document Overwritten!</h2>',
+      '<p style="color: #475569;">Executing document.write() after the page has finished loading destroys all previous HTML, styles, and event handlers.</p>'
+    ]);
+    setIsPageOverwritten(true);
+  };
+
   // Tab 2: Scope Inspector States
   const [activeScopeType, setActiveScopeType] = useState('block');
 
