@@ -568,26 +568,12 @@ function CourseCarouselSection() {
   const isMobile = windowWidth < 768;
 
   return (
-    <section id="courses" style={{ padding: isMobile ? '3.5rem 1rem' : '5rem 2rem', background: '#f8fafc' }}>
+    <section id="courses" style={{ padding: isMobile ? '2.5rem 1rem' : '3rem 2rem', background: '#f8fafc' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
 
         {/* Section Header */}
         <div style={{ textAlign: 'center', marginBottom: isMobile ? '2.5rem' : '3.5rem' }}>
-          <span style={{
-            background: 'rgba(30, 64, 175, 0.08)',
-            color: '#1e40af',
-            border: '1px solid rgba(30, 64, 175, 0.18)',
-            fontSize: '0.8rem',
-            fontWeight: 800,
-            padding: '0.35rem 1rem',
-            borderRadius: '9999px',
-            textTransform: 'uppercase',
-            letterSpacing: '0.06em',
-            display: 'inline-block',
-            marginBottom: '1rem'
-          }}>
-            Explore Programs
-          </span>
+
           <h2 style={{
             fontSize: isMobile ? '2rem' : '2.6rem',
             fontWeight: 900,
@@ -1721,97 +1707,71 @@ export default function LandingPage({ onLoginSuccess }) {
         )}
       </header>
 
-            {/* 🚀 FULL-WIDTH MODERN HERO SECTION (INSPIRED BY REFERENCE DESIGN) */}
+      {/* 🚀 FULL-WIDTH CONTAINER-FLUID HERO BANNER (MATCHING REFERENCE DESIGN) */}
       <section style={{
         width: '100%',
-        background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
-        borderBottom: '1px solid #e2e8f0',
+        minHeight: isMobile ? '520px' : '620px',
         position: 'relative',
-        overflow: 'hidden',
-        boxSizing: 'border-box'
+        display: 'flex',
+        alignItems: 'center',
+        backgroundImage: isMobile
+          ? `linear-gradient(to bottom, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.9) 65%, rgba(255, 255, 255, 0.6) 100%), url('/images/hero_softpro_workspace.jpg')`
+          : `linear-gradient(to right, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.92) 36%, rgba(255, 255, 255, 0.5) 54%, rgba(255, 255, 255, 0) 74%), url('/images/hero_softpro_workspace.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: isMobile ? 'center center' : 'right center',
+        backgroundRepeat: 'no-repeat',
+        backgroundColor: '#ffffff',
+        borderBottom: '1px solid #e2e8f0',
+        boxSizing: 'border-box',
+        overflow: 'hidden'
       }}>
-        {/* Soft atmospheric gradient accents */}
-        <div style={{
-          position: 'absolute',
-          top: '-10%',
-          right: '-5%',
-          width: '500px',
-          height: '500px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(2, 132, 199, 0.08) 0%, rgba(255, 255, 255, 0) 70%)',
-          pointerEvents: 'none'
-        }} />
-
         <div style={{
           width: '100%',
           maxWidth: '1200px',
           margin: '0 auto',
-          padding: isMobile ? '2.5rem 1rem 3rem' : '4rem 2rem 4.5rem',
-          display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : '1.1fr 0.9fr',
-          alignItems: 'center',
-          gap: isMobile ? '2.5rem' : '3.5rem',
+          padding: isMobile ? '3.5rem 1.25rem' : '5rem 2rem',
           boxSizing: 'border-box',
           position: 'relative',
           zIndex: 2
         }}>
-          {/* LEFT COLUMN: Main Hero Text & Actions */}
           <div style={{
+            maxWidth: isMobile ? '100%' : '560px',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
-            textAlign: isMobile ? 'center' : 'left',
-            alignItems: isMobile ? 'center' : 'flex-start'
+            alignItems: isMobile ? 'center' : 'flex-start',
+            textAlign: isMobile ? 'center' : 'left'
           }}>
-            {/* Pill Tag */}
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: 'rgba(2, 132, 199, 0.08)',
-              border: '1px solid rgba(2, 132, 199, 0.22)',
-              padding: '0.4rem 1.1rem',
-              borderRadius: '9999px',
-              fontSize: '0.78rem',
-              fontWeight: 800,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              color: '#0284c7',
-              marginBottom: '1.25rem'
-            }}>
-              <Sparkles size={14} style={{ color: '#0284c7' }} />
-              <span>ALPHA FLY THENI • COMPUTER EDUCATION</span>
-            </div>
+
 
             {/* Sub-headline / Kicker */}
             <h2 style={{
-              fontSize: isMobile ? '1.25rem' : '1.55rem',
+              fontSize: isMobile ? '1.3rem' : '1.75rem',
               fontWeight: 600,
               color: '#475569',
               margin: '0 0 0.4rem',
               letterSpacing: '-0.01em',
               lineHeight: 1.3
             }}>
-              Give Your Career a
+              Give Your Business a
             </h2>
 
             {/* Main Headline */}
             <h1 style={{
-              fontSize: isMobile ? '2.8rem' : '4.2rem',
+              fontSize: isMobile ? '2.8rem' : '4.4rem',
               fontWeight: 900,
-              lineHeight: 1.1,
+              lineHeight: 1.08,
               margin: '0 0 1.25rem',
               letterSpacing: '-0.03em',
               color: '#0f172a'
             }}>
-              Digital Boost.
+              Digital Boost
             </h1>
 
             {/* Subtitle / Description */}
             <p style={{
               fontSize: isMobile ? '0.98rem' : '1.1rem',
               color: '#64748b',
-              maxWidth: '520px',
+              maxWidth: '500px',
               margin: '0 0 2.2rem',
               lineHeight: 1.65
             }}>
@@ -1874,8 +1834,8 @@ export default function LandingPage({ onLoginSuccess }) {
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)'
                 }}
                 onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = '#1e40af';
-                  e.currentTarget.style.color = '#1e40af';
+                  e.currentTarget.style.borderColor = '#0284c7';
+                  e.currentTarget.style.color = '#0284c7';
                   e.currentTarget.style.background = '#f8fafc';
                 }}
                 onMouseLeave={e => {
@@ -1910,35 +1870,6 @@ export default function LandingPage({ onLoginSuccess }) {
                 <h4 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 900, color: '#0284c7' }}>5/5 ★</h4>
                 <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Google Rating</span>
               </div>
-            </div>
-          </div>
-
-          {/* RIGHT COLUMN: Professional Working on Laptop */}
-          <div style={{
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <div style={{
-              position: 'relative',
-              width: '100%',
-              maxWidth: isMobile ? '420px' : '560px',
-              borderRadius: '24px',
-              overflow: 'hidden',
-              boxShadow: '0 20px 50px -10px rgba(15, 23, 42, 0.12)',
-              border: '1px solid #e2e8f0'
-            }}>
-              <img
-                src="/images/hero_softpro_workspace.jpg"
-                alt="Student working on laptop - Alpha Fly Computer Education"
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  display: 'block',
-                  objectFit: 'cover'
-                }}
-              />
             </div>
           </div>
         </div>
