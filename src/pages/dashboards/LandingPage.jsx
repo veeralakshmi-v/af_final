@@ -74,13 +74,13 @@ function CountdownTimer() {
         maxWidth: '1200px',
         margin: '0 auto',
         width: '100%',
-        padding: isMobile ? '0.8rem 1rem' : '0.8rem 2rem',
+        padding: isMobile ? '0.6rem 1rem' : '0.45rem 2rem',
         display: 'flex',
         flexDirection: isMobile ? 'column' : 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '1rem',
-        minHeight: isMobile ? 'auto' : '4.2rem',
+        gap: '0.75rem',
+        minHeight: isMobile ? 'auto' : '2.8rem',
         boxSizing: 'border-box'
       }}>
         {/* Google Rating Column (Aligned flush-left with Alpha Fly Logo) */}
@@ -1510,11 +1510,11 @@ export default function LandingPage({ onLoginSuccess }) {
 
       {/* 🧭 NAVIGATION BAR */}
       <header style={{ background: '#ffffff', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 90, boxShadow: 'var(--shadow-sm)', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', boxSizing: 'border-box' }}>
-        <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '0.8rem 1rem' : '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxSizing: 'border-box' }}>
+        <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '0.65rem 1rem' : '0.65rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxSizing: 'border-box' }}>
 
           {/* Logo brand */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <img src="images/logo1.png" alt="Alpha Fly Logo" style={{ height: isMobile ? '48px' : '72px', width: 'auto' }} />
+            <img src="images/logo1.png" alt="Alpha Fly Logo" style={{ height: isMobile ? '44px' : '56px', width: 'auto' }} />
           </div>
 
           {isMobile ? (
@@ -1639,16 +1639,18 @@ export default function LandingPage({ onLoginSuccess }) {
         )}
       </header>
 
-      {/* 🚀 FULL-WIDTH CONTAINER-FLUID HERO BANNER (MATCHING REFERENCE DESIGN) */}
+      {/* 🚀 FULL-WIDTH CONTAINER-FLUID HERO BANNER (FIT TO SCREEN ACROSS ALL DEVICES) */}
       <section style={{
         width: '100%',
-        minHeight: isMobile ? '540px' : '580px',
+        minHeight: isMobile ? 'auto' : 'calc(100vh - 96px)',
+        height: isMobile ? 'auto' : 'calc(100vh - 96px)',
+        maxHeight: isMobile ? 'none' : 'calc(100vh - 96px)',
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
         backgroundImage: isMobile
           ? `linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.92) 55%, rgba(255, 255, 255, 0.6) 100%), url('/images/hero_educational_student.jpg')`
-          : `linear-gradient(to right, #ffffff 0%, #ffffff 40%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0.25) 65%, rgba(255, 255, 255, 0) 78%), url('/images/hero_educational_student.jpg')`,
+          : `linear-gradient(to right, #ffffff 0%, #ffffff 38%, rgba(255, 255, 255, 0.95) 48%, rgba(255, 255, 255, 0.2) 64%, rgba(255, 255, 255, 0) 78%), url('/images/hero_educational_student.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: isMobile ? 'center top' : 'right center',
         backgroundRepeat: 'no-repeat',
@@ -1661,7 +1663,7 @@ export default function LandingPage({ onLoginSuccess }) {
           width: '100%',
           maxWidth: '1200px',
           margin: '0 auto',
-          padding: isMobile ? '3rem 1.25rem' : '4.5rem 2rem',
+          padding: isMobile ? '2.5rem 1.25rem' : 'clamp(1rem, 2.2vh, 2.5rem) 2rem',
           boxSizing: 'border-box',
           position: 'relative',
           zIndex: 2
@@ -1676,10 +1678,10 @@ export default function LandingPage({ onLoginSuccess }) {
 
             {/* Sub-headline / Kicker */}
             <h2 style={{
-              fontSize: isMobile ? '1.15rem' : '1.45rem',
+              fontSize: isMobile ? '1rem' : 'clamp(0.95rem, 1.2vw, 1.15rem)',
               fontWeight: 700,
               color: '#475569',
-              margin: '0 0 0.45rem',
+              margin: '0 0 clamp(0.2rem, 0.5vh, 0.35rem)',
               letterSpacing: '-0.01em',
               lineHeight: 1.3
             }}>
@@ -1688,10 +1690,10 @@ export default function LandingPage({ onLoginSuccess }) {
 
             {/* Main Headline */}
             <h1 style={{
-              fontSize: isMobile ? '2.6rem' : '3.9rem',
+              fontSize: isMobile ? '2.2rem' : 'clamp(1.95rem, 2.9vw, 3.1rem)',
               fontWeight: 900,
-              lineHeight: 1.1,
-              margin: '0 0 1.25rem',
+              lineHeight: 1.12,
+              margin: '0 0 clamp(0.45rem, 1.1vh, 0.85rem)',
               letterSpacing: '-0.03em',
               color: '#0f172a'
             }}>
@@ -1701,11 +1703,11 @@ export default function LandingPage({ onLoginSuccess }) {
 
             {/* Subtitle / Description */}
             <p style={{
-              fontSize: isMobile ? '0.98rem' : '1.1rem',
+              fontSize: isMobile ? '0.92rem' : 'clamp(0.85rem, 0.95vw, 1rem)',
               color: '#475569',
               maxWidth: '520px',
-              margin: '0 0 1.6rem',
-              lineHeight: 1.65
+              margin: '0 0 clamp(0.6rem, 1.4vh, 1.1rem)',
+              lineHeight: 1.52
             }}>
               Master high-demand tech skills through hands-on capstone projects, personalized 1-on-1 mentor guidance, real-time code reviews, and certified placement support.
             </p>
@@ -1713,22 +1715,22 @@ export default function LandingPage({ onLoginSuccess }) {
             {/* Key Value Checklist */}
             <div style={{
               display: 'flex',
-              gap: isMobile ? '0.6rem' : '1rem',
+              gap: '0.5rem',
               flexWrap: 'wrap',
               alignItems: 'center',
               justifyContent: isMobile ? 'center' : 'flex-start',
-              marginBottom: '2rem'
+              marginBottom: 'clamp(0.65rem, 1.6vh, 1.25rem)'
             }}>
               <span style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                fontSize: '0.85rem',
+                fontSize: '0.8rem',
                 fontWeight: 700,
                 color: '#1e293b',
                 background: '#f8fafc',
                 border: '1px solid #e2e8f0',
-                padding: '0.35rem 0.85rem',
+                padding: '0.28rem 0.75rem',
                 borderRadius: '6px'
               }}>
                 <CheckCircle size={14} style={{ color: '#16a34a' }} /> 100% Practical Labs
@@ -1737,12 +1739,12 @@ export default function LandingPage({ onLoginSuccess }) {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                fontSize: '0.85rem',
+                fontSize: '0.8rem',
                 fontWeight: 700,
                 color: '#1e293b',
                 background: '#f8fafc',
                 border: '1px solid #e2e8f0',
-                padding: '0.35rem 0.85rem',
+                padding: '0.28rem 0.75rem',
                 borderRadius: '6px'
               }}>
                 <CheckCircle size={14} style={{ color: '#16a34a' }} /> Real-World Projects
@@ -1751,12 +1753,12 @@ export default function LandingPage({ onLoginSuccess }) {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                fontSize: '0.85rem',
+                fontSize: '0.8rem',
                 fontWeight: 700,
                 color: '#1e293b',
                 background: '#f8fafc',
                 border: '1px solid #e2e8f0',
-                padding: '0.35rem 0.85rem',
+                padding: '0.28rem 0.75rem',
                 borderRadius: '6px'
               }}>
                 <CheckCircle size={14} style={{ color: '#16a34a' }} /> Placement Support
@@ -1766,11 +1768,11 @@ export default function LandingPage({ onLoginSuccess }) {
             {/* Action Buttons */}
             <div style={{
               display: 'flex',
-              gap: '1rem',
+              gap: '0.85rem',
               alignItems: 'center',
               justifyContent: isMobile ? 'center' : 'flex-start',
               flexWrap: 'wrap',
-              marginBottom: '2.5rem'
+              marginBottom: 'clamp(0.75rem, 1.8vh, 1.4rem)'
             }}>
               <a
                 href="#courses"
@@ -1779,8 +1781,8 @@ export default function LandingPage({ onLoginSuccess }) {
                   background: '#1e40af',
                   color: '#ffffff',
                   fontWeight: 800,
-                  fontSize: '0.92rem',
-                  padding: '0.7rem 1.6rem',
+                  fontSize: '0.9rem',
+                  padding: '0.65rem 1.5rem',
                   borderRadius: '8px',
                   boxShadow: '0 4px 12px rgba(30, 64, 175, 0.25)',
                   display: 'inline-flex',
@@ -1810,8 +1812,8 @@ export default function LandingPage({ onLoginSuccess }) {
                   border: 'none',
                   color: '#ffffff',
                   fontWeight: 800,
-                  fontSize: '0.92rem',
-                  padding: '0.7rem 1.6rem',
+                  fontSize: '0.9rem',
+                  padding: '0.65rem 1.5rem',
                   borderRadius: '8px',
                   cursor: 'pointer',
                   display: 'inline-flex',
@@ -1839,23 +1841,23 @@ export default function LandingPage({ onLoginSuccess }) {
             {/* Quick Metrics Row */}
             <div style={{
               display: 'flex',
-              gap: isMobile ? '1.5rem' : '2.5rem',
+              gap: isMobile ? '1.25rem' : 'clamp(1.5rem, 2.5vw, 2.5rem)',
               borderTop: '1px solid #e2e8f0',
-              paddingTop: '1.5rem',
+              paddingTop: 'clamp(0.55rem, 1.2vh, 1rem)',
               flexWrap: 'wrap',
               justifyContent: isMobile ? 'center' : 'flex-start'
             }}>
               <div>
-                <h4 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>1200+</h4>
-                <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Trained Students</span>
+                <h4 style={{ margin: 0, fontSize: 'clamp(1.15rem, 1.7vw, 1.4rem)', fontWeight: 900, color: '#0f172a' }}>1200+</h4>
+                <span style={{ fontSize: '0.76rem', color: '#64748b', fontWeight: 600 }}>Trained Students</span>
               </div>
               <div>
-                <h4 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 900, color: '#0f172a' }}>100%</h4>
-                <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Practical Labs</span>
+                <h4 style={{ margin: 0, fontSize: 'clamp(1.15rem, 1.7vw, 1.4rem)', fontWeight: 900, color: '#0f172a' }}>100%</h4>
+                <span style={{ fontSize: '0.76rem', color: '#64748b', fontWeight: 600 }}>Practical Labs</span>
               </div>
               <div>
-                <h4 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 900, color: '#1e40af' }}>5/5 ★</h4>
-                <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Google Rating</span>
+                <h4 style={{ margin: 0, fontSize: 'clamp(1.15rem, 1.7vw, 1.4rem)', fontWeight: 900, color: '#1e40af' }}>5/5 ★</h4>
+                <span style={{ fontSize: '0.76rem', color: '#64748b', fontWeight: 600 }}>Google Rating</span>
               </div>
             </div>
           </div>
