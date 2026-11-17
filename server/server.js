@@ -311,6 +311,46 @@ const courseSchema = new mongoose.Schema({
 
 const Course = mongoose.models.Course || mongoose.model('Course', courseSchema);
 
+// Course Page Schema for storing all 288 lesson pages across all 22 subjects directly in MongoDB
+const coursePageSchema = new mongoose.Schema({
+  pageId: { type: String, required: true, unique: true },
+  subject: { type: String, required: true, index: true },
+  courseKey: { type: String, default: '', index: true },
+  moduleId: { type: String, default: '', index: true },
+  componentName: { type: String, required: true, index: true },
+  fileName: { type: String, required: true },
+  title: { type: String, default: '' },
+  rawContent: { type: String, default: '' },
+  fileSizeBytes: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const CoursePage = mongoose.models.CoursePage || mongoose.model('CoursePage', coursePageSchema);
+
+const coursePagesCatalogPath = isServerless
+  ? '/tmp/course_pages_catalog.json'
+  : path.join(currentDir, 'course_pages_catalog.json');
+
+const getLocalCoursePagesCatalog = () => {
+  if (fs.existsSync(coursePagesCatalogPath)) {
+    try {
+      return JSON.parse(fs.readFileSync(coursePagesCatalogPath, 'utf8'));
+    } catch (e) {
+      console.warn('⚠️ Error parsing local course_pages_catalog.json:', e.message);
+    }
+  }
+  const fallbackPath = path.join(currentDir, 'course_pages_catalog.json');
+  if (fs.existsSync(fallbackPath)) {
+    try {
+      return JSON.parse(fs.readFileSync(fallbackPath, 'utf8'));
+    } catch (e) {
+      console.warn('⚠️ Error parsing fallback course_pages_catalog.json:', e.message);
+    }
+  }
+  return [];
+};
+
 const coursesJsonPath = isServerless
   ? '/tmp/courses.json'
   : path.join(currentDir, 'courses.json');
@@ -628,6 +668,114 @@ app.post('/api/courses/seed', async (req, res) => {
 
     const total = await Course.countDocuments();
     return res.json({ success: true, message: 'Courses seeded into MongoDB Atlas!', inserted, updated, total });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// --- COURSE PAGES API (FULL LESSON CONTENT DIRECTLY FROM MONGODB ATLAS) ---
+// 0.5. Get all course pages (with filters: subject, courseKey, moduleId, summary)
+app.get('/api/course-pages', async (req, res) => {
+  try {
+    const { subject, courseKey, moduleId, summary } = req.query;
+    const filter = {};
+    if (subject) filter.subject = subject;
+    if (courseKey) filter.courseKey = courseKey;
+    if (moduleId) filter.moduleId = moduleId;
+
+    const projection = summary === 'true'
+      ? { pageId: 1, subject: 1, courseKey: 1, moduleId: 1, componentName: 1, fileName: 1, title: 1, fileSizeBytes: 1, updatedAt: 1 }
+      : {};
+
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      const pages = await CoursePage.find(filter, projection).sort({ subject: 1, componentName: 1 }).lean();
+      if (pages && pages.length > 0) {
+        return res.json(pages);
+      }
+    }
+
+    // Fallback to local catalog
+    let localCatalog = getLocalCoursePagesCatalog();
+    if (subject) localCatalog = localCatalog.filter(p => p.subject === subject);
+    if (courseKey) localCatalog = localCatalog.filter(p => p.courseKey === courseKey);
+    if (moduleId) localCatalog = localCatalog.filter(p => p.moduleId === moduleId);
+    return res.json(localCatalog);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// 0.6. Get specific course page by pageId, moduleId, or componentName
+app.get('/api/course-pages/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const isDbConnected = await checkDbConnection();
+    if (isDbConnected) {
+      let page = await CoursePage.findOne({
+        $or: [
+          { pageId: id },
+          { moduleId: id },
+          { componentName: id }
+        ]
+      }).lean();
+      if (!page && mongoose.Types.ObjectId.isValid(id)) {
+        page = await CoursePage.findById(id).lean();
+      }
+      if (page) {
+        return res.json(page);
+      }
+    }
+
+    // Fallback: check catalog or read file directly
+    const localCatalog = getLocalCoursePagesCatalog();
+    const meta = localCatalog.find(p => p.pageId === id || p.moduleId === id || p.componentName === id);
+    if (meta) {
+      const filePath = path.join(currentDir, '..', 'src', 'pages', meta.subject, meta.fileName);
+      let rawContent = '';
+      if (fs.existsSync(filePath)) {
+        rawContent = fs.readFileSync(filePath, 'utf8');
+      }
+      return res.json({ ...meta, rawContent });
+    }
+
+    return res.status(404).json({ error: `Course page not found for identifier: ${id}` });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// 0.7. Seed / Sync all 288 course pages from filesystem directly into MongoDB Atlas
+app.post('/api/course-pages/seed', async (req, res) => {
+  try {
+    const isDbConnected = await checkDbConnection();
+    if (!isDbConnected) {
+      return res.status(503).json({ error: 'Database is not connected.' });
+    }
+    const { seedCoursePages } = await import('./seedCoursePages.js');
+    const result = await seedCoursePages();
+    return res.json({ success: true, message: 'All course pages seeded directly into MongoDB Atlas!', ...result });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// 0.8. Update or create course page content directly in MongoDB
+app.put('/api/course-pages/:pageId', async (req, res) => {
+  try {
+    const { pageId } = req.params;
+    const updateData = req.body;
+    const isDbConnected = await checkDbConnection();
+    if (!isDbConnected) {
+      return res.status(503).json({ error: 'Database is not connected.' });
+    }
+
+    const updated = await CoursePage.findOneAndUpdate(
+      { pageId },
+      { $set: { ...updateData, updatedAt: new Date() } },
+      { new: true, upsert: true }
+    );
+    return res.json({ success: true, page: updated });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
