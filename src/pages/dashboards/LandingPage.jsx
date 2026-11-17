@@ -1789,15 +1789,15 @@ export default function LandingPage({ onLoginSuccess }) {
       {/* 🚀 FULL-WIDTH CONTAINER-FLUID HERO BANNER (MATCHING REFERENCE DESIGN) */}
       <section style={{
         width: '100%',
-        minHeight: isMobile ? '520px' : '620px',
+        minHeight: isMobile ? '540px' : '580px',
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
         backgroundImage: isMobile
-          ? `linear-gradient(to bottom, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.9) 65%, rgba(255, 255, 255, 0.6) 100%), url('/images/hero_south_indian_student.jpg')`
-          : `linear-gradient(to right, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.94) 38%, rgba(255, 255, 255, 0.6) 55%, rgba(255, 255, 255, 0) 75%), url('/images/hero_south_indian_student.jpg')`,
+          ? `linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.92) 55%, rgba(255, 255, 255, 0.6) 100%), url('/images/hero_south_indian_student.jpg')`
+          : `linear-gradient(to right, #ffffff 0%, #ffffff 42%, rgba(255, 255, 255, 0.96) 52%, rgba(255, 255, 255, 0.3) 64%, rgba(255, 255, 255, 0) 74%), url('/images/hero_south_indian_student.jpg')`,
         backgroundSize: 'cover',
-        backgroundPosition: isMobile ? 'center center' : 'right center',
+        backgroundPosition: isMobile ? 'center top' : 'right top',
         backgroundRepeat: 'no-repeat',
         backgroundColor: '#ffffff',
         borderBottom: '1px solid #e2e8f0',
@@ -1808,7 +1808,7 @@ export default function LandingPage({ onLoginSuccess }) {
           width: '100%',
           maxWidth: '1200px',
           margin: '0 auto',
-          padding: isMobile ? '3.5rem 1.25rem' : '5rem 2rem',
+          padding: isMobile ? '3rem 1.25rem' : '4.5rem 2rem',
           boxSizing: 'border-box',
           position: 'relative',
           zIndex: 2
@@ -1820,42 +1820,115 @@ export default function LandingPage({ onLoginSuccess }) {
             alignItems: isMobile ? 'center' : 'flex-start',
             textAlign: isMobile ? 'center' : 'left'
           }}>
-
+            {/* Pill Tag */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: 'rgba(30, 64, 175, 0.08)',
+              border: '1px solid rgba(30, 64, 175, 0.22)',
+              padding: '0.45rem 1.15rem',
+              borderRadius: '9999px',
+              fontSize: '0.8rem',
+              fontWeight: 800,
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: '#1e40af',
+              marginBottom: '1.25rem',
+              width: 'fit-content'
+            }}>
+              <Sparkles size={14} style={{ color: '#1e40af' }} />
+              <span>THENI'S LEADING COMPUTER & TECH ACADEMY</span>
+            </div>
 
             {/* Sub-headline / Kicker */}
             <h2 style={{
-              fontSize: isMobile ? '1.3rem' : '1.75rem',
-              fontWeight: 600,
+              fontSize: isMobile ? '1.15rem' : '1.45rem',
+              fontWeight: 700,
               color: '#475569',
-              margin: '0 0 0.4rem',
+              margin: '0 0 0.45rem',
               letterSpacing: '-0.01em',
               lineHeight: 1.3
             }}>
-              Give Your Business a
+              Launch Your Dream Career in Technology
             </h2>
 
             {/* Main Headline */}
             <h1 style={{
-              fontSize: isMobile ? '2.8rem' : '4.4rem',
+              fontSize: isMobile ? '2.6rem' : '3.9rem',
               fontWeight: 900,
-              lineHeight: 1.08,
+              lineHeight: 1.1,
               margin: '0 0 1.25rem',
               letterSpacing: '-0.03em',
               color: '#0f172a'
             }}>
-              Digital Boost
+              Give Your Career a{' '}
+              <span style={{ color: '#1e40af' }}>Digital Boost.</span>
             </h1>
 
             {/* Subtitle / Description */}
             <p style={{
               fontSize: isMobile ? '0.98rem' : '1.1rem',
-              color: '#64748b',
-              maxWidth: '500px',
-              margin: '0 0 2.2rem',
+              color: '#475569',
+              maxWidth: '520px',
+              margin: '0 0 1.6rem',
               lineHeight: 1.65
             }}>
-              Master industry-demanded tech skills through hands-on capstone projects, personalized staff mentorship, real-time code reviews, and certified placement support.
+              Master high-demand tech skills through hands-on capstone projects, personalized 1-on-1 mentor guidance, real-time code reviews, and certified placement support.
             </p>
+
+            {/* Key Value Checklist */}
+            <div style={{
+              display: 'flex',
+              gap: isMobile ? '0.6rem' : '1rem',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: isMobile ? 'center' : 'flex-start',
+              marginBottom: '2rem'
+            }}>
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                color: '#1e293b',
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                padding: '0.35rem 0.85rem',
+                borderRadius: '6px'
+              }}>
+                <CheckCircle size={14} style={{ color: '#16a34a' }} /> 100% Practical Labs
+              </span>
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                color: '#1e293b',
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                padding: '0.35rem 0.85rem',
+                borderRadius: '6px'
+              }}>
+                <CheckCircle size={14} style={{ color: '#16a34a' }} /> Real-World Projects
+              </span>
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                color: '#1e293b',
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                padding: '0.35rem 0.85rem',
+                borderRadius: '6px'
+              }}>
+                <CheckCircle size={14} style={{ color: '#16a34a' }} /> Placement Support
+              </span>
+            </div>
 
             {/* Action Buttons */}
             <div style={{
