@@ -560,7 +560,11 @@ function CourseCarouselSection() {
 
         {/* Carousel Wrapper */}
         <div
-          style={{ position: 'relative', padding: isMobile ? '0 4px' : '0 12px' }}
+          style={{
+            position: 'relative',
+            padding: isMobile ? '0 44px' : '0 54px',
+            boxSizing: 'border-box'
+          }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -570,35 +574,38 @@ function CourseCarouselSection() {
             aria-label="Previous Courses"
             style={{
               position: 'absolute',
-              left: isMobile ? '-6px' : '-20px',
+              left: isMobile ? '2px' : '4px',
               top: '50%',
               transform: 'translateY(-50%)',
-              zIndex: 20,
+              zIndex: 25,
               background: '#ffffff',
-              border: '1px solid #e2e8f0',
+              border: '1.5px solid #e2e8f0',
               borderRadius: '50%',
-              width: '46px',
-              height: '46px',
+              width: isMobile ? '38px' : '44px',
+              height: isMobile ? '38px' : '44px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 6px 18px rgba(0, 0, 0, 0.12)',
+              boxShadow: '0 4px 14px rgba(15, 23, 42, 0.08)',
               cursor: 'pointer',
-              color: '#0f172a',
-              transition: 'all 0.2s ease'
+              color: '#1e40af',
+              transition: 'all 0.2s ease',
+              boxSizing: 'border-box'
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
+              e.currentTarget.style.background = '#1e40af';
+              e.currentTarget.style.color = '#ffffff';
               e.currentTarget.style.borderColor = '#1e40af';
-              e.currentTarget.style.color = '#1e40af';
+              e.currentTarget.style.boxShadow = '0 8px 20px rgba(30, 64, 175, 0.25)';
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+              e.currentTarget.style.background = '#ffffff';
+              e.currentTarget.style.color = '#1e40af';
               e.currentTarget.style.borderColor = '#e2e8f0';
-              e.currentTarget.style.color = '#0f172a';
+              e.currentTarget.style.boxShadow = '0 4px 14px rgba(15, 23, 42, 0.08)';
             }}
           >
-            <ChevronLeft size={22} />
+            <ChevronLeft size={isMobile ? 18 : 22} />
           </button>
 
           {/* Carousel Slider Window */}
@@ -734,35 +741,38 @@ function CourseCarouselSection() {
             aria-label="Next Courses"
             style={{
               position: 'absolute',
-              right: isMobile ? '-6px' : '-20px',
+              right: isMobile ? '2px' : '4px',
               top: '50%',
               transform: 'translateY(-50%)',
-              zIndex: 20,
+              zIndex: 25,
               background: '#ffffff',
-              border: '1px solid #e2e8f0',
+              border: '1.5px solid #e2e8f0',
               borderRadius: '50%',
-              width: '46px',
-              height: '46px',
+              width: isMobile ? '38px' : '44px',
+              height: isMobile ? '38px' : '44px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 6px 18px rgba(0, 0, 0, 0.12)',
+              boxShadow: '0 4px 14px rgba(15, 23, 42, 0.08)',
               cursor: 'pointer',
-              color: '#0f172a',
-              transition: 'all 0.2s ease'
+              color: '#1e40af',
+              transition: 'all 0.2s ease',
+              boxSizing: 'border-box'
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
+              e.currentTarget.style.background = '#1e40af';
+              e.currentTarget.style.color = '#ffffff';
               e.currentTarget.style.borderColor = '#1e40af';
-              e.currentTarget.style.color = '#1e40af';
+              e.currentTarget.style.boxShadow = '0 8px 20px rgba(30, 64, 175, 0.25)';
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+              e.currentTarget.style.background = '#ffffff';
+              e.currentTarget.style.color = '#1e40af';
               e.currentTarget.style.borderColor = '#e2e8f0';
-              e.currentTarget.style.color = '#0f172a';
+              e.currentTarget.style.boxShadow = '0 4px 14px rgba(15, 23, 42, 0.08)';
             }}
           >
-            <ChevronRight size={22} />
+            <ChevronRight size={isMobile ? 18 : 22} />
           </button>
         </div>
 
