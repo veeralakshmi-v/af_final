@@ -1275,13 +1275,13 @@ export default function LandingPage({ onLoginSuccess }) {
         )}
       </header>
 
-      {/* 🚀 HERO SECTION (META LOGO BLUE THEME WITH BACKGROUND IMAGE) */}
+      {/* 🚀 HERO SECTION (1e40af BLUE THEME WITH BACKGROUND IMAGE) */}
       <section style={{
         position: 'relative',
         overflow: 'hidden',
         color: '#ffffff',
         padding: isMobile ? '4.5rem 1.25rem 4.5rem' : '6.5rem 2rem 6.5rem',
-        background: '#0064e0',
+        background: '#1e40af',
         minHeight: isMobile ? 'auto' : '640px',
         display: 'flex',
         alignItems: 'center',
@@ -1296,25 +1296,25 @@ export default function LandingPage({ onLoginSuccess }) {
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
           transform: 'scale(1.04)',
-          filter: 'brightness(0.65) contrast(1.15) saturate(1.2)',
-          opacity: 0.32,
+          filter: 'brightness(0.6) contrast(1.15) saturate(1.1)',
+          opacity: 0.25,
           mixBlendMode: 'luminosity',
           zIndex: 1
         }} />
 
-        {/* 2. Signature Meta Logo Blue Dynamic Gradient Layer */}
+        {/* 2. Signature #1e40af Blue Gradient Layer */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(135deg, rgba(0, 80, 200, 0.92) 0%, rgba(0, 100, 224, 0.88) 40%, rgba(0, 129, 251, 0.84) 75%, rgba(0, 70, 185, 0.94) 100%)',
+          background: 'linear-gradient(180deg, rgba(30, 64, 175, 0.90) 0%, rgba(30, 64, 175, 0.85) 50%, rgba(30, 64, 175, 0.94) 100%)',
           zIndex: 2
         }} />
 
-        {/* 3. Ambient Meta Lighting Spheres */}
+        {/* 3. Subtle Ambient Light Spheres */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.2), transparent 45%), radial-gradient(circle at 80% 80%, rgba(0, 210, 255, 0.28), transparent 50%), radial-gradient(circle at 50% 50%, rgba(8, 102, 255, 0.15), transparent 60%)',
+          backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.15), transparent 45%), radial-gradient(circle at 80% 80%, rgba(96, 165, 250, 0.22), transparent 50%)',
           zIndex: 3
         }} />
 
@@ -1322,7 +1322,7 @@ export default function LandingPage({ onLoginSuccess }) {
         <div style={{
           position: 'absolute',
           inset: 0,
-          opacity: 0.08,
+          opacity: 0.06,
           backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)',
           backgroundSize: '30px 30px',
           zIndex: 4
@@ -1336,7 +1336,7 @@ export default function LandingPage({ onLoginSuccess }) {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '10px',
-            background: 'rgba(255, 255, 255, 0.18)',
+            background: 'rgba(255, 255, 255, 0.16)',
             backdropFilter: 'blur(16px)',
             border: '1px solid rgba(255, 255, 255, 0.35)',
             padding: '0.5rem 1.3rem',
@@ -1347,7 +1347,7 @@ export default function LandingPage({ onLoginSuccess }) {
             textTransform: 'uppercase',
             color: '#ffffff',
             marginBottom: '1.8rem',
-            boxShadow: '0 8px 24px rgba(0, 30, 90, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.35)'
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.35)'
           }}>
             <span style={{
               width: '8px',
@@ -1361,25 +1361,17 @@ export default function LandingPage({ onLoginSuccess }) {
             <Sparkles size={15} style={{ color: '#fde047' }} />
           </div>
 
-          {/* Headline */}
+          {/* Headline (Solid White - No Gradient Text) */}
           <h1 style={{
             fontSize: isMobile ? '2.4rem' : '4rem',
             fontWeight: 900,
-            lineHeight: 1.12,
+            lineHeight: 1.15,
             marginBottom: '1.3rem',
             letterSpacing: '-0.03em',
             color: '#ffffff',
-            textShadow: '0 4px 25px rgba(0, 35, 110, 0.5)'
+            textShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
           }}>
-            Next Generation{' '}
-            <span style={{
-              background: 'linear-gradient(135deg, #ffffff 0%, #e0f2fe 50%, #bae6fd 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              display: 'inline-block'
-            }}>
-              Learning Space
-            </span>
+            Next Generation Learning Space
           </h1>
 
           {/* Subtitle */}
@@ -1390,7 +1382,7 @@ export default function LandingPage({ onLoginSuccess }) {
             margin: '0 auto 2.5rem',
             lineHeight: 1.65,
             fontWeight: 400,
-            textShadow: '0 2px 12px rgba(0, 30, 90, 0.4)'
+            textShadow: '0 2px 10px rgba(0, 0, 0, 0.25)'
           }}>
             Master industry-demanded tech skills through structured daily roadmaps, hands-on capstone projects, real-time staff reviews, and career placement mentorship.
           </p>
@@ -1404,18 +1396,18 @@ export default function LandingPage({ onLoginSuccess }) {
             flexWrap: 'wrap',
             marginBottom: '3.8rem'
           }}>
-            {/* Primary Action Button (White with Meta Blue Text) */}
+            {/* Primary Action Button (White with #1e40af Blue Text) */}
             <a
               href="#courses"
               style={{
                 textDecoration: 'none',
                 background: '#ffffff',
-                color: '#0064e0',
+                color: '#1e40af',
                 fontWeight: 800,
                 fontSize: '1rem',
                 padding: '0.95rem 2.4rem',
                 borderRadius: '14px',
-                boxShadow: '0 12px 28px -4px rgba(0, 30, 90, 0.35), 0 4px 12px rgba(0, 0, 0, 0.12)',
+                boxShadow: '0 12px 28px -4px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.1)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '10px',
@@ -1424,11 +1416,11 @@ export default function LandingPage({ onLoginSuccess }) {
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 18px 36px -4px rgba(0, 30, 90, 0.45), 0 6px 16px rgba(0, 0, 0, 0.18)';
+                e.currentTarget.style.boxShadow = '0 18px 36px -4px rgba(0, 0, 0, 0.35), 0 6px 16px rgba(0, 0, 0, 0.15)';
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 12px 28px -4px rgba(0, 30, 90, 0.35), 0 4px 12px rgba(0, 0, 0, 0.12)';
+                e.currentTarget.style.boxShadow = '0 12px 28px -4px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.1)';
               }}
             >
               <BookOpen size={18} />
@@ -1452,20 +1444,20 @@ export default function LandingPage({ onLoginSuccess }) {
                 alignItems: 'center',
                 gap: '10px',
                 backdropFilter: 'blur(16px)',
-                boxShadow: '0 8px 24px rgba(0, 30, 90, 0.25)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.18)',
                 transition: 'all 0.25s ease'
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.background = 'rgba(255, 255, 255, 0.28)';
                 e.currentTarget.style.borderColor = '#ffffff';
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 12px 30px rgba(0, 30, 90, 0.35)';
+                e.currentTarget.style.boxShadow = '0 12px 30px rgba(0, 0, 0, 0.25)';
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.background = 'rgba(255, 255, 255, 0.16)';
                 e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.45)';
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 30, 90, 0.25)';
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.18)';
               }}
             >
               <LogIn size={18} style={{ color: '#ffffff' }} />
@@ -1505,7 +1497,7 @@ export default function LandingPage({ onLoginSuccess }) {
               <div
                 key={idx}
                 style={{
-                  background: 'rgba(255, 255, 255, 0.15)',
+                  background: 'rgba(255, 255, 255, 0.14)',
                   border: '1px solid rgba(255, 255, 255, 0.28)',
                   borderRadius: '16px',
                   padding: '1.25rem 1.25rem',
@@ -1513,20 +1505,20 @@ export default function LandingPage({ onLoginSuccess }) {
                   alignItems: 'center',
                   gap: '14px',
                   backdropFilter: 'blur(16px)',
-                  boxShadow: '0 12px 28px rgba(0, 25, 80, 0.18)',
+                  boxShadow: '0 12px 28px rgba(0, 0, 0, 0.15)',
                   transition: 'all 0.25s ease'
                 }}
                 onMouseEnter={e => {
                   e.currentTarget.style.transform = 'translateY(-3px)';
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.24)';
                   e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
-                  e.currentTarget.style.boxShadow = '0 18px 36px rgba(0, 25, 80, 0.28)';
+                  e.currentTarget.style.boxShadow = '0 18px 36px rgba(0, 0, 0, 0.25)';
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.14)';
                   e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.28)';
-                  e.currentTarget.style.boxShadow = '0 12px 28px rgba(0, 25, 80, 0.18)';
+                  e.currentTarget.style.boxShadow = '0 12px 28px rgba(0, 0, 0, 0.15)';
                 }}
               >
                 <div style={{
