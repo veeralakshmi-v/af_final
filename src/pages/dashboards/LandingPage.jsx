@@ -1715,8 +1715,8 @@ export default function LandingPage({ onLoginSuccess }) {
         display: 'flex',
         alignItems: 'center',
         backgroundImage: isMobile
-          ? `linear-gradient(to bottom, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.9) 65%, rgba(255, 255, 255, 0.6) 100%), url('/images/hero_softpro_workspace.jpg')`
-          : `linear-gradient(to right, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.92) 36%, rgba(255, 255, 255, 0.5) 54%, rgba(255, 255, 255, 0) 74%), url('/images/hero_softpro_workspace.jpg')`,
+          ? `linear-gradient(to bottom, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.9) 65%, rgba(255, 255, 255, 0.6) 100%), url('/images/hero_south_indian_student.jpg')`
+          : `linear-gradient(to right, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.94) 38%, rgba(255, 255, 255, 0.6) 55%, rgba(255, 255, 255, 0) 75%), url('/images/hero_south_indian_student.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: isMobile ? 'center center' : 'right center',
         backgroundRepeat: 'no-repeat',
