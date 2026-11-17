@@ -1503,7 +1503,7 @@ export default function LandingPage({ onLoginSuccess }) {
   };
 
   return (
-    <div style={{ fontFamily: 'var(--font-family)', background: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ fontFamily: 'var(--font-family)', background: '#ffffff', minHeight: '100vh', width: '100%', maxWidth: '100vw', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
 
       {/* ⏳ Countdown Banner */}
       <CountdownTimer />
@@ -1643,27 +1643,24 @@ export default function LandingPage({ onLoginSuccess }) {
       <section style={{
         width: '100%',
         minHeight: isMobile ? 'auto' : 'calc(100vh - 96px)',
-        height: isMobile ? 'auto' : 'calc(100vh - 96px)',
-        maxHeight: isMobile ? 'none' : 'calc(100vh - 96px)',
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
         backgroundImage: isMobile
-          ? `linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.92) 55%, rgba(255, 255, 255, 0.6) 100%), url('/images/hero_educational_student.jpg')`
-          : `linear-gradient(to right, #ffffff 0%, #ffffff 38%, rgba(255, 255, 255, 0.95) 48%, rgba(255, 255, 255, 0.2) 64%, rgba(255, 255, 255, 0) 78%), url('/images/hero_educational_student.jpg')`,
+          ? `linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.92) 55%, rgba(255, 255, 255, 0.6) 100%), url('/images/hero_educational_banner.jpg')`
+          : `linear-gradient(to right, #ffffff 0%, #ffffff 42%, rgba(255, 255, 255, 0.96) 54%, rgba(255, 255, 255, 0.2) 72%, rgba(255, 255, 255, 0) 86%), url('/images/hero_educational_banner.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: isMobile ? 'center top' : 'right center',
         backgroundRepeat: 'no-repeat',
         backgroundColor: '#ffffff',
         borderBottom: '1px solid #e2e8f0',
-        boxSizing: 'border-box',
-        overflow: 'hidden'
+        boxSizing: 'border-box'
       }}>
         <div style={{
           width: '100%',
           maxWidth: '1200px',
           margin: '0 auto',
-          padding: isMobile ? '2.5rem 1.25rem' : 'clamp(1rem, 2.2vh, 2.5rem) 2rem',
+          padding: isMobile ? '2.5rem 1.25rem' : 'clamp(1.5rem, 3.5vh, 3rem) 2rem',
           boxSizing: 'border-box',
           position: 'relative',
           zIndex: 2
@@ -1690,7 +1687,7 @@ export default function LandingPage({ onLoginSuccess }) {
 
             {/* Main Headline */}
             <h1 style={{
-              fontSize: isMobile ? '2.2rem' : 'clamp(1.95rem, 2.9vw, 3.1rem)',
+              fontSize: isMobile ? '2.2rem' : 'clamp(2rem, 3.2vw, 3.2rem)',
               fontWeight: 900,
               lineHeight: 1.12,
               margin: '0 0 clamp(0.45rem, 1.1vh, 0.85rem)',
