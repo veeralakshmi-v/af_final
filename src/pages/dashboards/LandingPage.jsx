@@ -9,10 +9,10 @@ import {
 // --- 1. COUNTDOWN TIMER BANNER WITH GOOGLE RATING & SCROLLING MARQUEE ---
 function CountdownTimer() {
   const [timeLeft, setTimeLeft] = useState({ days: 2, hours: 0, minutes: 0, seconds: 0 });
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -61,69 +61,119 @@ function CountdownTimer() {
     <div style={{
       background: '#1e40af',
       width: '100%',
-      padding: isMobile ? '1rem' : '0.8rem 2rem',
       color: '#ffffff',
       zIndex: 100,
       position: 'relative',
-      borderBottom: '1px solid rgba(255,255,255,0.1)'
+      borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+      boxSizing: 'border-box',
+      display: 'flex',
+      justifyContent: 'center'
     }}>
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
         width: '100%',
+        padding: isMobile ? '0.8rem 1rem' : '0.8rem 2rem',
         display: 'flex',
         flexDirection: isMobile ? 'column' : 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '1.2rem',
-        minHeight: isMobile ? 'auto' : '4.5rem',
-        textAlign: 'center'
+        gap: '1rem',
+        minHeight: isMobile ? 'auto' : '4.2rem',
+        boxSizing: 'border-box'
       }}>
-        {/* Google Rating Column */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '2px' }}>
-          <h3 style={{ fontSize: '1rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>Google Rating </h3>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span style={{ color: '#facc15', fontSize: '1.1rem' }}>★★★★★</span>
-            <span style={{ fontWeight: 600, color: '#ffffff', fontSize: '0.9rem' }}>5/5</span>
+        {/* Google Rating Column (Aligned flush-left with Alpha Fly Logo) */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: isMobile ? 'center' : 'flex-start',
+          textAlign: isMobile ? 'center' : 'left',
+          gap: '2px',
+          flexShrink: 0
+        }}>
+          <span style={{ fontSize: '0.95rem', fontWeight: 800, color: '#ffffff', lineHeight: 1.2 }}>
+            Google Rating
+          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+            <span style={{ color: '#facc15', fontSize: '1rem', letterSpacing: '1px', lineHeight: 1 }}>★★★★★</span>
+            <span style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.88rem' }}>5/5</span>
           </div>
         </div>
 
         {/* Countdown Clock Column */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', fontSize: '0.9rem', fontWeight: 600 }}>
-          <Clock size={16} />
-          <span>Enroll within</span>
-          <div style={{ display: 'flex', gap: '4px', fontFamily: 'monospace' }}>
-            <span style={{ background: '#FC6A03', color: '#ffffff', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>{timeLeft.days}d</span>
-            <span style={{ background: '#FC6A03', color: '#ffffff', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>{timeLeft.hours}h</span>
-            <span style={{ background: '#FC6A03', color: '#ffffff', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>{timeLeft.minutes}m</span>
-            <span style={{ background: '#FC6A03', color: '#ffffff', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>{timeLeft.seconds}s</span>
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          fontSize: '0.88rem',
+          fontWeight: 600
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'rgba(255, 255, 255, 0.95)' }}>
+            <Clock size={16} />
+            <span>Enroll within</span>
           </div>
-          <span>to claim</span>
-          <span style={{ background: '#000000', color: '#ffffff', padding: '3px 8px', borderRadius: '4px', fontWeight: 800, fontSize: '0.8rem' }}>
+          <div style={{ display: 'flex', gap: '4px', fontFamily: 'monospace' }}>
+            <span style={{ background: '#f97316', color: '#ffffff', padding: '2px 7px', borderRadius: '4px', fontWeight: 800, fontSize: '0.85rem' }}>{timeLeft.days}d</span>
+            <span style={{ background: '#f97316', color: '#ffffff', padding: '2px 7px', borderRadius: '4px', fontWeight: 800, fontSize: '0.85rem' }}>{timeLeft.hours}h</span>
+            <span style={{ background: '#f97316', color: '#ffffff', padding: '2px 7px', borderRadius: '4px', fontWeight: 800, fontSize: '0.85rem' }}>{timeLeft.minutes}m</span>
+            <span style={{ background: '#f97316', color: '#ffffff', padding: '2px 7px', borderRadius: '4px', fontWeight: 800, fontSize: '0.85rem' }}>{timeLeft.seconds}s</span>
+          </div>
+          <span style={{ color: 'rgba(255, 255, 255, 0.95)' }}>to claim</span>
+          <span style={{
+            background: '#0f172a',
+            color: '#facc15',
+            border: '1px solid rgba(250, 204, 21, 0.4)',
+            padding: '3px 9px',
+            borderRadius: '6px',
+            fontWeight: 900,
+            fontSize: '0.82rem',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px'
+          }}>
             50% OFF! 🎯
           </span>
         </div>
 
-        {/* Marquee Offers Column */}
-        <div className="marquee-container" style={{ width: isMobile ? '100%' : '30%', minWidth: '220px' }}>
-          <div className="marquee-content">
-            {[...offers, ...offers].map((offer, idx) => (
-              <span
-                key={idx}
-                style={{
-                  display: 'inline-block',
-                  background: offer.gradient,
-                  color: '#ffffff',
-                  padding: '4px 12px',
-                  borderRadius: '20px',
-                  fontWeight: 800,
-                  fontSize: '0.72rem',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                {offer.text}
-              </span>
-            ))}
+        {/* Right End: Scrolling Offer Badges (Flush-aligned with LOGIN button below) */}
+        <div style={{
+          width: isMobile ? '100%' : '300px',
+          maxWidth: '100%',
+          display: 'flex',
+          justifyContent: isMobile ? 'center' : 'flex-end',
+          alignItems: 'center',
+          overflow: 'hidden',
+          flexShrink: 0
+        }}>
+          <div className="marquee-container" style={{
+            width: '100%',
+            overflow: 'hidden',
+            maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)'
+          }}>
+            <div className="marquee-content">
+              {[...offers, ...offers].map((offer, idx) => (
+                <span
+                  key={idx}
+                  style={{
+                    display: 'inline-block',
+                    background: offer.gradient,
+                    color: '#ffffff',
+                    padding: '4px 12px',
+                    borderRadius: '20px',
+                    fontWeight: 800,
+                    fontSize: '0.72rem',
+                    letterSpacing: '0.02em',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.18)',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  {offer.text}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -1575,7 +1625,7 @@ export default function LandingPage({ onLoginSuccess }) {
 
       {/* 🧭 NAVIGATION BAR */}
       <header style={{ background: '#ffffff', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 90, boxShadow: 'var(--shadow-sm)', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', boxSizing: 'border-box' }}>
-        <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxSizing: 'border-box' }}>
+        <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '0.8rem 1rem' : '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxSizing: 'border-box' }}>
 
           {/* Logo brand */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
