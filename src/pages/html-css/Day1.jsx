@@ -5,7 +5,6 @@ import Quiz from '../../components/Quiz';
 import Introduction from '../../components/Introduction';
 import FloatingAITutor from '../../components/FloatingAITutor';
 import Prism from 'prismjs';
-import 'prismjs/components/prism-markup';
 import 'prismjs/themes/prism-tomorrow.css';
 
 // Reusable Section Component with Framer Motion

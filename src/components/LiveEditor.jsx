@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Prism from 'prismjs';
-import 'prismjs/components/prism-markup';
-import 'prismjs/components/prism-css';
 import 'prismjs/themes/prism-tomorrow.css';
 
 export default function LiveEditor({

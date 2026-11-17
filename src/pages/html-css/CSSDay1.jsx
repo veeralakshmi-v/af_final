@@ -3,8 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import LiveEditor from '../../components/LiveEditor';
 import Quiz from '../../components/Quiz';
 import Prism from 'prismjs';
-import 'prismjs/components/prism-css';
-import 'prismjs/components/prism-markup';
 import 'prismjs/themes/prism-tomorrow.css';
 
 // Reusable Section Component with Framer Motion

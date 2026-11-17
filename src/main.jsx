@@ -1,3 +1,8 @@
+import Prism from 'prismjs';
+if (typeof window !== 'undefined') {
+  window.Prism = Prism;
+}
+
 import React, { Component } from 'react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
