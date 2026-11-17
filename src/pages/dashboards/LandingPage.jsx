@@ -1647,10 +1647,10 @@ export default function LandingPage({ onLoginSuccess }) {
         display: 'flex',
         alignItems: 'center',
         backgroundImage: isMobile
-          ? `linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.92) 55%, rgba(255, 255, 255, 0.6) 100%), url('/images/hero_south_indian_student.jpg')`
-          : `linear-gradient(to right, #ffffff 0%, #ffffff 42%, rgba(255, 255, 255, 0.96) 52%, rgba(255, 255, 255, 0.3) 64%, rgba(255, 255, 255, 0) 74%), url('/images/hero_south_indian_student.jpg')`,
+          ? `linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.92) 55%, rgba(255, 255, 255, 0.6) 100%), url('/images/hero_educational_student.jpg')`
+          : `linear-gradient(to right, #ffffff 0%, #ffffff 40%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0.25) 65%, rgba(255, 255, 255, 0) 78%), url('/images/hero_educational_student.jpg')`,
         backgroundSize: 'cover',
-        backgroundPosition: isMobile ? 'center top' : 'right top',
+        backgroundPosition: isMobile ? 'center top' : 'right center',
         backgroundRepeat: 'no-repeat',
         backgroundColor: '#ffffff',
         borderBottom: '1px solid #e2e8f0',
