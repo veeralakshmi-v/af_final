@@ -2,10 +2,18 @@ import Prism from 'prismjs';
 if (typeof window !== 'undefined') {
   window.Prism = Prism;
 
-  // Auto-reload on stale dynamic import chunk following a new production deployment
+  // Auto-reload on stale dynamic import chunk following a new production deployment (with strict throttle)
   window.addEventListener('vite:preloadError', (event) => {
-    console.warn('Vite preload error detected. Auto-reloading for latest deployment assets...', event);
-    window.location.reload();
+    console.warn('Vite preload error detected. Checking reload threshold...', event);
+    const lastPreload = sessionStorage.getItem('last_preload_reload');
+    const now = Date.now();
+    // Allow at most 1 reload every 30 seconds to strictly prevent infinite reload loops and bandwidth drainage
+    if (!lastPreload || now - parseInt(lastPreload, 10) > 30000) {
+      sessionStorage.setItem('last_preload_reload', now.toString());
+      window.location.reload();
+    } else {
+      console.warn('Preload reload suppressed to protect bandwidth.');
+    }
   });
 }
 
@@ -39,7 +47,7 @@ class ErrorBoundary extends Component {
     if (isChunkError) {
       const lastReload = sessionStorage.getItem('last_chunk_reload');
       const now = Date.now();
-      if (!lastReload || now - parseInt(lastReload, 10) > 10000) {
+      if (!lastReload || now - parseInt(lastReload, 10) > 30000) {
         sessionStorage.setItem('last_chunk_reload', now.toString());
         window.location.reload();
       }
