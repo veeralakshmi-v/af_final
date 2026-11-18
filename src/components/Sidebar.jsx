@@ -224,7 +224,9 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
                         const isActive = activeNode?.moduleId === module.id && activeNode?.tabId === item.id;
                         const itemKey = `${activeCourse}:${module.id}:${item.id}`;
                         const isCompleted = completedLessons.includes(itemKey) ||
-                          completedLessons.includes(`${module.id}:${item.id}`);
+                          completedLessons.includes(`${module.id}:${item.id}`) ||
+                          completedLessons.includes(item.id) ||
+                          completedLessons.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
 
                         return (
                           <div

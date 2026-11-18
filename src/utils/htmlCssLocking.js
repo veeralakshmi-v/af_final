@@ -520,6 +520,99 @@ export function getModuleConfig(courseKey, moduleId) {
   };
 }
 
+// Helper to determine if a module or its previous module is unlocked/completed via topics or staff approval
+function checkModuleUnlockStatus(courseKey, targetModuleId, prevModuleId, validations, completedLessons = [], taskSubmissions = []) {
+  const completedList = Array.isArray(completedLessons) ? completedLessons : [];
+  const taskList = Array.isArray(taskSubmissions) ? taskSubmissions : [];
+  const valMap = validations || {};
+
+  // 1. If target module itself is already completed or has any completed topics, it is NEVER locked!
+  if (completedList.includes(targetModuleId) || completedList.includes(`${courseKey}:${targetModuleId}`)) {
+    return true;
+  }
+  const allCourseModules = COURSE_DATA_MAP[courseKey] || [];
+  const targetModuleObj = allCourseModules.find(m => m.id === targetModuleId);
+  if (targetModuleObj && Array.isArray(targetModuleObj.items) && targetModuleObj.items.length > 0) {
+    const hasAnyTargetTopicCompleted = targetModuleObj.items.some(item => {
+      const fullKey = `${courseKey}:${targetModuleId}:${item.id}`;
+      const midKey = `${targetModuleId}:${item.id}`;
+      return completedList.includes(fullKey) || 
+             completedList.includes(midKey) || 
+             completedList.includes(item.id) ||
+             completedList.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
+    });
+    if (hasAnyTargetTopicCompleted) return true;
+  }
+
+  // 2. If student has completed ALL topics across the course (100% course completion in staff dashboard)
+  const allCourseItems = allCourseModules.flatMap(m => m.items || []);
+  if (allCourseItems.length > 0) {
+    const totalDone = allCourseItems.filter(item => {
+      return completedList.includes(item.id) ||
+        completedList.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
+    }).length;
+    if (totalDone >= allCourseItems.length) {
+      return true; // 100% course completed
+    }
+  }
+
+  // 3. Check previous module completion
+  if (!prevModuleId) return true;
+
+  // 3a. Direct check if prevModuleId is in completedLessons (backend pushes moduleId on staff approval)
+  if (completedList.includes(prevModuleId) || completedList.includes(`${courseKey}:${prevModuleId}`)) {
+    return true;
+  }
+
+  // 3b. Check if prevModuleId has completed topics in completedLessons
+  const prevModObj = allCourseModules.find(m => m.id === prevModuleId);
+  if (prevModObj && Array.isArray(prevModObj.items) && prevModObj.items.length > 0) {
+    const prevDoneCount = prevModObj.items.filter(item => {
+      const fullKey = `${courseKey}:${prevModuleId}:${item.id}`;
+      const midKey = `${prevModuleId}:${item.id}`;
+      return completedList.includes(fullKey) || 
+             completedList.includes(midKey) || 
+             completedList.includes(item.id) ||
+             completedList.some(c => typeof c === 'string' && (c === item.id || c.endsWith(`:${item.id}`)));
+    }).length;
+
+    // If student has completed topics in the previous module, it unlocks the next day!
+    if (prevDoneCount > 0) {
+      return true;
+    }
+  }
+
+  // 3c. Check staff approval via task submissions
+  const prevTask = taskList.find(t => {
+    if (!t || !t.moduleId) return false;
+    const tMod = String(t.moduleId).trim().toLowerCase();
+    const pMod = String(prevModuleId).trim().toLowerCase();
+    return tMod === pMod || tMod.endsWith(pMod) || pMod.endsWith(tMod);
+  });
+  if (prevTask && (prevTask.status === 'Approved' || prevTask.status === 'approved')) {
+    return true;
+  }
+
+  // 3d. Check staff approval via validations (localStorage fallback)
+  const prevVal = valMap[prevModuleId];
+  if (prevVal && (prevVal.status === 'approved' || prevVal.status === 'Approved')) {
+    return true;
+  }
+
+  // Special exemption: module3 (CSS Day 3)
+  if (targetModuleId === 'module3') {
+    const mod2Task = taskList.find(t => t && t.moduleId && (t.moduleId === 'module2' || t.moduleId === 'html_project'));
+    const mod2Val = valMap['module2'] || valMap['html_project'];
+    if ((mod2Task && (mod2Task.status === 'Approved' || mod2Task.status === 'approved')) ||
+        (mod2Val && (mod2Val.status === 'approved' || mod2Val.status === 'Approved')) ||
+        completedList.includes('module2') || completedList.includes('html_project')) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations, maybeValidations, maybeSession, completedLessons = [], taskSubmissions = []) {
   let courseKey, targetModuleId, validations, session;
 
@@ -590,27 +683,8 @@ export function isModuleLocked(courseKeyOrModuleId, targetModuleIdOrValidations,
   }
 
   const prevModuleId = order[index - 1];
-  const prevValidation = validations[prevModuleId];
-  const prevTask = Array.isArray(taskSubmissions) ? taskSubmissions.find(t => t.moduleId === prevModuleId) : null;
-
-  // Next day is unlocked ONLY IF staff approved previous day assignment!
-  const isApprovedByValidation = prevValidation && (prevValidation.status === 'approved' || prevValidation.status === 'Approved');
-  const isApprovedByTask = prevTask && (prevTask.status === 'Approved' || prevTask.status === 'approved');
-
-  let isApproved = isApprovedByValidation || isApprovedByTask;
-
-  // For module3 (CSS Day 3), allow unlock if either html_project OR module2 was approved by staff
-  if (!isApproved && targetModuleId === 'module3') {
-    const mod2Task = Array.isArray(taskSubmissions) ? taskSubmissions.find(t => t.moduleId === 'module2') : null;
-    const mod2Val = validations && validations['module2'];
-    if ((mod2Task && (mod2Task.status === 'Approved' || mod2Task.status === 'approved')) ||
-        (mod2Val && (mod2Val.status === 'approved' || mod2Val.status === 'Approved'))) {
-      isApproved = true;
-    }
-  }
-
-  // Without staff approval, next day is strictly LOCKED for student!
-  return !isApproved;
+  const isUnlocked = checkModuleUnlockStatus(courseKey, targetModuleId, prevModuleId, validations, completedLessons, taskSubmissions);
+  return !isUnlocked;
 }
 
 export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, maybeValidations, maybeSession, completedLessons = [], taskSubmissions = []) {
@@ -685,24 +759,10 @@ export function getLockReason(courseKeyOrModuleId, targetModuleIdOrValidations, 
 
   const prevModuleId = order[index - 1];
   const config = getModuleConfig(courseKey, prevModuleId);
-  const prevValidation = validations[prevModuleId];
-  const prevTask = Array.isArray(taskSubmissions) ? taskSubmissions.find(t => t.moduleId === prevModuleId) : null;
 
-  // Check if staff approved
-  const isApprovedByValidation = prevValidation && (prevValidation.status === 'approved' || prevValidation.status === 'Approved');
-  const isApprovedByTask = prevTask && (prevTask.status === 'Approved' || prevTask.status === 'approved');
-
-  let isApproved = isApprovedByValidation || isApprovedByTask;
-  if (!isApproved && targetModuleId === 'module3') {
-    const mod2Task = Array.isArray(taskSubmissions) ? taskSubmissions.find(t => t.moduleId === 'module2') : null;
-    const mod2Val = validations && validations['module2'];
-    if ((mod2Task && (mod2Task.status === 'Approved' || mod2Task.status === 'approved')) ||
-        (mod2Val && (mod2Val.status === 'approved' || mod2Val.status === 'Approved'))) {
-      isApproved = true;
-    }
-  }
-
-  if (isApproved) return null;
+  // Check if unlocked via topics, staff approval, or prior completion
+  const isUnlocked = checkModuleUnlockStatus(courseKey, targetModuleId, prevModuleId, validations, completedLessons, taskSubmissions);
+  if (isUnlocked) return null;
 
   // Check if student submitted but pending staff evaluation
   const isPending = (prevValidation && (prevValidation.status === 'pending' || prevValidation.status === 'Submitted')) || 

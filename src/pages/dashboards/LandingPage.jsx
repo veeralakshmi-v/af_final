@@ -1355,7 +1355,11 @@ export default function LandingPage({ onLoginSuccess }) {
           enrolledCourse: studentData.enrolledCourse,
           token: 'mock-student-session-token',
           accessCode: studentData.accessCode,
-          studentId: studentData._id || studentData.id
+          studentId: studentData._id || studentData.id,
+          isCourseActivated: studentData.isCourseActivated !== undefined ? studentData.isCourseActivated : true,
+          admissionStatus: studentData.admissionStatus || 'Approved',
+          completedLessons: studentData.completedLessons || [],
+          tasks: studentData.tasks || []
         });
         return;
       } else {

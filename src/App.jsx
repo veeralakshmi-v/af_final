@@ -299,9 +299,23 @@ function App() {
   const [tutorOpen, setTutorOpen] = useState(false);
   const [initialQuestion, setInitialQuestion] = useState('');
 
-  // Student Progress & Submission States
-  const [completedLessons, setCompletedLessons] = useState([]);
-  const [taskSubmissions, setTaskSubmissions] = useState([]);
+  // Student Progress & Submission States (cached in localStorage so student view never starts locked)
+  const [completedLessons, setCompletedLessons] = useState(() => {
+    try {
+      const saved = localStorage.getItem('lms_student_completed_lessons');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+  const [taskSubmissions, setTaskSubmissions] = useState(() => {
+    try {
+      const saved = localStorage.getItem('lms_student_tasks');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [admissionModalOpen, setAdmissionModalOpen] = useState(false);
   const [admissionBlockedCourse, setAdmissionBlockedCourse] = useState('');
@@ -317,17 +331,30 @@ function App() {
           const resStudents = await fetch('/api/students');
           if (resStudents.ok) {
             const list = await resStudents.json();
-            const me = list.find(s => s.accessCode === session.accessCode || (s.studentId && s.studentId === session.studentId));
+            const me = list.find(s => {
+              const codeA = (s.accessCode || '').trim().toUpperCase();
+              const codeB = (session.accessCode || session.username || '').trim().toUpperCase();
+              const idMatch = (s._id && (s._id === session.studentId || s._id === session._id)) ||
+                              (s.id && (s.id === session.studentId || s.id === session.id));
+              return (codeA && codeB && codeA === codeB) || idMatch;
+            });
             if (me) {
-              setCompletedLessons(me.completedLessons || []);
-              setTaskSubmissions(me.tasks || []);
+              const completed = me.completedLessons || [];
+              const tasks = me.tasks || [];
+              setCompletedLessons(completed);
+              setTaskSubmissions(tasks);
+              try {
+                localStorage.setItem('lms_student_completed_lessons', JSON.stringify(completed));
+                localStorage.setItem('lms_student_tasks', JSON.stringify(tasks));
+              } catch (e) {}
+
               if (me.isCourseActivated !== undefined || me.admissionStatus !== undefined) {
                 setSession(prev => {
                   const updated = {
                     ...prev,
                     isCourseActivated: me.isCourseActivated,
                     admissionStatus: me.admissionStatus,
-                    studentId: me.studentId || prev.studentId,
+                    studentId: me.studentId || me._id || prev.studentId,
                     joiningDate: me.joiningDate || prev.joiningDate,
                     idCardNumber: me.idCardNumber || prev.idCardNumber,
                     invoiceNo: me.invoiceNo || prev.invoiceNo
@@ -367,7 +394,11 @@ function App() {
       });
       if (res.ok) {
         const updatedStudent = await res.json();
-        setCompletedLessons(updatedStudent.completedLessons || []);
+        const updatedCompleted = updatedStudent.completedLessons || [];
+        setCompletedLessons(updatedCompleted);
+        try {
+          localStorage.setItem('lms_student_completed_lessons', JSON.stringify(updatedCompleted));
+        } catch (e) {}
       }
     } catch (e) {
       console.warn('Failed to toggle completion:', e);
@@ -403,7 +434,11 @@ function App() {
       });
       if (res.ok) {
         const updatedStudent = await res.json();
-        setTaskSubmissions(updatedStudent.tasks || []);
+        const updatedTasks = updatedStudent.tasks || [];
+        setTaskSubmissions(updatedTasks);
+        try {
+          localStorage.setItem('lms_student_tasks', JSON.stringify(updatedTasks));
+        } catch (e) {}
         setShowTaskModal(false);
         setTaskSubmitUrl('');
         setTaskSubmitNotes('');
@@ -460,12 +495,28 @@ function App() {
     localStorage.setItem('lms_user_session', JSON.stringify(sessionPayload));
     setEnrolledCourse(sessionPayload.enrolledCourse);
     localStorage.setItem('student_enrollment', sessionPayload.enrolledCourse);
+    const completed = Array.isArray(sessionPayload.completedLessons) ? sessionPayload.completedLessons : [];
+    const tasks = Array.isArray(sessionPayload.tasks) ? sessionPayload.tasks : [];
+    if (completed.length > 0) {
+      setCompletedLessons(completed);
+      try {
+        localStorage.setItem('lms_student_completed_lessons', JSON.stringify(completed));
+      } catch (e) {}
+    }
+    if (tasks.length > 0) {
+      setTaskSubmissions(tasks);
+      try {
+        localStorage.setItem('lms_student_tasks', JSON.stringify(tasks));
+      } catch (e) {}
+    }
     setActiveCourse('dashboard');
   };
 
   const handleLogout = () => {
     setSession(null);
     localStorage.removeItem('lms_user_session');
+    localStorage.removeItem('lms_student_completed_lessons');
+    localStorage.removeItem('lms_student_tasks');
     setEnrolledCourse('all');
     localStorage.setItem('student_enrollment', 'all');
     setActiveCourse('dashboard');
