@@ -322,6 +322,8 @@ const coursePageSchema = new mongoose.Schema({
   title: { type: String, default: '' },
   rawContent: { type: String, default: '' },
   fileSizeBytes: { type: Number, default: 0 },
+  isInteractive: { type: Boolean, default: false },
+  location: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

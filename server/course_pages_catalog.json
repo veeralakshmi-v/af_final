@@ -1,5 +1,18 @@
 [
   {
+    "pageId": "agentic-ai_AgenticAIDay1",
+    "subject": "agentic-ai",
+    "courseKey": "agentic_ai",
+    "moduleId": "agenticaiday1",
+    "componentName": "AgenticAIDay1",
+    "fileName": "AgenticAIDay1.jsx",
+    "title": "Introduction to Agentic AI",
+    "fileSizeBytes": 35213,
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.605Z"
+  },
+  {
     "pageId": "agentic-ai_AgenticAIDay10",
     "subject": "agentic-ai",
     "courseKey": "agentic_ai",
@@ -7,8 +20,10 @@
     "componentName": "AgenticAIDay10",
     "fileName": "AgenticAIDay10.jsx",
     "title": "Capstone: Build a Real-Time Agent Tool",
-    "fileSizeBytes": 40268,
-    "updatedAt": "2026-11-17T07:35:00.836Z"
+    "fileSizeBytes": 40818,
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay10.jsx",
+    "updatedAt": "2026-11-19T12:04:32.608Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay11",
@@ -19,7 +34,9 @@
     "fileName": "AgenticAIDay11.jsx",
     "title": "Introduction to n8n & Workflows",
     "fileSizeBytes": 53929,
-    "updatedAt": "2026-11-17T07:35:00.837Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay11.jsx",
+    "updatedAt": "2026-11-19T12:04:32.610Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay12",
@@ -30,7 +47,9 @@
     "fileName": "AgenticAIDay12.jsx",
     "title": "Triggers, Actions & APIs",
     "fileSizeBytes": 44777,
-    "updatedAt": "2026-11-17T07:35:00.837Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay12.jsx",
+    "updatedAt": "2026-11-19T12:04:32.612Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay13",
@@ -41,7 +60,9 @@
     "fileName": "AgenticAIDay13.jsx",
     "title": "AI Automation using n8n",
     "fileSizeBytes": 47671,
-    "updatedAt": "2026-11-17T07:35:00.838Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay13.jsx",
+    "updatedAt": "2026-11-19T12:04:32.614Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay14",
@@ -52,7 +73,9 @@
     "fileName": "AgenticAIDay14.jsx",
     "title": "Invoice",
     "fileSizeBytes": 45946,
-    "updatedAt": "2026-11-17T07:35:00.838Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay14.jsx",
+    "updatedAt": "2026-11-19T12:04:32.616Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay15",
@@ -63,7 +86,9 @@
     "fileName": "AgenticAIDay15.jsx",
     "title": "Welcome",
     "fileSizeBytes": 53543,
-    "updatedAt": "2026-11-17T07:35:00.839Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay15.jsx",
+    "updatedAt": "2026-11-19T12:04:32.618Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay16",
@@ -74,7 +99,9 @@
     "fileName": "AgenticAIDay16.jsx",
     "title": "Introduction to Flowise & Visual AI Agents",
     "fileSizeBytes": 44943,
-    "updatedAt": "2026-11-17T07:35:00.840Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay16.jsx",
+    "updatedAt": "2026-11-19T12:04:32.620Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay17",
@@ -85,7 +112,9 @@
     "fileName": "AgenticAIDay17.jsx",
     "title": "RAG & Document QA in Flowise",
     "fileSizeBytes": 46583,
-    "updatedAt": "2026-11-17T07:35:00.841Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay17.jsx",
+    "updatedAt": "2026-11-19T12:04:32.623Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay18",
@@ -96,7 +125,9 @@
     "fileName": "AgenticAIDay18.jsx",
     "title": "Tool-Calling Agents in Flowise",
     "fileSizeBytes": 35026,
-    "updatedAt": "2026-11-17T07:35:00.841Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay18.jsx",
+    "updatedAt": "2026-11-19T12:04:32.625Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay19",
@@ -107,7 +138,9 @@
     "fileName": "AgenticAIDay19.jsx",
     "title": "Deploying Flowise: Embed & REST API",
     "fileSizeBytes": 30914,
-    "updatedAt": "2026-11-17T07:35:00.842Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay19.jsx",
+    "updatedAt": "2026-11-19T12:04:32.627Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay2",
@@ -117,8 +150,10 @@
     "componentName": "AgenticAIDay2",
     "fileName": "AgenticAIDay2.jsx",
     "title": "Agentic AI Architecture Layers",
-    "fileSizeBytes": 31727,
-    "updatedAt": "2026-11-17T07:35:00.842Z"
+    "fileSizeBytes": 32277,
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.629Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay20",
@@ -129,7 +164,9 @@
     "fileName": "AgenticAIDay20.jsx",
     "title": "Capstone: Enterprise AI Agent System",
     "fileSizeBytes": 33866,
-    "updatedAt": "2026-11-17T07:35:00.843Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay20.jsx",
+    "updatedAt": "2026-11-19T12:04:32.630Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay21",
@@ -140,7 +177,9 @@
     "fileName": "AgenticAIDay21.jsx",
     "title": "Introduction to LangChain & Chains",
     "fileSizeBytes": 49261,
-    "updatedAt": "2026-11-17T07:35:00.843Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay21.jsx",
+    "updatedAt": "2026-11-19T12:04:32.632Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay22",
@@ -151,7 +190,9 @@
     "fileName": "AgenticAIDay22.jsx",
     "title": "LCEL & Advanced Prompt Templates",
     "fileSizeBytes": 36401,
-    "updatedAt": "2026-11-17T07:35:00.844Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay22.jsx",
+    "updatedAt": "2026-11-19T12:04:32.633Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay23",
@@ -162,7 +203,9 @@
     "fileName": "AgenticAIDay23.jsx",
     "title": "LangChain Memory & Chat History",
     "fileSizeBytes": 33089,
-    "updatedAt": "2026-11-17T07:35:00.844Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay23.jsx",
+    "updatedAt": "2026-11-19T12:04:32.635Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay24",
@@ -173,7 +216,9 @@
     "fileName": "AgenticAIDay24.jsx",
     "title": "LangChain Agents & Custom Tools",
     "fileSizeBytes": 32640,
-    "updatedAt": "2026-11-17T07:35:00.845Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay24.jsx",
+    "updatedAt": "2026-11-19T12:04:32.636Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay25",
@@ -184,7 +229,9 @@
     "fileName": "AgenticAIDay25.jsx",
     "title": "Day 25: Capstone: LangChain Orchestrator",
     "fileSizeBytes": 19512,
-    "updatedAt": "2026-11-17T07:35:00.845Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay25.jsx",
+    "updatedAt": "2026-11-19T12:04:32.637Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay26",
@@ -195,7 +242,9 @@
     "fileName": "AgenticAIDay26.jsx",
     "title": "Introduction to LangGraph",
     "fileSizeBytes": 35152,
-    "updatedAt": "2026-11-17T07:35:00.846Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay26.jsx",
+    "updatedAt": "2026-11-19T12:04:32.639Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay27",
@@ -206,7 +255,9 @@
     "fileName": "AgenticAIDay27.jsx",
     "title": "Nodes, Edges & State Updates",
     "fileSizeBytes": 35127,
-    "updatedAt": "2026-11-17T07:35:00.846Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay27.jsx",
+    "updatedAt": "2026-11-19T12:04:32.641Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay28",
@@ -217,7 +268,9 @@
     "fileName": "AgenticAIDay28.jsx",
     "title": "Conditional Edges & Routing",
     "fileSizeBytes": 36077,
-    "updatedAt": "2026-11-17T07:35:00.847Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay28.jsx",
+    "updatedAt": "2026-11-19T12:04:32.642Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay29",
@@ -228,7 +281,9 @@
     "fileName": "AgenticAIDay29.jsx",
     "title": "Persistence & Memory",
     "fileSizeBytes": 35372,
-    "updatedAt": "2026-11-17T07:35:00.847Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay29.jsx",
+    "updatedAt": "2026-11-19T12:04:32.644Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay3",
@@ -238,8 +293,10 @@
     "componentName": "AgenticAIDay3",
     "fileName": "AgenticAIDay3.jsx",
     "title": "Day 3: Mastering Prompt Engineering",
-    "fileSizeBytes": 33680,
-    "updatedAt": "2026-11-17T07:35:00.847Z"
+    "fileSizeBytes": 34227,
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.646Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay30",
@@ -250,7 +307,9 @@
     "fileName": "AgenticAIDay30.jsx",
     "title": "Day 30: Capstone LangGraph Agent",
     "fileSizeBytes": 40404,
-    "updatedAt": "2026-11-17T07:35:00.848Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay30.jsx",
+    "updatedAt": "2026-11-19T12:04:32.648Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay31",
@@ -261,7 +320,9 @@
     "fileName": "AgenticAIDay31.jsx",
     "title": "Introduction to CrewAI",
     "fileSizeBytes": 32277,
-    "updatedAt": "2026-11-17T07:35:00.848Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay31.jsx",
+    "updatedAt": "2026-11-19T12:04:32.650Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay32",
@@ -272,7 +333,9 @@
     "fileName": "AgenticAIDay32.jsx",
     "title": "CrewAI Tools & Custom Tools",
     "fileSizeBytes": 32146,
-    "updatedAt": "2026-11-17T07:35:00.849Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay32.jsx",
+    "updatedAt": "2026-11-19T12:04:32.652Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay33",
@@ -283,7 +346,9 @@
     "fileName": "AgenticAIDay33.jsx",
     "title": "Memory & Context Collaboration",
     "fileSizeBytes": 32226,
-    "updatedAt": "2026-11-17T07:35:00.849Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay33.jsx",
+    "updatedAt": "2026-11-19T12:04:32.654Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay34",
@@ -294,7 +359,9 @@
     "fileName": "AgenticAIDay34.jsx",
     "title": "Process Flows: Sequential vs Hierarchical",
     "fileSizeBytes": 37148,
-    "updatedAt": "2026-11-17T07:35:00.850Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay34.jsx",
+    "updatedAt": "2026-11-19T12:04:32.655Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay35",
@@ -305,7 +372,9 @@
     "fileName": "AgenticAIDay35.jsx",
     "title": "Day 35: Capstone Multi-Agent Crew",
     "fileSizeBytes": 32398,
-    "updatedAt": "2026-11-17T07:35:00.850Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay35.jsx",
+    "updatedAt": "2026-11-19T12:04:32.656Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay36",
@@ -316,7 +385,9 @@
     "fileName": "AgenticAIDay36.jsx",
     "title": "Day 36: Intro to Agno & Agno Agents",
     "fileSizeBytes": 33202,
-    "updatedAt": "2026-11-17T07:35:00.851Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay36.jsx",
+    "updatedAt": "2026-11-19T12:04:32.658Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay37",
@@ -327,7 +398,9 @@
     "fileName": "AgenticAIDay37.jsx",
     "title": "Day 37: Agno Tools & Toolkits",
     "fileSizeBytes": 34304,
-    "updatedAt": "2026-11-17T07:35:00.851Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay37.jsx",
+    "updatedAt": "2026-11-19T12:04:32.659Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay38",
@@ -338,7 +411,9 @@
     "fileName": "AgenticAIDay38.jsx",
     "title": "Day 38: Agno Knowledge Bases & Vector DBs",
     "fileSizeBytes": 34000,
-    "updatedAt": "2026-11-17T07:35:00.852Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay38.jsx",
+    "updatedAt": "2026-11-19T12:04:32.661Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay39",
@@ -349,7 +424,9 @@
     "fileName": "AgenticAIDay39.jsx",
     "title": "Day 39: Agno Teams & Agent Collaboration",
     "fileSizeBytes": 35200,
-    "updatedAt": "2026-11-17T07:35:00.852Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay39.jsx",
+    "updatedAt": "2026-11-19T12:04:32.663Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay4",
@@ -359,8 +436,10 @@
     "componentName": "AgenticAIDay4",
     "fileName": "AgenticAIDay4.jsx",
     "title": "Reasoning, Planning & Loops",
-    "fileSizeBytes": 37990,
-    "updatedAt": "2026-11-17T07:35:00.853Z"
+    "fileSizeBytes": 38532,
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.664Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay40",
@@ -371,7 +450,9 @@
     "fileName": "AgenticAIDay40.jsx",
     "title": "Day 40: Capstone Production Agent",
     "fileSizeBytes": 34906,
-    "updatedAt": "2026-11-17T07:35:00.853Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay40.jsx",
+    "updatedAt": "2026-11-19T12:04:32.666Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay5",
@@ -381,8 +462,10 @@
     "componentName": "AgenticAIDay5",
     "fileName": "AgenticAIDay5.jsx",
     "title": "How AI Agents Work (Booking & Email)",
-    "fileSizeBytes": 56265,
-    "updatedAt": "2026-11-17T07:35:00.854Z"
+    "fileSizeBytes": 56811,
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.668Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay6",
@@ -392,8 +475,10 @@
     "componentName": "AgenticAIDay6",
     "fileName": "AgenticAIDay6.jsx",
     "title": "AI Instructions & System Prompts",
-    "fileSizeBytes": 46856,
-    "updatedAt": "2026-11-17T07:35:00.854Z"
+    "fileSizeBytes": 47401,
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:32.669Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay7",
@@ -403,8 +488,10 @@
     "componentName": "AgenticAIDay7",
     "fileName": "AgenticAIDay7.jsx",
     "title": "APIs, Passcodes, & Tool Calling",
-    "fileSizeBytes": 42325,
-    "updatedAt": "2026-11-17T07:35:00.855Z"
+    "fileSizeBytes": 42869,
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay7.jsx",
+    "updatedAt": "2026-11-19T12:04:32.671Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay8",
@@ -414,8 +501,10 @@
     "componentName": "AgenticAIDay8",
     "fileName": "AgenticAIDay8.jsx",
     "title": "Connecting Agents with Live APIs",
-    "fileSizeBytes": 34375,
-    "updatedAt": "2026-11-17T07:35:00.855Z"
+    "fileSizeBytes": 34922,
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay8.jsx",
+    "updatedAt": "2026-11-19T12:04:32.672Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDay9",
@@ -425,8 +514,10 @@
     "componentName": "AgenticAIDay9",
     "fileName": "AgenticAIDay9.jsx",
     "title": "Structured Outputs & Pydantic",
-    "fileSizeBytes": 39798,
-    "updatedAt": "2026-11-17T07:35:00.856Z"
+    "fileSizeBytes": 40268,
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIDay9.jsx",
+    "updatedAt": "2026-11-19T12:04:32.674Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIDemo",
@@ -435,9 +526,37 @@
     "moduleId": "agenticaidemo",
     "componentName": "AgenticAIDemo",
     "fileName": "AgenticAIDemo.jsx",
-    "title": "Introduction to Agentic AI",
-    "fileSizeBytes": 34669,
-    "updatedAt": "2026-11-17T07:35:00.856Z"
+    "title": "AgenticAIDemo",
+    "fileSizeBytes": 102,
+    "isInteractive": false,
+    "location": "src/pages/agentic-ai/AgenticAIDemo.jsx",
+    "updatedAt": "2026-11-19T12:04:32.675Z"
+  },
+  {
+    "pageId": "agentic-ai_AgenticAIInductionDemo",
+    "subject": "agentic-ai",
+    "courseKey": "agentic_ai",
+    "moduleId": "agentic_ai_demo",
+    "componentName": "AgenticAIInductionDemo",
+    "fileName": "AgenticAIInductionDemo.jsx",
+    "title": "{title}",
+    "fileSizeBytes": 29412,
+    "isInteractive": false,
+    "location": "src/pages/agentic-ai/AgenticAIInductionDemo.jsx",
+    "updatedAt": "2026-11-19T12:04:32.677Z"
+  },
+  {
+    "pageId": "agentic-ai_AgenticAIModule2Project",
+    "subject": "agentic-ai",
+    "courseKey": "agentic_ai",
+    "moduleId": "agenticaimodule2project",
+    "componentName": "AgenticAIModule2Project",
+    "fileName": "AgenticAIModule2Project.jsx",
+    "title": "Final Project: Real-Time Multi-Tool AI Agent Workspace",
+    "fileSizeBytes": 30346,
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIModule2Project.jsx",
+    "updatedAt": "2026-11-19T12:04:32.679Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIModule3Project",
@@ -448,7 +567,9 @@
     "fileName": "AgenticAIModule3Project.jsx",
     "title": "AI-Powered Student Admission System",
     "fileSizeBytes": 27120,
-    "updatedAt": "2026-11-17T07:35:00.857Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIModule3Project.jsx",
+    "updatedAt": "2026-11-19T12:04:32.680Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIModule4Project",
@@ -459,7 +580,9 @@
     "fileName": "AgenticAIModule4Project.jsx",
     "title": "Master Enterprise AI Agent Platform",
     "fileSizeBytes": 25703,
-    "updatedAt": "2026-11-17T07:35:00.857Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIModule4Project.jsx",
+    "updatedAt": "2026-11-19T12:04:32.682Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIModule5Project",
@@ -470,7 +593,9 @@
     "fileName": "AgenticAIModule5Project.jsx",
     "title": "LangChain Enterprise Orchestrator",
     "fileSizeBytes": 25466,
-    "updatedAt": "2026-11-17T07:35:00.858Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIModule5Project.jsx",
+    "updatedAt": "2026-11-19T12:04:32.684Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIModule6Project",
@@ -481,7 +606,9 @@
     "fileName": "AgenticAIModule6Project.jsx",
     "title": "Stateful LangGraph Customer Helpdesk",
     "fileSizeBytes": 24844,
-    "updatedAt": "2026-11-17T07:35:00.858Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIModule6Project.jsx",
+    "updatedAt": "2026-11-19T12:04:32.685Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIModule7Project",
@@ -492,7 +619,9 @@
     "fileName": "AgenticAIModule7Project.jsx",
     "title": "CrewAI Financial Research Agency",
     "fileSizeBytes": 21767,
-    "updatedAt": "2026-11-17T07:35:00.859Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIModule7Project.jsx",
+    "updatedAt": "2026-11-19T12:04:32.686Z"
   },
   {
     "pageId": "agentic-ai_AgenticAIModule8Project",
@@ -503,7 +632,9 @@
     "fileName": "AgenticAIModule8Project.jsx",
     "title": "Agno AI Portfolio Advisory Agency",
     "fileSizeBytes": 25426,
-    "updatedAt": "2026-11-17T07:35:00.859Z"
+    "isInteractive": true,
+    "location": "src/pages/agentic-ai/AgenticAIModule8Project.jsx",
+    "updatedAt": "2026-11-19T12:04:32.687Z"
   },
   {
     "pageId": "ai_AIPowerTools",
@@ -514,7 +645,9 @@
     "fileName": "AIPowerTools.jsx",
     "title": "{title}",
     "fileSizeBytes": 84941,
-    "updatedAt": "2026-11-17T07:35:00.860Z"
+    "isInteractive": true,
+    "location": "src/pages/ai/AIPowerTools.jsx",
+    "updatedAt": "2026-11-19T12:04:32.690Z"
   },
   {
     "pageId": "devops_DevOpsDay1",
@@ -525,7 +658,9 @@
     "fileName": "DevOpsDay1.jsx",
     "title": "{title}",
     "fileSizeBytes": 30428,
-    "updatedAt": "2026-11-17T07:35:00.861Z"
+    "isInteractive": true,
+    "location": "src/pages/devops/DevOpsDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.691Z"
   },
   {
     "pageId": "devops_DevOpsDay2",
@@ -536,7 +671,9 @@
     "fileName": "DevOpsDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 27654,
-    "updatedAt": "2026-11-17T07:35:00.861Z"
+    "isInteractive": true,
+    "location": "src/pages/devops/DevOpsDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.693Z"
   },
   {
     "pageId": "devops_DevOpsDay3",
@@ -547,7 +684,9 @@
     "fileName": "DevOpsDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 32014,
-    "updatedAt": "2026-11-17T07:35:00.862Z"
+    "isInteractive": true,
+    "location": "src/pages/devops/DevOpsDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.694Z"
   },
   {
     "pageId": "django_DjangoDay1",
@@ -558,7 +697,9 @@
     "fileName": "DjangoDay1.jsx",
     "title": "{title}",
     "fileSizeBytes": 38965,
-    "updatedAt": "2026-11-17T07:35:00.863Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.697Z"
   },
   {
     "pageId": "django_DjangoDay10",
@@ -569,7 +710,9 @@
     "fileName": "DjangoDay10.jsx",
     "title": "{title}",
     "fileSizeBytes": 36210,
-    "updatedAt": "2026-11-17T07:35:00.863Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay10.jsx",
+    "updatedAt": "2026-11-19T12:04:32.698Z"
   },
   {
     "pageId": "django_DjangoDay11",
@@ -580,7 +723,9 @@
     "fileName": "DjangoDay11.jsx",
     "title": "{title}",
     "fileSizeBytes": 33994,
-    "updatedAt": "2026-11-17T07:35:00.863Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay11.jsx",
+    "updatedAt": "2026-11-19T12:04:32.700Z"
   },
   {
     "pageId": "django_DjangoDay12",
@@ -591,7 +736,9 @@
     "fileName": "DjangoDay12.jsx",
     "title": "{title}",
     "fileSizeBytes": 67796,
-    "updatedAt": "2026-11-17T07:35:00.864Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay12.jsx",
+    "updatedAt": "2026-11-19T12:04:32.702Z"
   },
   {
     "pageId": "django_DjangoDay13",
@@ -602,7 +749,9 @@
     "fileName": "DjangoDay13.jsx",
     "title": "{title}",
     "fileSizeBytes": 36218,
-    "updatedAt": "2026-11-17T07:35:00.865Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay13.jsx",
+    "updatedAt": "2026-11-19T12:04:32.703Z"
   },
   {
     "pageId": "django_DjangoDay14",
@@ -613,7 +762,9 @@
     "fileName": "DjangoDay14.jsx",
     "title": "{title}",
     "fileSizeBytes": 72214,
-    "updatedAt": "2026-11-17T07:35:00.865Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay14.jsx",
+    "updatedAt": "2026-11-19T12:04:32.705Z"
   },
   {
     "pageId": "django_DjangoDay15",
@@ -624,7 +775,9 @@
     "fileName": "DjangoDay15.jsx",
     "title": "{title}",
     "fileSizeBytes": 28850,
-    "updatedAt": "2026-11-17T07:35:00.866Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay15.jsx",
+    "updatedAt": "2026-11-19T12:04:32.706Z"
   },
   {
     "pageId": "django_DjangoDay2",
@@ -635,7 +788,9 @@
     "fileName": "DjangoDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 46475,
-    "updatedAt": "2026-11-17T07:35:00.866Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.708Z"
   },
   {
     "pageId": "django_DjangoDay3",
@@ -646,7 +801,9 @@
     "fileName": "DjangoDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 76330,
-    "updatedAt": "2026-11-17T07:35:00.867Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.710Z"
   },
   {
     "pageId": "django_DjangoDay4",
@@ -657,7 +814,9 @@
     "fileName": "DjangoDay4.jsx",
     "title": "{title}",
     "fileSizeBytes": 43843,
-    "updatedAt": "2026-11-17T07:35:00.868Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.712Z"
   },
   {
     "pageId": "django_DjangoDay5",
@@ -668,7 +827,9 @@
     "fileName": "DjangoDay5.jsx",
     "title": "{title}",
     "fileSizeBytes": 46200,
-    "updatedAt": "2026-11-17T07:35:00.868Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.714Z"
   },
   {
     "pageId": "django_DjangoDay6",
@@ -679,7 +840,9 @@
     "fileName": "DjangoDay6.jsx",
     "title": "{title}",
     "fileSizeBytes": 53465,
-    "updatedAt": "2026-11-17T07:35:00.869Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:32.715Z"
   },
   {
     "pageId": "django_DjangoDay7",
@@ -690,7 +853,9 @@
     "fileName": "DjangoDay7.jsx",
     "title": "{title}",
     "fileSizeBytes": 45222,
-    "updatedAt": "2026-11-17T07:35:00.869Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay7.jsx",
+    "updatedAt": "2026-11-19T12:04:32.717Z"
   },
   {
     "pageId": "django_DjangoDay8",
@@ -701,7 +866,9 @@
     "fileName": "DjangoDay8.jsx",
     "title": "{title}",
     "fileSizeBytes": 39350,
-    "updatedAt": "2026-11-17T07:35:00.870Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay8.jsx",
+    "updatedAt": "2026-11-19T12:04:32.719Z"
   },
   {
     "pageId": "django_DjangoDay9",
@@ -712,7 +879,9 @@
     "fileName": "DjangoDay9.jsx",
     "title": "{title}",
     "fileSizeBytes": 36923,
-    "updatedAt": "2026-11-17T07:35:00.870Z"
+    "isInteractive": true,
+    "location": "src/pages/django/DjangoDay9.jsx",
+    "updatedAt": "2026-11-19T12:04:32.720Z"
   },
   {
     "pageId": "generative-ai_GenAIDay1",
@@ -723,7 +892,9 @@
     "fileName": "GenAIDay1.jsx",
     "title": "Welcome to Day 1: AI Basics",
     "fileSizeBytes": 33846,
-    "updatedAt": "2026-11-17T07:35:00.871Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.722Z"
   },
   {
     "pageId": "generative-ai_GenAIDay10",
@@ -734,7 +905,9 @@
     "fileName": "GenAIDay10.jsx",
     "title": "Reusable Prompt Templates & Prompt Libraries",
     "fileSizeBytes": 24118,
-    "updatedAt": "2026-11-17T07:35:00.871Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay10.jsx",
+    "updatedAt": "2026-11-19T12:04:32.723Z"
   },
   {
     "pageId": "generative-ai_GenAIDay11",
@@ -745,7 +918,9 @@
     "fileName": "GenAIDay11.jsx",
     "title": "Writing & Document Editing",
     "fileSizeBytes": 30681,
-    "updatedAt": "2026-11-17T07:35:00.872Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay11.jsx",
+    "updatedAt": "2026-11-19T12:04:32.725Z"
   },
   {
     "pageId": "generative-ai_GenAIDay12",
@@ -756,7 +931,9 @@
     "fileName": "GenAIDay12.jsx",
     "title": "Careers, Resumes & Socials",
     "fileSizeBytes": 31284,
-    "updatedAt": "2026-11-17T07:35:00.872Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay12.jsx",
+    "updatedAt": "2026-11-19T12:04:32.726Z"
   },
   {
     "pageId": "generative-ai_GenAIDay13",
@@ -767,7 +944,9 @@
     "fileName": "GenAIDay13.jsx",
     "title": "Spreadsheets & Research",
     "fileSizeBytes": 29307,
-    "updatedAt": "2026-11-17T07:35:00.872Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay13.jsx",
+    "updatedAt": "2026-11-19T12:04:32.727Z"
   },
   {
     "pageId": "generative-ai_GenAIDay14",
@@ -778,7 +957,9 @@
     "fileName": "GenAIDay14.jsx",
     "title": "Slide Decks & Presentations",
     "fileSizeBytes": 29869,
-    "updatedAt": "2026-11-17T07:35:00.873Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay14.jsx",
+    "updatedAt": "2026-11-19T12:04:32.729Z"
   },
   {
     "pageId": "generative-ai_GenAIDay15",
@@ -789,7 +970,9 @@
     "fileName": "GenAIDay15.jsx",
     "title": "Video Scripts & Podcasts",
     "fileSizeBytes": 30463,
-    "updatedAt": "2026-11-17T07:35:00.873Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay15.jsx",
+    "updatedAt": "2026-11-19T12:04:32.733Z"
   },
   {
     "pageId": "generative-ai_GenAIDay16",
@@ -800,7 +983,9 @@
     "fileName": "GenAIDay16.jsx",
     "title": "Introduction to AI APIs & API Keys",
     "fileSizeBytes": 26357,
-    "updatedAt": "2026-11-17T07:35:00.874Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay16.jsx",
+    "updatedAt": "2026-11-19T12:04:32.735Z"
   },
   {
     "pageId": "generative-ai_GenAIDay17",
@@ -811,7 +996,9 @@
     "fileName": "GenAIDay17.jsx",
     "title": "RAG Foundations: Conceptual Overview",
     "fileSizeBytes": 35633,
-    "updatedAt": "2026-11-17T07:35:00.874Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay17.jsx",
+    "updatedAt": "2026-11-19T12:04:32.736Z"
   },
   {
     "pageId": "generative-ai_GenAIDay18",
@@ -822,7 +1009,9 @@
     "fileName": "GenAIDay18.jsx",
     "title": "Practical RAG Implementation & Orchestration",
     "fileSizeBytes": 30854,
-    "updatedAt": "2026-11-17T07:35:00.877Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay18.jsx",
+    "updatedAt": "2026-11-19T12:04:32.738Z"
   },
   {
     "pageId": "generative-ai_GenAIDay19",
@@ -833,7 +1022,9 @@
     "fileName": "GenAIDay19.jsx",
     "title": "Day 19: Working RAG Model & In-Page Capstone",
     "fileSizeBytes": 21086,
-    "updatedAt": "2026-11-17T07:35:00.877Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay19.jsx",
+    "updatedAt": "2026-11-19T12:04:32.739Z"
   },
   {
     "pageId": "generative-ai_GenAIDay2",
@@ -844,7 +1035,9 @@
     "fileName": "GenAIDay2.jsx",
     "title": "History of AI, Foundation Models & Transformers",
     "fileSizeBytes": 48071,
-    "updatedAt": "2026-11-17T07:35:00.878Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.740Z"
   },
   {
     "pageId": "generative-ai_GenAIDay20",
@@ -855,7 +1048,9 @@
     "fileName": "GenAIDay20.jsx",
     "title": "Final Capstone Graduation Project",
     "fileSizeBytes": 14316,
-    "updatedAt": "2026-11-17T07:35:00.878Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay20.jsx",
+    "updatedAt": "2026-11-19T12:04:32.742Z"
   },
   {
     "pageId": "generative-ai_GenAIDay3",
@@ -866,7 +1061,9 @@
     "fileName": "GenAIDay3.jsx",
     "title": "Understanding LLMs — Tokens, Context Window & Temperature",
     "fileSizeBytes": 52119,
-    "updatedAt": "2026-11-17T07:35:00.879Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.743Z"
   },
   {
     "pageId": "generative-ai_GenAIDay4",
@@ -877,7 +1074,9 @@
     "fileName": "GenAIDay4.jsx",
     "title": "The AI Model Landscape — Who is Who?",
     "fileSizeBytes": 29929,
-    "updatedAt": "2026-11-17T07:35:00.880Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.745Z"
   },
   {
     "pageId": "generative-ai_GenAIDay5",
@@ -888,7 +1087,9 @@
     "fileName": "GenAIDay5.jsx",
     "title": "AI Ethics, Responsible AI & Hallucinations",
     "fileSizeBytes": 23594,
-    "updatedAt": "2026-11-17T07:35:00.880Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.747Z"
   },
   {
     "pageId": "generative-ai_GenAIDay6",
@@ -899,7 +1100,9 @@
     "fileName": "GenAIDay6.jsx",
     "title": "Prompt Engineering — Talk to AI Like a Pro",
     "fileSizeBytes": 37837,
-    "updatedAt": "2026-11-17T07:35:00.881Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:32.748Z"
   },
   {
     "pageId": "generative-ai_GenAIDay7",
@@ -910,7 +1113,9 @@
     "fileName": "GenAIDay7.jsx",
     "title": "Advanced Prompting — Chaining & Agents",
     "fileSizeBytes": 26577,
-    "updatedAt": "2026-11-17T07:35:00.881Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay7.jsx",
+    "updatedAt": "2026-11-19T12:04:32.750Z"
   },
   {
     "pageId": "generative-ai_GenAIDay8",
@@ -921,7 +1126,9 @@
     "fileName": "GenAIDay8.jsx",
     "title": "Reasoning Patterns — Chain-of-Thought & Grounding",
     "fileSizeBytes": 26386,
-    "updatedAt": "2026-11-17T07:35:00.882Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay8.jsx",
+    "updatedAt": "2026-11-19T12:04:32.752Z"
   },
   {
     "pageId": "generative-ai_GenAIDay9",
@@ -932,7 +1139,9 @@
     "fileName": "GenAIDay9.jsx",
     "title": "Structured Outputs & JSON Responses",
     "fileSizeBytes": 25417,
-    "updatedAt": "2026-11-17T07:35:00.882Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIDay9.jsx",
+    "updatedAt": "2026-11-19T12:04:32.754Z"
   },
   {
     "pageId": "generative-ai_GenAIMiniProject",
@@ -943,7 +1152,9 @@
     "fileName": "GenAIMiniProject.jsx",
     "title": "AI Prompt Library Builder",
     "fileSizeBytes": 19850,
-    "updatedAt": "2026-11-17T07:35:00.883Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIMiniProject.jsx",
+    "updatedAt": "2026-11-19T12:04:32.755Z"
   },
   {
     "pageId": "generative-ai_GenAIModule2Project",
@@ -954,7 +1165,9 @@
     "fileName": "GenAIModule2Project.jsx",
     "title": "AI Agent Workspace & Pipeline Builder",
     "fileSizeBytes": 21740,
-    "updatedAt": "2026-11-17T07:35:00.883Z"
+    "isInteractive": true,
+    "location": "src/pages/generative-ai/GenAIModule2Project.jsx",
+    "updatedAt": "2026-11-19T12:04:32.757Z"
   },
   {
     "pageId": "generative-ai_GenerativeAIDemo",
@@ -965,7 +1178,9 @@
     "fileName": "GenerativeAIDemo.jsx",
     "title": "{title}",
     "fileSizeBytes": 29572,
-    "updatedAt": "2026-11-17T07:35:00.884Z"
+    "isInteractive": false,
+    "location": "src/pages/generative-ai/GenerativeAIDemo.jsx",
+    "updatedAt": "2026-11-19T12:04:32.758Z"
   },
   {
     "pageId": "git_GitDay1",
@@ -976,7 +1191,9 @@
     "fileName": "GitDay1.jsx",
     "title": "{title}",
     "fileSizeBytes": 26892,
-    "updatedAt": "2026-11-17T07:35:00.884Z"
+    "isInteractive": true,
+    "location": "src/pages/git/GitDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.760Z"
   },
   {
     "pageId": "git_GitDay2",
@@ -987,7 +1204,9 @@
     "fileName": "GitDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 22444,
-    "updatedAt": "2026-11-17T07:35:00.885Z"
+    "isInteractive": true,
+    "location": "src/pages/git/GitDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.762Z"
   },
   {
     "pageId": "html-css_BootstrapDay1",
@@ -997,8 +1216,10 @@
     "componentName": "BootstrapDay1",
     "fileName": "BootstrapDay1.jsx",
     "title": "{title}",
-    "fileSizeBytes": 22209,
-    "updatedAt": "2026-11-17T07:35:00.885Z"
+    "fileSizeBytes": 22166,
+    "isInteractive": true,
+    "location": "src/pages/html-css/BootstrapDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.764Z"
   },
   {
     "pageId": "html-css_BootstrapDay2",
@@ -1008,8 +1229,10 @@
     "componentName": "BootstrapDay2",
     "fileName": "BootstrapDay2.jsx",
     "title": "{title}",
-    "fileSizeBytes": 23442,
-    "updatedAt": "2026-11-17T07:35:00.885Z"
+    "fileSizeBytes": 23399,
+    "isInteractive": true,
+    "location": "src/pages/html-css/BootstrapDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.765Z"
   },
   {
     "pageId": "html-css_CSSDay1",
@@ -1019,8 +1242,10 @@
     "componentName": "CSSDay1",
     "fileName": "CSSDay1.jsx",
     "title": "{title}",
-    "fileSizeBytes": 74836,
-    "updatedAt": "2026-11-17T07:35:00.886Z"
+    "fileSizeBytes": 74753,
+    "isInteractive": true,
+    "location": "src/pages/html-css/CSSDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.768Z"
   },
   {
     "pageId": "html-css_CSSDay2",
@@ -1031,7 +1256,9 @@
     "fileName": "CSSDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 96591,
-    "updatedAt": "2026-11-17T07:35:00.887Z"
+    "isInteractive": true,
+    "location": "src/pages/html-css/CSSDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.773Z"
   },
   {
     "pageId": "html-css_CSSDay3",
@@ -1042,7 +1269,9 @@
     "fileName": "CSSDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 50419,
-    "updatedAt": "2026-11-17T07:35:00.888Z"
+    "isInteractive": true,
+    "location": "src/pages/html-css/CSSDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.775Z"
   },
   {
     "pageId": "html-css_CSSDay4",
@@ -1053,7 +1282,9 @@
     "fileName": "CSSDay4.jsx",
     "title": "{title}",
     "fileSizeBytes": 82552,
-    "updatedAt": "2026-11-17T07:35:00.888Z"
+    "isInteractive": true,
+    "location": "src/pages/html-css/CSSDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.777Z"
   },
   {
     "pageId": "html-css_CSSDay5",
@@ -1064,7 +1295,9 @@
     "fileName": "CSSDay5.jsx",
     "title": "{title}",
     "fileSizeBytes": 15885,
-    "updatedAt": "2026-11-17T07:35:00.889Z"
+    "isInteractive": true,
+    "location": "src/pages/html-css/CSSDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.778Z"
   },
   {
     "pageId": "html-css_CSSDay6",
@@ -1075,7 +1308,9 @@
     "fileName": "CSSDay6.jsx",
     "title": "{title}",
     "fileSizeBytes": 42065,
-    "updatedAt": "2026-11-17T07:35:00.889Z"
+    "isInteractive": true,
+    "location": "src/pages/html-css/CSSDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:32.781Z"
   },
   {
     "pageId": "html-css_CSSFinalProject",
@@ -1086,7 +1321,9 @@
     "fileName": "CSSFinalProject.jsx",
     "title": "{title}",
     "fileSizeBytes": 10513,
-    "updatedAt": "2026-11-17T07:35:00.889Z"
+    "isInteractive": true,
+    "location": "src/pages/html-css/CSSFinalProject.jsx",
+    "updatedAt": "2026-11-19T12:04:32.783Z"
   },
   {
     "pageId": "html-css_Day1",
@@ -1096,8 +1333,10 @@
     "componentName": "Day1",
     "fileName": "Day1.jsx",
     "title": "{title}",
-    "fileSizeBytes": 23186,
-    "updatedAt": "2026-11-17T07:35:00.890Z"
+    "fileSizeBytes": 23144,
+    "isInteractive": true,
+    "location": "src/pages/html-css/Day1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.785Z"
   },
   {
     "pageId": "html-css_Day2",
@@ -1107,8 +1346,10 @@
     "componentName": "Day2",
     "fileName": "Day2.jsx",
     "title": "{title}",
-    "fileSizeBytes": 52552,
-    "updatedAt": "2026-11-17T07:35:00.890Z"
+    "fileSizeBytes": 52475,
+    "isInteractive": true,
+    "location": "src/pages/html-css/Day2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.792Z"
   },
   {
     "pageId": "html-css_HTMLProject",
@@ -1119,7 +1360,9 @@
     "fileName": "HTMLProject.jsx",
     "title": "{title}",
     "fileSizeBytes": 7625,
-    "updatedAt": "2026-11-17T07:35:00.891Z"
+    "isInteractive": false,
+    "location": "src/pages/html-css/HTMLProject.jsx",
+    "updatedAt": "2026-11-19T12:04:32.794Z"
   },
   {
     "pageId": "javascript_CoreJSDay1",
@@ -1129,8 +1372,10 @@
     "componentName": "CoreJSDay1",
     "fileName": "CoreJSDay1.jsx",
     "title": "{title}",
-    "fileSizeBytes": 132365,
-    "updatedAt": "2026-11-17T07:35:00.892Z"
+    "fileSizeBytes": 133299,
+    "isInteractive": true,
+    "location": "src/pages/javascript/CoreJSDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.797Z"
   },
   {
     "pageId": "javascript_CoreJSDay10",
@@ -1141,7 +1386,9 @@
     "fileName": "CoreJSDay10.jsx",
     "title": "{title}",
     "fileSizeBytes": 76588,
-    "updatedAt": "2026-11-17T07:35:00.893Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/CoreJSDay10.jsx",
+    "updatedAt": "2026-11-19T12:04:32.799Z"
   },
   {
     "pageId": "javascript_CoreJSDay2",
@@ -1152,7 +1399,9 @@
     "fileName": "CoreJSDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 70760,
-    "updatedAt": "2026-11-17T07:35:00.893Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/CoreJSDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.801Z"
   },
   {
     "pageId": "javascript_CoreJSDay3",
@@ -1163,7 +1412,9 @@
     "fileName": "CoreJSDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 56743,
-    "updatedAt": "2026-11-17T07:35:00.894Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/CoreJSDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.803Z"
   },
   {
     "pageId": "javascript_CoreJSDay4",
@@ -1174,7 +1425,9 @@
     "fileName": "CoreJSDay4.jsx",
     "title": "{title}",
     "fileSizeBytes": 53844,
-    "updatedAt": "2026-11-17T07:35:00.899Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/CoreJSDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.804Z"
   },
   {
     "pageId": "javascript_CoreJSDay5",
@@ -1185,7 +1438,9 @@
     "fileName": "CoreJSDay5.jsx",
     "title": "{title}",
     "fileSizeBytes": 86645,
-    "updatedAt": "2026-11-17T07:35:00.900Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/CoreJSDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.806Z"
   },
   {
     "pageId": "javascript_CoreJSDay6",
@@ -1196,7 +1451,9 @@
     "fileName": "CoreJSDay6.jsx",
     "title": "{title}",
     "fileSizeBytes": 71670,
-    "updatedAt": "2026-11-17T07:35:00.901Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/CoreJSDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:32.808Z"
   },
   {
     "pageId": "javascript_CoreJSDay7",
@@ -1207,7 +1464,9 @@
     "fileName": "CoreJSDay7.jsx",
     "title": "{title}",
     "fileSizeBytes": 75249,
-    "updatedAt": "2026-11-17T07:35:00.902Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/CoreJSDay7.jsx",
+    "updatedAt": "2026-11-19T12:04:32.810Z"
   },
   {
     "pageId": "javascript_CoreJSDay8",
@@ -1218,7 +1477,9 @@
     "fileName": "CoreJSDay8.jsx",
     "title": "{title}",
     "fileSizeBytes": 75637,
-    "updatedAt": "2026-11-17T07:35:00.903Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/CoreJSDay8.jsx",
+    "updatedAt": "2026-11-19T12:04:32.811Z"
   },
   {
     "pageId": "javascript_CoreJSDay9",
@@ -1229,7 +1490,9 @@
     "fileName": "CoreJSDay9.jsx",
     "title": "{title}",
     "fileSizeBytes": 57494,
-    "updatedAt": "2026-11-17T07:35:00.903Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/CoreJSDay9.jsx",
+    "updatedAt": "2026-11-19T12:04:32.813Z"
   },
   {
     "pageId": "javascript_JSDay1",
@@ -1240,7 +1503,9 @@
     "fileName": "JSDay1.jsx",
     "title": "{title}",
     "fileSizeBytes": 64851,
-    "updatedAt": "2026-11-17T07:35:00.904Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/JSDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.815Z"
   },
   {
     "pageId": "javascript_JSDay10",
@@ -1251,7 +1516,9 @@
     "fileName": "JSDay10.jsx",
     "title": "{title}",
     "fileSizeBytes": 40769,
-    "updatedAt": "2026-11-17T07:35:00.904Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/JSDay10.jsx",
+    "updatedAt": "2026-11-19T12:04:32.817Z"
   },
   {
     "pageId": "javascript_JSDay2",
@@ -1262,7 +1529,9 @@
     "fileName": "JSDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 69014,
-    "updatedAt": "2026-11-17T07:35:00.905Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/JSDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.818Z"
   },
   {
     "pageId": "javascript_JSDay3",
@@ -1273,7 +1542,9 @@
     "fileName": "JSDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 38493,
-    "updatedAt": "2026-11-17T07:35:00.905Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/JSDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.820Z"
   },
   {
     "pageId": "javascript_JSDay4",
@@ -1284,7 +1555,9 @@
     "fileName": "JSDay4.jsx",
     "title": "{title}",
     "fileSizeBytes": 67418,
-    "updatedAt": "2026-11-17T07:35:00.906Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/JSDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.822Z"
   },
   {
     "pageId": "javascript_JSDay5",
@@ -1295,7 +1568,9 @@
     "fileName": "JSDay5.jsx",
     "title": "{title}",
     "fileSizeBytes": 64474,
-    "updatedAt": "2026-11-17T07:35:00.906Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/JSDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.823Z"
   },
   {
     "pageId": "javascript_JSDay6",
@@ -1306,7 +1581,9 @@
     "fileName": "JSDay6.jsx",
     "title": "{title}",
     "fileSizeBytes": 61956,
-    "updatedAt": "2026-11-17T07:35:00.907Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/JSDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:32.825Z"
   },
   {
     "pageId": "javascript_JSDay7",
@@ -1317,7 +1594,9 @@
     "fileName": "JSDay7.jsx",
     "title": "{title}",
     "fileSizeBytes": 28385,
-    "updatedAt": "2026-11-17T07:35:00.907Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/JSDay7.jsx",
+    "updatedAt": "2026-11-19T12:04:32.826Z"
   },
   {
     "pageId": "javascript_JSDay8",
@@ -1328,7 +1607,9 @@
     "fileName": "JSDay8.jsx",
     "title": "{title}",
     "fileSizeBytes": 48920,
-    "updatedAt": "2026-11-17T07:35:00.908Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/JSDay8.jsx",
+    "updatedAt": "2026-11-19T12:04:32.828Z"
   },
   {
     "pageId": "javascript_JSDay9",
@@ -1339,7 +1620,9 @@
     "fileName": "JSDay9.jsx",
     "title": "{title}",
     "fileSizeBytes": 41374,
-    "updatedAt": "2026-11-17T07:35:00.908Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/JSDay9.jsx",
+    "updatedAt": "2026-11-19T12:04:32.829Z"
   },
   {
     "pageId": "javascript_JSFinalProjects",
@@ -1350,7 +1633,9 @@
     "fileName": "JSFinalProjects.jsx",
     "title": "{title}",
     "fileSizeBytes": 9278,
-    "updatedAt": "2026-11-17T07:35:00.909Z"
+    "isInteractive": true,
+    "location": "src/pages/javascript/JSFinalProjects.jsx",
+    "updatedAt": "2026-11-19T12:04:32.831Z"
   },
   {
     "pageId": "json_JSONDay1",
@@ -1360,8 +1645,10 @@
     "componentName": "JSONDay1",
     "fileName": "JSONDay1.jsx",
     "title": "{title}",
-    "fileSizeBytes": 54884,
-    "updatedAt": "2026-11-17T07:35:00.909Z"
+    "fileSizeBytes": 53274,
+    "isInteractive": true,
+    "location": "src/pages/json/JSONDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.832Z"
   },
   {
     "pageId": "matplotlib_MatplotlibDay1",
@@ -1372,7 +1659,9 @@
     "fileName": "MatplotlibDay1.jsx",
     "title": "{title}",
     "fileSizeBytes": 42769,
-    "updatedAt": "2026-11-17T07:35:00.910Z"
+    "isInteractive": true,
+    "location": "src/pages/matplotlib/MatplotlibDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.834Z"
   },
   {
     "pageId": "matplotlib_MatplotlibDay2",
@@ -1383,7 +1672,9 @@
     "fileName": "MatplotlibDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 33634,
-    "updatedAt": "2026-11-17T07:35:00.910Z"
+    "isInteractive": true,
+    "location": "src/pages/matplotlib/MatplotlibDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.835Z"
   },
   {
     "pageId": "matplotlib_MatplotlibDay3",
@@ -1394,7 +1685,9 @@
     "fileName": "MatplotlibDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 35393,
-    "updatedAt": "2026-11-17T07:35:00.911Z"
+    "isInteractive": true,
+    "location": "src/pages/matplotlib/MatplotlibDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.837Z"
   },
   {
     "pageId": "matplotlib_MatplotlibDay4",
@@ -1405,7 +1698,9 @@
     "fileName": "MatplotlibDay4.jsx",
     "title": "{title}",
     "fileSizeBytes": 31107,
-    "updatedAt": "2026-11-17T07:35:00.911Z"
+    "isInteractive": true,
+    "location": "src/pages/matplotlib/MatplotlibDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.838Z"
   },
   {
     "pageId": "matplotlib_MatplotlibDay5",
@@ -1416,7 +1711,9 @@
     "fileName": "MatplotlibDay5.jsx",
     "title": "{title}",
     "fileSizeBytes": 24317,
-    "updatedAt": "2026-11-17T07:35:00.911Z"
+    "isInteractive": true,
+    "location": "src/pages/matplotlib/MatplotlibDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.839Z"
   },
   {
     "pageId": "numpy_NumpyDay1",
@@ -1427,7 +1724,9 @@
     "fileName": "NumpyDay1.jsx",
     "title": "{title}",
     "fileSizeBytes": 88969,
-    "updatedAt": "2026-11-17T07:35:00.912Z"
+    "isInteractive": true,
+    "location": "src/pages/numpy/NumpyDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.842Z"
   },
   {
     "pageId": "numpy_NumpyDay2",
@@ -1438,7 +1737,9 @@
     "fileName": "NumpyDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 39743,
-    "updatedAt": "2026-11-17T07:35:00.913Z"
+    "isInteractive": true,
+    "location": "src/pages/numpy/NumpyDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.843Z"
   },
   {
     "pageId": "numpy_NumpyDay3",
@@ -1449,7 +1750,9 @@
     "fileName": "NumpyDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 44921,
-    "updatedAt": "2026-11-17T07:35:00.913Z"
+    "isInteractive": true,
+    "location": "src/pages/numpy/NumpyDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.845Z"
   },
   {
     "pageId": "numpy_NumpyDay4",
@@ -1460,7 +1763,9 @@
     "fileName": "NumpyDay4.jsx",
     "title": "{title}",
     "fileSizeBytes": 40773,
-    "updatedAt": "2026-11-17T07:35:00.914Z"
+    "isInteractive": true,
+    "location": "src/pages/numpy/NumpyDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.846Z"
   },
   {
     "pageId": "numpy_NumpyDay5",
@@ -1471,7 +1776,9 @@
     "fileName": "NumpyDay5.jsx",
     "title": "{title}",
     "fileSizeBytes": 38136,
-    "updatedAt": "2026-11-17T07:35:00.914Z"
+    "isInteractive": true,
+    "location": "src/pages/numpy/NumpyDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.849Z"
   },
   {
     "pageId": "numpy_NumpyDay6",
@@ -1482,7 +1789,9 @@
     "fileName": "NumpyDay6.jsx",
     "title": "{title}",
     "fileSizeBytes": 46467,
-    "updatedAt": "2026-11-17T07:35:00.915Z"
+    "isInteractive": true,
+    "location": "src/pages/numpy/NumpyDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:32.850Z"
   },
   {
     "pageId": "pandas_PandasDay1",
@@ -1493,7 +1802,9 @@
     "fileName": "PandasDay1.jsx",
     "title": "{title}",
     "fileSizeBytes": 38889,
-    "updatedAt": "2026-11-17T07:35:00.915Z"
+    "isInteractive": true,
+    "location": "src/pages/pandas/PandasDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.852Z"
   },
   {
     "pageId": "pandas_PandasDay2",
@@ -1504,7 +1815,9 @@
     "fileName": "PandasDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 32532,
-    "updatedAt": "2026-11-17T07:35:00.916Z"
+    "isInteractive": true,
+    "location": "src/pages/pandas/PandasDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.853Z"
   },
   {
     "pageId": "pandas_PandasDay3",
@@ -1515,7 +1828,9 @@
     "fileName": "PandasDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 28550,
-    "updatedAt": "2026-11-17T07:35:00.916Z"
+    "isInteractive": true,
+    "location": "src/pages/pandas/PandasDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.855Z"
   },
   {
     "pageId": "pandas_PandasDay4",
@@ -1526,7 +1841,9 @@
     "fileName": "PandasDay4.jsx",
     "title": "{title}",
     "fileSizeBytes": 26439,
-    "updatedAt": "2026-11-17T07:35:00.916Z"
+    "isInteractive": true,
+    "location": "src/pages/pandas/PandasDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.856Z"
   },
   {
     "pageId": "pandas_PandasDay5",
@@ -1537,7 +1854,9 @@
     "fileName": "PandasDay5.jsx",
     "title": "{title}",
     "fileSizeBytes": 25749,
-    "updatedAt": "2026-11-17T07:35:00.917Z"
+    "isInteractive": true,
+    "location": "src/pages/pandas/PandasDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.857Z"
   },
   {
     "pageId": "pandas_PandasDay6",
@@ -1548,7 +1867,9 @@
     "fileName": "PandasDay6.jsx",
     "title": "{title}",
     "fileSizeBytes": 23647,
-    "updatedAt": "2026-11-17T07:35:00.917Z"
+    "isInteractive": true,
+    "location": "src/pages/pandas/PandasDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:32.859Z"
   },
   {
     "pageId": "powerbi_PowerBIDay1",
@@ -1559,7 +1880,9 @@
     "fileName": "PowerBIDay1.jsx",
     "title": "{title}",
     "fileSizeBytes": 23350,
-    "updatedAt": "2026-11-17T07:35:00.918Z"
+    "isInteractive": true,
+    "location": "src/pages/powerbi/PowerBIDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.861Z"
   },
   {
     "pageId": "powerbi_PowerBIDay2",
@@ -1570,7 +1893,9 @@
     "fileName": "PowerBIDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 24879,
-    "updatedAt": "2026-11-17T07:35:00.918Z"
+    "isInteractive": true,
+    "location": "src/pages/powerbi/PowerBIDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.863Z"
   },
   {
     "pageId": "powerbi_PowerBIDay3",
@@ -1581,7 +1906,9 @@
     "fileName": "PowerBIDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 24351,
-    "updatedAt": "2026-11-17T07:35:00.919Z"
+    "isInteractive": true,
+    "location": "src/pages/powerbi/PowerBIDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.865Z"
   },
   {
     "pageId": "powerbi_PowerBIDay4",
@@ -1592,7 +1919,9 @@
     "fileName": "PowerBIDay4.jsx",
     "title": "{title}",
     "fileSizeBytes": 23500,
-    "updatedAt": "2026-11-17T07:35:00.919Z"
+    "isInteractive": true,
+    "location": "src/pages/powerbi/PowerBIDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.866Z"
   },
   {
     "pageId": "powerbi_PowerBIDay5",
@@ -1603,7 +1932,9 @@
     "fileName": "PowerBIDay5.jsx",
     "title": "{title}",
     "fileSizeBytes": 16379,
-    "updatedAt": "2026-11-17T07:35:00.919Z"
+    "isInteractive": false,
+    "location": "src/pages/powerbi/PowerBIDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.868Z"
   },
   {
     "pageId": "powerbi_PowerBIDay6",
@@ -1614,7 +1945,9 @@
     "fileName": "PowerBIDay6.jsx",
     "title": "{title}",
     "fileSizeBytes": 11506,
-    "updatedAt": "2026-11-17T07:35:00.919Z"
+    "isInteractive": false,
+    "location": "src/pages/powerbi/PowerBIDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:32.870Z"
   },
   {
     "pageId": "powerbi_PowerBIDay7",
@@ -1625,7 +1958,9 @@
     "fileName": "PowerBIDay7.jsx",
     "title": "{title}",
     "fileSizeBytes": 37175,
-    "updatedAt": "2026-11-17T07:35:00.920Z"
+    "isInteractive": true,
+    "location": "src/pages/powerbi/PowerBIDay7.jsx",
+    "updatedAt": "2026-11-19T12:04:32.871Z"
   },
   {
     "pageId": "powerbi_PowerBIDay8",
@@ -1636,7 +1971,9 @@
     "fileName": "PowerBIDay8.jsx",
     "title": "{title}",
     "fileSizeBytes": 63519,
-    "updatedAt": "2026-11-17T07:35:00.920Z"
+    "isInteractive": true,
+    "location": "src/pages/powerbi/PowerBIDay8.jsx",
+    "updatedAt": "2026-11-19T12:04:32.873Z"
   },
   {
     "pageId": "powerbi_PowerBIDemo",
@@ -1647,7 +1984,9 @@
     "fileName": "PowerBIDemo.jsx",
     "title": "{title}",
     "fileSizeBytes": 27805,
-    "updatedAt": "2026-11-17T07:35:00.921Z"
+    "isInteractive": true,
+    "location": "src/pages/powerbi/PowerBIDemo.jsx",
+    "updatedAt": "2026-11-19T12:04:32.874Z"
   },
   {
     "pageId": "powerbi_PowerBIProjects",
@@ -1658,7 +1997,9 @@
     "fileName": "PowerBIProjects.jsx",
     "title": "{title}",
     "fileSizeBytes": 34312,
-    "updatedAt": "2026-11-17T07:35:00.921Z"
+    "isInteractive": true,
+    "location": "src/pages/powerbi/PowerBIProjects.jsx",
+    "updatedAt": "2026-11-19T12:04:32.875Z"
   },
   {
     "pageId": "python_PythonApplicationProjects",
@@ -1669,7 +2010,9 @@
     "fileName": "PythonApplicationProjects.jsx",
     "title": "{title}",
     "fileSizeBytes": 54861,
-    "updatedAt": "2026-11-17T07:35:00.922Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonApplicationProjects.jsx",
+    "updatedAt": "2026-11-19T12:04:32.877Z"
   },
   {
     "pageId": "python_PythonDay1",
@@ -1680,7 +2023,9 @@
     "fileName": "PythonDay1.jsx",
     "title": "{title}",
     "fileSizeBytes": 55966,
-    "updatedAt": "2026-11-17T07:35:00.922Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.879Z"
   },
   {
     "pageId": "python_PythonDay10",
@@ -1691,7 +2036,9 @@
     "fileName": "PythonDay10.jsx",
     "title": "{title}",
     "fileSizeBytes": 48772,
-    "updatedAt": "2026-11-17T07:35:00.923Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonDay10.jsx",
+    "updatedAt": "2026-11-19T12:04:32.881Z"
   },
   {
     "pageId": "python_PythonDay11",
@@ -1702,7 +2049,9 @@
     "fileName": "PythonDay11.jsx",
     "title": "{title}",
     "fileSizeBytes": 48546,
-    "updatedAt": "2026-11-17T07:35:00.924Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonDay11.jsx",
+    "updatedAt": "2026-11-19T12:04:32.883Z"
   },
   {
     "pageId": "python_PythonDay12",
@@ -1713,7 +2062,9 @@
     "fileName": "PythonDay12.jsx",
     "title": "{title}",
     "fileSizeBytes": 47671,
-    "updatedAt": "2026-11-17T07:35:00.925Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonDay12.jsx",
+    "updatedAt": "2026-11-19T12:04:32.884Z"
   },
   {
     "pageId": "python_PythonDay13",
@@ -1724,7 +2075,9 @@
     "fileName": "PythonDay13.jsx",
     "title": "{title}",
     "fileSizeBytes": 45213,
-    "updatedAt": "2026-11-17T07:35:00.925Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonDay13.jsx",
+    "updatedAt": "2026-11-19T12:04:32.886Z"
   },
   {
     "pageId": "python_PythonDay2",
@@ -1735,7 +2088,9 @@
     "fileName": "PythonDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 71386,
-    "updatedAt": "2026-11-17T07:35:00.926Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.888Z"
   },
   {
     "pageId": "python_PythonDay3",
@@ -1746,7 +2101,9 @@
     "fileName": "PythonDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 58583,
-    "updatedAt": "2026-11-17T07:35:00.927Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.889Z"
   },
   {
     "pageId": "python_PythonDay4",
@@ -1757,7 +2114,9 @@
     "fileName": "PythonDay4.jsx",
     "title": "{title}",
     "fileSizeBytes": 56244,
-    "updatedAt": "2026-11-17T07:35:00.928Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.891Z"
   },
   {
     "pageId": "python_PythonDay5",
@@ -1768,7 +2127,9 @@
     "fileName": "PythonDay5.jsx",
     "title": "{title}",
     "fileSizeBytes": 96515,
-    "updatedAt": "2026-11-17T07:35:00.929Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.893Z"
   },
   {
     "pageId": "python_PythonDay6",
@@ -1779,7 +2140,9 @@
     "fileName": "PythonDay6.jsx",
     "title": "{title}",
     "fileSizeBytes": 66692,
-    "updatedAt": "2026-11-17T07:35:00.930Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:32.896Z"
   },
   {
     "pageId": "python_PythonDay7",
@@ -1790,7 +2153,9 @@
     "fileName": "PythonDay7.jsx",
     "title": "{title}",
     "fileSizeBytes": 71869,
-    "updatedAt": "2026-11-17T07:35:00.931Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonDay7.jsx",
+    "updatedAt": "2026-11-19T12:04:32.898Z"
   },
   {
     "pageId": "python_PythonDay8",
@@ -1801,7 +2166,9 @@
     "fileName": "PythonDay8.jsx",
     "title": "{title}",
     "fileSizeBytes": 95591,
-    "updatedAt": "2026-11-17T07:35:00.932Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonDay8.jsx",
+    "updatedAt": "2026-11-19T12:04:32.900Z"
   },
   {
     "pageId": "python_PythonDay9",
@@ -1812,7 +2179,9 @@
     "fileName": "PythonDay9.jsx",
     "title": "{title}",
     "fileSizeBytes": 75571,
-    "updatedAt": "2026-11-17T07:35:00.933Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonDay9.jsx",
+    "updatedAt": "2026-11-19T12:04:32.902Z"
   },
   {
     "pageId": "python_PythonFinalProjects",
@@ -1823,7 +2192,9 @@
     "fileName": "PythonFinalProjects.jsx",
     "title": "{title}",
     "fileSizeBytes": 46029,
-    "updatedAt": "2026-11-17T07:35:00.933Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonFinalProjects.jsx",
+    "updatedAt": "2026-11-19T12:04:32.903Z"
   },
   {
     "pageId": "python_PythonFullStackDemo",
@@ -1834,7 +2205,9 @@
     "fileName": "PythonFullStackDemo.jsx",
     "title": "{title}",
     "fileSizeBytes": 57762,
-    "updatedAt": "2026-11-17T07:35:00.934Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonFullStackDemo.jsx",
+    "updatedAt": "2026-11-19T12:04:32.905Z"
   },
   {
     "pageId": "python_PythonGameProjects",
@@ -1845,7 +2218,9 @@
     "fileName": "PythonGameProjects.jsx",
     "title": "{title}",
     "fileSizeBytes": 40677,
-    "updatedAt": "2026-11-17T07:35:00.935Z"
+    "isInteractive": true,
+    "location": "src/pages/python/PythonGameProjects.jsx",
+    "updatedAt": "2026-11-19T12:04:32.907Z"
   },
   {
     "pageId": "react_ReactDay1",
@@ -1856,7 +2231,9 @@
     "fileName": "ReactDay1.jsx",
     "title": "{title}",
     "fileSizeBytes": 65000,
-    "updatedAt": "2026-11-17T07:35:00.937Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.909Z"
   },
   {
     "pageId": "react_ReactDay10",
@@ -1867,7 +2244,9 @@
     "fileName": "ReactDay10.jsx",
     "title": "{title}",
     "fileSizeBytes": 86422,
-    "updatedAt": "2026-11-17T07:35:00.938Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay10.jsx",
+    "updatedAt": "2026-11-19T12:04:32.911Z"
   },
   {
     "pageId": "react_ReactDay11",
@@ -1878,7 +2257,9 @@
     "fileName": "ReactDay11.jsx",
     "title": "{title}",
     "fileSizeBytes": 102549,
-    "updatedAt": "2026-11-17T07:35:00.939Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay11.jsx",
+    "updatedAt": "2026-11-19T12:04:32.913Z"
   },
   {
     "pageId": "react_ReactDay12",
@@ -1889,7 +2270,9 @@
     "fileName": "ReactDay12.jsx",
     "title": "{title}",
     "fileSizeBytes": 108356,
-    "updatedAt": "2026-11-17T07:35:00.940Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay12.jsx",
+    "updatedAt": "2026-11-19T12:04:32.916Z"
   },
   {
     "pageId": "react_ReactDay13",
@@ -1900,7 +2283,9 @@
     "fileName": "ReactDay13.jsx",
     "title": "{title}",
     "fileSizeBytes": 26016,
-    "updatedAt": "2026-11-17T07:35:00.941Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay13.jsx",
+    "updatedAt": "2026-11-19T12:04:32.917Z"
   },
   {
     "pageId": "react_ReactDay14",
@@ -1911,7 +2296,9 @@
     "fileName": "ReactDay14.jsx",
     "title": "{title}",
     "fileSizeBytes": 26217,
-    "updatedAt": "2026-11-17T07:35:00.941Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay14.jsx",
+    "updatedAt": "2026-11-19T12:04:32.919Z"
   },
   {
     "pageId": "react_ReactDay15",
@@ -1922,7 +2309,9 @@
     "fileName": "ReactDay15.jsx",
     "title": "{title}",
     "fileSizeBytes": 22808,
-    "updatedAt": "2026-11-17T07:35:00.942Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay15.jsx",
+    "updatedAt": "2026-11-19T12:04:32.920Z"
   },
   {
     "pageId": "react_ReactDay2",
@@ -1933,7 +2322,9 @@
     "fileName": "ReactDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 47365,
-    "updatedAt": "2026-11-17T07:35:00.942Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.922Z"
   },
   {
     "pageId": "react_ReactDay3",
@@ -1944,7 +2335,9 @@
     "fileName": "ReactDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 60010,
-    "updatedAt": "2026-11-17T07:35:00.943Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.923Z"
   },
   {
     "pageId": "react_ReactDay4",
@@ -1955,7 +2348,9 @@
     "fileName": "ReactDay4.jsx",
     "title": "{title}",
     "fileSizeBytes": 68234,
-    "updatedAt": "2026-11-17T07:35:00.943Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.925Z"
   },
   {
     "pageId": "react_ReactDay5",
@@ -1966,7 +2361,9 @@
     "fileName": "ReactDay5.jsx",
     "title": "{title}",
     "fileSizeBytes": 67392,
-    "updatedAt": "2026-11-17T07:35:00.944Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.927Z"
   },
   {
     "pageId": "react_ReactDay6",
@@ -1977,7 +2374,9 @@
     "fileName": "ReactDay6.jsx",
     "title": "{title}",
     "fileSizeBytes": 75059,
-    "updatedAt": "2026-11-17T07:35:00.945Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:32.929Z"
   },
   {
     "pageId": "react_ReactDay7",
@@ -1988,7 +2387,9 @@
     "fileName": "ReactDay7.jsx",
     "title": "{title}",
     "fileSizeBytes": 77579,
-    "updatedAt": "2026-11-17T07:35:00.946Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay7.jsx",
+    "updatedAt": "2026-11-19T12:04:32.932Z"
   },
   {
     "pageId": "react_ReactDay8",
@@ -1999,7 +2400,9 @@
     "fileName": "ReactDay8.jsx",
     "title": "{title}",
     "fileSizeBytes": 90924,
-    "updatedAt": "2026-11-17T07:35:00.946Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay8.jsx",
+    "updatedAt": "2026-11-19T12:04:32.934Z"
   },
   {
     "pageId": "react_ReactDay9",
@@ -2010,7 +2413,9 @@
     "fileName": "ReactDay9.jsx",
     "title": "{title}",
     "fileSizeBytes": 74853,
-    "updatedAt": "2026-11-17T07:35:00.947Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactDay9.jsx",
+    "updatedAt": "2026-11-19T12:04:32.936Z"
   },
   {
     "pageId": "react_ReactJSEssentials",
@@ -2021,7 +2426,9 @@
     "fileName": "ReactJSEssentials.jsx",
     "title": "{title}",
     "fileSizeBytes": 50801,
-    "updatedAt": "2026-11-17T07:35:00.948Z"
+    "isInteractive": true,
+    "location": "src/pages/react/ReactJSEssentials.jsx",
+    "updatedAt": "2026-11-19T12:04:32.938Z"
   },
   {
     "pageId": "seaborn_SeabornDay1",
@@ -2032,7 +2439,9 @@
     "fileName": "SeabornDay1.jsx",
     "title": "{title}",
     "fileSizeBytes": 22126,
-    "updatedAt": "2026-11-17T07:35:00.948Z"
+    "isInteractive": true,
+    "location": "src/pages/seaborn/SeabornDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.939Z"
   },
   {
     "pageId": "seaborn_SeabornDay2",
@@ -2043,7 +2452,9 @@
     "fileName": "SeabornDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 24190,
-    "updatedAt": "2026-11-17T07:35:00.949Z"
+    "isInteractive": true,
+    "location": "src/pages/seaborn/SeabornDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.940Z"
   },
   {
     "pageId": "seaborn_SeabornDay3",
@@ -2054,7 +2465,9 @@
     "fileName": "SeabornDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 20643,
-    "updatedAt": "2026-11-17T07:35:00.949Z"
+    "isInteractive": true,
+    "location": "src/pages/seaborn/SeabornDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.942Z"
   },
   {
     "pageId": "seaborn_SeabornDay4",
@@ -2065,7 +2478,9 @@
     "fileName": "SeabornDay4.jsx",
     "title": "{title}",
     "fileSizeBytes": 21671,
-    "updatedAt": "2026-11-17T07:35:00.949Z"
+    "isInteractive": true,
+    "location": "src/pages/seaborn/SeabornDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.943Z"
   },
   {
     "pageId": "spoko_SpokoHrCourse",
@@ -2076,7 +2491,9 @@
     "fileName": "SpokoHrCourse.jsx",
     "title": "HR Interview Mastery",
     "fileSizeBytes": 86054,
-    "updatedAt": "2026-11-17T07:35:00.950Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoHrCourse.jsx",
+    "updatedAt": "2026-11-19T12:04:32.946Z"
   },
   {
     "pageId": "spoko_SpokoProTopic",
@@ -2087,7 +2504,9 @@
     "fileName": "SpokoProTopic.jsx",
     "title": "Topic {topic} is Locked 🔒",
     "fileSizeBytes": 5080,
-    "updatedAt": "2026-11-17T07:35:00.950Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoProTopic.jsx",
+    "updatedAt": "2026-11-19T12:04:32.947Z"
   },
   {
     "pageId": "spoko_SpokoProTopic1",
@@ -2098,7 +2517,9 @@
     "fileName": "SpokoProTopic1.jsx",
     "title": "SpokoProTopic1",
     "fileSizeBytes": 293,
-    "updatedAt": "2026-11-17T07:35:00.952Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.949Z"
   },
   {
     "pageId": "spoko_SpokoProTopic10",
@@ -2109,7 +2530,9 @@
     "fileName": "SpokoProTopic10.jsx",
     "title": "SpokoProTopic10",
     "fileSizeBytes": 295,
-    "updatedAt": "2026-11-17T07:35:00.954Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic10.jsx",
+    "updatedAt": "2026-11-19T12:04:32.950Z"
   },
   {
     "pageId": "spoko_SpokoProTopic11",
@@ -2120,7 +2543,9 @@
     "fileName": "SpokoProTopic11.jsx",
     "title": "SpokoProTopic11",
     "fileSizeBytes": 295,
-    "updatedAt": "2026-11-17T07:35:00.955Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic11.jsx",
+    "updatedAt": "2026-11-19T12:04:32.951Z"
   },
   {
     "pageId": "spoko_SpokoProTopic12",
@@ -2131,7 +2556,9 @@
     "fileName": "SpokoProTopic12.jsx",
     "title": "SpokoProTopic12",
     "fileSizeBytes": 295,
-    "updatedAt": "2026-11-17T07:35:00.956Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic12.jsx",
+    "updatedAt": "2026-11-19T12:04:32.953Z"
   },
   {
     "pageId": "spoko_SpokoProTopic13",
@@ -2142,7 +2569,9 @@
     "fileName": "SpokoProTopic13.jsx",
     "title": "SpokoProTopic13",
     "fileSizeBytes": 295,
-    "updatedAt": "2026-11-17T07:35:00.957Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic13.jsx",
+    "updatedAt": "2026-11-19T12:04:32.954Z"
   },
   {
     "pageId": "spoko_SpokoProTopic14",
@@ -2153,7 +2582,9 @@
     "fileName": "SpokoProTopic14.jsx",
     "title": "SpokoProTopic14",
     "fileSizeBytes": 295,
-    "updatedAt": "2026-11-17T07:35:00.959Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic14.jsx",
+    "updatedAt": "2026-11-19T12:04:32.955Z"
   },
   {
     "pageId": "spoko_SpokoProTopic15",
@@ -2164,7 +2595,9 @@
     "fileName": "SpokoProTopic15.jsx",
     "title": "SpokoProTopic15",
     "fileSizeBytes": 295,
-    "updatedAt": "2026-11-17T07:35:00.960Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic15.jsx",
+    "updatedAt": "2026-11-19T12:04:32.956Z"
   },
   {
     "pageId": "spoko_SpokoProTopic16",
@@ -2175,7 +2608,9 @@
     "fileName": "SpokoProTopic16.jsx",
     "title": "SpokoProTopic16",
     "fileSizeBytes": 295,
-    "updatedAt": "2026-11-17T07:35:00.961Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic16.jsx",
+    "updatedAt": "2026-11-19T12:04:32.957Z"
   },
   {
     "pageId": "spoko_SpokoProTopic2",
@@ -2186,7 +2621,9 @@
     "fileName": "SpokoProTopic2.jsx",
     "title": "SpokoProTopic2",
     "fileSizeBytes": 293,
-    "updatedAt": "2026-11-17T07:35:00.963Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.958Z"
   },
   {
     "pageId": "spoko_SpokoProTopic3",
@@ -2197,7 +2634,9 @@
     "fileName": "SpokoProTopic3.jsx",
     "title": "SpokoProTopic3",
     "fileSizeBytes": 293,
-    "updatedAt": "2026-11-17T07:35:00.964Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.959Z"
   },
   {
     "pageId": "spoko_SpokoProTopic4",
@@ -2208,7 +2647,9 @@
     "fileName": "SpokoProTopic4.jsx",
     "title": "SpokoProTopic4",
     "fileSizeBytes": 293,
-    "updatedAt": "2026-11-17T07:35:00.965Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.961Z"
   },
   {
     "pageId": "spoko_SpokoProTopic5",
@@ -2219,7 +2660,9 @@
     "fileName": "SpokoProTopic5.jsx",
     "title": "SpokoProTopic5",
     "fileSizeBytes": 293,
-    "updatedAt": "2026-11-17T07:35:00.967Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.962Z"
   },
   {
     "pageId": "spoko_SpokoProTopic6",
@@ -2230,7 +2673,9 @@
     "fileName": "SpokoProTopic6.jsx",
     "title": "SpokoProTopic6",
     "fileSizeBytes": 293,
-    "updatedAt": "2026-11-17T07:35:00.968Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic6.jsx",
+    "updatedAt": "2026-11-19T12:04:32.963Z"
   },
   {
     "pageId": "spoko_SpokoProTopic7",
@@ -2241,7 +2686,9 @@
     "fileName": "SpokoProTopic7.jsx",
     "title": "SpokoProTopic7",
     "fileSizeBytes": 293,
-    "updatedAt": "2026-11-17T07:35:00.969Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic7.jsx",
+    "updatedAt": "2026-11-19T12:04:32.965Z"
   },
   {
     "pageId": "spoko_SpokoProTopic8",
@@ -2252,7 +2699,9 @@
     "fileName": "SpokoProTopic8.jsx",
     "title": "SpokoProTopic8",
     "fileSizeBytes": 293,
-    "updatedAt": "2026-11-17T07:35:00.970Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic8.jsx",
+    "updatedAt": "2026-11-19T12:04:32.966Z"
   },
   {
     "pageId": "spoko_SpokoProTopic9",
@@ -2263,7 +2712,9 @@
     "fileName": "SpokoProTopic9.jsx",
     "title": "SpokoProTopic9",
     "fileSizeBytes": 293,
-    "updatedAt": "2026-11-17T07:35:00.971Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoProTopic9.jsx",
+    "updatedAt": "2026-11-19T12:04:32.967Z"
   },
   {
     "pageId": "spoko_SpokoReasoningDay1",
@@ -2274,7 +2725,9 @@
     "fileName": "SpokoReasoningDay1.jsx",
     "title": "Day 1: Introduction to Logical Thinking",
     "fileSizeBytes": 123616,
-    "updatedAt": "2026-11-17T07:35:00.973Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.970Z"
   },
   {
     "pageId": "spoko_SpokoReasoningDay10",
@@ -2285,7 +2738,9 @@
     "fileName": "SpokoReasoningDay10.jsx",
     "title": "Structured Problem Solving (Part 1)",
     "fileSizeBytes": 120023,
-    "updatedAt": "2026-11-17T07:35:00.974Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningDay10.jsx",
+    "updatedAt": "2026-11-19T12:04:32.973Z"
   },
   {
     "pageId": "spoko_SpokoReasoningDay11",
@@ -2296,7 +2751,9 @@
     "fileName": "SpokoReasoningDay11.jsx",
     "title": "Structured Problem Solving (Part 2)",
     "fileSizeBytes": 96034,
-    "updatedAt": "2026-11-17T07:35:00.975Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningDay11.jsx",
+    "updatedAt": "2026-11-19T12:04:32.975Z"
   },
   {
     "pageId": "spoko_SpokoReasoningDay2",
@@ -2307,7 +2764,9 @@
     "fileName": "SpokoReasoningDay2.jsx",
     "title": "Day 2: Number Series and Pattern Recognition",
     "fileSizeBytes": 171986,
-    "updatedAt": "2026-11-17T07:35:00.977Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:32.977Z"
   },
   {
     "pageId": "spoko_SpokoReasoningDay3",
@@ -2318,7 +2777,9 @@
     "fileName": "SpokoReasoningDay3.jsx",
     "title": "Alphabet and Symbol Patterns",
     "fileSizeBytes": 103198,
-    "updatedAt": "2026-11-17T07:35:00.978Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:32.979Z"
   },
   {
     "pageId": "spoko_SpokoReasoningDay4",
@@ -2329,7 +2790,9 @@
     "fileName": "SpokoReasoningDay4.jsx",
     "title": "Classification and Odd One Out",
     "fileSizeBytes": 92990,
-    "updatedAt": "2026-11-17T07:35:00.978Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:32.982Z"
   },
   {
     "pageId": "spoko_SpokoReasoningDay5",
@@ -2340,7 +2803,9 @@
     "fileName": "SpokoReasoningDay5.jsx",
     "title": "Analogies and Relationships",
     "fileSizeBytes": 113275,
-    "updatedAt": "2026-11-17T07:35:00.979Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:32.984Z"
   },
   {
     "pageId": "spoko_SpokoReasoningDay6",
@@ -2351,7 +2816,9 @@
     "fileName": "SpokoReasoningDay6.jsx",
     "title": "Basic Deductive Reasoning",
     "fileSizeBytes": 95145,
-    "updatedAt": "2026-11-17T07:35:00.980Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:32.987Z"
   },
   {
     "pageId": "spoko_SpokoReasoningDay7",
@@ -2362,7 +2829,9 @@
     "fileName": "SpokoReasoningDay7.jsx",
     "title": "Everyday Problem Solving",
     "fileSizeBytes": 100881,
-    "updatedAt": "2026-11-17T07:35:00.981Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningDay7.jsx",
+    "updatedAt": "2026-11-19T12:04:32.989Z"
   },
   {
     "pageId": "spoko_SpokoReasoningDay8",
@@ -2373,7 +2842,9 @@
     "fileName": "SpokoReasoningDay8.jsx",
     "title": "Data Interpretation",
     "fileSizeBytes": 122592,
-    "updatedAt": "2026-11-17T07:35:00.982Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningDay8.jsx",
+    "updatedAt": "2026-11-19T12:04:32.991Z"
   },
   {
     "pageId": "spoko_SpokoReasoningDay9",
@@ -2384,7 +2855,9 @@
     "fileName": "SpokoReasoningDay9.jsx",
     "title": "Root Cause Analysis (RCA)",
     "fileSizeBytes": 159249,
-    "updatedAt": "2026-11-17T07:35:00.984Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningDay9.jsx",
+    "updatedAt": "2026-11-19T12:04:32.993Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day1",
@@ -2395,7 +2868,9 @@
     "fileName": "SpokoReasoningLevel3Day1.jsx",
     "title": "Advanced Critical Thinking & Logical Deduction",
     "fileSizeBytes": 135046,
-    "updatedAt": "2026-11-17T07:35:00.986Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day1.jsx",
+    "updatedAt": "2026-11-19T12:04:32.996Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day10",
@@ -2406,7 +2881,9 @@
     "fileName": "SpokoReasoningLevel3Day10.jsx",
     "title": "SpokoReasoningLevel3Day10",
     "fileSizeBytes": 112,
-    "updatedAt": "2026-11-17T07:35:00.987Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day10.jsx",
+    "updatedAt": "2026-11-19T12:04:32.998Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day12",
@@ -2417,7 +2894,9 @@
     "fileName": "SpokoReasoningLevel3Day12.jsx",
     "title": "Advanced Critical Thinking & Logical Deduction (Part 1)",
     "fileSizeBytes": 117411,
-    "updatedAt": "2026-11-17T07:35:00.988Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day12.jsx",
+    "updatedAt": "2026-11-19T12:04:33.000Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day13",
@@ -2428,7 +2907,9 @@
     "fileName": "SpokoReasoningLevel3Day13.jsx",
     "title": "Advanced Critical Thinking & Logical Deduction (Part 2)",
     "fileSizeBytes": 109730,
-    "updatedAt": "2026-11-17T07:35:00.989Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day13.jsx",
+    "updatedAt": "2026-11-19T12:04:33.002Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day14",
@@ -2439,7 +2920,9 @@
     "fileName": "SpokoReasoningLevel3Day14.jsx",
     "title": "Advanced Coding-Decoding and Symbolic Logic",
     "fileSizeBytes": 162385,
-    "updatedAt": "2026-11-17T07:35:00.991Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day14.jsx",
+    "updatedAt": "2026-11-19T12:04:33.005Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day15",
@@ -2450,7 +2933,9 @@
     "fileName": "SpokoReasoningLevel3Day15.jsx",
     "title": "Advanced Seating Arrangements and Complex Logic Puzzles",
     "fileSizeBytes": 127692,
-    "updatedAt": "2026-11-17T07:35:00.993Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day15.jsx",
+    "updatedAt": "2026-11-19T12:04:33.007Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day16",
@@ -2461,7 +2946,9 @@
     "fileName": "SpokoReasoningLevel3Day16.jsx",
     "title": "Day 5 (Day 16): Advanced Blood Relations & Family-Tree Logic",
     "fileSizeBytes": 144127,
-    "updatedAt": "2026-11-17T07:35:00.994Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day16.jsx",
+    "updatedAt": "2026-11-19T12:04:33.010Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day17",
@@ -2472,7 +2959,9 @@
     "fileName": "SpokoReasoningLevel3Day17.jsx",
     "title": "Day 6 (Day 17): Advanced Syllogisms, Assumptions & Logical Conclusions",
     "fileSizeBytes": 140172,
-    "updatedAt": "2026-11-17T07:35:00.996Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day17.jsx",
+    "updatedAt": "2026-11-19T12:04:33.013Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day18",
@@ -2483,7 +2972,9 @@
     "fileName": "SpokoReasoningLevel3Day18.jsx",
     "title": "Day 7 (Day 18): Advanced Data Interpretation, Analytical Reasoning & Decision-Making",
     "fileSizeBytes": 138959,
-    "updatedAt": "2026-11-17T07:35:00.997Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day18.jsx",
+    "updatedAt": "2026-11-19T12:04:33.016Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day19",
@@ -2494,7 +2985,9 @@
     "fileName": "SpokoReasoningLevel3Day19.jsx",
     "title": "Level 3 – Advanced Day 8: Advanced Root Cause Analysis, Strategic Problem-Solving & Decision Trees",
     "fileSizeBytes": 127217,
-    "updatedAt": "2026-11-17T07:35:00.999Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day19.jsx",
+    "updatedAt": "2026-11-19T12:04:33.019Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day20",
@@ -2505,7 +2998,9 @@
     "fileName": "SpokoReasoningLevel3Day20.jsx",
     "title": "Level 3 – Advanced Day 9: Advanced Pattern Recognition, Abstract Reasoning & Non-Verbal Logic",
     "fileSizeBytes": 117715,
-    "updatedAt": "2026-11-17T07:35:01.000Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day20.jsx",
+    "updatedAt": "2026-11-19T12:04:33.022Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day21",
@@ -2516,7 +3011,9 @@
     "fileName": "SpokoReasoningLevel3Day21.jsx",
     "title": "Level 3 – Advanced Day 10: Comprehensive Logical Reasoning Challenge & Final Assessment",
     "fileSizeBytes": 93066,
-    "updatedAt": "2026-11-17T07:35:01.001Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day21.jsx",
+    "updatedAt": "2026-11-19T12:04:33.025Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day3",
@@ -2527,7 +3024,9 @@
     "fileName": "SpokoReasoningLevel3Day3.jsx",
     "title": "SpokoReasoningLevel3Day3",
     "fileSizeBytes": 55,
-    "updatedAt": "2026-11-17T07:35:01.021Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day3.jsx",
+    "updatedAt": "2026-11-19T12:04:33.026Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day4",
@@ -2538,7 +3037,9 @@
     "fileName": "SpokoReasoningLevel3Day4.jsx",
     "title": "SpokoReasoningLevel3Day4",
     "fileSizeBytes": 112,
-    "updatedAt": "2026-11-17T07:35:01.030Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day4.jsx",
+    "updatedAt": "2026-11-19T12:04:33.027Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day5",
@@ -2549,7 +3050,9 @@
     "fileName": "SpokoReasoningLevel3Day5.jsx",
     "title": "SpokoReasoningLevel3Day5",
     "fileSizeBytes": 112,
-    "updatedAt": "2026-11-17T07:35:01.035Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day5.jsx",
+    "updatedAt": "2026-11-19T12:04:33.028Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day6",
@@ -2560,7 +3063,9 @@
     "fileName": "SpokoReasoningLevel3Day6.jsx",
     "title": "SpokoReasoningLevel3Day6",
     "fileSizeBytes": 112,
-    "updatedAt": "2026-11-17T07:35:01.045Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day6.jsx",
+    "updatedAt": "2026-11-19T12:04:33.030Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day7",
@@ -2571,7 +3076,9 @@
     "fileName": "SpokoReasoningLevel3Day7.jsx",
     "title": "SpokoReasoningLevel3Day7",
     "fileSizeBytes": 112,
-    "updatedAt": "2026-11-17T07:35:01.054Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day7.jsx",
+    "updatedAt": "2026-11-19T12:04:33.031Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day8",
@@ -2582,7 +3089,9 @@
     "fileName": "SpokoReasoningLevel3Day8.jsx",
     "title": "SpokoReasoningLevel3Day8",
     "fileSizeBytes": 112,
-    "updatedAt": "2026-11-17T07:35:01.056Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day8.jsx",
+    "updatedAt": "2026-11-19T12:04:33.032Z"
   },
   {
     "pageId": "spoko_SpokoReasoningLevel3Day9",
@@ -2593,7 +3102,9 @@
     "fileName": "SpokoReasoningLevel3Day9.jsx",
     "title": "SpokoReasoningLevel3Day9",
     "fileSizeBytes": 112,
-    "updatedAt": "2026-11-17T07:35:01.058Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoReasoningLevel3Day9.jsx",
+    "updatedAt": "2026-11-19T12:04:33.033Z"
   },
   {
     "pageId": "spoko_SpokoStoryDay",
@@ -2604,7 +3115,9 @@
     "fileName": "SpokoStoryDay.jsx",
     "title": "{title}",
     "fileSizeBytes": 122882,
-    "updatedAt": "2026-11-17T07:35:01.059Z"
+    "isInteractive": true,
+    "location": "src/pages/spoko/SpokoStoryDay.jsx",
+    "updatedAt": "2026-11-19T12:04:33.036Z"
   },
   {
     "pageId": "spoko_SpokoStoryDay1",
@@ -2615,7 +3128,9 @@
     "fileName": "SpokoStoryDay1.jsx",
     "title": "SpokoStoryDay1",
     "fileSizeBytes": 252,
-    "updatedAt": "2026-11-17T07:35:01.059Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoStoryDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:33.037Z"
   },
   {
     "pageId": "spoko_SpokoStoryDay2",
@@ -2626,7 +3141,9 @@
     "fileName": "SpokoStoryDay2.jsx",
     "title": "SpokoStoryDay2",
     "fileSizeBytes": 252,
-    "updatedAt": "2026-11-17T07:35:01.060Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoStoryDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:33.039Z"
   },
   {
     "pageId": "spoko_SpokoStoryDay3",
@@ -2637,7 +3154,9 @@
     "fileName": "SpokoStoryDay3.jsx",
     "title": "SpokoStoryDay3",
     "fileSizeBytes": 252,
-    "updatedAt": "2026-11-17T07:35:01.060Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoStoryDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:33.040Z"
   },
   {
     "pageId": "spoko_SpokoStoryDay4",
@@ -2648,7 +3167,9 @@
     "fileName": "SpokoStoryDay4.jsx",
     "title": "SpokoStoryDay4",
     "fileSizeBytes": 252,
-    "updatedAt": "2026-11-17T07:35:01.060Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoStoryDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:33.041Z"
   },
   {
     "pageId": "spoko_SpokoStoryDay5",
@@ -2659,7 +3180,9 @@
     "fileName": "SpokoStoryDay5.jsx",
     "title": "SpokoStoryDay5",
     "fileSizeBytes": 252,
-    "updatedAt": "2026-11-17T07:35:01.060Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoStoryDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:33.042Z"
   },
   {
     "pageId": "spoko_SpokoStoryDay6",
@@ -2670,7 +3193,9 @@
     "fileName": "SpokoStoryDay6.jsx",
     "title": "SpokoStoryDay6",
     "fileSizeBytes": 252,
-    "updatedAt": "2026-11-17T07:35:01.060Z"
+    "isInteractive": false,
+    "location": "src/pages/spoko/SpokoStoryDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:33.043Z"
   },
   {
     "pageId": "sql_SQLDADay8",
@@ -2681,7 +3206,9 @@
     "fileName": "SQLDADay8.jsx",
     "title": "{title}",
     "fileSizeBytes": 40858,
-    "updatedAt": "2026-11-17T07:35:01.061Z"
+    "isInteractive": true,
+    "location": "src/pages/sql/SQLDADay8.jsx",
+    "updatedAt": "2026-11-19T12:04:33.045Z"
   },
   {
     "pageId": "sql_SQLDAFinalProject",
@@ -2692,7 +3219,9 @@
     "fileName": "SQLDAFinalProject.jsx",
     "title": "{title}",
     "fileSizeBytes": 11480,
-    "updatedAt": "2026-11-17T07:35:01.061Z"
+    "isInteractive": true,
+    "location": "src/pages/sql/SQLDAFinalProject.jsx",
+    "updatedAt": "2026-11-19T12:04:33.047Z"
   },
   {
     "pageId": "sql_SQLDay1",
@@ -2703,7 +3232,9 @@
     "fileName": "SQLDay1.jsx",
     "title": "{title}",
     "fileSizeBytes": 15466,
-    "updatedAt": "2026-11-17T07:35:01.062Z"
+    "isInteractive": false,
+    "location": "src/pages/sql/SQLDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:33.048Z"
   },
   {
     "pageId": "sql_SQLDay2",
@@ -2714,7 +3245,9 @@
     "fileName": "SQLDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 11371,
-    "updatedAt": "2026-11-17T07:35:01.062Z"
+    "isInteractive": false,
+    "location": "src/pages/sql/SQLDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:33.049Z"
   },
   {
     "pageId": "sql_SQLDay3",
@@ -2725,7 +3258,9 @@
     "fileName": "SQLDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 27998,
-    "updatedAt": "2026-11-17T07:35:01.062Z"
+    "isInteractive": false,
+    "location": "src/pages/sql/SQLDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:33.051Z"
   },
   {
     "pageId": "sql_SQLDay4",
@@ -2736,7 +3271,9 @@
     "fileName": "SQLDay4.jsx",
     "title": "{title}",
     "fileSizeBytes": 15903,
-    "updatedAt": "2026-11-17T07:35:01.062Z"
+    "isInteractive": false,
+    "location": "src/pages/sql/SQLDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:33.052Z"
   },
   {
     "pageId": "sql_SQLDay5",
@@ -2747,7 +3284,9 @@
     "fileName": "SQLDay5.jsx",
     "title": "{title}",
     "fileSizeBytes": 11981,
-    "updatedAt": "2026-11-17T07:35:01.063Z"
+    "isInteractive": false,
+    "location": "src/pages/sql/SQLDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:33.053Z"
   },
   {
     "pageId": "sql_SQLDay6",
@@ -2758,7 +3297,9 @@
     "fileName": "SQLDay6.jsx",
     "title": "{title}",
     "fileSizeBytes": 13748,
-    "updatedAt": "2026-11-17T07:35:01.063Z"
+    "isInteractive": false,
+    "location": "src/pages/sql/SQLDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:33.054Z"
   },
   {
     "pageId": "sql_SQLDay7",
@@ -2769,7 +3310,9 @@
     "fileName": "SQLDay7.jsx",
     "title": "{title}",
     "fileSizeBytes": 27640,
-    "updatedAt": "2026-11-17T07:35:01.063Z"
+    "isInteractive": false,
+    "location": "src/pages/sql/SQLDay7.jsx",
+    "updatedAt": "2026-11-19T12:04:33.056Z"
   },
   {
     "pageId": "sql_SQLDay8",
@@ -2780,7 +3323,9 @@
     "fileName": "SQLDay8.jsx",
     "title": "{title}",
     "fileSizeBytes": 34883,
-    "updatedAt": "2026-11-17T07:35:01.063Z"
+    "isInteractive": true,
+    "location": "src/pages/sql/SQLDay8.jsx",
+    "updatedAt": "2026-11-19T12:04:33.057Z"
   },
   {
     "pageId": "sql_SQLDay9",
@@ -2791,7 +3336,9 @@
     "fileName": "SQLDay9.jsx",
     "title": "{title}",
     "fileSizeBytes": 62104,
-    "updatedAt": "2026-11-17T07:35:01.064Z"
+    "isInteractive": true,
+    "location": "src/pages/sql/SQLDay9.jsx",
+    "updatedAt": "2026-11-19T12:04:33.059Z"
   },
   {
     "pageId": "sql_SQLFinalProject",
@@ -2802,7 +3349,9 @@
     "fileName": "SQLFinalProject.jsx",
     "title": "{title}",
     "fileSizeBytes": 10047,
-    "updatedAt": "2026-11-17T07:35:01.064Z"
+    "isInteractive": false,
+    "location": "src/pages/sql/SQLFinalProject.jsx",
+    "updatedAt": "2026-11-19T12:04:33.060Z"
   },
   {
     "pageId": "statistics_StatsDay1",
@@ -2813,7 +3362,9 @@
     "fileName": "StatsDay1.jsx",
     "title": "{title}",
     "fileSizeBytes": 51646,
-    "updatedAt": "2026-11-17T07:35:01.065Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:33.063Z"
   },
   {
     "pageId": "statistics_StatsDay10",
@@ -2824,7 +3375,9 @@
     "fileName": "StatsDay10.jsx",
     "title": "{title}",
     "fileSizeBytes": 47275,
-    "updatedAt": "2026-11-17T07:35:01.066Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay10.jsx",
+    "updatedAt": "2026-11-19T12:04:33.065Z"
   },
   {
     "pageId": "statistics_StatsDay11",
@@ -2835,7 +3388,9 @@
     "fileName": "StatsDay11.jsx",
     "title": "{title}",
     "fileSizeBytes": 50480,
-    "updatedAt": "2026-11-17T07:35:01.066Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay11.jsx",
+    "updatedAt": "2026-11-19T12:04:33.067Z"
   },
   {
     "pageId": "statistics_StatsDay12",
@@ -2846,7 +3401,9 @@
     "fileName": "StatsDay12.jsx",
     "title": "{title}",
     "fileSizeBytes": 49205,
-    "updatedAt": "2026-11-17T07:35:01.067Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay12.jsx",
+    "updatedAt": "2026-11-19T12:04:33.069Z"
   },
   {
     "pageId": "statistics_StatsDay13",
@@ -2857,7 +3414,9 @@
     "fileName": "StatsDay13.jsx",
     "title": "{title}",
     "fileSizeBytes": 51435,
-    "updatedAt": "2026-11-17T07:35:01.067Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay13.jsx",
+    "updatedAt": "2026-11-19T12:04:33.070Z"
   },
   {
     "pageId": "statistics_StatsDay14",
@@ -2868,7 +3427,9 @@
     "fileName": "StatsDay14.jsx",
     "title": "{title}",
     "fileSizeBytes": 50784,
-    "updatedAt": "2026-11-17T07:35:01.068Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay14.jsx",
+    "updatedAt": "2026-11-19T12:04:33.072Z"
   },
   {
     "pageId": "statistics_StatsDay15",
@@ -2879,7 +3440,9 @@
     "fileName": "StatsDay15.jsx",
     "title": "{title}",
     "fileSizeBytes": 57004,
-    "updatedAt": "2026-11-17T07:35:01.069Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay15.jsx",
+    "updatedAt": "2026-11-19T12:04:33.073Z"
   },
   {
     "pageId": "statistics_StatsDay16",
@@ -2890,7 +3453,9 @@
     "fileName": "StatsDay16.jsx",
     "title": "{title}",
     "fileSizeBytes": 43714,
-    "updatedAt": "2026-11-17T07:35:01.069Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay16.jsx",
+    "updatedAt": "2026-11-19T12:04:33.075Z"
   },
   {
     "pageId": "statistics_StatsDay17",
@@ -2901,7 +3466,9 @@
     "fileName": "StatsDay17.jsx",
     "title": "{title}",
     "fileSizeBytes": 31828,
-    "updatedAt": "2026-11-17T07:35:01.069Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay17.jsx",
+    "updatedAt": "2026-11-19T12:04:33.076Z"
   },
   {
     "pageId": "statistics_StatsDay2",
@@ -2912,7 +3479,9 @@
     "fileName": "StatsDay2.jsx",
     "title": "{title}",
     "fileSizeBytes": 42567,
-    "updatedAt": "2026-11-17T07:35:01.070Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:33.078Z"
   },
   {
     "pageId": "statistics_StatsDay3",
@@ -2923,7 +3492,9 @@
     "fileName": "StatsDay3.jsx",
     "title": "{title}",
     "fileSizeBytes": 39627,
-    "updatedAt": "2026-11-17T07:35:01.070Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:33.080Z"
   },
   {
     "pageId": "statistics_StatsDay4",
@@ -2934,7 +3505,9 @@
     "fileName": "StatsDay4.jsx",
     "title": "{title}",
     "fileSizeBytes": 44389,
-    "updatedAt": "2026-11-17T07:35:01.071Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:33.082Z"
   },
   {
     "pageId": "statistics_StatsDay5",
@@ -2945,7 +3518,9 @@
     "fileName": "StatsDay5.jsx",
     "title": "{title}",
     "fileSizeBytes": 43060,
-    "updatedAt": "2026-11-17T07:35:01.071Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:33.084Z"
   },
   {
     "pageId": "statistics_StatsDay6",
@@ -2956,7 +3531,9 @@
     "fileName": "StatsDay6.jsx",
     "title": "{title}",
     "fileSizeBytes": 42318,
-    "updatedAt": "2026-11-17T07:35:01.072Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:33.086Z"
   },
   {
     "pageId": "statistics_StatsDay7",
@@ -2967,7 +3544,9 @@
     "fileName": "StatsDay7.jsx",
     "title": "{title}",
     "fileSizeBytes": 38686,
-    "updatedAt": "2026-11-17T07:35:01.072Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay7.jsx",
+    "updatedAt": "2026-11-19T12:04:33.088Z"
   },
   {
     "pageId": "statistics_StatsDay8",
@@ -2978,7 +3557,9 @@
     "fileName": "StatsDay8.jsx",
     "title": "{title}",
     "fileSizeBytes": 42911,
-    "updatedAt": "2026-11-17T07:35:01.073Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay8.jsx",
+    "updatedAt": "2026-11-19T12:04:33.089Z"
   },
   {
     "pageId": "statistics_StatsDay9",
@@ -2989,7 +3570,9 @@
     "fileName": "StatsDay9.jsx",
     "title": "{title}",
     "fileSizeBytes": 43391,
-    "updatedAt": "2026-11-17T07:35:01.073Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsDay9.jsx",
+    "updatedAt": "2026-11-19T12:04:33.091Z"
   },
   {
     "pageId": "statistics_StatsDayPlaceholder",
@@ -3000,7 +3583,9 @@
     "fileName": "StatsDayPlaceholder.jsx",
     "title": "{displayTitle} - Coming Soon",
     "fileSizeBytes": 1892,
-    "updatedAt": "2026-11-17T07:35:01.074Z"
+    "isInteractive": false,
+    "location": "src/pages/statistics/StatsDayPlaceholder.jsx",
+    "updatedAt": "2026-11-19T12:04:33.092Z"
   },
   {
     "pageId": "statistics_StatsFinalProject",
@@ -3011,7 +3596,9 @@
     "fileName": "StatsFinalProject.jsx",
     "title": "{title}",
     "fileSizeBytes": 28590,
-    "updatedAt": "2026-11-17T07:35:01.074Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsFinalProject.jsx",
+    "updatedAt": "2026-11-19T12:04:33.094Z"
   },
   {
     "pageId": "statistics_StatsMiniProjects",
@@ -3022,7 +3609,9 @@
     "fileName": "StatsMiniProjects.jsx",
     "title": "{title}",
     "fileSizeBytes": 25227,
-    "updatedAt": "2026-11-17T07:35:01.075Z"
+    "isInteractive": true,
+    "location": "src/pages/statistics/StatsMiniProjects.jsx",
+    "updatedAt": "2026-11-19T12:04:33.096Z"
   },
   {
     "pageId": "tally_TallyCourseDay",
@@ -3033,7 +3622,9 @@
     "fileName": "TallyCourseDay.jsx",
     "title": "{dayData.title}",
     "fileSizeBytes": 48514,
-    "updatedAt": "2026-11-17T07:35:01.075Z"
+    "isInteractive": true,
+    "location": "src/pages/tally/TallyCourseDay.jsx",
+    "updatedAt": "2026-11-19T12:04:33.098Z"
   },
   {
     "pageId": "web-design_WebDesignDay1",
@@ -3044,7 +3635,9 @@
     "fileName": "WebDesignDay1.jsx",
     "title": "Alpha Fly IT Training Institute",
     "fileSizeBytes": 94138,
-    "updatedAt": "2026-11-17T07:35:01.076Z"
+    "isInteractive": true,
+    "location": "src/pages/web-design/WebDesignDay1.jsx",
+    "updatedAt": "2026-11-19T12:04:33.101Z"
   },
   {
     "pageId": "web-design_WebDesignDay10",
@@ -3055,7 +3648,9 @@
     "fileName": "WebDesignDay10.jsx",
     "title": "Build Your Dream Tech Career in 90 Days",
     "fileSizeBytes": 84900,
-    "updatedAt": "2026-11-17T07:35:01.077Z"
+    "isInteractive": true,
+    "location": "src/pages/web-design/WebDesignDay10.jsx",
+    "updatedAt": "2026-11-19T12:04:33.103Z"
   },
   {
     "pageId": "web-design_WebDesignDay11",
@@ -3066,7 +3661,9 @@
     "fileName": "WebDesignDay11.jsx",
     "title": "Transform Basic Websites into Professional, Modern &amp; Consistent Designs",
     "fileSizeBytes": 103035,
-    "updatedAt": "2026-11-17T07:35:01.078Z"
+    "isInteractive": true,
+    "location": "src/pages/web-design/WebDesignDay11.jsx",
+    "updatedAt": "2026-11-19T12:04:33.105Z"
   },
   {
     "pageId": "web-design_WebDesignDay12",
@@ -3077,7 +3674,9 @@
     "fileName": "WebDesignDay12.jsx",
     "title": "Make Static Websites Interactive with JavaScript",
     "fileSizeBytes": 99484,
-    "updatedAt": "2026-11-17T07:35:01.079Z"
+    "isInteractive": true,
+    "location": "src/pages/web-design/WebDesignDay12.jsx",
+    "updatedAt": "2026-11-19T12:04:33.107Z"
   },
   {
     "pageId": "web-design_WebDesignDay2",
@@ -3088,7 +3687,9 @@
     "fileName": "WebDesignDay2.jsx",
     "title": "Day 2 — Build Your First Professional Navbar",
     "fileSizeBytes": 71050,
-    "updatedAt": "2026-11-17T07:35:01.080Z"
+    "isInteractive": true,
+    "location": "src/pages/web-design/WebDesignDay2.jsx",
+    "updatedAt": "2026-11-19T12:04:33.109Z"
   },
   {
     "pageId": "web-design_WebDesignDay3",
@@ -3099,7 +3700,9 @@
     "fileName": "WebDesignDay3.jsx",
     "title": "Build Job-Ready Digital Skills",
     "fileSizeBytes": 63245,
-    "updatedAt": "2026-11-17T07:35:01.080Z"
+    "isInteractive": true,
+    "location": "src/pages/web-design/WebDesignDay3.jsx",
+    "updatedAt": "2026-11-19T12:04:33.111Z"
   },
   {
     "pageId": "web-design_WebDesignDay4",
@@ -3110,7 +3713,9 @@
     "fileName": "WebDesignDay4.jsx",
     "title": "Learning That Leads to Real Projects",
     "fileSizeBytes": 93567,
-    "updatedAt": "2026-11-17T07:35:01.081Z"
+    "isInteractive": true,
+    "location": "src/pages/web-design/WebDesignDay4.jsx",
+    "updatedAt": "2026-11-19T12:04:33.113Z"
   },
   {
     "pageId": "web-design_WebDesignDay5",
@@ -3121,7 +3726,9 @@
     "fileName": "WebDesignDay5.jsx",
     "title": "Practical Training Tracks Built for Job Growth",
     "fileSizeBytes": 99381,
-    "updatedAt": "2026-11-17T07:35:01.082Z"
+    "isInteractive": true,
+    "location": "src/pages/web-design/WebDesignDay5.jsx",
+    "updatedAt": "2026-11-19T12:04:33.116Z"
   },
   {
     "pageId": "web-design_WebDesignDay6",
@@ -3132,7 +3739,9 @@
     "fileName": "WebDesignDay6.jsx",
     "title": "Featured Projects & Client Work",
     "fileSizeBytes": 146924,
-    "updatedAt": "2026-11-17T07:35:01.083Z"
+    "isInteractive": true,
+    "location": "src/pages/web-design/WebDesignDay6.jsx",
+    "updatedAt": "2026-11-19T12:04:33.118Z"
   },
   {
     "pageId": "web-design_WebDesignDay7",
@@ -3143,7 +3752,9 @@
     "fileName": "WebDesignDay7.jsx",
     "title": "Real Feedback From Our Students",
     "fileSizeBytes": 119627,
-    "updatedAt": "2026-11-17T07:35:01.084Z"
+    "isInteractive": true,
+    "location": "src/pages/web-design/WebDesignDay7.jsx",
+    "updatedAt": "2026-11-19T12:04:33.121Z"
   },
   {
     "pageId": "web-design_WebDesignDay8",
@@ -3154,7 +3765,9 @@
     "fileName": "WebDesignDay8.jsx",
     "title": "Flexible Packages for Your Business",
     "fileSizeBytes": 129593,
-    "updatedAt": "2026-11-17T07:35:01.086Z"
+    "isInteractive": true,
+    "location": "src/pages/web-design/WebDesignDay8.jsx",
+    "updatedAt": "2026-11-19T12:04:33.123Z"
   },
   {
     "pageId": "web-design_WebDesignDay9",
@@ -3165,6 +3778,8 @@
     "fileName": "WebDesignDay9.jsx",
     "title": "Start Your Project Today",
     "fileSizeBytes": 103052,
-    "updatedAt": "2026-11-17T07:35:01.086Z"
+    "isInteractive": true,
+    "location": "src/pages/web-design/WebDesignDay9.jsx",
+    "updatedAt": "2026-11-19T12:04:33.125Z"
   }
 ]

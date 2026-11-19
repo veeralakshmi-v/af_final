@@ -30,6 +30,8 @@ export const coursePageSchema = new mongoose.Schema({
   title: { type: String, default: '' },
   rawContent: { type: String, default: '' },
   fileSizeBytes: { type: Number, default: 0 },
+  isInteractive: { type: Boolean, default: false },
+  location: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
@@ -107,6 +109,9 @@ export async function extractAllCoursePages() {
       const moduleId = compToModuleMap[compName] || compName.toLowerCase();
       const courseKey = subjectToCourseKey[subject] || subject.replace(/-/g, '_');
 
+      const isInteractive = /useState|useEffect|eval\(|<iframe|<textarea|Playground|interactive/i.test(content);
+      const location = `src/pages/${subject}/${file}`;
+
       pages.push({
         pageId,
         subject,
@@ -117,6 +122,8 @@ export async function extractAllCoursePages() {
         title: title.slice(0, 150),
         rawContent: content,
         fileSizeBytes: content.length,
+        isInteractive,
+        location,
         updatedAt: new Date()
       });
     }
