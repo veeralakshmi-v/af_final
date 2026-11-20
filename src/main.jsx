@@ -108,10 +108,23 @@ class ErrorBoundary extends Component {
             {this.state.errorInfo && this.state.errorInfo.componentStack}
           </pre>
           <button
-            onClick={() => window.location.reload()}
+            onClick={async () => {
+              try {
+                if ('caches' in window) {
+                  const keys = await caches.keys();
+                  await Promise.all(keys.map(k => caches.delete(k)));
+                }
+                if (navigator.serviceWorker) {
+                  const regs = await navigator.serviceWorker.getRegistrations();
+                  await Promise.all(regs.map(r => r.unregister()));
+                }
+              } catch (e) {}
+              sessionStorage.clear();
+              window.location.href = window.location.origin + window.location.pathname + '?_t=' + Date.now();
+            }}
             style={{ marginTop: '1.5rem', padding: '0.65rem 1.5rem', background: '#DC2626', color: '#FFFFFF', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer' }}
           >
-            Reload Page
+            Reload Page (Clear Cache)
           </button>
         </div>
       );
