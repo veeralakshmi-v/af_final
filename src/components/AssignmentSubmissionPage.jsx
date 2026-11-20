@@ -152,10 +152,12 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
     }
   }, [moduleId]);
 
+  const MIN_CHARS = 100;
   const hasUrl = Boolean(submissionUrl.trim());
   const hasNotes = Boolean(submissionNotes.trim());
   const feedbackTrimmed = studentFeedback.trim();
   const feedbackLength = feedbackTrimmed.length;
+  const isFeedbackValid = feedbackLength >= MIN_CHARS;
   // Submission is valid if student provides a project URL, practical notes, or at least 15 chars reflection
   const isSubmissionValid = hasUrl || hasNotes || feedbackLength >= 15;
 
