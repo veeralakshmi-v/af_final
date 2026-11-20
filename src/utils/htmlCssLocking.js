@@ -199,7 +199,7 @@ export const HTML_CSS_ASSIGNMENTS_CONFIG = {
       'Design a comprehensive full-stack corporate site combining HTML5, CSS Grid/Flexbox, and Bootstrap 5.',
       'Ensure 100% responsiveness across all screen sizes (mobile, tablet, desktop).',
       'Include full form validations, interactive UI components, animations, and accessible semantic markup.',
-      'Submit your live Vercel/GitHub pages deployment link along with comprehensive reflection.'
+      'Submit your comprehensive learning reflection and findings in the feedback section below.'
     ],
     nextModuleId: null,
     nextModuleTitle: null
@@ -508,13 +508,30 @@ export function getModuleConfig(courseKey, moduleId) {
   const nextModObj = nextModId ? courseModules.find(m => m.id === nextModId) : null;
   const nextModTitle = nextModObj ? nextModObj.title : 'Next Day';
 
+  let tasks = [];
+  if (modObj && Array.isArray(modObj.items)) {
+    const validTopics = modObj.items.filter(item => 
+      !['assignment', 'assessment', 'assignment_work', 'quiz', 'project', 'toc', 'intro'].includes(item.id)
+    );
+    if (validTopics.length > 0) {
+      tasks = validTopics.map((item, i) => `Question ${i + 1}: Implement hands-on exercises and practice practical implementations for "${item.label}".`);
+      tasks.push(`Verify code correctness, test edge cases, and inspect execution output.`);
+      tasks.push(`Summarize your key takeaways, implementation steps, and challenges faced in the reflection feedback below.`);
+    }
+  }
+
+  if (tasks.length === 0) {
+    tasks = [
+      `Review all practical topics, syntax, and examples taught in ${dayTitle}.`,
+      `Implement the practical exercises in your development environment and verify execution results.`,
+      `Provide your detailed learning reflection and feedback below for staff evaluation.`
+    ];
+  }
+
   return {
     dayTitle,
     assignmentTitle,
-    tasks: [
-      `Complete all practical exercises and coding tasks for ${dayTitle}.`,
-      'Submit your code snippet, GitHub/project link, and self-reflection feedback below.'
-    ],
+    tasks,
     nextModuleId: nextModId,
     nextModuleTitle: nextModTitle
   };

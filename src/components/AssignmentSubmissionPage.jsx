@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FileText, Send, CheckCircle, ShieldAlert, Lock, Unlock, 
-  ArrowRight, Clock, AlertTriangle, MessageSquare, Award, Check, RefreshCw
+  ArrowRight, Clock, AlertTriangle, MessageSquare, Award, Check
 } from 'lucide-react';
 import { 
-  HTML_CSS_ASSIGNMENTS_CONFIG, 
   getModuleConfig,
   getAssignmentValidations, 
   saveAssignmentValidation 
@@ -110,9 +109,7 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
   const [validations, setValidations] = useState(getAssignmentValidations());
   const currentRecord = validations[moduleId] || {};
 
-  // Form State
-  const [submissionUrl, setSubmissionUrl] = useState(currentRecord.submissionUrl || '');
-  const [submissionNotes, setSubmissionNotes] = useState(currentRecord.submissionNotes || '');
+  // Form State: Feedback only
   const [studentFeedback, setStudentFeedback] = useState(currentRecord.studentFeedback || '');
   const [showError, setShowError] = useState(false);
   const [isSubmittedNotice, setIsSubmittedNotice] = useState(false);
@@ -145,21 +142,17 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
 
   useEffect(() => {
     if (currentRecord) {
-      if (currentRecord.submissionUrl) setSubmissionUrl(currentRecord.submissionUrl);
-      if (currentRecord.submissionNotes) setSubmissionNotes(currentRecord.submissionNotes);
       if (currentRecord.studentFeedback) setStudentFeedback(currentRecord.studentFeedback);
       if (currentRecord.staffFeedback) setStaffFeedbackInput(currentRecord.staffFeedback);
     }
   }, [moduleId]);
 
   const MIN_CHARS = 100;
-  const hasUrl = Boolean(submissionUrl.trim());
-  const hasNotes = Boolean(submissionNotes.trim());
   const feedbackTrimmed = studentFeedback.trim();
   const feedbackLength = feedbackTrimmed.length;
   const isFeedbackValid = feedbackLength >= MIN_CHARS;
-  // Submission is valid if student provides a project URL, practical notes, or at least 15 chars reflection
-  const isSubmissionValid = hasUrl || hasNotes || feedbackLength >= 15;
+  // Submission is valid when student provides feedback reflection
+  const isSubmissionValid = feedbackLength >= 15;
 
   const handleStudentSubmit = async (e) => {
     if (e) e.preventDefault();
@@ -172,8 +165,8 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
       ...currentRecord,
       studentName: session?.name || currentRecord.studentName || 'Student Learner',
       studentAccessCode: session?.accessCode || session?.username || currentRecord.studentAccessCode || 'STUDENT',
-      submissionUrl: submissionUrl.trim(),
-      submissionNotes: submissionNotes.trim(),
+      submissionUrl: currentRecord.submissionUrl || '',
+      submissionNotes: currentRecord.submissionNotes || '',
       studentFeedback: studentFeedback.trim(),
       submittedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
       status: isStaffUser ? (currentRecord.status || 'approved') : 'pending'
@@ -204,8 +197,8 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
           body: JSON.stringify({
             moduleId,
             tabId: 'assignment',
-            taskUrl: submissionUrl.trim(),
-            taskText: `[Student Reflection Feedback]: ${studentFeedback.trim()}${submissionNotes.trim() ? `\n\n[Submission Notes]: ${submissionNotes.trim()}` : ''}`
+            taskUrl: currentRecord.submissionUrl || '',
+            taskText: `[Student Reflection Feedback]: ${studentFeedback.trim()}`
           })
         });
         if (res.ok) {
@@ -232,8 +225,8 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
   const handleStaffApproval = (newStatus) => {
     const updatedRecord = {
       ...currentRecord,
-      submissionUrl: submissionUrl.trim() || currentRecord.submissionUrl || 'https://drive.google.com/assignment',
-      submissionNotes: submissionNotes.trim() || currentRecord.submissionNotes || 'Completed practical tasks.',
+      submissionUrl: currentRecord.submissionUrl || '',
+      submissionNotes: currentRecord.submissionNotes || '',
       studentFeedback: studentFeedback.trim() || currentRecord.studentFeedback || courseCtx.defaultReflection,
       staffFeedback: staffFeedbackInput.trim(),
       status: newStatus,
@@ -348,86 +341,65 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
         )}
       </div>
 
-      {/* Grid: Instructions & Requirements */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-        
-        <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.5rem', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
-          <h4 style={{ margin: '0 0 1rem', fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Award size={18} style={{ color: '#0284c7' }} /> Assignment Checklist &amp; Criteria
-          </h4>
-          <ul style={{ margin: 0, paddingLeft: '1.2rem', color: '#334155', fontSize: '0.88rem', lineHeight: 1.7 }}>
-            {config.tasks.map((task, idx) => (
-              <li key={idx} style={{ marginBottom: 6 }}>{task}</li>
-            ))}
-          </ul>
+      {/* 1. Assignment Questions & Practical Tasks */}
+      <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 14, padding: '1.75rem', marginBottom: '1.75rem', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: 10 }}>
+          <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <FileText size={22} style={{ color: '#2563eb' }} /> Assignment Questions &amp; Practical Tasks
+          </h3>
+          <span style={{ fontSize: '0.82rem', fontWeight: 700, background: '#eff6ff', color: '#1d4ed8', padding: '4px 12px', borderRadius: 20 }}>
+            {config.tasks?.length || 0} Questions
+          </span>
         </div>
 
-        <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.5rem', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
-          <h4 style={{ margin: '0 0 1rem', fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <ShieldAlert size={18} style={{ color: '#ea580c' }} /> Mandatory Submission Rules
-          </h4>
-          <div style={{ fontSize: '0.86rem', color: '#475569', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-              <span style={{ background: '#ea580c', color: 'white', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800, flexShrink: 0 }}>1</span>
-              <span><strong>Student Feedback:</strong> Must contain at least <strong>100 characters</strong> {courseCtx.feedbackRule}</span>
-            </div>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-              <span style={{ background: '#ea580c', color: 'white', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800, flexShrink: 0 }}>2</span>
-              <span><strong>Staff Evaluation:</strong> Staff must evaluate student feedback &amp; submission before <strong>{config.nextModuleTitle || 'Next Day'}</strong> is unlocked.</span>
-            </div>
-          </div>
-        </div>
+        <p style={{ color: '#475569', fontSize: '0.92rem', margin: '0 0 1.25rem 0', lineHeight: 1.6 }}>
+          Review and complete each practical question below in your development environment. Once completed, write your learning reflection and observations in the student feedback section below to submit for staff evaluation.
+        </p>
 
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          {(config.tasks || []).map((task, idx) => (
+            <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, background: '#f8fafc', padding: '14px 16px', borderRadius: 10, border: '1px solid #e2e8f0', transition: 'all 0.2s' }}>
+              <span style={{ background: '#2563eb', color: '#ffffff', fontWeight: 800, fontSize: '0.82rem', width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                {idx + 1}
+              </span>
+              <div style={{ flex: 1, fontSize: '0.92rem', color: '#1e293b', lineHeight: 1.6, fontWeight: 500 }}>
+                {task}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Main Form: Student Submission */}
+      {/* 2. Mandatory Rules Banner */}
+      <div style={{ background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: '1.75rem', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <ShieldAlert size={20} style={{ color: '#ea580c', flexShrink: 0 }} />
+        <div style={{ fontSize: '0.86rem', color: '#9a3412', lineHeight: 1.5 }}>
+          <strong>Submission Rule:</strong> Provide your detailed learning reflection (minimum <strong>100 characters</strong>) in the feedback box below. Your instructor will review your feedback to unlock <strong>{config.nextModuleTitle || 'Next Day'}</strong>.
+        </div>
+      </div>
+
+      {/* 3. Main Form: Student Feedback Only */}
       <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 14, padding: '1.75rem', marginBottom: '2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
-        <h3 style={{ margin: '0 0 1.25rem', fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <FileText size={20} style={{ color: '#2563eb' }} /> Student Assignment Submission Form
+        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <MessageSquare size={20} style={{ color: '#2563eb' }} /> Student Learning Feedback &amp; Reflection
         </h3>
+        <p style={{ color: '#64748b', fontSize: '0.88rem', margin: '0 0 1.25rem 0', lineHeight: 1.5 }}>
+          Share what you practiced from the questions above, key insights learned, query/code logic applied, and how you solved practical challenges.
+        </p>
 
         {isSubmittedNotice && (
           <div style={{ background: '#dcfce7', border: '1px solid #86efac', color: '#166534', padding: '12px 16px', borderRadius: 8, marginBottom: '1.25rem', fontSize: '0.9rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <CheckCircle size={18} /> Assignment submitted successfully! Awaiting Staff Validation to unlock next day content.
+            <CheckCircle size={18} /> Feedback submitted successfully! Awaiting Staff Validation to unlock next day content.
           </div>
         )}
 
         <form onSubmit={handleStudentSubmit}>
-          
-          {/* Submission Link */}
-          <div style={{ marginBottom: '1.25rem' }}>
-            <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#1e293b', marginBottom: 6 }}>
-              {courseCtx.urlLabel}
-            </label>
-            <input 
-              type="url"
-              value={submissionUrl}
-              onChange={(e) => setSubmissionUrl(e.target.value)}
-              placeholder={courseCtx.urlPlaceholder}
-              style={{ width: '100%', padding: '0.65rem 0.9rem', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.9rem', outline: 'none' }}
-            />
-          </div>
-
-          {/* Submission Code / Notes */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#1e293b', marginBottom: 6 }}>
-              {courseCtx.notesLabel}
-            </label>
-            <textarea 
-              rows={4}
-              value={submissionNotes}
-              onChange={(e) => setSubmissionNotes(e.target.value)}
-              placeholder={courseCtx.notesPlaceholder}
-              style={{ width: '100%', padding: '0.75rem 0.9rem', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.88rem', fontFamily: 'monospace', outline: 'none' }}
-            />
-          </div>
-
           {/* REQUIRED Student Feedback (Minimum 100 Characters) */}
           <div style={{ marginBottom: '1.5rem', background: '#f8fafc', border: `2px solid ${showError && !isFeedbackValid ? '#ef4444' : isFeedbackValid ? '#22c55e' : '#cbd5e1'}`, borderRadius: 12, padding: '1.25rem', transition: 'all 0.2s' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, flexWrap: 'wrap', gap: 6 }}>
               <label style={{ fontWeight: 800, fontSize: '0.92rem', color: '#0f172a' }}>
-                Student Feedback &amp; Reflection <span style={{ color: '#ef4444' }}>* (Minimum 100 characters required)</span>
+                Your Learning Reflection &amp; Feedback <span style={{ color: '#ef4444' }}>* (Minimum 100 characters required)</span>
               </label>
               
               <div style={{ fontSize: '0.82rem', fontWeight: 700, color: isFeedbackValid ? '#15803d' : '#dc2626', background: isFeedbackValid ? '#dcfce7' : '#fee2e2', padding: '3px 10px', borderRadius: 12 }}>
@@ -446,7 +418,7 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
             </div>
 
             <textarea 
-              rows={5}
+              rows={6}
               value={studentFeedback}
               onChange={(e) => {
                 setStudentFeedback(e.target.value);
@@ -455,10 +427,10 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
               placeholder={courseCtx.feedbackPlaceholder}
               style={{ 
                 width: '100%', 
-                padding: '0.75rem 0.9rem', 
+                padding: '0.85rem 1rem', 
                 borderRadius: 8, 
                 border: '1px solid #cbd5e1', 
-                fontSize: '0.9rem', 
+                fontSize: '0.92rem', 
                 lineHeight: 1.6,
                 outline: 'none',
                 background: 'white'
@@ -468,11 +440,11 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
             {/* Feedback Validation Message */}
             {!isSubmissionValid ? (
               <div style={{ marginTop: 10, color: '#dc2626', fontSize: '0.82rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
-                <AlertTriangle size={15} /> Please enter a project URL, practical notes, or a learning reflection to submit your assignment.
+                <AlertTriangle size={15} /> Please enter your learning feedback (at least 15 characters, minimum 100 recommended) to submit.
               </div>
             ) : (
               <div style={{ marginTop: 10, color: '#15803d', fontSize: '0.82rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
-                <CheckCircle size={15} /> Assignment ready for staff review ({hasUrl ? 'URL linked' : ''}{hasUrl && hasNotes ? ' • ' : ''}{hasNotes ? 'Notes added' : ''}{(hasUrl || hasNotes) && feedbackLength >= 15 ? ' • ' : ''}{feedbackLength >= 15 ? `${feedbackLength} chars reflection` : ''}).
+                <CheckCircle size={15} /> Feedback ready for staff review ({feedbackLength} characters entered).
               </div>
             )}
           </div>
@@ -496,7 +468,7 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
               boxShadow: isSubmissionValid ? '0 4px 12px rgba(37, 99, 235, 0.3)' : 'none'
             }}
           >
-            <Send size={18} /> {currentStatus === 'approved' ? 'Update Submission' : 'Submit Assignment for Staff Review'}
+            <Send size={18} /> {currentStatus === 'approved' ? 'Update Feedback' : 'Submit Feedback for Staff Review'}
           </button>
         </form>
       </div>
