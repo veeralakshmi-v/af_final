@@ -1374,20 +1374,25 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       const exStatus = (existing.status || '').toLowerCase();
       const newStatus = (item.status || '').toLowerCase();
 
-      // Rule 1: 'Approved' status ALWAYS wins (cleared/passed modules must never linger as pending)
-      let resolvedStatus = existing.status;
-      if (newStatus === 'approved' || exStatus === 'approved') {
-        resolvedStatus = 'Approved';
-      } else if (newStatus === 'rejected' || exStatus === 'rejected') {
-        resolvedStatus = 'Rejected';
-      } else {
-        resolvedStatus = 'Pending';
-      }
+      const timeExisting = new Date(existing.submittedAt).getTime() || 0;
+      const timeNew = new Date(item.submittedAt).getTime() || 0;
 
-      // Rule 2: Prefer backend database records over client-side localStorage drafts
+      // Prefer authoritative backend database records over local client drafts
       const preferNew = (!existing.isHtmlCss && item.isHtmlCss === false) ||
         (existing._id && String(existing._id).startsWith('logical_day_') && !String(item._id).startsWith('logical_day_')) ||
-        (new Date(item.submittedAt).getTime() > new Date(existing.submittedAt).getTime());
+        (timeNew > timeExisting);
+
+      // If a new submission is pending, ensure it is surfaced for staff review
+      let resolvedStatus = preferNew ? (item.status || 'Pending') : (existing.status || 'Pending');
+      if (preferNew && newStatus === 'pending') {
+        resolvedStatus = 'Pending';
+      } else if (!preferNew && exStatus === 'pending') {
+        resolvedStatus = 'Pending';
+      } else if (newStatus === 'rejected' || exStatus === 'rejected') {
+        resolvedStatus = 'Rejected';
+      } else if (newStatus === 'approved' || exStatus === 'approved') {
+        resolvedStatus = 'Approved';
+      }
 
       const base = preferNew ? item : existing;
       const other = preferNew ? existing : item;

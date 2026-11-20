@@ -152,13 +152,16 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
     }
   }, [moduleId]);
 
-  const MIN_CHARS = 100;
-  const feedbackLength = Math.max(studentFeedback.trim().length, studentFeedback.length);
-  const isFeedbackValid = feedbackLength >= MIN_CHARS;
+  const hasUrl = Boolean(submissionUrl.trim());
+  const hasNotes = Boolean(submissionNotes.trim());
+  const feedbackTrimmed = studentFeedback.trim();
+  const feedbackLength = feedbackTrimmed.length;
+  // Submission is valid if student provides a project URL, practical notes, or at least 15 chars reflection
+  const isSubmissionValid = hasUrl || hasNotes || feedbackLength >= 15;
 
   const handleStudentSubmit = async (e) => {
     if (e) e.preventDefault();
-    if (!isFeedbackValid) {
+    if (!isSubmissionValid) {
       setShowError(true);
       return;
     }
@@ -179,9 +182,21 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
       setValidations(updated);
     }
 
-    if (session && session.studentId) {
+    // Resolve student identifier robustly across all session shapes
+    const targetStudentId = session?.studentId || session?._id || session?.id || session?.accessCode || session?.username || (() => {
       try {
-        await fetch(`/api/students/${session.studentId}/tasks`, {
+        const raw = localStorage.getItem('lms_user_session');
+        if (raw) {
+          const u = JSON.parse(raw);
+          return u?.studentId || u?._id || u?.id || u?.accessCode || u?.username;
+        }
+      } catch (e) {}
+      return null;
+    })();
+
+    if (targetStudentId) {
+      try {
+        const res = await fetch(`/api/students/${encodeURIComponent(targetStudentId)}/tasks`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -191,6 +206,17 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
             taskText: `[Student Reflection Feedback]: ${studentFeedback.trim()}${submissionNotes.trim() ? `\n\n[Submission Notes]: ${submissionNotes.trim()}` : ''}`
           })
         });
+        if (res.ok) {
+          const studentResult = await res.json();
+          try {
+            const raw = localStorage.getItem('lms_user_session');
+            if (raw) {
+              const u = JSON.parse(raw);
+              u.tasks = studentResult.tasks || u.tasks || [];
+              localStorage.setItem('lms_user_session', JSON.stringify(u));
+            }
+          } catch (e) {}
+        }
       } catch (err) {
         console.warn('Failed to sync task submission to backend API:', err);
       }
@@ -438,34 +464,34 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
             />
 
             {/* Feedback Validation Message */}
-            {!isFeedbackValid ? (
+            {!isSubmissionValid ? (
               <div style={{ marginTop: 10, color: '#dc2626', fontSize: '0.82rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
-                <AlertTriangle size={15} /> Student feedback is too short! Need at least <strong>{MIN_CHARS - feedbackLength}</strong> more characters before submitting.
+                <AlertTriangle size={15} /> Please enter a project URL, practical notes, or a learning reflection to submit your assignment.
               </div>
             ) : (
               <div style={{ marginTop: 10, color: '#15803d', fontSize: '0.82rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
-                <CheckCircle size={15} /> Student feedback character length requirement satisfied ({feedbackLength} characters).
+                <CheckCircle size={15} /> Assignment ready for staff review ({hasUrl ? 'URL linked' : ''}{hasUrl && hasNotes ? ' • ' : ''}{hasNotes ? 'Notes added' : ''}{(hasUrl || hasNotes) && feedbackLength >= 15 ? ' • ' : ''}{feedbackLength >= 15 ? `${feedbackLength} chars reflection` : ''}).
               </div>
             )}
           </div>
 
           <button 
             type="submit"
-            disabled={!isFeedbackValid}
+            disabled={!isSubmissionValid}
             onClick={handleStudentSubmit}
             style={{ 
-              background: isFeedbackValid ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : '#94a3b8', 
+              background: isSubmissionValid ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : '#94a3b8', 
               color: 'white', 
               border: 'none', 
               padding: '0.75rem 1.75rem', 
               borderRadius: 8, 
               fontWeight: 800, 
               fontSize: '0.95rem', 
-              cursor: isFeedbackValid ? 'pointer' : 'not-allowed', 
+              cursor: isSubmissionValid ? 'pointer' : 'not-allowed', 
               display: 'flex', 
               alignItems: 'center', 
               gap: 8,
-              boxShadow: isFeedbackValid ? '0 4px 12px rgba(37, 99, 235, 0.3)' : 'none'
+              boxShadow: isSubmissionValid ? '0 4px 12px rgba(37, 99, 235, 0.3)' : 'none'
             }}
           >
             <Send size={18} /> {currentStatus === 'approved' ? 'Update Submission' : 'Submit Assignment for Staff Review'}

@@ -564,20 +564,23 @@ export default function SpokoStoryDay({ day = 1, activeTab = 'story_reading', on
         : 'None (100% Accurate)';
 
       const timeFormatted = `${Math.floor(result.elapsedSeconds / 60).toString().padStart(2, '0')}:${(result.elapsedSeconds % 60).toString().padStart(2, '0')}`;
+      const targetStudentId = userSession?.studentId || userSession?._id || userSession?.id || userSession?.accessCode || userSession?.username;
 
-      const res = await fetch(`/api/students/${userSession.studentId}/tasks`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          moduleId: `spoko_story_day${day}`,
-          tabId: 'story_speed_highlighter',
-          taskUrl: 'https://spoko-assessment.alphafly.internal/reading-speed',
-          taskText: `🎙️ Voice Reading Assessment: Speed: ${result.wpm} WPM (${result.speedBadge}) | Accuracy: ${result.accuracy}% | Time: ${timeFormatted} | Read: ${result.wordsRead}/${result.totalWords} words | Mistakes Identified: ${mistakesSummary}`
-        })
-      });
+      if (targetStudentId) {
+        const res = await fetch(`/api/students/${encodeURIComponent(targetStudentId)}/tasks`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            moduleId: `spoko_story_day${day}`,
+            tabId: 'story_speed_highlighter',
+            taskUrl: 'https://spoko-assessment.alphafly.internal/reading-speed',
+            taskText: `🎙️ Voice Reading Assessment: Speed: ${result.wpm} WPM (${result.speedBadge}) | Accuracy: ${result.accuracy}% | Time: ${timeFormatted} | Read: ${result.wordsRead}/${result.totalWords} words | Mistakes Identified: ${mistakesSummary}`
+          })
+        });
 
-      if (res.ok) {
-        setStaffSubmissionSuccess(true);
+        if (res.ok) {
+          setStaffSubmissionSuccess(true);
+        }
       }
     } catch (err) {
       console.warn('Failed to intimate reading assessment to staff dashboard:', err);
@@ -645,9 +648,10 @@ export default function SpokoStoryDay({ day = 1, activeTab = 'story_reading', on
     saveAssignmentValidation(`spoko_story_day${day}`, record);
     setValidations(getAssignmentValidations());
 
-    if (userSession?.studentId) {
+    const targetVideoStudentId = userSession?.studentId || userSession?._id || userSession?.id || userSession?.accessCode || userSession?.username;
+    if (targetVideoStudentId) {
       try {
-        await fetch(`/api/students/${userSession.studentId}/tasks`, {
+        await fetch(`/api/students/${encodeURIComponent(targetVideoStudentId)}/tasks`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

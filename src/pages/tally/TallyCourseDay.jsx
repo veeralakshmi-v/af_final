@@ -240,9 +240,10 @@ export default function TallyCourseDay({
     setIsSubmittedSuccess(true);
 
     // If backend student API exists, record the task
-    if (currentUser?.studentId) {
+    const targetTallyStudentId = currentUser?.studentId || currentUser?._id || currentUser?.id || currentUser?.accessCode || currentUser?.username;
+    if (targetTallyStudentId) {
       try {
-        await fetch(`/api/students/${currentUser.studentId}/tasks`, {
+        await fetch(`/api/students/${encodeURIComponent(targetTallyStudentId)}/tasks`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

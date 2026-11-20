@@ -8,10 +8,14 @@ export default {
       const headers = new Headers(request.headers);
       headers.set('host', 'af-final.onrender.com');
 
-      const proxyRequest = new Request(backendUrl, {
+      const body = ['GET', 'HEAD'].includes(request.method)
+        ? undefined
+        : await request.arrayBuffer();
+
+      const proxyRequest = new Request(backendUrl.toString(), {
         method: request.method,
         headers: headers,
-        body: ['GET', 'HEAD'].includes(request.method) ? undefined : request.body,
+        body: body,
         redirect: 'follow',
       });
 
