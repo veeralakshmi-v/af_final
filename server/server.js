@@ -785,6 +785,7 @@ app.put('/api/course-pages/:pageId', async (req, res) => {
 
 // A. Get all students
 app.get('/api/students', async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   try {
     const isDbConnected = await checkDbConnection();
     if (isDbConnected) {
@@ -1730,15 +1731,26 @@ app.put('/api/students/:id', async (req, res) => {
     }
   }
 
-  if (idCardIssued && feeInitiated && inductionCompleted) {
-    updateFields.admissionStatus = 'Approved';
-    updateFields.isCourseActivated = true;
+  if (admissionStatus !== undefined) {
+    updateFields.admissionStatus = admissionStatus;
+    const isApp = admissionStatus === 'Approved';
+    updateFields.isCourseActivated = isApp;
+    if (idCardIssued === undefined) updateFields.idCardIssued = isApp;
+    if (feeInitiated === undefined) updateFields.feeInitiated = isApp;
+    if (inductionCompleted === undefined) updateFields.inductionCompleted = isApp;
   } else if (admissionConfirmed !== undefined) {
-    updateFields.admissionStatus = admissionConfirmed ? 'Approved' : 'Pending';
-    updateFields.isCourseActivated = Boolean(admissionConfirmed);
+    const isApp = Boolean(admissionConfirmed);
+    updateFields.admissionStatus = isApp ? 'Approved' : 'Pending';
+    updateFields.isCourseActivated = isApp;
+    if (idCardIssued === undefined) updateFields.idCardIssued = isApp;
+    if (feeInitiated === undefined) updateFields.feeInitiated = isApp;
+    if (inductionCompleted === undefined) updateFields.inductionCompleted = isApp;
+  } else if (idCardIssued !== undefined && feeInitiated !== undefined && inductionCompleted !== undefined) {
+    const isApp = Boolean(idCardIssued && feeInitiated && inductionCompleted);
+    updateFields.admissionStatus = isApp ? 'Approved' : 'Pending';
+    updateFields.isCourseActivated = isApp;
   } else {
-    if (admissionStatus !== undefined) updateFields.admissionStatus = admissionStatus;
-    if (isCourseActivated !== undefined) updateFields.isCourseActivated = isCourseActivated;
+    if (isCourseActivated !== undefined) updateFields.isCourseActivated = Boolean(isCourseActivated);
   }
 
   if (Object.keys(updateFields).length === 0) {
@@ -2009,6 +2021,9 @@ app.post('/api/students/:id/toggle-admission', async (req, res) => {
       const nextApproved = !isCurrentApproved;
       student.admissionStatus = nextApproved ? 'Approved' : 'Pending';
       student.isCourseActivated = nextApproved;
+      student.idCardIssued = nextApproved;
+      student.feeInitiated = nextApproved;
+      student.inductionCompleted = nextApproved;
       await student.save();
       return res.json(student);
     } else {
@@ -2020,6 +2035,9 @@ app.post('/api/students/:id/toggle-admission', async (req, res) => {
       const nextApproved = !isCurrentApproved;
       students[idx].admissionStatus = nextApproved ? 'Approved' : 'Pending';
       students[idx].isCourseActivated = nextApproved;
+      students[idx].idCardIssued = nextApproved;
+      students[idx].feeInitiated = nextApproved;
+      students[idx].inductionCompleted = nextApproved;
       saveLocalStudents(students);
       return res.json(students[idx]);
     }

@@ -1770,6 +1770,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   const [editingLogicalFeedback, setEditingLogicalFeedback] = useState('');
   const [editingLoading, setEditingLoading] = useState(false);
   const [editingError, setEditingError] = useState('');
+  const [togglingAdmissionId, setTogglingAdmissionId] = useState(null);
 
   // Quick Logical Thinking Score Modal states
   const [quickLogicalStudent, setQuickLogicalStudent] = useState(null);
@@ -1821,9 +1822,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     setEditingCourses(student.enrolledCourse || '');
     const isConfirmed = student.admissionStatus === 'Approved' || (student.isCourseActivated !== false && student.admissionStatus !== 'Pending');
     setEditingAdmissionConfirmed(isConfirmed);
-    setEditingValIdCard(student.idCardIssued !== undefined ? Boolean(student.idCardIssued) : isConfirmed);
-    setEditingValFeeInitiated(student.feeInitiated !== undefined ? Boolean(student.feeInitiated) : isConfirmed);
-    setEditingValInduction(student.inductionCompleted !== undefined ? Boolean(student.inductionCompleted) : isConfirmed);
+    // If student is confirmed/approved, default all 3 checklist items to true; otherwise respect stored or false
+    setEditingValIdCard(isConfirmed ? true : Boolean(student.idCardIssued));
+    setEditingValFeeInitiated(isConfirmed ? true : Boolean(student.feeInitiated));
+    setEditingValInduction(isConfirmed ? true : Boolean(student.inductionCompleted));
     const currentScore = student.logicalThinkingScore?.score !== undefined && student.logicalThinkingScore?.score !== null
       ? student.logicalThinkingScore.score
       : '';
@@ -1843,9 +1845,10 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     e.preventDefault();
     setEditingError('');
     setEditingLoading(true);
-    const allEditingChecked = editingValIdCard && editingValFeeInitiated && editingValInduction;
+    const allEditingChecked = Boolean(editingValIdCard && editingValFeeInitiated && editingValInduction);
+    const targetId = editingStudent._id || editingStudent.id;
     try {
-      const res = await fetch(`/api/students/${editingStudent._id || editingStudent.id}`, {
+      const res = await fetch(`/api/students/${targetId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1856,11 +1859,20 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
           feeInitiated: editingValFeeInitiated,
           inductionCompleted: editingValInduction,
           admissionConfirmed: allEditingChecked,
+          admissionStatus: allEditingChecked ? 'Approved' : 'Pending',
+          isCourseActivated: allEditingChecked,
           logicalThinkingScore: editingLogicalScore !== '' ? Number(editingLogicalScore) : null,
           logicalThinkingFeedback: editingLogicalFeedback
         })
       });
       if (res.ok) {
+        const updatedStudent = await res.json();
+        setStudents(prev => prev.map(s => {
+          const sId = s._id || s.id;
+          return (sId === (updatedStudent._id || updatedStudent.id) || s.accessCode === updatedStudent.accessCode)
+            ? { ...s, ...updatedStudent }
+            : s;
+        }));
         setEditingStudent(null);
         fetchStudents();
       } else {
@@ -1875,13 +1887,55 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   };
 
   const handleToggleAdmission = async (studentId) => {
+    if (!studentId || togglingAdmissionId) return;
+    setTogglingAdmissionId(studentId);
+
+    // Optimistic UI update: immediately toggle in local state for instant responsiveness
+    let targetPrevious = null;
+    setStudents(prev => prev.map(s => {
+      const sId = s._id || s.id;
+      if (sId === studentId) {
+        targetPrevious = { ...s };
+        const isCurrentConfirmed = s.admissionStatus === 'Approved' || (s.isCourseActivated !== false && s.admissionStatus !== 'Pending');
+        const nextApproved = !isCurrentConfirmed;
+        return {
+          ...s,
+          admissionStatus: nextApproved ? 'Approved' : 'Pending',
+          isCourseActivated: nextApproved,
+          idCardIssued: nextApproved,
+          feeInitiated: nextApproved,
+          inductionCompleted: nextApproved
+        };
+      }
+      return s;
+    }));
+
     try {
-      const res = await fetch(`/api/students/${studentId}/toggle-admission`, { method: 'POST' });
+      const res = await fetch(`/api/students/${studentId}/toggle-admission`, { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
       if (res.ok) {
-        fetchStudents();
+        const updated = await res.json();
+        setStudents(prev => prev.map(s => {
+          const sId = s._id || s.id;
+          return (sId === (updated._id || updated.id)) ? { ...s, ...updated } : s;
+        }));
+      } else {
+        // Rollback on failure
+        if (targetPrevious) {
+          setStudents(prev => prev.map(s => ((s._id || s.id) === studentId ? targetPrevious : s)));
+        }
+        alert('Failed to update admission status. Please try again.');
       }
     } catch (e) {
       console.warn('Failed to toggle admission status:', e);
+      if (targetPrevious) {
+        setStudents(prev => prev.map(s => ((s._id || s.id) === studentId ? targetPrevious : s)));
+      }
+      alert('Network error while updating admission status.');
+    } finally {
+      setTogglingAdmissionId(null);
     }
   };
 
@@ -1960,14 +2014,17 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
   const fetchStudents = async () => {
     try {
-      const res = await fetch('/api/students');
+      const res = await fetch(`/api/students?_t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' }
+      });
       if (res.ok) {
         const data = await res.json();
         setStudents(data);
         try {
           localStorage.setItem('lms_cached_students', JSON.stringify(data));
         } catch (storageErr) {}
-        return;
+        return data;
       }
     } catch (e) {
       console.warn('API error fetching students, falling back to cache:', e);
@@ -5243,13 +5300,15 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                 <td style={{ padding: '1rem 1.25rem', whiteSpace: 'nowrap' }}>
                                   {(() => {
                                     const isConfirmed = s.admissionStatus === 'Approved' || (s.isCourseActivated !== false && s.admissionStatus !== 'Pending');
+                                    const isToggling = togglingAdmissionId === (s._id || s.id);
                                     return (
                                       <button
                                         type="button"
+                                        disabled={isToggling}
                                         onClick={() => handleToggleAdmission(s._id || s.id)}
                                         style={{
                                           border: `1px solid ${isConfirmed ? '#a7f3d0' : '#fde68a'}`,
-                                          cursor: 'pointer',
+                                          cursor: isToggling ? 'wait' : 'pointer',
                                           background: isConfirmed ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.12)',
                                           color: isConfirmed ? '#059669' : '#d97706',
                                           padding: '0.35rem 0.75rem',
@@ -5259,12 +5318,17 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                           display: 'inline-flex',
                                           alignItems: 'center',
                                           gap: '5px',
-                                          transition: 'all 0.2s'
+                                          transition: 'all 0.2s',
+                                          opacity: isToggling ? 0.7 : 1
                                         }}
                                         title="Click to toggle Admission Confirmation status"
                                       >
-                                        <ShieldCheck size={13} />
-                                        {isConfirmed ? 'Confirmed' : 'Pending'}
+                                        {isToggling ? (
+                                          <RefreshCw size={13} style={{ animation: 'spin 1s linear infinite' }} />
+                                        ) : (
+                                          <ShieldCheck size={13} />
+                                        )}
+                                        {isToggling ? 'Saving...' : (isConfirmed ? 'Confirmed' : 'Pending')}
                                       </button>
                                     );
                                   })()}
@@ -5376,13 +5440,15 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                   )}
                                   {(() => {
                                     const isConfirmed = s.admissionStatus === 'Approved' || (s.isCourseActivated !== false && s.admissionStatus !== 'Pending');
+                                    const isToggling = togglingAdmissionId === (s._id || s.id);
                                     return (
                                       <button
                                         type="button"
+                                        disabled={isToggling}
                                         onClick={() => handleToggleAdmission(s._id || s.id)}
                                         style={{
                                           border: `1px solid ${isConfirmed ? '#a7f3d0' : '#fde68a'}`,
-                                          cursor: 'pointer',
+                                          cursor: isToggling ? 'wait' : 'pointer',
                                           background: isConfirmed ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.12)',
                                           color: isConfirmed ? '#059669' : '#d97706',
                                           padding: '0.2rem 0.55rem',
@@ -5391,12 +5457,17 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                                           fontSize: '0.72rem',
                                           display: 'inline-flex',
                                           alignItems: 'center',
-                                          gap: '4px'
+                                          gap: '4px',
+                                          opacity: isToggling ? 0.7 : 1
                                         }}
                                         title="Click to toggle Admission Confirmation status"
                                       >
-                                        <ShieldCheck size={11} />
-                                        {isConfirmed ? 'Confirmed' : 'Pending'}
+                                        {isToggling ? (
+                                          <RefreshCw size={11} style={{ animation: 'spin 1s linear infinite' }} />
+                                        ) : (
+                                          <ShieldCheck size={11} />
+                                        )}
+                                        {isToggling ? 'Saving...' : (isConfirmed ? 'Confirmed' : 'Pending')}
                                       </button>
                                     );
                                   })()}
@@ -7764,16 +7835,32 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     <ShieldCheck size={16} color={(editingValIdCard && editingValFeeInitiated && editingValInduction) ? '#10b981' : '#f59e0b'} />
                     <span>Admission Validations (3 Checklist Steps)</span>
                   </div>
-                  <span style={{
-                    fontSize: '0.7rem',
-                    fontWeight: 800,
-                    padding: '2px 8px',
-                    borderRadius: '10px',
-                    background: (editingValIdCard && editingValFeeInitiated && editingValInduction) ? '#dcfce7' : '#fef3c7',
-                    color: (editingValIdCard && editingValFeeInitiated && editingValInduction) ? '#15803d' : '#b45309'
-                  }}>
-                    {(editingValIdCard && editingValFeeInitiated && editingValInduction) ? 'APPROVED (3/3)' : 'PENDING'}
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = !(editingValIdCard && editingValFeeInitiated && editingValInduction);
+                      setEditingValIdCard(next);
+                      setEditingValFeeInitiated(next);
+                      setEditingValInduction(next);
+                      setEditingAdmissionConfirmed(next);
+                    }}
+                    style={{
+                      fontSize: '0.72rem',
+                      fontWeight: 800,
+                      padding: '3px 10px',
+                      borderRadius: '10px',
+                      border: `1px solid ${(editingValIdCard && editingValFeeInitiated && editingValInduction) ? '#86efac' : '#fde68a'}`,
+                      background: (editingValIdCard && editingValFeeInitiated && editingValInduction) ? '#dcfce7' : '#fef3c7',
+                      color: (editingValIdCard && editingValFeeInitiated && editingValInduction) ? '#15803d' : '#b45309',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                    title="Click to toggle all 3 admission validation steps together"
+                  >
+                    {(editingValIdCard && editingValFeeInitiated && editingValInduction) ? '✓ APPROVED (3/3) - Click to Mark Pending' : '⚠️ PENDING - Click to Approve All'}
+                  </button>
                 </div>
 
                 <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', background: '#ffffff', padding: '6px 10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
