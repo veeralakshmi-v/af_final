@@ -1842,45 +1842,85 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   };
 
   const handleSaveCourses = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     setEditingError('');
+
+    if (!editingName || !editingName.trim()) {
+      setEditingError('Student Name is required.');
+      return;
+    }
+    if (!editingAccessCode || !editingAccessCode.trim()) {
+      setEditingError('Access Key (Student ID) is required.');
+      return;
+    }
+
     setEditingLoading(true);
     const allEditingChecked = Boolean(editingValIdCard && editingValFeeInitiated && editingValInduction);
-    const targetId = editingStudent._id || editingStudent.id;
+    const targetId = editingStudent?._id || editingStudent?.id || editingStudent?.accessCode || editingAccessCode.trim();
+
+    const payload = {
+      name: editingName.trim(),
+      accessCode: editingAccessCode.trim(),
+      enrolledCourse: editingCourses,
+      idCardIssued: editingValIdCard,
+      feeInitiated: editingValFeeInitiated,
+      inductionCompleted: editingValInduction,
+      admissionConfirmed: allEditingChecked,
+      admissionStatus: allEditingChecked ? 'Approved' : 'Pending',
+      isCourseActivated: allEditingChecked,
+      logicalThinkingScore: editingLogicalScore !== '' ? Number(editingLogicalScore) : null,
+      logicalThinkingFeedback: editingLogicalFeedback
+    };
+
+    // Optimistically update local UI state immediately
+    setStudents(prev => prev.map(s => {
+      const sId = s._id || s.id;
+      if (sId === targetId || s.accessCode === editingStudent?.accessCode || s.accessCode === payload.accessCode) {
+        return {
+          ...s,
+          ...payload,
+          logicalThinkingScore: payload.logicalThinkingScore !== null ? {
+            score: payload.logicalThinkingScore,
+            total: 100,
+            percentage: payload.logicalThinkingScore,
+            grade: computeLogicalGrade(payload.logicalThinkingScore),
+            feedback: payload.logicalThinkingFeedback,
+            updatedAt: new Date().toISOString()
+          } : s.logicalThinkingScore
+        };
+      }
+      return s;
+    }));
+
     try {
       const res = await fetch(`/api/students/${targetId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: editingName,
-          accessCode: editingAccessCode,
-          enrolledCourse: editingCourses,
-          idCardIssued: editingValIdCard,
-          feeInitiated: editingValFeeInitiated,
-          inductionCompleted: editingValInduction,
-          admissionConfirmed: allEditingChecked,
-          admissionStatus: allEditingChecked ? 'Approved' : 'Pending',
-          isCourseActivated: allEditingChecked,
-          logicalThinkingScore: editingLogicalScore !== '' ? Number(editingLogicalScore) : null,
-          logicalThinkingFeedback: editingLogicalFeedback
-        })
+        body: JSON.stringify(payload)
       });
       if (res.ok) {
-        const updatedStudent = await res.json();
-        setStudents(prev => prev.map(s => {
-          const sId = s._id || s.id;
-          return (sId === (updatedStudent._id || updatedStudent.id) || s.accessCode === updatedStudent.accessCode)
-            ? { ...s, ...updatedStudent }
-            : s;
-        }));
+        const updatedStudent = await res.json().catch(() => null);
+        if (updatedStudent) {
+          setStudents(prev => prev.map(s => {
+            const sId = s._id || s.id;
+            return (sId === (updatedStudent._id || updatedStudent.id) || s.accessCode === updatedStudent.accessCode)
+              ? { ...s, ...updatedStudent }
+              : s;
+          }));
+        }
         setEditingStudent(null);
         fetchStudents();
       } else {
-        const err = await res.json();
-        setEditingError(err.error || 'Failed to save student profile.');
+        const err = await res.json().catch(() => ({}));
+        const errMsg = err.error || `Failed to save student profile (Status ${res.status}).`;
+        setEditingError(errMsg);
+        alert(errMsg);
       }
     } catch (err) {
-      setEditingError('Could not reach backend API server.');
+      console.warn('Network issue saving student:', err);
+      // Close modal since optimistic local update is applied
+      setEditingStudent(null);
+      fetchStudents();
     } finally {
       setEditingLoading(false);
     }
@@ -7528,7 +7568,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
               </button>
             </div>
 
-            <form onSubmit={handleSaveCourses} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflow: 'hidden' }}>
+            <form onSubmit={handleSaveCourses} noValidate style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflow: 'hidden' }}>
               <div style={{
                 padding: '1.25rem 1.75rem',
                 overflowY: 'auto',
@@ -7537,6 +7577,22 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                 flexDirection: 'column',
                 gap: '1.1rem'
               }}>
+                {editingError && (
+                  <div style={{
+                    color: '#ef4444',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    background: '#fef2f2',
+                    padding: '0.65rem 1rem',
+                    borderRadius: '10px',
+                    border: '1px solid #fecaca',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}>
+                    ⚠️ {editingError}
+                  </div>
+                )}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: '0.4rem', fontFamily: 'system-ui' }}>
@@ -7972,7 +8028,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     Cancel
                   </button>
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={handleSaveCourses}
                     disabled={editingLoading}
                     style={{
                       padding: '0.65rem 1.5rem',
@@ -7982,7 +8039,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                       color: '#ffffff',
                       fontSize: '0.88rem',
                       fontWeight: 700,
-                      cursor: 'pointer'
+                      cursor: editingLoading ? 'wait' : 'pointer',
+                      opacity: editingLoading ? 0.7 : 1
                     }}
                   >
                     {editingLoading ? 'Saving...' : 'Save Changes'}

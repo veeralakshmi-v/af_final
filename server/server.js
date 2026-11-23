@@ -1759,17 +1759,41 @@ app.put('/api/students/:id', async (req, res) => {
 
   try {
     const isDbConnected = await checkDbConnection();
+    const cleanId = String(id).trim();
+    const cleanCode = accessCode ? String(accessCode).trim() : '';
+
     if (isDbConnected) {
-      const query = mongoose.Types.ObjectId.isValid(id) 
-        ? { _id: id } 
-        : { accessCode: id.trim() };
-        
-      const student = await Student.findOneAndUpdate(query, updateFields, { new: true });
+      const query = mongoose.Types.ObjectId.isValid(cleanId)
+        ? {
+            $or: [
+              { _id: cleanId },
+              { accessCode: cleanId },
+              ...(cleanCode ? [{ accessCode: cleanCode }] : [])
+            ]
+          }
+        : {
+            $or: [
+              { accessCode: cleanId },
+              ...(cleanCode ? [{ accessCode: cleanCode }] : [])
+            ]
+          };
+
+      const student = await Student.findOneAndUpdate(query, updateFields, { new: true }).select('-tasks -certificate.data');
       if (!student) return res.status(404).json({ error: 'Student not found!' });
+
+      try {
+        const localList = getLocalStudents();
+        const lIdx = localList.findIndex(s => s._id === String(student._id) || s.id === String(student._id) || s.accessCode === student.accessCode || (cleanCode && s.accessCode === cleanCode));
+        if (lIdx !== -1) {
+          localList[lIdx] = { ...localList[lIdx], ...updateFields };
+          saveLocalStudents(localList);
+        }
+      } catch (mErr) {}
+
       return res.json(student);
     } else {
       const students = getLocalStudents();
-      const idx = students.findIndex(s => s.id === id || s._id === id || s.accessCode === id.trim());
+      const idx = students.findIndex(s => s.id === cleanId || s._id === cleanId || s.accessCode === cleanId || (cleanCode && s.accessCode === cleanCode));
       if (idx === -1) return res.status(404).json({ error: 'Student not found!' });
       
       students[idx] = { ...students[idx], ...updateFields };
