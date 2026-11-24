@@ -1013,10 +1013,18 @@ app.post('/api/students/login', async (req, res) => {
     return res.status(400).json({ error: 'Device ID is required to secure your account!' });
   }
 
+  const cleanCode = String(accessCode).trim();
+  const escapedCode = cleanCode.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+
   try {
     const isDbConnected = await checkDbConnection();
     if (isDbConnected) {
-      const student = await Student.findOne({ accessCode: accessCode.trim() });
+      const student = await Student.findOne({
+        $or: [
+          { accessCode: { $regex: new RegExp(`^${escapedCode}$`, 'i') } },
+          ...(mongoose.Types.ObjectId.isValid(cleanCode) ? [{ _id: cleanCode }] : [])
+        ]
+      });
       if (!student) {
         return res.status(404).json({ error: 'Invalid Access Code. Please try again!' });
       }
@@ -1035,7 +1043,10 @@ app.post('/api/students/login', async (req, res) => {
       return res.json(student);
     } else {
       const students = getLocalStudents();
-      const idx = students.findIndex(s => s.accessCode === accessCode.trim());
+      const idx = students.findIndex(s => 
+        (s.accessCode && s.accessCode.trim().toUpperCase() === cleanCode.toUpperCase()) ||
+        s.id === cleanCode || s._id === cleanCode
+      );
       if (idx === -1) {
         return res.status(404).json({ error: 'Invalid Access Code. Please try again!' });
       }
@@ -1060,14 +1071,19 @@ app.post('/api/students/login', async (req, res) => {
 // C-2. Reset Student Device Lock
 app.post('/api/students/:id/reset-device', async (req, res) => {
   const { id } = req.params;
+  const cleanId = String(id).trim();
   try {
     const isDbConnected = await checkDbConnection();
     if (isDbConnected) {
-      const student = await Student.findByIdAndUpdate(id, { deviceId: null }, { new: true });
+      const query = mongoose.Types.ObjectId.isValid(cleanId)
+        ? { $or: [{ _id: cleanId }, { accessCode: cleanId }] }
+        : { accessCode: cleanId };
+      const student = await Student.findOneAndUpdate(query, { deviceId: null }, { new: true });
+      if (!student) return res.status(404).json({ error: 'Student not found!' });
       return res.json(student);
     } else {
       const students = getLocalStudents();
-      const idx = students.findIndex(s => s.id === id || s.accessCode === id);
+      const idx = students.findIndex(s => s.id === cleanId || s._id === cleanId || s.accessCode === cleanId);
       if (idx !== -1) {
         students[idx].deviceId = null;
         saveLocalStudents(students);
@@ -1086,10 +1102,17 @@ app.post('/api/students/verify-device', async (req, res) => {
   if (!accessCode || !deviceId) {
     return res.status(400).json({ error: 'Access Code and Device ID are required!' });
   }
+  const cleanCode = String(accessCode).trim();
+  const escapedCode = cleanCode.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
   try {
     const isDbConnected = await checkDbConnection();
     if (isDbConnected) {
-      const student = await Student.findOne({ accessCode: accessCode.trim() });
+      const student = await Student.findOne({
+        $or: [
+          { accessCode: { $regex: new RegExp(`^${escapedCode}$`, 'i') } },
+          ...(mongoose.Types.ObjectId.isValid(cleanCode) ? [{ _id: cleanCode }] : [])
+        ]
+      });
       if (!student) {
         return res.status(404).json({ error: 'Student not found!' });
       }
@@ -1099,7 +1122,10 @@ app.post('/api/students/verify-device', async (req, res) => {
       return res.json({ valid: true });
     } else {
       const students = getLocalStudents();
-      const student = students.find(s => s.accessCode === accessCode.trim());
+      const student = students.find(s => 
+        (s.accessCode && s.accessCode.trim().toUpperCase() === cleanCode.toUpperCase()) ||
+        s.id === cleanCode || s._id === cleanCode
+      );
       if (!student) {
         return res.status(404).json({ error: 'Student not found!' });
       }
@@ -1687,6 +1713,9 @@ app.put('/api/students/:id', async (req, res) => {
   if (idCardIssued !== undefined) updateFields.idCardIssued = Boolean(idCardIssued);
   if (feeInitiated !== undefined) updateFields.feeInitiated = Boolean(feeInitiated);
   if (inductionCompleted !== undefined) updateFields.inductionCompleted = Boolean(inductionCompleted);
+  if (req.body.resetDeviceLock === true || req.body.deviceId === null) {
+    updateFields.deviceId = null;
+  }
 
   if (logicalThinkingScore !== undefined) {
     if (logicalThinkingScore === null || logicalThinkingScore === '' || (Number(logicalThinkingScore) === 0 && !logicalThinkingFeedback)) {

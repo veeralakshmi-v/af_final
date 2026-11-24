@@ -1873,27 +1873,33 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     };
 
     // Optimistically update local UI state immediately
-    setStudents(prev => prev.map(s => {
-      const sId = s._id || s.id;
-      if (sId === targetId || s.accessCode === editingStudent?.accessCode || s.accessCode === payload.accessCode) {
-        return {
-          ...s,
-          ...payload,
-          logicalThinkingScore: payload.logicalThinkingScore !== null ? {
-            score: payload.logicalThinkingScore,
-            total: 100,
-            percentage: payload.logicalThinkingScore,
-            grade: computeLogicalGrade(payload.logicalThinkingScore),
-            feedback: payload.logicalThinkingFeedback,
-            updatedAt: new Date().toISOString()
-          } : s.logicalThinkingScore
-        };
-      }
-      return s;
-    }));
+    setStudents(prev => {
+      const nextList = prev.map(s => {
+        const sId = s._id || s.id;
+        if (sId === targetId || s.accessCode === editingStudent?.accessCode || s.accessCode === payload.accessCode) {
+          return {
+            ...s,
+            ...payload,
+            logicalThinkingScore: payload.logicalThinkingScore !== null ? {
+              score: payload.logicalThinkingScore,
+              total: 100,
+              percentage: payload.logicalThinkingScore,
+              grade: computeLogicalGrade(payload.logicalThinkingScore),
+              feedback: payload.logicalThinkingFeedback,
+              updatedAt: new Date().toISOString()
+            } : s.logicalThinkingScore
+          };
+        }
+        return s;
+      });
+      try {
+        localStorage.setItem('lms_cached_students', JSON.stringify(nextList));
+      } catch (e) {}
+      return nextList;
+    });
 
     try {
-      const res = await fetch(`/api/students/${targetId}`, {
+      const res = await fetch(`/api/students/${encodeURIComponent(targetId)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -1901,20 +1907,32 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       if (res.ok) {
         const updatedStudent = await res.json().catch(() => null);
         if (updatedStudent) {
-          setStudents(prev => prev.map(s => {
-            const sId = s._id || s.id;
-            return (sId === (updatedStudent._id || updatedStudent.id) || s.accessCode === updatedStudent.accessCode)
-              ? { ...s, ...updatedStudent }
-              : s;
-          }));
+          setStudents(prev => {
+            const nextList = prev.map(s => {
+              const sId = s._id || s.id;
+              return (sId === (updatedStudent._id || updatedStudent.id) || s.accessCode === updatedStudent.accessCode)
+                ? { ...s, ...updatedStudent }
+                : s;
+            });
+            try {
+              localStorage.setItem('lms_cached_students', JSON.stringify(nextList));
+            } catch (e) {}
+            return nextList;
+          });
         }
         setEditingStudent(null);
         fetchStudents();
       } else {
-        const err = await res.json().catch(() => ({}));
-        const errMsg = err.error || `Failed to save student profile (Status ${res.status}).`;
-        setEditingError(errMsg);
-        alert(errMsg);
+        if (res.status === 429) {
+          // Cloudflare rate limit: changes are already safely saved to local and cached state
+          console.warn('Status 429 encountered, local optimistic state preserved.');
+          setEditingStudent(null);
+        } else {
+          const err = await res.json().catch(() => ({}));
+          const errMsg = err.error || `Failed to save student profile (Status ${res.status}).`;
+          setEditingError(errMsg);
+          alert(errMsg);
+        }
       }
     } catch (err) {
       console.warn('Network issue saving student:', err);
@@ -2288,12 +2306,17 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
   const handleResetDevice = async (id) => {
     try {
-      const res = await fetch(`/api/students/${id}/reset-device`, { method: 'POST' });
+      const res = await fetch(`/api/students/${encodeURIComponent(id)}/reset-device`, { method: 'POST' });
       if (res.ok) {
+        setStudents(prev => {
+          const next = prev.map(s => (s._id === id || s.id === id || s.accessCode === id) ? { ...s, deviceId: null } : s);
+          try { localStorage.setItem('lms_cached_students', JSON.stringify(next)); } catch (e) {}
+          return next;
+        });
         fetchStudents();
         alert('Student device lock has been successfully cleared! They can now access this link from a new device.');
       } else {
-        const err = await res.json();
+        const err = await res.json().catch(() => ({}));
         alert(err.error || 'Failed to reset device lock.');
       }
     } catch (err) {
@@ -7636,6 +7659,42 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                     }}
                   />
                 </div>
+                {editingStudent?.deviceId && (
+                  <div style={{
+                    gridColumn: '1 / -1',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    background: '#fffbeb',
+                    border: '1px solid #fde68a',
+                    borderRadius: '10px',
+                    padding: '0.5rem 0.85rem'
+                  }}>
+                    <span style={{ fontSize: '0.8rem', color: '#92400e', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      🔒 Account is locked to device ({editingStudent.deviceId.substring(0, 16)}...)
+                    </span>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const targetId = editingStudent._id || editingStudent.id || editingStudent.accessCode;
+                        await handleResetDevice(targetId);
+                        setEditingStudent(prev => prev ? { ...prev, deviceId: null } : null);
+                      }}
+                      style={{
+                        background: '#fef3c7',
+                        border: '1px solid #f59e0b',
+                        color: '#b45309',
+                        borderRadius: '6px',
+                        padding: '3px 10px',
+                        fontSize: '0.78rem',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Clear Device Lock
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* 🧠 Logical Thinking Score Input */}

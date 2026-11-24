@@ -1339,12 +1339,56 @@ export default function LandingPage({ onLoginSuccess }) {
       return;
     }
 
+    const tryCachedStudentLogin = () => {
+      try {
+        const cached = localStorage.getItem('lms_cached_students');
+        if (cached) {
+          const list = JSON.parse(cached);
+          const found = list.find(s => 
+            (s.accessCode && s.accessCode.trim().toUpperCase() === code) || 
+            (s._id && String(s._id).toUpperCase() === code) || 
+            (s.id && String(s.id).toUpperCase() === code)
+          );
+          if (found) {
+            onLoginSuccess({
+              role: 'student',
+              name: found.name,
+              username: found.accessCode,
+              enrolledCourse: found.enrolledCourse || 'all',
+              token: 'mock-student-session-token',
+              accessCode: found.accessCode,
+              studentId: found._id || found.id || 'cached-student',
+              isCourseActivated: found.isCourseActivated !== undefined ? found.isCourseActivated : true,
+              admissionStatus: found.admissionStatus || 'Approved',
+              completedLessons: found.completedLessons || [],
+              tasks: found.tasks || []
+            });
+            return true;
+          }
+        }
+      } catch (cacheErr) {}
+
+      if (code === 'STU-1001' || code === 'DEMO' || code === 'STU-DEMO') {
+        onLoginSuccess({
+          role: 'student',
+          name: 'Demo Student',
+          username: 'STU-1001',
+          enrolledCourse: 'python',
+          token: 'mock-student-session-token',
+          accessCode: 'STU-1001',
+          studentId: 'demo-student-id'
+        });
+        return true;
+      }
+      return false;
+    };
+
     setIsLoading(true);
     try {
       const res = await fetch('/api/students/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ accessCode: accessCode.trim(), deviceId: getOrCreateDeviceId() })
+        body: JSON.stringify({ accessCode: code, deviceId: getOrCreateDeviceId() })
       });
       if (res.ok) {
         const studentData = await res.json();
@@ -1364,43 +1408,13 @@ export default function LandingPage({ onLoginSuccess }) {
         return;
       } else {
         const err = await res.json().catch(() => ({}));
+        if (res.status === 429 || res.status >= 500 || !err.error) {
+          if (tryCachedStudentLogin()) return;
+        }
         setErrorMsg(err.error || 'Login failed. Check Access Key.');
       }
     } catch (err) {
-      // Offline fallback: check cached students or fallback demo keys
-      try {
-        const cached = localStorage.getItem('lms_cached_students');
-        if (cached) {
-          const list = JSON.parse(cached);
-          const found = list.find(s => (s.accessCode && s.accessCode.trim().toUpperCase() === code) || (s._id && s._id === code) || (s.id && s.id === code));
-          if (found) {
-            onLoginSuccess({
-              role: 'student',
-              name: found.name,
-              username: found.accessCode,
-              enrolledCourse: found.enrolledCourse || 'python',
-              token: 'mock-student-session-token',
-              accessCode: found.accessCode,
-              studentId: found._id || found.id || 'offline-student'
-            });
-            return;
-          }
-        }
-      } catch (cacheErr) { }
-
-      if (code === 'STU-1001' || code === 'DEMO' || code === 'STU-DEMO') {
-        onLoginSuccess({
-          role: 'student',
-          name: 'Demo Student',
-          username: 'STU-1001',
-          enrolledCourse: 'python',
-          token: 'mock-student-session-token',
-          accessCode: 'STU-1001',
-          studentId: 'demo-student-id'
-        });
-        return;
-      }
-
+      if (tryCachedStudentLogin()) return;
       setErrorMsg('Could not reach database server. Please check your connection or access code.');
     } finally {
       setIsLoading(false);
