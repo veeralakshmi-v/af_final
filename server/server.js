@@ -1024,20 +1024,15 @@ app.post('/api/students/login', async (req, res) => {
           { accessCode: { $regex: new RegExp(`^${escapedCode}$`, 'i') } },
           ...(mongoose.Types.ObjectId.isValid(cleanCode) ? [{ _id: cleanCode }] : [])
         ]
-      });
+      }).select('-tasks -certificate.data');
       if (!student) {
-        return res.status(404).json({ error: 'Invalid Access Code. Please try again!' });
+        return res.status(404).json({ error: 'Invalid Access Code. Please check your Access Key and try again!' });
       }
       
-      // Device verification checks
-      if (student.deviceId && student.deviceId !== deviceId) {
-        return res.status(403).json({ error: 'This access key is locked to another device! Please request an administrator to reset your device access.' });
-      }
-      
-      // Lock student account to this device if it's the first login
-      if (!student.deviceId) {
+      // Update/bind active device ID on successful login so student can always log in after logout
+      if (deviceId) {
         student.deviceId = deviceId;
-        await student.save();
+        await Student.updateOne({ _id: student._id }, { $set: { deviceId } });
       }
       
       return res.json(student);
@@ -1048,15 +1043,10 @@ app.post('/api/students/login', async (req, res) => {
         s.id === cleanCode || s._id === cleanCode
       );
       if (idx === -1) {
-        return res.status(404).json({ error: 'Invalid Access Code. Please try again!' });
+        return res.status(404).json({ error: 'Invalid Access Code. Please check your Access Key and try again!' });
       }
       
-      const student = students[idx];
-      if (student.deviceId && student.deviceId !== deviceId) {
-        return res.status(403).json({ error: 'This access key is locked to another device! Please request an administrator to reset your device access.' });
-      }
-      
-      if (!student.deviceId) {
+      if (deviceId) {
         students[idx].deviceId = deviceId;
         saveLocalStudents(students);
       }

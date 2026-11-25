@@ -1392,6 +1392,23 @@ export default function LandingPage({ onLoginSuccess }) {
       });
       if (res.ok) {
         const studentData = await res.json();
+
+        // Cache student credentials in localStorage for resilient subsequent logins and offline support
+        try {
+          const cachedRaw = localStorage.getItem('lms_cached_students');
+          const cachedList = cachedRaw ? JSON.parse(cachedRaw) : [];
+          const idx = cachedList.findIndex(s => 
+            (s.accessCode && s.accessCode.trim().toUpperCase() === code) || 
+            (s._id && s._id === studentData._id)
+          );
+          if (idx !== -1) {
+            cachedList[idx] = { ...cachedList[idx], ...studentData };
+          } else {
+            cachedList.push(studentData);
+          }
+          localStorage.setItem('lms_cached_students', JSON.stringify(cachedList));
+        } catch (cacheSaveErr) {}
+
         onLoginSuccess({
           role: 'student',
           name: studentData.name,

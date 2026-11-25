@@ -41,6 +41,9 @@ export default {
         resHeaders.set('access-control-allow-origin', '*');
         resHeaders.set('access-control-allow-methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
         resHeaders.set('access-control-allow-headers', 'Content-Type, Authorization');
+        // Delete content-encoding and content-length so Cloudflare/browser correctly handles decompressed streams
+        resHeaders.delete('content-encoding');
+        resHeaders.delete('content-length');
 
         return new Response(response.body, {
           status: response.status,
