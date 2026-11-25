@@ -1722,15 +1722,44 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
   const handleStudentPhotoChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Photo size exceeds 5MB. Please choose a smaller image.');
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Photo size exceeds 10MB. Please choose a smaller image.');
       return;
     }
     const reader = new FileReader();
     reader.onload = (event) => {
-      if (event.target?.result) {
-        setNewStudentPhoto(event.target.result);
-      }
+      const rawDataUrl = event.target?.result;
+      if (!rawDataUrl) return;
+
+      // Downscale photo to passport size (max 480x480) for instant upload & preventing payload size issues
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 480;
+        let width = img.width;
+        let height = img.height;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressed = canvas.toDataURL('image/jpeg', 0.85);
+          setNewStudentPhoto(compressed);
+        } else {
+          setNewStudentPhoto(rawDataUrl);
+        }
+      };
+      img.onerror = () => setNewStudentPhoto(rawDataUrl);
+      img.src = rawDataUrl;
     };
     reader.readAsDataURL(file);
   };
@@ -2235,11 +2264,11 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         setValInduction(false);
         fetchStudents();
       } else {
-        const err = await res.json();
-        setAdminError(err.error || 'Registration failed.');
+        const err = await res.json().catch(() => ({}));
+        setAdminError(err.error || (res.status === 413 ? 'Student photo file is too large! Please choose a smaller photo.' : `Registration failed (Status ${res.status}).`));
       }
     } catch (err) {
-      setAdminError('Could not reach backend API server.');
+      setAdminError(err.message ? `Registration issue: ${err.message}` : 'Could not reach backend API server.');
     }
   };
 
@@ -2284,11 +2313,11 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         setDbTab('staff');
         setActiveTab('database');
       } else {
-        const err = await res.json();
-        setAdminError(err.error || 'Failed to register staff.');
+        const err = await res.json().catch(() => ({}));
+        setAdminError(err.error || `Failed to register staff (Status ${res.status}).`);
       }
     } catch (err) {
-      setAdminError('Could not reach backend API server.');
+      setAdminError(err.message ? `Staff registration issue: ${err.message}` : 'Could not reach backend API server.');
     }
   };
 

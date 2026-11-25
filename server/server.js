@@ -23,7 +23,8 @@ const currentDir = typeof __dirname !== 'undefined'
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Detect serverless execution environments (Vercel, Netlify Functions, AWS Lambda)
 const isServerless = Boolean(process.env.VERCEL || process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.SERVERLESS);
