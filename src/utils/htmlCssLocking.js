@@ -1,7 +1,7 @@
 import { 
   htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, 
   agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, 
-  pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, 
+  pythonDaCourseData, generativeAiCourseData, genaiAgenticAiCourseData, reactCourseData, gitCourseData, jsonCourseData, 
   djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, 
   pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData,
   spokoStoryCourseData, spokoProCourseData, spokoHrCourseData, spokoReasoningCourseData
@@ -14,6 +14,7 @@ export const COURSE_DATA_MAP = {
   sql_da: daSqlCourseData,
   powerbi: powerBiCourseData,
   agentic_ai: agenticAiCourseData,
+  genai_agentic_ai: genaiAgenticAiCourseData,
   python_fullstack: pythonFullStackCourseData,
   python_course: pythonCourseData,
   python_da: pythonDaCourseData,
@@ -203,6 +204,19 @@ export const HTML_CSS_ASSIGNMENTS_CONFIG = {
     ],
     nextModuleId: null,
     nextModuleTitle: null
+  },
+  // 🎓 Certification in Generative AI & Agentic AI (60 Days Course)
+  genai_agentic_m1: {
+    dayTitle: 'Day 1 - Gen AI & Python API Readiness',
+    assignmentTitle: 'Day 1 Practical Assignment: Enterprise AI Paradigm Analysis & API Foundation',
+    tasks: [
+      'Compare Traditional ML vs. Deep Learning vs. Generative AI with real-world scenarios and compute trade-offs.',
+      'Deconstruct the 6-Layer Enterprise AI Stack (Compute, Foundation Models, Data, Frameworks, Evaluation, Applications).',
+      'Set up Python 3.10+ virtual environment and install OpenAI/Anthropic/Google GenAI SDKs.',
+      'Draft a comprehensive architecture blueprint for an enterprise Generative AI application.'
+    ],
+    nextModuleId: 'genai_agentic_m2',
+    nextModuleTitle: 'Day 2 - LLM Foundations & Tokenomics'
   }
 };
 

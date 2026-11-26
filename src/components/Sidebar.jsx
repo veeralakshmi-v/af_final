@@ -58,6 +58,7 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
     if (firstId.includes('powerbi')) return 495; // 8h 15m
     if (firstId.includes('python') && courseStructure?.length === 10) return 480; // 8h
     if (firstId.includes('python')) return 720; // 12h
+    if (firstId.includes('genai_agentic')) return 3600; // 60 days course
     if (firstId.includes('agentic')) return 900; // 15h
     if (firstId.includes('genai')) return 600; // 10h
     if (firstId.includes('js')) return 390; // 6h 30m
@@ -113,8 +114,9 @@ export default function Sidebar({ courseStructure, activeNode, onNavClick, onBac
                         courseStructure?.[0]?.id?.includes('powerbi') ? 'Data Analytics (Power BI)' :
                           (courseStructure?.[0]?.id?.includes('python') && courseStructure?.length === 10) ? 'Python for Data Analytics' :
                             courseStructure?.[0]?.id?.includes('python') ? 'Core Python & OOPs' :
-                              courseStructure?.[0]?.id?.includes('agentic') ? 'Agentic AI Development' :
-                                courseStructure?.[0]?.id?.includes('genai') ? 'Generative AI' :
+                              courseStructure?.[0]?.id?.includes('genai_agentic') ? 'Generative & Agentic AI Certification' :
+                                courseStructure?.[0]?.id?.includes('agentic') ? 'Agentic AI Development' :
+                                  courseStructure?.[0]?.id?.includes('genai') ? 'Generative AI' :
                                   courseStructure?.[0]?.id?.includes('core_js') ? 'Vanilla JS' :
                                     courseStructure?.[0]?.id?.includes('react') ? 'AI powered React JS' :
                                       courseStructure?.[0]?.id?.includes('js') ? 'AI-Powered JavaScript' :

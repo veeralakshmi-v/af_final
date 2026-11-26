@@ -269,7 +269,8 @@ const SpokoReasoningLevel3Day18 = lazy(() => import('./pages/spoko/SpokoReasonin
 const SpokoReasoningLevel3Day19 = lazy(() => import('./pages/spoko/SpokoReasoningLevel3Day19'));
 const SpokoReasoningLevel3Day20 = lazy(() => import('./pages/spoko/SpokoReasoningLevel3Day20'));
 const SpokoReasoningLevel3Day21 = lazy(() => import('./pages/spoko/SpokoReasoningLevel3Day21'));
-import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData, spokoStoryCourseData, spokoProCourseData, spokoHrCourseData, spokoReasoningCourseData } from './courseData';
+import { htmlCourseData, sqlCourseData, summerSqlCourseData, daSqlCourseData, powerBiCourseData, agenticAiCourseData, inductionCourseData, pythonFullStackCourseData, pythonCourseData, pythonDaCourseData, generativeAiCourseData, genaiAgenticAiCourseData, reactCourseData, gitCourseData, jsonCourseData, djangoCourseData, devopsCourseData, statsCourseData, numpyCourseData, coreJsCourseData, pandasCourseData, matplotlibCourseData, seabornCourseData, tallyCourseData, webDesignCourseData, spokoStoryCourseData, spokoProCourseData, spokoHrCourseData, spokoReasoningCourseData } from './courseData';
+const CertGenAIAgenticDay1 = lazy(() => import('./pages/cert-genai-agentic/CertGenAIAgenticDay1'));
 const TallyCourseDay = lazy(() => import('./pages/tally/TallyCourseDay'));
 const AssignmentSubmissionPage = lazy(() => import('./components/AssignmentSubmissionPage'));
 import { isModuleLocked, getLockReason } from './utils/htmlCssLocking';
@@ -530,6 +531,7 @@ function App() {
       sql_da: daSqlCourseData,
       powerbi: powerBiCourseData,
       agentic_ai: agenticAiCourseData,
+      genai_agentic_ai: genaiAgenticAiCourseData,
       python_fullstack: pythonFullStackCourseData,
       python_course: pythonCourseData,
       python_da: pythonDaCourseData,
@@ -631,6 +633,8 @@ function App() {
         setActiveNode({ moduleId: 'powerbi_module1', tabId: 'intro' });
       } else if (course === 'agentic_ai') {
         setActiveNode({ moduleId: 'agentic_ai_foundation', tabId: 'day1' });
+      } else if (course === 'genai_agentic_ai') {
+        setActiveNode({ moduleId: 'genai_agentic_m1', tabId: 'day1' });
       } else if (course === 'python_fullstack') {
         setActiveNode({ moduleId: 'python_fullstack_demo', tabId: 'intro' });
       } else if (course === 'python_course' || course === 'python_da') {
@@ -671,6 +675,7 @@ function App() {
           sql_da: daSqlCourseData,
           powerbi: powerBiCourseData,
           agentic_ai: agenticAiCourseData,
+          genai_agentic_ai: genaiAgenticAiCourseData,
           python_fullstack: pythonFullStackCourseData,
           python_course: pythonCourseData,
           python_da: pythonDaCourseData,
@@ -787,6 +792,7 @@ function App() {
   else if (activeCourse === 'summer_sql') currentCourseData = summerSqlCourseData;
   else if (activeCourse === 'powerbi') currentCourseData = powerBiCourseData;
   else if (activeCourse === 'agentic_ai') currentCourseData = agenticAiCourseData;
+  else if (activeCourse === 'genai_agentic_ai') currentCourseData = genaiAgenticAiCourseData;
   else if (activeCourse === 'python_fullstack') currentCourseData = pythonFullStackCourseData;
   else if (activeCourse === 'python_course') currentCourseData = pythonCourseData;
   else if (activeCourse === 'python_da') currentCourseData = pythonDaCourseData;
@@ -863,7 +869,7 @@ function App() {
             {/* Mobile Header — shown on tablet/mobile via responsive.css */}
             <div className="mobile-header">
               <h2 style={{ fontSize: '1.2rem', margin: 0, color: '#1E3A8A' }}>
-                {activeCourse === 'spoko_reasoning' ? 'Logical Reasoning & Analytical Thinking' : activeCourse === 'spoko_hr' || activeCourse === 'hr_interview_mastery' ? 'HR Interview Mastery' : activeCourse === 'spoko_pro' || activeCourse === 'softskills' ? 'Professional Track (Soft Skills)' : activeCourse === 'spoko_story' ? 'Spoko Story-Based English' : activeCourse === 'tally_prime' ? 'AI powered Tally' : activeCourse === 'html_css' ? 'HTML, CSS & Bootstrap' : activeCourse === 'javascript_course' ? 'AI-Powered JavaScript' : activeCourse === 'core_js' ? 'Core JavaScript' : activeCourse === 'react_course' ? 'AI-Powered React JS' : activeCourse === 'powerbi' ? 'AI-Powered Data Analytics' : activeCourse === 'agentic_ai' ? 'Agentic AI Development' : activeCourse === 'induction' ? 'Free Induction & Demo Sessions' : activeCourse === 'devops' ? 'DevOps & CI/CD' : activeCourse === 'numpy_course' ? 'NumPy for Data Science' : activeCourse === 'pandas_course' ? 'Pandas for Data Science' : activeCourse === 'matplotlib_course' ? 'Matplotlib for Data Science' : activeCourse === 'seaborn_course' ? 'Seaborn for Data Science' : 'AI-Powered SQL'}
+                {activeCourse === 'genai_agentic_ai' ? 'Certification in Generative AI & Agentic AI' : activeCourse === 'spoko_reasoning' ? 'Logical Reasoning & Analytical Thinking' : activeCourse === 'spoko_hr' || activeCourse === 'hr_interview_mastery' ? 'HR Interview Mastery' : activeCourse === 'spoko_pro' || activeCourse === 'softskills' ? 'Professional Track (Soft Skills)' : activeCourse === 'spoko_story' ? 'Spoko Story-Based English' : activeCourse === 'tally_prime' ? 'AI powered Tally' : activeCourse === 'html_css' ? 'HTML, CSS & Bootstrap' : activeCourse === 'javascript_course' ? 'AI-Powered JavaScript' : activeCourse === 'core_js' ? 'Core JavaScript' : activeCourse === 'react_course' ? 'AI-Powered React JS' : activeCourse === 'powerbi' ? 'AI-Powered Data Analytics' : activeCourse === 'agentic_ai' ? 'Agentic AI Development' : activeCourse === 'induction' ? 'Free Induction & Demo Sessions' : activeCourse === 'devops' ? 'DevOps & CI/CD' : activeCourse === 'numpy_course' ? 'NumPy for Data Science' : activeCourse === 'pandas_course' ? 'Pandas for Data Science' : activeCourse === 'matplotlib_course' ? 'Matplotlib for Data Science' : activeCourse === 'seaborn_course' ? 'Seaborn for Data Science' : 'AI-Powered SQL'}
               </h2>
               <button
                 className="btn btn-outline"
@@ -1083,6 +1089,10 @@ function App() {
                 {activeNode.moduleId === 'python_day13' && <PythonDay13 activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'python_final_projects' && <PythonFinalProjects activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'python_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="python" />}
+                {/* 🎓 Certification in Generative AI & Agentic AI (60 Days Course) */}
+                {activeNode.moduleId === 'genai_agentic_m1' && activeNode.tabId === 'day1' && (
+                  <CertGenAIAgenticDay1 activeTab="orientation" onNavigate={handleNavClick} openAITutor={openAITutor} />
+                )}
                 {activeNode.moduleId === 'genai_module1' && activeNode.tabId === 'day1' && <GenAIDay1 activeTab="intro" onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'genai_module1' && activeNode.tabId === 'day2' && <GenAIDay2 activeTab="intro" onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'genai_module1' && activeNode.tabId === 'day3' && <GenAIDay3 activeTab="intro" onNavigate={handleNavClick} openAITutor={openAITutor} />}

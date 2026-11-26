@@ -235,6 +235,18 @@ const subCourses = [
     enrolledKey: 'agentic_ai'
   },
   {
+    id: 'genai_agentic_ai',
+    mainCourseId: 'aidevelopment',
+    title: 'Certification in Generative AI & Agentic AI',
+    desc: 'Comprehensive 60-day curriculum covering LLM Foundations, Prompt Engineering, Agentic Workflows, Multi-Agent Systems & Production AI.',
+    icon: <Sparkles size={24} />,
+    bgColor: 'rgba(99, 102, 241, 0.08)',
+    borderColor: '#6366f1',
+    shadowColor: 'rgba(99, 102, 241, 0.15)',
+    modulesCount: '60 Days',
+    enrolledKey: 'genai_agentic_ai'
+  },
+  {
     id: 'powerbi',
     mainCourseId: 'dataanalytics',
     title: 'Power BI Data Analytics',
@@ -484,12 +496,13 @@ export const COURSE_CATEGORIES = [
   },
   {
     id: 'cognitive_ai',
-    title: 'Cognitive AI',
-    badge: '2 Tracks',
+    title: 'Cognitive AI Development',
+    badge: '3 Tracks',
     color: '#db2777',
     bg: '#fdf2f8',
     border: '#fbcfe8',
     subCourses: [
+      { value: 'genai_agentic_ai', label: 'Certification in Generative AI & Agentic AI (60 Days)' },
       { value: 'generative_ai_course', label: 'Generative AI Masterclass' },
       { value: 'agentic_ai', label: 'Agentic AI Engineering' }
     ]
@@ -539,6 +552,7 @@ const availableCourseOptions = [
   { value: "python_course", label: "Core Python & OOPs" },
   { value: "python_da", label: "Python for Data Analytics" },
   { value: "javascript_course", label: "AI-Powered JavaScript" },
+  { value: "genai_agentic_ai", label: "Certification in Generative AI & Agentic AI (60 Days)" },
   { value: "generative_ai_course", label: "Generative AI" },
   { value: "agentic_ai", label: "Agentic AI Development" },
   { value: "summer_sql", label: "Summer SQL" },
@@ -578,6 +592,7 @@ function getCourseLabel(courseKey) {
     python_course: 'Core Python & OOPs',
     python_da: 'Python for Data Analytics',
     javascript_course: 'AI-Powered JavaScript',
+    genai_agentic_ai: 'Certification in Generative AI & Agentic AI (60 Days)',
     generative_ai_course: 'Generative AI',
     agentic_ai: 'Agentic AI Development',
     summer_sql: 'Summer SQL Crash Course',
@@ -648,6 +663,7 @@ function getCourseDataList(courseKey) {
     sql_da: CourseData.daSqlCourseData,
     powerbi: CourseData.powerBiCourseData,
     agentic_ai: CourseData.agenticAiCourseData,
+    genai_agentic_ai: CourseData.genaiAgenticAiCourseData,
     python_fullstack: CourseData.pythonFullStackCourseData,
     python_course: CourseData.pythonCourseData,
     python_da: CourseData.pythonDaCourseData,
@@ -897,7 +913,7 @@ function calculateDetailedCourseProgress(student) {
       'html_css', 'react_course', 'python_course', 'django_course', 'git_github',
       'core_js', 'web_design_20days', 'sql', 'powerbi', 'stats_course', 'devops',
       'json_course', 'numpy_course', 'pandas_course', 'matplotlib_course', 'seaborn_course',
-      'summer_sql', 'sql_da', 'python_da', 'agentic_ai', 'generative_ai_course', 'induction', 'tally', 'spoko_story', 'spoko_pro', 'spoko_hr', 'spoko_reasoning'
+      'summer_sql', 'sql_da', 'python_da', 'agentic_ai', 'genai_agentic_ai', 'generative_ai_course', 'induction', 'tally', 'spoko_story', 'spoko_pro', 'spoko_hr', 'spoko_reasoning'
     ];
   } else if (Array.isArray(enrolledCourse)) {
     courseKeys = enrolledCourse;
@@ -969,7 +985,7 @@ function calculateStudentProgress(student) {
   let enrolledList = [];
   if (enrolledCourse === 'all') {
     const allKeys = [
-      'html_css', 'sql', 'sql_da', 'summer_sql', 'powerbi', 'agentic_ai',
+      'html_css', 'sql', 'sql_da', 'summer_sql', 'powerbi', 'agentic_ai', 'genai_agentic_ai',
       'python_fullstack', 'python_course', 'python_da', 'generative_ai_course',
       'react_course', 'git_github', 'json_course', 'django_course', 'devops',
       'stats_course', 'numpy_course', 'pandas_course', 'matplotlib_course',
@@ -2112,6 +2128,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       summer_sql: CourseData.summerSqlCourseData,
       powerbi: CourseData.powerBiCourseData,
       agentic_ai: CourseData.agenticAiCourseData,
+      genai_agentic_ai: CourseData.genaiAgenticAiCourseData,
       python_fullstack: CourseData.pythonFullStackCourseData,
       python_course: CourseData.pythonCourseData,
       python_da: CourseData.pythonDaCourseData,
@@ -2146,7 +2163,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     const firstCourse = list[0];
     if (firstCourse === 'powerbi' || firstCourse === 'stats_course' || firstCourse === 'numpy_course' || firstCourse === 'pandas_course' || firstCourse === 'matplotlib_course' || firstCourse === 'seaborn_course' || firstCourse === 'sql_da' || firstCourse === 'python_da') return 'dataanalytics';
     if (firstCourse === 'summer_sql') return 'summer';
-    if (firstCourse === 'generative_ai_course' || firstCourse === 'agentic_ai') return 'aidevelopment';
+    if (firstCourse === 'generative_ai_course' || firstCourse === 'agentic_ai' || firstCourse === 'genai_agentic_ai') return 'aidevelopment';
     return 'fullstack';
   };
   const [activeMainCourse, setActiveMainCourse] = useState(getInitialMainCourse);

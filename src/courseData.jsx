@@ -1420,6 +1420,17 @@ export const generativeAiCourseData = [
   }
 ];
 
+export const genaiAgenticAiCourseData = [
+  {
+    id: 'genai_agentic_m1',
+    title: 'Month 1: LLM Foundations, Prompt Engineering & APIs (Week 1: Gen AI & Python API Readiness)',
+    items: [
+      { id: 'day1', label: 'Day 1: Orientation • Traditional ML vs DL vs Gen AI • AI Stack', icon: <BookOpen size={18} /> },
+      { id: 'assignment', label: '📝 Day 1 Assignment & Staff Review', icon: <PenTool size={18} /> }
+    ]
+  }
+];
+
 
 
 export const reactCourseData = [
