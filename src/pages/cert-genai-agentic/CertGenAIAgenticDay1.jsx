@@ -537,7 +537,7 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
 
           <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '2rem', marginBottom: '2rem' }}>
             <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <Layers size={22} style={{ color: '#2563eb' }} /> The 4 Types of AI Explained in Plain English
+              <Layers size={22} style={{ color: '#2563eb' }} /> The 4 Types of AI
             </h2>
             <p style={{ color: '#475569', fontSize: '0.96rem', lineHeight: 1.6, margin: '0 0 1.5rem 0' }}>
               People often mix up Machine Learning, Deep Learning, and Generative AI. Here is the easiest way to understand the difference forever using the <strong>Kitchen &amp; Chef Analogy</strong>:
@@ -604,7 +604,7 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
                   "The Autonomous Coworker" 🤖
                 </div>
                 <p style={{ margin: 0, fontSize: '0.84rem', color: '#6b21a8', lineHeight: 1.5 }}>
-                  <strong>What it does:</strong> Doesn't just give you words — it takes real actions, plans steps, clicks tools, and finishes tasks.
+                  <strong>What it does:</strong> Doesn't just give you words - it takes real actions, plans steps, clicks tools, and finishes tasks.
                   <br /><br />
                   <strong>Real Life:</strong> Booking flights, querying live databases, writing and sending emails to clients on its own.
                 </p>

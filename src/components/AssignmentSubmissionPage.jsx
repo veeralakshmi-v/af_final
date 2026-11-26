@@ -341,34 +341,36 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
         )}
       </div>
 
-      {/* 1. Assignment Questions & Practical Tasks */}
-      <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 14, padding: '1.75rem', marginBottom: '1.75rem', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: 10 }}>
-          <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 10 }}>
-            <FileText size={22} style={{ color: '#2563eb' }} /> Assignment Questions &amp; Practical Tasks
-          </h3>
-          <span style={{ fontSize: '0.82rem', fontWeight: 700, background: '#eff6ff', color: '#1d4ed8', padding: '4px 12px', borderRadius: 20 }}>
-            {config.tasks?.length || 0} Questions
-          </span>
-        </div>
+      {/* 1. Assignment Questions & Practical Tasks (Visible ONLY to Staff/Instructors, removed in Student Mode) */}
+      {isStaffUser && (
+        <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 14, padding: '1.75rem', marginBottom: '1.75rem', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: 10 }}>
+            <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <FileText size={22} style={{ color: '#2563eb' }} /> Assignment Questions &amp; Practical Tasks (Staff Reference)
+            </h3>
+            <span style={{ fontSize: '0.82rem', fontWeight: 700, background: '#eff6ff', color: '#1d4ed8', padding: '4px 12px', borderRadius: 20 }}>
+              {config.tasks?.length || 0} Questions
+            </span>
+          </div>
 
-        <p style={{ color: '#475569', fontSize: '0.92rem', margin: '0 0 1.25rem 0', lineHeight: 1.6 }}>
-          Review and complete each practical question below in your development environment. Once completed, write your learning reflection and observations in the student feedback section below to submit for staff evaluation.
-        </p>
+          <p style={{ color: '#475569', fontSize: '0.92rem', margin: '0 0 1.25rem 0', lineHeight: 1.6 }}>
+            Practical questions assigned for this module. Students write their learning reflection and observations in the student feedback section below for staff evaluation.
+          </p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          {(config.tasks || []).map((task, idx) => (
-            <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, background: '#f8fafc', padding: '14px 16px', borderRadius: 10, border: '1px solid #e2e8f0', transition: 'all 0.2s' }}>
-              <span style={{ background: '#2563eb', color: '#ffffff', fontWeight: 800, fontSize: '0.82rem', width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-                {idx + 1}
-              </span>
-              <div style={{ flex: 1, fontSize: '0.92rem', color: '#1e293b', lineHeight: 1.6, fontWeight: 500 }}>
-                {task}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {(config.tasks || []).map((task, idx) => (
+              <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, background: '#f8fafc', padding: '14px 16px', borderRadius: 10, border: '1px solid #e2e8f0', transition: 'all 0.2s' }}>
+                <span style={{ background: '#2563eb', color: '#ffffff', fontWeight: 800, fontSize: '0.82rem', width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                  {idx + 1}
+                </span>
+                <div style={{ flex: 1, fontSize: '0.92rem', color: '#1e293b', lineHeight: 1.6, fontWeight: 500 }}>
+                  {task}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 2. Mandatory Rules Banner */}
       <div style={{ background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: '1.75rem', display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -384,7 +386,7 @@ export default function AssignmentSubmissionPage({ courseKey = 'html_css', modul
           <MessageSquare size={20} style={{ color: '#2563eb' }} /> Student Learning Feedback &amp; Reflection
         </h3>
         <p style={{ color: '#64748b', fontSize: '0.88rem', margin: '0 0 1.25rem 0', lineHeight: 1.5 }}>
-          Share what you practiced from the questions above, key insights learned, query/code logic applied, and how you solved practical challenges.
+          Share what you practiced in today's lesson, key insights learned, query/code logic applied, and how you solved practical challenges.
         </p>
 
         {isSubmittedNotice && (
