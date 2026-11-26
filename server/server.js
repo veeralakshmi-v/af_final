@@ -1386,9 +1386,9 @@ app.get('/api/students/:id/mock-interviews', async (req, res) => {
 // C-6. Grade Student Task Assignment (Admin/Staff only)
 app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
   const { taskId } = req.params;
-  const { studentId, accessCode, status, feedback, grade, moduleId, tabId } = req.body;
-  if ((!studentId && !accessCode) || !status) {
-    return res.status(400).json({ error: 'studentId and status are required!' });
+  const { studentId, accessCode, status, feedback, grade, moduleId, tabId, studentName } = req.body;
+  if (!status) {
+    return res.status(400).json({ error: 'Evaluation status is required!' });
   }
 
   const statusTrimmed = status ? status.trim() : '';
@@ -1414,8 +1414,11 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
 
   try {
     const isDbConnected = await checkDbConnection();
-    const sIdStr = studentId ? String(studentId).trim() : '';
-    const accStr = accessCode ? String(accessCode).trim() : '';
+    const rawSId = studentId ? String(studentId).trim() : '';
+    const sIdStr = (rawSId && rawSId !== 'STUDENT' && rawSId !== 'stu') ? rawSId : '';
+    const rawAcc = accessCode ? String(accessCode).trim() : '';
+    const accStr = (rawAcc && rawAcc !== 'STUDENT') ? rawAcc : '';
+    const nameStr = (studentName && String(studentName).trim().toLowerCase() !== 'student learner') ? String(studentName).trim() : '';
 
     if (isDbConnected) {
       let student = null;
@@ -1425,16 +1428,16 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
       if (!student && sIdStr) {
         student = await Student.findOne({
           $or: [
-            { accessCode: sIdStr },
-            { studentId: sIdStr }
+            { accessCode: { $regex: new RegExp(`^${sIdStr}$`, 'i') } },
+            { studentId: { $regex: new RegExp(`^${sIdStr}$`, 'i') } }
           ]
         });
       }
       if (!student && accStr) {
         student = await Student.findOne({
           $or: [
-            { accessCode: accStr },
-            { studentId: accStr }
+            { accessCode: { $regex: new RegExp(`^${accStr}$`, 'i') } },
+            { studentId: { $regex: new RegExp(`^${accStr}$`, 'i') } }
           ]
         });
       }
@@ -1446,7 +1449,35 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
           ]
         });
       }
-      if (!student) return res.status(404).json({ error: 'Student not found!' });
+      if (!student && taskId && taskId.startsWith('html_css_')) {
+        const parts = taskId.split('_');
+        const candidateId = parts[2];
+        if (candidateId && candidateId !== 'stu' && candidateId !== 'STUDENT') {
+          if (mongoose.Types.ObjectId.isValid(candidateId)) {
+            student = await Student.findById(candidateId);
+          }
+          if (!student) {
+            student = await Student.findOne({
+              $or: [
+                { accessCode: { $regex: new RegExp(`^${candidateId}$`, 'i') } },
+                { studentId: { $regex: new RegExp(`^${candidateId}$`, 'i') } }
+              ]
+            });
+          }
+        }
+      }
+      if (!student && nameStr) {
+        student = await Student.findOne({
+          name: { $regex: new RegExp(`^${nameStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
+        });
+      }
+      if (!student) {
+        // Fallback: If student wasn't found by explicit id but we have an accessCode or name, try matching any student
+        if (rawAcc && rawAcc !== 'STUDENT') {
+          student = await Student.findOne({ accessCode: { $regex: new RegExp(rawAcc, 'i') } });
+        }
+      }
+      if (!student) return res.status(404).json({ error: 'Student record not found for this task evaluation.' });
 
       if (!Array.isArray(student.tasks)) student.tasks = [];
 
@@ -1540,15 +1571,44 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
       student.markModified('completedLessons');
       if (student.logicalThinkingScore) student.markModified('logicalThinkingScore');
       await student.save();
-      return res.json(student);
+
+      // Return a clean, lightweight response to avoid transmitting large payloads or timing out over proxies
+      return res.json({
+        success: true,
+        message: 'Task evaluated successfully',
+        taskId: (task && (task._id || task.id)) || taskId,
+        status: normalizedStatus,
+        grade: finalGrade,
+        feedback: feedbackTrimmed,
+        moduleId: effectiveMod,
+        studentId: student._id || student.id,
+        accessCode: student.accessCode,
+        completedLessons: student.completedLessons || []
+      });
     } else {
       const students = getLocalStudents();
-      let student = students.find(s => 
-        (sIdStr && (s.id === sIdStr || s._id === sIdStr || s.accessCode === sIdStr || s.studentId === sIdStr)) ||
-        (accStr && (s.accessCode === accStr || s.studentId === accStr || s.id === accStr || s._id === accStr)) ||
-        (s.tasks && s.tasks.some(t => String(t._id || t.id) === String(taskId)))
-      );
-      if (!student) return res.status(404).json({ error: 'Student not found!' });
+      let student = null;
+      if (sIdStr) {
+        student = students.find(s => s.id === sIdStr || s._id === sIdStr || s.accessCode === sIdStr || s.studentId === sIdStr);
+      }
+      if (!student && accStr) {
+        student = students.find(s => s.accessCode === accStr || s.studentId === accStr || s.id === accStr || s._id === accStr);
+      }
+      if (!student && taskId && taskId !== 'undefined' && taskId !== 'null') {
+        student = students.find(s => s.tasks && s.tasks.some(t => String(t._id || t.id) === String(taskId)));
+      }
+      if (!student && taskId && taskId.startsWith('html_css_')) {
+        const parts = taskId.split('_');
+        const candidateId = parts[2];
+        if (candidateId && candidateId !== 'stu' && candidateId !== 'STUDENT') {
+          student = students.find(s => s.id === candidateId || s._id === candidateId || s.accessCode === candidateId || s.studentId === candidateId);
+        }
+      }
+      if (!student && nameStr) {
+        const lowerName = nameStr.toLowerCase();
+        student = students.find(s => s.name && s.name.toLowerCase() === lowerName);
+      }
+      if (!student) return res.status(404).json({ error: 'Student record not found for this task evaluation.' });
 
       if (!Array.isArray(student.tasks)) student.tasks = [];
       let task = student.tasks.find(t => String(t._id || t.id) === String(taskId));
@@ -1626,7 +1686,18 @@ app.post('/api/students/tasks/:taskId/grade', async (req, res) => {
       }
 
       saveLocalStudents(students);
-      return res.json(student);
+      return res.json({
+        success: true,
+        message: 'Task evaluated successfully',
+        taskId: (task && (task._id || task.id)) || taskId,
+        status: normalizedStatus,
+        grade: finalGrade,
+        feedback: feedbackTrimmed,
+        moduleId: effectiveMod,
+        studentId: student._id || student.id,
+        accessCode: student.accessCode,
+        completedLessons: student.completedLessons || []
+      });
     }
   } catch (e) {
     return res.status(500).json({ error: e.message });

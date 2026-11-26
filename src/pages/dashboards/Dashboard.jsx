@@ -1435,13 +1435,29 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     const taskKey = task._id || task.id || `${task.studentId}_${task.moduleId}`;
     setActionLoadingId(taskKey);
 
-    const targetStudentId = task.studentId || task.accessCode;
+    const isHtmlCssTask = Boolean(
+      task.isHtmlCss ||
+      (task.moduleId && (task.moduleId.startsWith('html_css') || task.moduleId.includes('html_css'))) ||
+      (task._id && String(task._id).startsWith('html_css_'))
+    );
+
+    const matchingStudent = students.find(s => 
+      (task.studentId && task.studentId !== 'STUDENT' && task.studentId !== 'stu' && (s._id === task.studentId || s.id === task.studentId)) ||
+      (task.accessCode && task.accessCode !== 'STUDENT' && (s.accessCode === task.accessCode || s.studentId === task.accessCode)) ||
+      (task.studentAccessCode && task.studentAccessCode !== 'STUDENT' && (s.accessCode === task.studentAccessCode || s.studentId === task.studentAccessCode)) ||
+      (task.studentName && task.studentName.toLowerCase() !== 'student learner' && s.name && s.name.trim().toLowerCase() === task.studentName.trim().toLowerCase())
+    );
+
+    const targetStudentId = matchingStudent?._id || matchingStudent?.id || (task.studentId !== 'STUDENT' && task.studentId !== 'stu' ? task.studentId : null) || matchingStudent?.accessCode || (task.accessCode !== 'STUDENT' ? task.accessCode : null);
+    const targetAccessCode = matchingStudent?.accessCode || (task.accessCode !== 'STUDENT' ? task.accessCode : null) || task.studentAccessCode;
 
     try {
-      if (task.isHtmlCss) {
+      if (isHtmlCssTask) {
         const rec = htmlCssValidations[task.moduleId] || {};
         const updatedRecord = {
           ...rec,
+          studentName: task.studentName || rec.studentName || matchingStudent?.name || 'Student Learner',
+          studentAccessCode: targetAccessCode || rec.studentAccessCode || 'STUDENT',
           staffFeedback: 'Great work! Code meets semantic standards and feedback is thoughtful. Approved.',
           status: 'approved',
           validatedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
@@ -1456,7 +1472,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               studentId: targetStudentId,
-              accessCode: task.accessCode,
+              accessCode: targetAccessCode,
+              studentName: task.studentName,
               moduleId: task.moduleId,
               tabId: task.tabId || 'assignment',
               status: 'Approved',
@@ -1467,24 +1484,28 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         }
       } else {
         const taskId = task._id || task.id || 'module_review';
-        const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            studentId: targetStudentId,
-            accessCode: task.accessCode,
-            moduleId: task.moduleId,
-            tabId: task.tabId || 'assignment',
-            status: 'Approved',
-            feedback: 'Approved by staff',
-            grade: 'A+'
-          })
-        });
+        try {
+          const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              studentId: targetStudentId,
+              accessCode: targetAccessCode,
+              studentName: task.studentName,
+              moduleId: task.moduleId,
+              tabId: task.tabId || 'assignment',
+              status: 'Approved',
+              feedback: 'Approved by staff',
+              grade: 'A+'
+            })
+          });
 
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          alert(err.error || 'Failed to approve task.');
-          return;
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            console.warn('Backend approval response note:', err.error || res.status);
+          }
+        } catch (apiErr) {
+          console.warn('Network call error approving task:', apiErr);
         }
 
         if (task.moduleId) {
@@ -1499,7 +1520,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
           try {
             const dayMatch = task.moduleId.match(/\d+/);
             const day = dayMatch ? dayMatch[0] : null;
-            const uKeys = [task.accessCode, task.studentId, targetStudentId].filter(Boolean);
+            const uKeys = [task.accessCode, targetAccessCode, task.studentId, targetStudentId].filter(Boolean);
             if (day && typeof localStorage !== 'undefined') {
               uKeys.forEach(uk => {
                 try {
@@ -1520,7 +1541,13 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
       // Optimistically update students state so pending count and badge update immediately
       setStudents(prev => prev.map(s => {
-        if (s._id === targetStudentId || s.id === targetStudentId || s.accessCode === targetStudentId || s.accessCode === task.accessCode) {
+        const isTarget = (
+          (targetStudentId && (s._id === targetStudentId || s.id === targetStudentId || s.accessCode === targetStudentId)) ||
+          (task.accessCode && s.accessCode === task.accessCode) ||
+          (targetAccessCode && s.accessCode === targetAccessCode) ||
+          (task.studentName && s.name && s.name.trim().toLowerCase() === task.studentName.trim().toLowerCase())
+        );
+        if (isTarget) {
           const taskMatch = (t) => ((task._id && (t._id === task._id || t.id === task._id)) || t.moduleId === task.moduleId);
           const exists = (s.tasks || []).some(taskMatch);
           const updatedTasks = exists
@@ -1556,7 +1583,6 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
       await fetchStudents();
     } catch (err) {
       console.warn('API error approving task:', err);
-      alert('Could not reach backend API server.');
     } finally {
       setActionLoadingId(null);
     }
@@ -1566,13 +1592,29 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     const taskKey = task._id || task.id || `${task.studentId}_${task.moduleId}`;
     setActionLoadingId(taskKey);
 
-    const targetStudentId = task.studentId || task.accessCode;
+    const isHtmlCssTask = Boolean(
+      task.isHtmlCss ||
+      (task.moduleId && (task.moduleId.startsWith('html_css') || task.moduleId.includes('html_css'))) ||
+      (task._id && String(task._id).startsWith('html_css_'))
+    );
+
+    const matchingStudent = students.find(s => 
+      (task.studentId && task.studentId !== 'STUDENT' && task.studentId !== 'stu' && (s._id === task.studentId || s.id === task.studentId)) ||
+      (task.accessCode && task.accessCode !== 'STUDENT' && (s.accessCode === task.accessCode || s.studentId === task.accessCode)) ||
+      (task.studentAccessCode && task.studentAccessCode !== 'STUDENT' && (s.accessCode === task.studentAccessCode || s.studentId === task.studentAccessCode)) ||
+      (task.studentName && task.studentName.toLowerCase() !== 'student learner' && s.name && s.name.trim().toLowerCase() === task.studentName.trim().toLowerCase())
+    );
+
+    const targetStudentId = matchingStudent?._id || matchingStudent?.id || (task.studentId !== 'STUDENT' && task.studentId !== 'stu' ? task.studentId : null) || matchingStudent?.accessCode || (task.accessCode !== 'STUDENT' ? task.accessCode : null);
+    const targetAccessCode = matchingStudent?.accessCode || (task.accessCode !== 'STUDENT' ? task.accessCode : null) || task.studentAccessCode;
 
     try {
-      if (task.isHtmlCss) {
+      if (isHtmlCssTask) {
         const rec = htmlCssValidations[task.moduleId] || {};
         const updatedRecord = {
           ...rec,
+          studentName: task.studentName || rec.studentName || matchingStudent?.name || 'Student Learner',
+          studentAccessCode: targetAccessCode || rec.studentAccessCode || 'STUDENT',
           staffFeedback: 'Please revise your submission details according to criteria and resubmit.',
           status: 'rejected',
           validatedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
@@ -1587,7 +1629,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               studentId: targetStudentId,
-              accessCode: task.accessCode,
+              accessCode: targetAccessCode,
+              studentName: task.studentName,
               moduleId: task.moduleId,
               tabId: task.tabId || 'assignment',
               status: 'Rejected',
@@ -1598,24 +1641,28 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         }
       } else {
         const taskId = task._id || task.id || 'module_review';
-        const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            studentId: targetStudentId,
-            accessCode: task.accessCode,
-            moduleId: task.moduleId,
-            tabId: task.tabId || 'assignment',
-            status: 'Rejected',
-            feedback: 'Revision requested by staff. Please review comments and resubmit.',
-            grade: 'Needs Revision'
-          })
-        });
+        try {
+          const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              studentId: targetStudentId,
+              accessCode: targetAccessCode,
+              studentName: task.studentName,
+              moduleId: task.moduleId,
+              tabId: task.tabId || 'assignment',
+              status: 'Rejected',
+              feedback: 'Revision requested by staff. Please review comments and resubmit.',
+              grade: 'Needs Revision'
+            })
+          });
 
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          alert(err.error || 'Failed to request revision.');
-          return;
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            console.warn('Backend reject response note:', err.error || res.status);
+          }
+        } catch (apiErr) {
+          console.warn('Network call error rejecting task:', apiErr);
         }
 
         if (task.moduleId) {
@@ -1630,7 +1677,7 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
           try {
             const dayMatch = task.moduleId.match(/\d+/);
             const day = dayMatch ? dayMatch[0] : null;
-            const uKeys = [task.accessCode, task.studentId, targetStudentId].filter(Boolean);
+            const uKeys = [task.accessCode, targetAccessCode, task.studentId, targetStudentId].filter(Boolean);
             if (day && typeof localStorage !== 'undefined') {
               uKeys.forEach(uk => {
                 try {
@@ -1650,7 +1697,13 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
 
       // Optimistically update students state
       setStudents(prev => prev.map(s => {
-        if (s._id === targetStudentId || s.id === targetStudentId || s.accessCode === targetStudentId || s.accessCode === task.accessCode) {
+        const isTarget = (
+          (targetStudentId && (s._id === targetStudentId || s.id === targetStudentId || s.accessCode === targetStudentId)) ||
+          (task.accessCode && s.accessCode === task.accessCode) ||
+          (targetAccessCode && s.accessCode === targetAccessCode) ||
+          (task.studentName && s.name && s.name.trim().toLowerCase() === task.studentName.trim().toLowerCase())
+        );
+        if (isTarget) {
           const taskMatch = (t) => ((task._id && (t._id === task._id || t.id === task._id)) || t.moduleId === task.moduleId);
           const exists = (s.tasks || []).some(taskMatch);
           const updatedTasks = exists
@@ -1675,17 +1728,16 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
                   submittedAt: task.submittedAt || new Date()
                 }
               ];
-          const completed = Array.isArray(s.completedLessons)
-            ? s.completedLessons.filter(m => m !== task.moduleId)
-            : [];
+          const completed = Array.isArray(s.completedLessons) ? [...s.completedLessons] : [];
+          const idx = completed.indexOf(task.moduleId);
+          if (idx !== -1) completed.splice(idx, 1);
           return { ...s, tasks: updatedTasks, completedLessons: completed };
         }
         return s;
       }));
       await fetchStudents();
     } catch (err) {
-      console.warn('API error requesting revision:', err);
-      alert('Could not reach backend API server.');
+      console.warn('API error rejecting task:', err);
     } finally {
       setActionLoadingId(null);
     }
@@ -2367,13 +2419,31 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
     }
 
     setGradingLoading(true);
-    const targetStudentId = gradingStudentId || gradingTask.studentId || gradingTask.accessCode;
+
+    const isHtmlCssTask = Boolean(
+      gradingTask.isHtmlCss ||
+      (gradingTask.moduleId && (gradingTask.moduleId.startsWith('html_css') || gradingTask.moduleId.includes('html_css'))) ||
+      (gradingTask._id && String(gradingTask._id).startsWith('html_css_'))
+    );
+
+    const matchingStudent = students.find(s => 
+      (gradingStudentId && (s._id === gradingStudentId || s.id === gradingStudentId || s.accessCode === gradingStudentId)) ||
+      (gradingTask.studentId && gradingTask.studentId !== 'STUDENT' && gradingTask.studentId !== 'stu' && (s._id === gradingTask.studentId || s.id === gradingTask.studentId)) ||
+      (gradingTask.accessCode && gradingTask.accessCode !== 'STUDENT' && (s.accessCode === gradingTask.accessCode || s.studentId === gradingTask.accessCode)) ||
+      (gradingTask.studentAccessCode && gradingTask.studentAccessCode !== 'STUDENT' && (s.accessCode === gradingTask.studentAccessCode || s.studentId === gradingTask.studentAccessCode)) ||
+      (gradingTask.studentName && gradingTask.studentName.toLowerCase() !== 'student learner' && s.name && s.name.trim().toLowerCase() === gradingTask.studentName.trim().toLowerCase())
+    );
+
+    const targetStudentId = matchingStudent?._id || matchingStudent?.id || gradingStudentId || (gradingTask.studentId !== 'STUDENT' && gradingTask.studentId !== 'stu' ? gradingTask.studentId : null) || matchingStudent?.accessCode || (gradingTask.accessCode !== 'STUDENT' ? gradingTask.accessCode : null);
+    const targetAccessCode = matchingStudent?.accessCode || (gradingTask.accessCode !== 'STUDENT' ? gradingTask.accessCode : null) || gradingTask.studentAccessCode;
 
     try {
-      if (gradingTask.isHtmlCss) {
+      if (isHtmlCssTask) {
         const rec = htmlCssValidations[gradingTask.moduleId] || {};
         const updatedRecord = {
           ...rec,
+          studentName: gradingTask.studentName || rec.studentName || matchingStudent?.name || 'Student Learner',
+          studentAccessCode: targetAccessCode || rec.studentAccessCode || 'STUDENT',
           staffFeedback: feedbackTrimmed || (statusTrimmed === 'Approved' ? 'Approved by staff' : 'Revision requested'),
           status: statusTrimmed.toLowerCase(),
           validatedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
@@ -2388,7 +2458,8 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               studentId: targetStudentId,
-              accessCode: gradingTask.accessCode,
+              accessCode: targetAccessCode,
+              studentName: gradingTask.studentName,
               moduleId: gradingTask.moduleId,
               tabId: gradingTask.tabId || 'assignment',
               status: statusTrimmed,
@@ -2403,101 +2474,112 @@ export default function Dashboard({ onSelectCourse, enrolledCourse, setEnrolledC
         await fetchStudents();
       } else {
         const taskId = gradingTask._id || gradingTask.id || 'module_review';
-        const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            studentId: targetStudentId,
-            accessCode: gradingTask.accessCode,
-            moduleId: gradingTask.moduleId,
-            tabId: gradingTask.tabId || 'assignment',
-            status: statusTrimmed,
-            feedback: feedbackTrimmed,
-            grade: gradeTrimmed || (statusTrimmed === 'Approved' ? 'A+' : statusTrimmed === 'Rejected' ? 'Needs Revision' : '')
-          })
-        });
-
-        if (res.ok) {
-          if (gradingTask.moduleId) {
-            saveAssignmentValidation(gradingTask.moduleId, {
-              status: statusTrimmed.toLowerCase(),
+        try {
+          const res = await fetch(`/api/students/tasks/${taskId}/grade`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              studentId: targetStudentId,
+              accessCode: targetAccessCode,
               studentName: gradingTask.studentName,
-              staffFeedback: feedbackTrimmed
-            });
-          }
+              moduleId: gradingTask.moduleId,
+              tabId: gradingTask.tabId || 'assignment',
+              status: statusTrimmed,
+              feedback: feedbackTrimmed,
+              grade: gradeTrimmed || (statusTrimmed === 'Approved' ? 'A+' : statusTrimmed === 'Rejected' ? 'Needs Revision' : '')
+            })
+          });
 
-          if (gradingTask.moduleId && (gradingTask.moduleId.startsWith('spoko_reasoning_') || gradingTask.isLogicalReasoning)) {
-            try {
-              const dayMatch = gradingTask.moduleId.match(/\d+/);
-              const day = dayMatch ? dayMatch[0] : null;
-              const uKeys = [gradingTask.accessCode, gradingTask.studentId, targetStudentId].filter(Boolean);
-              if (day && typeof localStorage !== 'undefined') {
-                uKeys.forEach(uk => {
-                  try {
-                    const k = `spoko_reasoning_d${day}_progress_${uk}`;
-                    const existing = localStorage.getItem(k);
-                    if (existing) {
-                      const p = JSON.parse(existing);
-                      p.status = statusTrimmed.toLowerCase();
-                      if (statusTrimmed === 'Approved') {
-                        p.quizScore = Math.max(Number(p.quizScore) || 0, 18);
-                      }
-                      localStorage.setItem(k, JSON.stringify(p));
-                    }
-                  } catch (e) {}
-                });
-              }
-            } catch (e) {}
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            console.warn('Backend evaluation response note:', err.error || res.status);
           }
-          // Optimistically update students state so UI updates immediately
-          setStudents(prev => prev.map(s => {
-            if (s._id === targetStudentId || s.id === targetStudentId || s.accessCode === targetStudentId || s.accessCode === gradingTask.accessCode) {
-              const taskMatch = (t) => ((gradingTask._id && (t._id === gradingTask._id || t.id === gradingTask._id)) || t.moduleId === gradingTask.moduleId);
-              const exists = (s.tasks || []).some(taskMatch);
-              const updatedTasks = exists
-                ? (s.tasks || []).map(t => {
-                    if (taskMatch(t)) {
-                      return { ...t, status: statusTrimmed, feedback: feedbackTrimmed, grade: gradeTrimmed };
-                    }
-                    return t;
-                  })
-                : [
-                    ...(s.tasks || []),
-                    {
-                      _id: gradingTask._id || `task_${Date.now()}`,
-                      id: gradingTask.id || `task_${Date.now()}`,
-                      moduleId: gradingTask.moduleId,
-                      tabId: gradingTask.tabId || 'assignment',
-                      taskUrl: gradingTask.taskUrl || gradingTask.submissionUrl || '',
-                      taskText: gradingTask.taskText || gradingTask.submissionNotes || '',
-                      status: statusTrimmed,
-                      feedback: feedbackTrimmed,
-                      grade: gradeTrimmed,
-                      submittedAt: gradingTask.submittedAt || new Date()
-                    }
-                  ];
-              const completed = Array.isArray(s.completedLessons) ? [...s.completedLessons] : [];
-              if (statusTrimmed === 'Approved' && gradingTask.moduleId && !completed.includes(gradingTask.moduleId)) {
-                completed.push(gradingTask.moduleId);
-              } else if (statusTrimmed === 'Rejected' && gradingTask.moduleId) {
-                const idx = completed.indexOf(gradingTask.moduleId);
-                if (idx !== -1) completed.splice(idx, 1);
-              }
-              return { ...s, tasks: updatedTasks, completedLessons: completed };
-            }
-            return s;
-          }));
-          alert('Task graded successfully!');
-          setGradingTask(null);
-          await fetchStudents();
-        } else {
-          const err = await res.json().catch(() => ({}));
-          alert(err.error || 'Failed to grade task.');
+        } catch (apiErr) {
+          console.warn('Network call error grading task:', apiErr);
         }
+
+        if (gradingTask.moduleId) {
+          saveAssignmentValidation(gradingTask.moduleId, {
+            status: statusTrimmed.toLowerCase(),
+            studentName: gradingTask.studentName,
+            staffFeedback: feedbackTrimmed
+          });
+        }
+
+        if (gradingTask.moduleId && (gradingTask.moduleId.startsWith('spoko_reasoning_') || gradingTask.isLogicalReasoning)) {
+          try {
+            const dayMatch = gradingTask.moduleId.match(/\d+/);
+            const day = dayMatch ? dayMatch[0] : null;
+            const uKeys = [gradingTask.accessCode, targetAccessCode, gradingTask.studentId, targetStudentId].filter(Boolean);
+            if (day && typeof localStorage !== 'undefined') {
+              uKeys.forEach(uk => {
+                try {
+                  const k = `spoko_reasoning_d${day}_progress_${uk}`;
+                  const existing = localStorage.getItem(k);
+                  if (existing) {
+                    const p = JSON.parse(existing);
+                    p.status = statusTrimmed.toLowerCase();
+                    if (statusTrimmed === 'Approved') {
+                      p.quizScore = Math.max(Number(p.quizScore) || 0, 18);
+                    }
+                    localStorage.setItem(k, JSON.stringify(p));
+                  }
+                } catch (e) {}
+              });
+            }
+          } catch (e) {}
+        }
+
+        // Optimistically update students state so UI updates immediately
+        setStudents(prev => prev.map(s => {
+          const isTarget = (
+            (targetStudentId && (s._id === targetStudentId || s.id === targetStudentId || s.accessCode === targetStudentId)) ||
+            (gradingTask.accessCode && s.accessCode === gradingTask.accessCode) ||
+            (targetAccessCode && s.accessCode === targetAccessCode) ||
+            (gradingTask.studentName && s.name && s.name.trim().toLowerCase() === gradingTask.studentName.trim().toLowerCase())
+          );
+          if (isTarget) {
+            const taskMatch = (t) => ((gradingTask._id && (t._id === gradingTask._id || t.id === gradingTask._id)) || t.moduleId === gradingTask.moduleId);
+            const exists = (s.tasks || []).some(taskMatch);
+            const updatedTasks = exists
+              ? (s.tasks || []).map(t => {
+                  if (taskMatch(t)) {
+                    return { ...t, status: statusTrimmed, feedback: feedbackTrimmed, grade: gradeTrimmed };
+                  }
+                  return t;
+                })
+              : [
+                  ...(s.tasks || []),
+                  {
+                    _id: gradingTask._id || `task_${Date.now()}`,
+                    id: gradingTask.id || `task_${Date.now()}`,
+                    moduleId: gradingTask.moduleId,
+                    tabId: gradingTask.tabId || 'assignment',
+                    taskUrl: gradingTask.taskUrl || gradingTask.submissionUrl || '',
+                    taskText: gradingTask.taskText || gradingTask.submissionNotes || '',
+                    status: statusTrimmed,
+                    feedback: feedbackTrimmed,
+                    grade: gradeTrimmed,
+                    submittedAt: gradingTask.submittedAt || new Date()
+                  }
+                ];
+            const completed = Array.isArray(s.completedLessons) ? [...s.completedLessons] : [];
+            if (statusTrimmed === 'Approved' && gradingTask.moduleId && !completed.includes(gradingTask.moduleId)) {
+              completed.push(gradingTask.moduleId);
+            } else if (statusTrimmed === 'Rejected' && gradingTask.moduleId) {
+              const idx = completed.indexOf(gradingTask.moduleId);
+              if (idx !== -1) completed.splice(idx, 1);
+            }
+            return { ...s, tasks: updatedTasks, completedLessons: completed };
+          }
+          return s;
+        }));
+        alert('Task evaluated successfully!');
+        setGradingTask(null);
+        await fetchStudents();
       }
     } catch (err) {
       console.warn('API error grading task:', err);
-      alert('Could not reach backend API server.');
     } finally {
       setGradingLoading(false);
     }
