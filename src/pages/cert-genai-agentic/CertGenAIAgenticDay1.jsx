@@ -22,15 +22,7 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.35 } }
 };
 
-const SUB_TABS = [
-  { id: 'orientation', label: '🧭 Course Orientation & Roadmap', icon: <Compass size={16} /> },
-  { id: 'comparison', label: '⚖️ ML vs DL vs Gen AI', icon: <Layers size={16} /> },
-  { id: 'aistack', label: '🏗️ Real-World AI Stack', icon: <Server size={16} /> },
-  { id: 'simulator', label: '⚡ Interactive Paradigm Simulator', icon: <Cpu size={16} /> },
-  { id: 'pythonready', label: '🐍 Python API Readiness', icon: <Terminal size={16} /> },
-  { id: 'quiz', label: '✍️ Knowledge Check', icon: <HelpCircle size={16} /> },
-  { id: 'assignment', label: '📝 Day 1 Assignment', icon: <Award size={16} /> }
-];
+
 
 const QUIZ_QUESTIONS = [
   {
@@ -385,43 +377,7 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
         }}></div>
       </div>
 
-      {/* 🧭 NAVIGATION SUB-TABS */}
-      <div style={{
-        display: 'flex',
-        gap: 8,
-        overflowX: 'auto',
-        paddingBottom: 10,
-        marginBottom: '2rem',
-        borderBottom: '2px solid #e2e8f0'
-      }}>
-        {SUB_TABS.map(tab => {
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => handleTabChange(tab.id)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                padding: '0.65rem 1.15rem',
-                borderRadius: 12,
-                border: 'none',
-                background: isActive ? '#0f172a' : '#f1f5f9',
-                color: isActive ? '#ffffff' : '#475569',
-                fontWeight: isActive ? 800 : 600,
-                fontSize: '0.86rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                whiteSpace: 'nowrap',
-                boxShadow: isActive ? '0 4px 12px rgba(15, 23, 42, 0.2)' : 'none'
-              }}
-            >
-              {tab.icon} {tab.label}
-            </button>
-          );
-        })}
-      </div>
+
 
       {/* ========================================================= */}
       {/* TAB 1: COURSE ORIENTATION & 60-DAY ROADMAP */}
