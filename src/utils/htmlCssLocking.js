@@ -207,13 +207,13 @@ export const HTML_CSS_ASSIGNMENTS_CONFIG = {
   },
   // 🎓 Certification in Generative AI & Agentic AI (60 Days Course)
   genai_agentic_m1: {
-    dayTitle: 'Day 1 - Gen AI & Python API Readiness',
-    assignmentTitle: 'Day 1 Practical Assignment: Enterprise AI Paradigm Analysis & API Foundation',
+    dayTitle: 'Day 1 — Getting Started with Generative & Agentic AI',
+    assignmentTitle: 'Day 1 Practical Assignment: AI Fundamentals & Learning Reflection',
     tasks: [
-      'Compare Traditional ML vs. Deep Learning vs. Generative AI with real-world scenarios and compute trade-offs.',
-      'Deconstruct the 6-Layer Enterprise AI Stack (Compute, Foundation Models, Data, Frameworks, Evaluation, Applications).',
-      'Set up Python 3.10+ virtual environment and install OpenAI/Anthropic/Google GenAI SDKs.',
-      'Draft a comprehensive architecture blueprint for an enterprise Generative AI application.'
+      'Name 2 everyday AI tools you have used (e.g., ChatGPT, Siri, Google Lens, Netflix suggestions) and explain whether they use Traditional ML, Deep Learning, or Generative AI.',
+      'Explain the difference between a normal chatbot (Generative AI) and an Autonomous Agent (Agentic AI) in simple words using an everyday analogy.',
+      'Pick one repetitive chore or work task in your daily life and describe how an Agentic AI assistant could handle it for you.',
+      'Write down your personal 60-day learning goal for this certification and what you hope to build by the end.'
     ],
     nextModuleId: 'genai_agentic_m2',
     nextModuleTitle: 'Day 2 - LLM Foundations & Tokenomics'

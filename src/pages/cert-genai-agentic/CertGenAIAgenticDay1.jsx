@@ -4,12 +4,12 @@ import {
   Brain, Cpu, Bot, Sparkles, Layers, Terminal, Database, Shield,
   Workflow, Code, CheckCircle, Zap, Award, ArrowRight, HelpCircle,
   Trophy, BookOpen, Clock, Calendar, Check, ExternalLink, RefreshCw,
-  ChevronRight, Play, Eye, FileCode, Server, Sliders, AlertCircle
+  ChevronRight, Play, Eye, FileCode, Server, Sliders, AlertCircle,
+  Coffee, Compass, Send, Lightbulb, MessageSquare, ShieldCheck,
+  Heart, ThumbsUp, ShoppingBag, Plane, GraduationCap, Utensils
 } from 'lucide-react';
 import bannerImg from '../../assets/generative_ai_day1_banner.png';
 import mlImg from '../../assets/ml_patterns_diagram.png';
-import aiImg from '../../assets/ai_logic_flowchart.png';
-import archImg from '../../assets/agentic_ai_architecture.png';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -23,7 +23,7 @@ const itemVariants = {
 };
 
 const SUB_TABS = [
-  { id: 'orientation', label: '🧭 Course Orientation & Roadmap', icon: <Calendar size={16} /> },
+  { id: 'orientation', label: '🧭 Course Orientation & Roadmap', icon: <Compass size={16} /> },
   { id: 'comparison', label: '⚖️ ML vs DL vs Gen AI', icon: <Layers size={16} /> },
   { id: 'aistack', label: '🏗️ Real-World AI Stack', icon: <Server size={16} /> },
   { id: 'simulator', label: '⚡ Interactive Paradigm Simulator', icon: <Cpu size={16} /> },
@@ -34,200 +34,212 @@ const SUB_TABS = [
 
 const QUIZ_QUESTIONS = [
   {
-    q: 'How does Generative AI fundamentally differ from Traditional Machine Learning in terms of output and paradigm?',
+    q: 'In simple everyday words, what makes Generative AI different from traditional computer programs or Machine Learning?',
     opts: [
-      'Traditional ML produces numbers or discrete class labels from hand-engineered features, whereas Generative AI generates novel, high-dimensional artifacts (text, code, synthetic media) from natural language prompts.',
-      'Traditional ML only runs in Python, whereas Generative AI runs strictly inside web browsers.',
-      'Generative AI does not require training data, while Traditional ML requires millions of GPUs.',
-      'Traditional ML only operates on images, while Generative AI only processes tabular numbers.'
+      'Generative AI can create brand-new, original content (writing poems, coding apps, drawing art) instead of just predicting a single number or checking a strict rule.',
+      'Generative AI is just a giant spreadsheet formula that adds numbers together.',
+      'Generative AI only works when there is no internet connection.',
+      'Traditional ML can talk like a human, while Generative AI can only output True or False.'
     ],
     ans: 0,
-    explanation: 'Traditional ML focuses on predictive/discriminative tasks (e.g. classification or regression based on structured features), whereas Generative AI models learned the joint probability distribution of vast multi-modal data to synthesize original content.'
+    explanation: 'Exactly! While Traditional ML calculates probabilities or predicts numbers (like predicting tomorrow\'s temperature), Generative AI actually creates new, high-quality human-like text, code, images, and solutions!'
   },
   {
-    q: 'What is the role of Deep Learning in the AI hierarchy?',
+    q: 'What is the easiest way to understand "Deep Learning" using a human senses analogy?',
     opts: [
-      'It is an outdated technology completely replaced by basic spreadsheet calculations.',
-      'It is a subset of Machine Learning based on multi-layered artificial neural networks capable of learning hierarchical feature representations directly from raw unstructured data.',
-      'It is a database management software similar to MySQL.',
-      'It is an automation tool exclusively designed for sending marketing emails.'
+      'It is like a calculator that only adds and subtracts numbers.',
+      'It acts like human eyes and ears: multi-layer neural networks that recognize faces in photos, understand spoken words, and detect patterns in complex raw data.',
+      'It is a special brand of computer monitor designed for video games.',
+      'It is a tool used strictly for sending automatic marketing emails.'
     ],
     ans: 1,
-    explanation: 'Deep Learning utilizes deep neural architectures (Transformers, CNNs, RNNs) that extract abstract feature hierarchies automatically without requiring manual feature engineering.'
+    explanation: 'Spot on! Deep Learning mimics the layers of neurons in our brains to process rich sensory data like pictures (computer vision) and sound (speech recognition) without needing humans to hand-code every detail.'
   },
   {
-    q: 'In the modern 6-Layer Real-World AI Stack, what role does Layer 4 (Storage, Vector Databases & Retrieval) fulfill?',
+    q: 'What is the main difference between a standard Chatbot (like ChatGPT) and an "Agentic AI" system?',
     opts: [
-      'It replaces the physical server CPU with a virtual battery.',
-      'It grounds foundation models with domain-specific knowledge via embeddings and vector similarity search (RAG) to eliminate hallucinations.',
-      'It only stores the student attendance records.',
-      'It compiles Python syntax into machine binary code.'
+      'Chatbots only speak English, while Agents only speak Python.',
+      'A chatbot gives you text answers, while an Agentic AI can actually take action in the real world: browsing web pages, using calculators, booking tickets, and calling external APIs.',
+      'There is zero difference; they are identical tools.',
+      'An Agentic AI does not use language models at all.'
     ],
     ans: 1,
-    explanation: 'Vector databases (Pinecone, ChromaDB, Qdrant) index semantic embeddings of proprietary documents, enabling accurate context injection during retrieval-augmented generation (RAG).'
+    explanation: 'You got it! A standard chatbot stops at answering your question. An Agentic AI takes action—it plans steps, checks databases, clicks buttons, and accomplishes the full goal for you autonomously!'
   },
   {
-    q: 'Why are LLMs alone not considered fully "Agentic" in production systems?',
+    q: 'In the 6-Layer AI Stack, why do we need Layer 3 (Memory, Documents & Vector Databases / RAG)?',
     opts: [
-      'LLMs lack internet connection and cannot run on Nvidia GPUs.',
-      'Pure LLMs are next-token predictors operating in a single forward pass; they lack memory persistence, tool execution autonomy, and iterative decision-making loops without an agent framework.',
-      'LLMs only speak binary code and cannot read JSON.',
-      'LLMs require human operators to manually type every internal neural weight.'
+      'To charge the battery of your laptop.',
+      'Because models like GPT-4 don\'t know your private company files or personal notes, so this layer gives the AI a searchable notebook of your private documents to read before answering.',
+      'To replace the computer keyboard with a microphone.',
+      'To delete all previous chat messages permanently.'
     ],
     ans: 1,
-    explanation: 'An agent requires an autonomous environment: observing states, reasoning, selecting external tools (APIs, calculators, SQL), evaluating execution feedback, and looping until the objective is accomplished.'
+    explanation: 'Perfect! Pre-trained models only know public internet data up to their cutoff date. This knowledge layer (RAG) feeds the AI your exact company PDFs, contracts, and documents so it answers with 100% accurate facts!'
   },
   {
-    q: 'Which tool calling / orchestration framework is industry standard for building production multi-agent systems and stateful graphs in Month 3 of this certification?',
+    q: 'What is the best analogy for an "API" in Python when working with AI models?',
     opts: [
-      'jQuery and Apache Cordova.',
-      'LangChain & LangGraph (with CrewAI & Agno).',
-      'Flash Macromedia Player.',
-      'Notepad++ plugins.'
+      'A printer cable connected to your desk.',
+      'A waiter in a restaurant: your Python code gives the waiter your order (prompt), the waiter takes it to the kitchen (AI servers), and brings back your meal (the AI response).',
+      'A video game controller that only moves characters left and right.',
+      'A mathematical equation that solves quadratic roots.'
     ],
     ans: 1,
-    explanation: 'LangChain and LangGraph are the leading industry frameworks for deterministic multi-agent state graphs, cyclical reasoning loops, and enterprise workflow orchestration.'
+    explanation: 'Great analogy! An API simply acts as the messenger (waiter) that connects your local Python code to giant supercomputers hosting OpenAI, Claude, or Google Gemini.'
   }
 ];
 
 const PARADIGM_EXAMPLES = {
-  churn: {
-    title: 'Customer Churn Prediction',
+  food: {
+    title: 'Food Delivery & Restaurant App (Zomato / Swiggy)',
+    icon: <Utensils size={18} />,
+    problem: 'How do different AI technologies help you order and enjoy dinner?',
     ml: {
-      type: 'Traditional ML (Logistic Regression / XGBoost)',
-      input: 'Tabular tabular features: tenure_months, monthly_charges, support_tickets_count.',
-      process: 'Calculates mathematical decision boundary across normalized columns using GBDT trees.',
-      output: 'Churn Probability: 0.84 (Class: At Risk)'
+      title: 'Traditional ML (The Predictor / Calculator)',
+      concept: 'Predicts numbers based on past historical table data.',
+      action: 'Analyzes past traffic, distance, and restaurant prep times to predict: "Your delivery will arrive in 34 minutes."',
+      output: 'Estimated Delivery Time: 34 Mins (Confidence: 94%)'
     },
     dl: {
-      type: 'Deep Learning (LSTM / Temporal Neural Net)',
-      input: 'Sequential time-series event logs and session clickstreams over past 90 days.',
-      process: 'Recurrent hidden states capture non-linear behavioral velocity and decay patterns.',
-      output: 'Predicted Churn Window: 14 to 21 Days with 89.2% confidence'
+      title: 'Deep Learning (The Human Eyes & Ears)',
+      concept: 'Understands images and messy sensory data.',
+      action: 'Scans customer photos of delivery packages or food dishes to verify quality and recognize menu items automatically.',
+      output: 'Image Recognized: "Crispy Paneer Butter Masala (99% Match)"'
     },
     genai: {
-      type: 'Generative AI (GPT-4o / Claude 3.5 Sonnet)',
-      input: 'Customer support transcripts, cancellation survey feedback, and ticket chat logs.',
-      process: 'Understands customer sentiment, uncovers root frustration causes, and drafts a personalized retention offer.',
-      output: 'Generates empathetic VIP retention email with customized 20% discount on their favorite feature.'
+      title: 'Generative AI (The Creative Chef & Writer)',
+      concept: 'Creates brand-new human-like text and customized ideas.',
+      action: 'You type: "I have eggs, spinach, and sourdough. Give me a 10-minute dinner recipe." It creates a gourmet recipe step-by-step.',
+      output: 'Creates: Custom "10-Minute Spinach & Poached Egg Bruschetta" with cooking instructions.'
     },
     agentic: {
-      type: 'Agentic AI (Autonomous Retention Agent)',
-      input: 'Real-time telemetry signal: High-value account opened cancellation settings page.',
-      process: 'Autonomously queries Stripe API for billing history, checks Zendesk tickets, triggers retention flow, and books calendar meeting with account manager.',
-      output: 'Autonomous Action: Dispatched slack alert to account manager, applied discount in Stripe, and logged ticket in CRM.'
+      title: 'Agentic AI (The Autonomous Personal Butler)',
+      concept: 'Takes multi-step actions and accomplishes goals across different apps.',
+      action: 'You say: "Order my favorite Thai curry dinner for 8 PM and pay using Google Pay." It finds the restaurant, selects the items, applies promo discounts, places the order, and updates your calendar.',
+      output: 'Done Autonomously: Order placed, $18.50 paid, delivery tracking link sent to your WhatsApp!'
     }
   },
-  code: {
-    title: 'Code Vulnerability & Quality Audit',
+  vacation: {
+    title: 'Planning a Vacation Trip to Goa or Paris',
+    icon: <Plane size={18} />,
+    problem: 'How do different AI technologies help you plan a holiday?',
     ml: {
-      type: 'Traditional ML (Random Forest Classifier)',
-      input: 'Static metrics: cyclomatic complexity, lines of code, function parameter count.',
-      process: 'Compares numerical code metrics against historical defect classification thresholds.',
-      output: 'Defect Risk: Moderate (Metric Score: 68/100)'
+      title: 'Traditional ML (The Predictor / Calculator)',
+      concept: 'Forecasts prices and probabilities from historical trends.',
+      action: 'Scans 100,000 flight tickets from last year and alerts you: "Flight prices will rise by 25% next week. Book now!"',
+      output: 'Price Alert: "Buy now — lowest fare expected for July"'
     },
     dl: {
-      type: 'Deep Learning (CodeBERT / Tree-LSTM)',
-      input: 'Abstract Syntax Tree (AST) tokens and tokenized dependency graphs.',
-      process: 'Deep attention mechanisms detect syntactic pattern anomalies across code paths.',
-      output: 'Identified Potential Buffer Overflow at line 142 (91% attention weight).'
+      title: 'Deep Learning (The Human Eyes & Ears)',
+      concept: 'Processes visual scenes, passports, and sounds.',
+      action: 'Uses phone camera to scan your passport page, instantly extracting name, passport number, and expiry date without typing.',
+      output: 'Passport Verified & Auto-Filled in 0.2 seconds'
     },
     genai: {
-      type: 'Generative AI (Claude 3.5 Sonnet / DeepSeek-Coder)',
-      input: 'Entire 250-line Python module containing insecure SQL query concatenation.',
-      process: 'Explains the SQL injection vulnerability, security implications, and refactors code using parameterized ORM.',
-      output: 'Generates rewritten secure code with unit test cases demonstrating safe execution.'
+      title: 'Generative AI (The Creative Writer / Guide)',
+      concept: 'Writes detailed guides, advice, and ideas from scratch.',
+      action: 'Drafts a complete 4-day personalized travel itinerary with hidden cafes, photography spots, and packing checklists.',
+      output: 'Generates: "4-Day Sun & Heritage Goa Itinerary" tailored for families with kids.'
     },
     agentic: {
-      type: 'Agentic AI (Autonomous DevSecOps Agent)',
-      input: 'GitHub Webhook: Pull Request #48 submitted by junior engineer.',
-      process: 'Agent checks out branch, executes AST security linter, runs unit tests in sandboxed docker, refactors vulnerable lines, and pushes review commit.',
-      output: 'Autonomous Action: Created fix commit, added inline PR review comment, and approved build.'
+      title: 'Agentic AI (The Full-Service Travel Agent)',
+      concept: 'Coordinates flights, hotels, and emails independently.',
+      action: 'You say: "Plan a 3-day weekend trip to Goa under $400." The agent searches Skyscanner for flights, selects a top-rated Airbnb, books both, and emails the hotel confirmation to your family.',
+      output: 'Done Autonomously: Flight booked, Airbnb reserved, receipts emailed, and calendar invites created!'
     }
   },
-  medical: {
-    title: 'Healthcare Patient Diagnosis & Triage',
+  study: {
+    title: 'College Homework & Learning New Skills',
+    icon: <GraduationCap size={18} />,
+    problem: 'How do different AI technologies assist students in studying?',
     ml: {
-      type: 'Traditional ML (Support Vector Machine / Random Forest)',
-      input: 'Biomarkers: blood glucose, systolic BP, cholesterol, age, BMI.',
-      process: 'Calculates hyperplane separation across patient health index metrics.',
-      output: 'Risk Category: Type-2 Diabetes High Risk (Confidence: 87%)'
+      title: 'Traditional ML (The Predictor / Calculator)',
+      concept: 'Calculates performance scores and recommended study hours.',
+      action: 'Analyzes your quiz test scores over the last 3 months and predicts: "You have an 88% chance of scoring Grade A in Math."',
+      output: 'Progress Forecast: Grade A Expected (Review Chapter 4)'
     },
     dl: {
-      type: 'Deep Learning (Convolutional Vision Transformer)',
-      input: 'High-resolution chest X-Ray or MRI scan (DICOM format).',
-      process: 'Multi-layer spatial convolutional kernels localize subtle pulmonary nodules and lesions.',
-      output: 'Heatmap bounding box identifying 1.4cm nodule in lower right lung lobe.'
+      title: 'Deep Learning (The Human Eyes & Ears)',
+      concept: 'Reads messy handwriting and spoken teacher lectures.',
+      action: 'You take a photo of your messy handwritten chemistry notes; deep learning converts your handwriting into clean digital text.',
+      output: 'Handwritten Notes Transcribed to Clean PDF Document'
     },
     genai: {
-      type: 'Generative AI (Medical Foundation LLM / Med-PaLM)',
-      input: 'Physician notes, lab report PDF, and historical EHR clinical history.',
-      process: 'Synthesizes clinical narrative, references medical literature, and drafts differential diagnosis options for physician review.',
-      output: 'Structured clinical summary with medication interaction warnings and referral recommendations.'
+      title: 'Generative AI (The 24/7 Patient Tutor)',
+      concept: 'Explains complex topics in simple words and analogies.',
+      action: 'You ask: "Explain Quantum Physics like I am 8 years old." It creates a fun story with cartoon analogies and generates practice questions.',
+      output: 'Generates: Simple bedtime story explaining quantum superposition with magic coins.'
     },
     agentic: {
-      type: 'Agentic AI (Autonomous Hospital Triage Agent)',
-      input: 'Emergency room intake alert for patient with chest pain.',
-      process: 'Queries EHR database, cross-references live ICU bed availability via hospital API, alerts on-call cardiologist pager, and reserves CT scanner.',
-      output: 'Autonomous Action: Hospital admission protocol launched, doctor paged, and priority lab orders queued.'
+      title: 'Agentic AI (The Autonomous Study Partner)',
+      concept: 'Conducts deep research, verifies facts, and schedules flashcards.',
+      action: 'You say: "Prepare me for tomorrow\'s Python exam." It searches Wikipedia, compiles a 5-page revision booklet, creates 20 flashcards, tests you, and marks what you got wrong.',
+      output: 'Done Autonomously: Study guide drafted, quiz administered, and weak spots reviewed!'
     }
   }
 };
 
-const AI_STACK_LAYERS = [
+const AI_STACK_LAYERS_BEGINNER = [
   {
     layer: 6,
-    name: 'Applications & Agentic UI',
+    name: 'Layer 6: The User Interface (Apps & Chatbots)',
     color: '#ec4899',
-    badge: 'Presentation & Interaction',
-    summary: 'The interface layer where users and enterprise software interact with AI workflows.',
-    tools: ['Streamlit', 'Chainlit', 'Next.js / React', 'FastAPI', 'Slack / Discord Bots', 'Vercel AI SDK'],
-    description: 'Bridges the gap between raw model outputs and end users. Includes conversational web interfaces, chat widgets, IDE extensions (Cursor, Copilot), and headless microservices.'
+    badge: 'The Steering Wheel',
+    layman: 'The friendly screen where everyday humans chat, click, and interact with AI.',
+    analogy: 'Like the touchscreen dashboard in a modern car. It is what you see and touch.',
+    example: 'ChatGPT web app, Claude.ai, mobile apps, WhatsApp bots, or internal company dashboards.',
+    tools: ['Streamlit', 'Next.js / React', 'WhatsApp / Slack Bots', 'Gradio']
   },
   {
     layer: 5,
-    name: 'Evaluation, Guardrails & Observability',
+    name: 'Layer 5: The Safety Inspector (Guardrails & Quality Check)',
     color: '#8b5cf6',
-    badge: 'Safety & Monitoring',
-    summary: 'Monitoring model hallucination, latency, token costs, security, and prompt injection defense.',
-    tools: ['LangSmith', 'Arize Phoenix', 'NeMo Guardrails', 'TruLens', 'Weights & Biases', 'OpenTelemetry'],
-    description: 'Ensures enterprise safety and compliance. Traces token consumption, debugs multi-step agent reasoning failures, blocks PII leakage, and monitors latency metrics in real time.'
+    badge: 'The Safety Belt',
+    layman: 'Makes sure the AI is polite, tells the truth, does not leak passwords, and does not invent fake facts.',
+    analogy: 'Like the quality control inspector at a food factory checking every snack before it leaves.',
+    example: 'Blocking a user from asking how to make computer viruses, or preventing an AI bank assistant from revealing someone else\'s account balance.',
+    tools: ['NeMo Guardrails', 'LangSmith', 'Prompt Shields', 'Content Filters']
   },
   {
     layer: 4,
-    name: 'Storage, Memory & Vector Databases (RAG)',
-    color: '#3b82f6',
-    badge: 'Domain Knowledge Grounding',
-    summary: 'Storing long-term memory, conversation history, and indexing multi-modal data for retrieval.',
-    tools: ['Pinecone', 'ChromaDB', 'Weaviate', 'Milvus', 'Qdrant', 'pgvector (PostgreSQL)', 'Redis'],
-    description: 'LLMs have fixed context windows and static knowledge cutoffs. Vector databases convert enterprise PDFs, documentation, and database records into dense numerical vectors (embeddings) for millisecond semantic retrieval.'
+    name: 'Layer 4: The Hands & Feet (Agent Tools & Frameworks)',
+    color: '#10b981',
+    badge: 'The Hands & Tools',
+    layman: 'Gives the AI hands so it can browse Google, use a calculator, run Python code, or send emails.',
+    analogy: 'A brain alone cannot type an email or open a door. This layer gives the AI brain arms and tools to do real work!',
+    example: 'An AI assistant using Google Search to check today\'s weather or querying your company SQL database to check today\'s sales.',
+    tools: ['LangChain', 'CrewAI', 'n8n', 'Flowise', 'Tool Calling APIs']
   },
   {
     layer: 3,
-    name: 'Frameworks, Orchestration & Tool Calling',
-    color: '#10b981',
-    badge: 'Agent Logic & Pipelines',
-    summary: 'Chaining prompts, connecting external APIs, and managing autonomous cyclical reasoning loops.',
-    tools: ['LangChain', 'LangGraph', 'LlamaIndex', 'CrewAI', 'Agno (Phidata)', 'LiteLLM', 'n8n', 'Flowise'],
-    description: 'The core engineering tier of Agentic AI. Allows models to call external REST APIs, execute Python scripts, parse structured JSON, and coordinate teams of specialized agents with persistent state.'
+    name: 'Layer 3: The Memory & Files (Vector Databases & RAG)',
+    color: '#3b82f6',
+    badge: 'The Digital Notebook',
+    layman: 'Gives the AI a digital library containing your private company PDFs, manuals, and customer records.',
+    analogy: 'Imagine taking an open-book exam: the AI opens your exact PDF handbook to read the answer so it never makes things up.',
+    example: 'A university AI assistant that reads the entire 200-page college rulebook and answers tuition questions accurately.',
+    tools: ['Pinecone', 'ChromaDB', 'PDF Parsers', 'Embeddings (Text-to-Numbers)']
   },
   {
     layer: 2,
-    name: 'Foundation Models & Model Serving',
+    name: 'Layer 2: The Brain (Foundation Models)',
     color: '#f59e0b',
-    badge: 'Intelligence Engine',
-    summary: 'The foundational neural weights trained on internet-scale data providing general reasoning capability.',
-    tools: ['OpenAI (GPT-4o)', 'Anthropic (Claude 3.5 Sonnet)', 'Google (Gemini 1.5 Pro)', 'Meta (Llama 3.3 70B)', 'DeepSeek-V3', 'Mistral Large', 'vLLM', 'Ollama', 'Hugging Face'],
-    description: 'Proprietary APIs and open-weights models that accept multimodal inputs (tokens, images, audio) and generate structured reasoning outputs.'
+    badge: 'The Intelligent Brain',
+    layman: 'The giant AI models trained on millions of books and internet pages that understand and speak human language.',
+    analogy: 'Like hiring an extraordinarily well-read genius who speaks 50 languages and understands coding, science, and history.',
+    example: 'OpenAI (GPT-4o), Anthropic (Claude 3.5 Sonnet), Google (Gemini 1.5), and Meta (Llama 3.3).',
+    tools: ['GPT-4o', 'Claude 3.5', 'Gemini 1.5', 'Llama 3', 'DeepSeek']
   },
   {
     layer: 1,
-    name: 'Compute, Acceleration & Cloud Infrastructure',
+    name: 'Layer 1: The Engine & Power (Chips & Cloud Infrastructure)',
     color: '#64748b',
-    badge: 'Hardware & Silicon',
-    summary: 'The physical GPUs, TPUs, and specialized accelerators that execute billions of matrix multiplications.',
-    tools: ['Nvidia H100 / A100 / B200 GPUs', 'Cloud TPUs (v5p)', 'AWS Bedrock / SageMaker', 'Azure OpenAI', 'Google Cloud Vertex AI', 'RunPod / Lambda Labs', 'CUDA'],
-    description: 'The computational bedrock of all AI. Massive parallel GPU clusters capable of petabyte-scale floating-point operations (FLOPS) required for pre-training, fine-tuning, and ultra-low-latency model inference.'
+    badge: 'The Engine Powerhouse',
+    layman: 'The ultra-powerful computer chips (NVIDIA GPUs) and cloud servers that give AI the raw electric muscle to run.',
+    analogy: 'Like the high-performance V8 engine in a racecar or the electricity powering a major city.',
+    example: 'Thousands of NVIDIA H100 GPU chips running inside Microsoft Azure, Amazon AWS, or Google Cloud datacenters.',
+    tools: ['NVIDIA H100 / Blackwell GPUs', 'AWS Cloud', 'Microsoft Azure', 'Google Cloud']
   }
 ];
 
@@ -248,12 +260,50 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const [selectedParadigmProblem, setSelectedParadigmProblem] = useState('churn');
-  const [activeStackLayer, setActiveStackLayer] = useState(AI_STACK_LAYERS[2]); // Default to Layer 4/3
+  const [selectedParadigmProblem, setSelectedParadigmProblem] = useState('food');
+  const [activeStackLayer, setActiveStackLayer] = useState(AI_STACK_LAYERS_BEGINNER[4]); // Layer 2 default
 
   // Quiz State
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
+
+  // Live API Simulator State (for Beginner Python Tab)
+  const [simPromptIndex, setSimPromptIndex] = useState(0);
+  const [isSimulating, setIsSimulating] = useState(false);
+  const [simOutput, setSimOutput] = useState(null);
+
+  const samplePrompts = [
+    {
+      label: '🌱 Explain Gravity simply',
+      prompt: 'Explain what gravity is in 2 simple sentences for a 6-year-old child.',
+      reply: 'Gravity is like invisible super-glue made by the Earth that keeps our feet on the ground so we don\'t float away into the clouds! When you throw a ball in the air, gravity is the gentle hand that pulls it back down to you.',
+      tokens: 46,
+      time: '0.4s'
+    },
+    {
+      label: '💼 Write a polite Leave Request',
+      prompt: 'Write a short 3-sentence email to my manager requesting leave for Friday.',
+      reply: 'Subject: Leave Request - Friday, Nov 28\n\nHi Sarah,\nI would like to request a day off this coming Friday for personal reasons. All my priority tasks for the week are completed, and I will be available on phone in case of any urgent blockers. Thank you for understanding!',
+      tokens: 68,
+      time: '0.6s'
+    },
+    {
+      label: '🍕 Restaurant Recommendation',
+      prompt: 'Suggest 2 healthy dinner alternatives to fast-food pizza.',
+      reply: '1. Cauliflower Crust Veggie Pizza: Delivers the same savory crunch and melted cheese with 70% fewer refined carbs.\n2. Warm Mediterranean Quinoa Bowl: Packed with roasted cherry tomatoes, feta cheese, and olives for delicious Italian flavors with high protein.',
+      tokens: 58,
+      time: '0.5s'
+    }
+  ];
+
+  const handleRunSimulator = () => {
+    setIsSimulating(true);
+    setSimOutput(null);
+    setTimeout(() => {
+      setIsSimulating(false);
+      setSimOutput(samplePrompts[simPromptIndex]);
+    }, 700);
+  };
 
   const calculateScore = () => {
     let score = 0;
@@ -297,26 +347,26 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
               Cognitive AI Development Track
             </span>
             <span style={{ background: '#10b981', color: '#022c22', fontSize: '0.78rem', padding: '3px 10px', borderRadius: 20, fontWeight: 800 }}>
-              Day 1
+              Day 1 — Beginner Friendly
             </span>
           </div>
 
-          <h1 style={{ fontSize: '2.4rem', fontWeight: 900, margin: '0 0 1rem 0', lineHeight: 1.25, letterSpacing: '-0.5px' }}>
+          <h1 style={{ fontSize: '2.3rem', fontWeight: 900, margin: '0 0 1rem 0', lineHeight: 1.25, letterSpacing: '-0.5px' }}>
             Certification in Generative AI &amp; Agentic AI
           </h1>
-          <p style={{ color: '#cbd5e1', fontSize: '1.05rem', margin: 0, maxWidth: 850, lineHeight: 1.6 }}>
-            <strong>Day 1:</strong> Course Orientation • Traditional ML vs. Deep Learning vs. Generative AI • The 6-Layer Real-World Enterprise AI Stack • Python API Readiness.
+          <p style={{ color: '#e2e8f0', fontSize: '1.05rem', margin: 0, maxWidth: 850, lineHeight: 1.6 }}>
+            <strong>Welcome to Day 1!</strong> No prior AI experience needed. Today you will understand how AI works, why Generative AI is transforming our world, and how autonomous AI agents get real work done.
           </p>
 
           <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.88rem', color: '#93c5fd' }}>
-              <Clock size={16} /> <strong>Daily Commitment:</strong> 60–90 Mins
+              <Clock size={16} /> <strong>Daily Commitment:</strong> 45–60 Mins
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.88rem', color: '#86efac' }}>
               <Trophy size={16} /> <strong>Total Duration:</strong> 60 Days (3 Months)
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.88rem', color: '#fbcfe8' }}>
-              <Award size={16} /> <strong>Credential:</strong> Certified Generative &amp; Agentic AI Engineer
+              <Sparkles size={16} /> <strong>Zero Math Prerequisites:</strong> We start from scratch
             </div>
           </div>
         </div>
@@ -379,18 +429,62 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
       {activeTab === 'orientation' && (
         <motion.div variants={containerVariants} initial="hidden" animate="show" exit="exit">
 
+          {/* Friendly Beginner Reassurance Card */}
+          <div style={{ background: '#f0fdf4', border: '2px solid #bbf7d0', borderRadius: 16, padding: '1.5rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ background: '#16a34a', color: 'white', padding: '12px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Heart size={24} />
+            </div>
+            <div>
+              <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', color: '#166534', fontWeight: 800 }}>
+                🌱 Feeling brand new to AI? Take a breath — you are in the perfect place!
+              </h3>
+              <p style={{ margin: 0, color: '#15803d', fontSize: '0.92rem', lineHeight: 1.5 }}>
+                You don't need complex mathematics or a computer science degree. If you know how to type on a smartphone or browser, you have everything you need. We explain every concept with real-world analogies, interactive tools, and plain human English.
+              </p>
+            </div>
+          </div>
+
           <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '2rem', marginBottom: '2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <Calendar size={22} style={{ color: '#ec4899' }} /> Welcome to the 3-Month (60 Days) Master Curriculum
+              <Compass size={22} style={{ color: '#ec4899' }} /> The 3 Eras of Computing: Where We Are Today
             </h2>
             <p style={{ color: '#475569', fontSize: '0.98rem', lineHeight: 1.7, margin: '0 0 1.5rem 0' }}>
-              Welcome to the premier professional certification in <strong>Generative AI &amp; Agentic AI</strong> under the Cognitive AI Development track.
-              Over the next 60 days, you will evolve from understanding LLM tokens and vector embeddings into architecting
-              autonomous, self-healing, multi-agent enterprise systems capable of executing complex workflows in production.
+              To understand why everyone is excited about Generative &amp; Agentic AI, look at how computers have evolved over the last 30 years:
             </p>
 
+            {/* 3 Eras Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 14, padding: '1.25rem' }}>
+                <span style={{ background: '#64748b', color: 'white', fontSize: '0.75rem', fontWeight: 800, padding: '3px 8px', borderRadius: 12 }}>ERA 1 (1990s–2010s)</span>
+                <h4 style={{ margin: '8px 0 6px 0', color: '#0f172a', fontSize: '1.05rem', fontWeight: 800 }}>Strict Programming</h4>
+                <p style={{ margin: 0, color: '#64748b', fontSize: '0.86rem', lineHeight: 1.5 }}>
+                  Humans had to write strict, rigid rules for everything. If a human forgot a single semicolon, the entire program stopped working.
+                </p>
+              </div>
+
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 14, padding: '1.25rem' }}>
+                <span style={{ background: '#2563eb', color: 'white', fontSize: '0.75rem', fontWeight: 800, padding: '3px 8px', borderRadius: 12 }}>ERA 2 (2012–2022)</span>
+                <h4 style={{ margin: '8px 0 6px 0', color: '#1e3a8a', fontSize: '1.05rem', fontWeight: 800 }}>Pattern Recognition (ML &amp; DL)</h4>
+                <p style={{ margin: 0, color: '#1e40af', fontSize: '0.86rem', lineHeight: 1.5 }}>
+                  Computers learned to recognize patterns from millions of past examples (e.g., face unlock on your phone, recommending movies on Netflix).
+                </p>
+              </div>
+
+              <div style={{ background: '#fdf2f8', border: '2px solid #fbcfe8', borderRadius: 14, padding: '1.25rem', boxShadow: '0 4px 12px rgba(236,72,153,0.1)' }}>
+                <span style={{ background: '#ec4899', color: 'white', fontSize: '0.75rem', fontWeight: 800, padding: '3px 8px', borderRadius: 12 }}>ERA 3 (TODAY: 2023–2026+)</span>
+                <h4 style={{ margin: '8px 0 6px 0', color: '#831843', fontSize: '1.05rem', fontWeight: 800 }}>Generative &amp; Agentic AI</h4>
+                <p style={{ margin: 0, color: '#9d174d', fontSize: '0.86rem', lineHeight: 1.5 }}>
+                  Computers can now create original human-quality writing, code, and graphics — and <strong>act like digital coworkers</strong> who can use web tools and finish real tasks!
+                </p>
+              </div>
+            </div>
+
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', margin: '2rem 0 1rem 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Calendar size={20} color="#6366f1" /> Your Simple 3-Month Learning Journey (60 Days)
+            </h3>
+
             {/* 3-Month Journey Timeline Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
 
               {/* Month 1 Card */}
               <div style={{ background: '#fdf2f8', border: '2px solid #fbcfe8', borderRadius: 14, padding: '1.5rem', position: 'relative' }}>
@@ -398,20 +492,17 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
                   <span style={{ background: '#ec4899', color: 'white', fontWeight: 800, fontSize: '0.75rem', padding: '3px 10px', borderRadius: 20 }}>
                     MONTH 1 (DAYS 1–20)
                   </span>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#be185d' }}>Current Milestone</span>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#be185d' }}>⭐ Start Here</span>
                 </div>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.15rem', fontWeight: 800, color: '#831843' }}>
-                  LLM Foundations, Prompt Engineering &amp; APIs
+                  Learning to Talk to AI &amp; APIs
                 </h3>
                 <p style={{ fontSize: '0.86rem', color: '#9d174d', lineHeight: 1.6, margin: '0 0 1rem 0' }}>
-                  Master core deep learning architectures, Transformer attention mechanisms, prompt engineering frameworks, OpenAI/Anthropic/Gemini Python APIs, token economics, and structured outputs.
+                  Discover how AI brains think, write powerful instructions (Prompt Engineering) that get perfect answers every time, and connect simple Python scripts to AI APIs.
                 </p>
-                <ul style={{ margin: 0, paddingLeft: 18, fontSize: '0.82rem', color: '#9d174d', lineHeight: 1.6 }}>
-                  <li>Week 1: Gen AI &amp; Python API Readiness</li>
-                  <li>Week 2: Advanced Prompt Engineering &amp; Reasoning</li>
-                  <li>Week 3: Multimodal Generation &amp; Structured Outputs</li>
-                  <li>Week 4: Real-World API Automation &amp; Function Calling</li>
-                </ul>
+                <div style={{ background: 'white', borderRadius: 10, padding: '10px 12px', fontSize: '0.82rem', color: '#831843', border: '1px solid #fbcfe8' }}>
+                  🎯 <strong>You will build:</strong> Your first automated AI chatbot that answers questions using Python code.
+                </div>
               </div>
 
               {/* Month 2 Card */}
@@ -420,20 +511,17 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
                   <span style={{ background: '#16a34a', color: 'white', fontWeight: 800, fontSize: '0.75rem', padding: '3px 10px', borderRadius: 20 }}>
                     MONTH 2 (DAYS 21–40)
                   </span>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#15803d' }}>Next Milestone</span>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#15803d' }}>Step 2</span>
                 </div>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.15rem', fontWeight: 800, color: '#14532d' }}>
-                  Visual AI Agents, RAG, n8n &amp; Flowise
+                  Giving AI Your Private Files &amp; Memory
                 </h3>
                 <p style={{ fontSize: '0.86rem', color: '#166534', lineHeight: 1.6, margin: '0 0 1rem 0' }}>
-                  Transition from static text generation into active agents. Build visual autonomous workflows, enterprise RAG pipelines, vector database embeddings, and no-code/low-code agent platforms.
+                  Learn how to give the AI your own private PDF documents, company handbooks, and notes so it answers with 100% accuracy (RAG), and create visual workflows with n8n &amp; Flowise.
                 </p>
-                <ul style={{ margin: 0, paddingLeft: 18, fontSize: '0.82rem', color: '#166534', lineHeight: 1.6 }}>
-                  <li>Vector Databases (Pinecone, ChromaDB, Qdrant)</li>
-                  <li>n8n Autonomous Enterprise Workflows &amp; Webhooks</li>
-                  <li>Flowise Visual Agent Canvas &amp; Document QA</li>
-                  <li>Production RAG &amp; Tool Calling Implementations</li>
-                </ul>
+                <div style={{ background: 'white', borderRadius: 10, padding: '10px 12px', fontSize: '0.82rem', color: '#14532d', border: '1px solid #bbf7d0' }}>
+                  🎯 <strong>You will build:</strong> A "Chat with your PDF" assistant that reads 100-page documents in seconds.
+                </div>
               </div>
 
               {/* Month 3 Card */}
@@ -442,20 +530,17 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
                   <span style={{ background: '#2563eb', color: 'white', fontWeight: 800, fontSize: '0.75rem', padding: '3px 10px', borderRadius: 20 }}>
                     MONTH 3 (DAYS 41–60)
                   </span>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#1d4ed8' }}>Graduation Tier</span>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#1d4ed8' }}>Graduation</span>
                 </div>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.15rem', fontWeight: 800, color: '#1e3a8a' }}>
-                  LangChain, LangGraph &amp; Multi-Agent Systems
+                  Building Teams of Autonomous AI Coworkers
                 </h3>
                 <p style={{ fontSize: '0.86rem', color: '#1e40af', lineHeight: 1.6, margin: '0 0 1rem 0' }}>
-                  The peak of agent engineering. Build stateful cyclical agent graphs, supervisor-worker multi-agent teams with CrewAI/Agno, human-in-the-loop controls, and deploy enterprise capstones.
+                  Build teams of AI agents that work together (e.g., one agent researches, one writes, and one fact-checks) using frameworks like CrewAI and LangGraph.
                 </p>
-                <ul style={{ margin: 0, paddingLeft: 18, fontSize: '0.82rem', color: '#1e40af', lineHeight: 1.6 }}>
-                  <li>LangChain Expressions (LCEL) &amp; Memory Stores</li>
-                  <li>LangGraph Cycles, State Checkpointing &amp; Time-Travel</li>
-                  <li>CrewAI Multi-Agent Collaborative Systems</li>
-                  <li>Enterprise Capstone &amp; Production Deployment</li>
-                </ul>
+                <div style={{ background: 'white', borderRadius: 10, padding: '10px 12px', fontSize: '0.82rem', color: '#1e3a8a', border: '1px solid #bfdbfe' }}>
+                  🎯 <strong>You will build:</strong> An autonomous team of AI agents that conducts market research and drafts reports on its own.
+                </div>
               </div>
 
             </div>
@@ -463,17 +548,17 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
 
           {/* Banner Diagram Embed */}
           <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '1.5rem', marginBottom: '2rem', textAlign: 'center' }}>
-            <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>
-              🖼️ Architecture Blueprint: From Foundation Models to Autonomous Production Agents
+            <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>
+              🖼️ How Everything Fits Together: The Big Picture
             </h3>
+            <p style={{ color: '#64748b', fontSize: '0.86rem', margin: '0 0 1rem 0' }}>
+              From simple language models to smart assistants that can use tools and take action.
+            </p>
             <img
               src={bannerImg}
               alt="Generative & Agentic AI Blueprint"
               style={{ maxWidth: '100%', height: 'auto', borderRadius: 12, border: '1px solid #cbd5e1', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}
             />
-            <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: 10 }}>
-              Figure 1.1: Evolution from foundation model weights into grounded, tool-equipped autonomous agent systems.
-            </p>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -481,7 +566,7 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
               onClick={() => handleTabChange('comparison')}
               style={{ background: '#0f172a', color: 'white', padding: '0.75rem 1.5rem', borderRadius: 10, border: 'none', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
             >
-              Continue to ML vs DL vs Gen AI <ArrowRight size={16} />
+              Next: Traditional ML vs DL vs Gen AI <ArrowRight size={16} />
             </button>
           </div>
 
@@ -496,92 +581,135 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
 
           <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '2rem', marginBottom: '2rem' }}>
             <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <Layers size={22} style={{ color: '#2563eb' }} /> Understanding the Paradigm Shift
+              <Layers size={22} style={{ color: '#2563eb' }} /> The 4 Types of AI Explained in Plain English
             </h2>
             <p style={{ color: '#475569', fontSize: '0.96rem', lineHeight: 1.6, margin: '0 0 1.5rem 0' }}>
-              To engineer world-class AI systems, you must know when to reach for Traditional Machine Learning, when to train a Deep Neural Network, when to invoke a Generative AI model, and when an Agentic loop is required.
+              People often mix up Machine Learning, Deep Learning, and Generative AI. Here is the easiest way to understand the difference forever using the <strong>Kitchen &amp; Chef Analogy</strong>:
             </p>
 
-            {/* Comparison Matrix Table */}
+            {/* 4 Cards Analogy */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
+
+              {/* 1. Traditional ML */}
+              <div style={{ background: '#eff6ff', border: '2px solid #bfdbfe', borderRadius: 14, padding: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <span style={{ background: '#2563eb', color: 'white', padding: '4px 8px', borderRadius: 8, fontSize: '0.78rem', fontWeight: 800 }}>TYPE 1</span>
+                  <span style={{ fontWeight: 800, color: '#1e3a8a', fontSize: '0.95rem' }}>Traditional ML</span>
+                </div>
+                <div style={{ fontWeight: 700, color: '#1d4ed8', fontSize: '0.88rem', marginBottom: 6 }}>
+                  "The Calculator / Predictor" 📊
+                </div>
+                <p style={{ margin: 0, fontSize: '0.84rem', color: '#1e40af', lineHeight: 1.5 }}>
+                  <strong>What it does:</strong> Looks at past spreadsheets and predicts a single number or category.
+                  <br /><br />
+                  <strong>Real Life:</strong> Predicting house prices, spam filter ("Spam or Not Spam?"), or your Uber fare.
+                </p>
+              </div>
+
+              {/* 2. Deep Learning */}
+              <div style={{ background: '#f5f3ff', border: '2px solid #ddd6fe', borderRadius: 14, padding: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <span style={{ background: '#7c3aed', color: 'white', padding: '4px 8px', borderRadius: 8, fontSize: '0.78rem', fontWeight: 800 }}>TYPE 2</span>
+                  <span style={{ fontWeight: 800, color: '#5b21b6', fontSize: '0.95rem' }}>Deep Learning</span>
+                </div>
+                <div style={{ fontWeight: 700, color: '#6d28d9', fontSize: '0.88rem', marginBottom: 6 }}>
+                  "The Human Eyes &amp; Ears" 👁️
+                </div>
+                <p style={{ margin: 0, fontSize: '0.84rem', color: '#5b21b6', lineHeight: 1.5 }}>
+                  <strong>What it does:</strong> Uses artificial brain cells (neural networks) to understand messy pictures, sounds, and video.
+                  <br /><br />
+                  <strong>Real Life:</strong> Face Unlock on iPhone, self-driving cars spotting pedestrians, Siri hearing your voice.
+                </p>
+              </div>
+
+              {/* 3. Generative AI */}
+              <div style={{ background: '#fdf2f8', border: '2px solid #fbcfe8', borderRadius: 14, padding: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <span style={{ background: '#ec4899', color: 'white', padding: '4px 8px', borderRadius: 8, fontSize: '0.78rem', fontWeight: 800 }}>TYPE 3</span>
+                  <span style={{ fontWeight: 800, color: '#831843', fontSize: '0.95rem' }}>Generative AI</span>
+                </div>
+                <div style={{ fontWeight: 700, color: '#be185d', fontSize: '0.88rem', marginBottom: 6 }}>
+                  "The Creative Master Writer" 🎨
+                </div>
+                <p style={{ margin: 0, fontSize: '0.84rem', color: '#9d174d', lineHeight: 1.5 }}>
+                  <strong>What it does:</strong> Creates brand-new, original content (essays, computer code, images, poems) from your prompt.
+                  <br /><br />
+                  <strong>Real Life:</strong> ChatGPT writing an email, Midjourney creating a logo, GitHub Copilot coding a website.
+                </p>
+              </div>
+
+              {/* 4. Agentic AI */}
+              <div style={{ background: '#faf5ff', border: '2px solid #c084fc', borderRadius: 14, padding: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <span style={{ background: '#9333ea', color: 'white', padding: '4px 8px', borderRadius: 8, fontSize: '0.78rem', fontWeight: 800 }}>TYPE 4</span>
+                  <span style={{ fontWeight: 800, color: '#581c87', fontSize: '0.95rem' }}>Agentic AI</span>
+                </div>
+                <div style={{ fontWeight: 700, color: '#7e22ce', fontSize: '0.88rem', marginBottom: 6 }}>
+                  "The Autonomous Coworker" 🤖
+                </div>
+                <p style={{ margin: 0, fontSize: '0.84rem', color: '#6b21a8', lineHeight: 1.5 }}>
+                  <strong>What it does:</strong> Doesn't just give you words — it takes real actions, plans steps, clicks tools, and finishes tasks.
+                  <br /><br />
+                  <strong>Real Life:</strong> Booking flights, querying live databases, writing and sending emails to clients on its own.
+                </p>
+              </div>
+
+            </div>
+
+            {/* Beginner Comparison Table */}
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: '1.5rem 0 1rem 0' }}>
+              📊 Quick Comparison at a Glance
+            </h3>
             <div style={{ overflowX: 'auto', marginBottom: '2rem' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem', textAlign: 'left' }}>
                 <thead>
                   <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-                    <th style={{ padding: '12px 16px', fontWeight: 800, color: '#0f172a' }}>Dimension</th>
-                    <th style={{ padding: '12px 16px', fontWeight: 800, color: '#2563eb' }}>Traditional ML</th>
-                    <th style={{ padding: '12px 16px', fontWeight: 800, color: '#7c3aed' }}>Deep Learning (DL)</th>
-                    <th style={{ padding: '12px 16px', fontWeight: 800, color: '#ec4899' }}>Generative AI (Gen AI)</th>
+                    <th style={{ padding: '12px 14px', fontWeight: 800, color: '#0f172a' }}>Aspect</th>
+                    <th style={{ padding: '12px 14px', fontWeight: 800, color: '#2563eb' }}>Traditional ML</th>
+                    <th style={{ padding: '12px 14px', fontWeight: 800, color: '#7c3aed' }}>Deep Learning</th>
+                    <th style={{ padding: '12px 14px', fontWeight: 800, color: '#ec4899' }}>Generative &amp; Agentic AI</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '12px 16px', fontWeight: 700, color: '#334155' }}>Core Objective</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>Predict values / Classify categories</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>Learn abstract feature patterns</td>
-                    <td style={{ padding: '12px 16px', color: '#475569', fontWeight: 600 }}>Create brand new content (Text, Code, Media)</td>
+                    <td style={{ padding: '12px 14px', fontWeight: 700, color: '#334155' }}>Primary Superpower</td>
+                    <td style={{ padding: '12px 14px', color: '#475569' }}>Predicting a number / category</td>
+                    <td style={{ padding: '12px 14px', color: '#475569' }}>Seeing pictures &amp; hearing sounds</td>
+                    <td style={{ padding: '12px 14px', color: '#be185d', fontWeight: 700 }}>Creating original content &amp; taking action</td>
                   </tr>
                   <tr style={{ borderBottom: '1px solid #f1f5f9', background: '#fafafa' }}>
-                    <td style={{ padding: '12px 16px', fontWeight: 700, color: '#334155' }}>Input Data Type</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>Structured tabular tables, numbers</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>Unstructured images, audio, sensor streams</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>Natural language prompts &amp; multimodal inputs</td>
+                    <td style={{ padding: '12px 14px', fontWeight: 700, color: '#334155' }}>What you give it (Input)</td>
+                    <td style={{ padding: '12px 14px', color: '#475569' }}>Clean spreadsheets with numbers</td>
+                    <td style={{ padding: '12px 14px', color: '#475569' }}>Photos, videos, audio recordings</td>
+                    <td style={{ padding: '12px 14px', color: '#475569' }}>Plain human language prompts</td>
                   </tr>
                   <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '12px 16px', fontWeight: 700, color: '#334155' }}>Feature Engineering</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}><strong>Manual:</strong> Data scientists engineer columns</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}><strong>Automatic:</strong> Extracted via deep layers</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}><strong>Self-Supervised:</strong> Pre-trained on web-scale corpora</td>
-                  </tr>
-                  <tr style={{ borderBottom: '1px solid #f1f5f9', background: '#fafafa' }}>
-                    <td style={{ padding: '12px 16px', fontWeight: 700, color: '#334155' }}>Typical Output</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>Number, boolean, probability score</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>Bounding box, segmentation, speech text</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>Full articles, Python functions, SQL queries, UI code</td>
-                  </tr>
-                  <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '12px 16px', fontWeight: 700, color: '#334155' }}>Representative Models</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>XGBoost, Random Forest, Logistic Reg</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>ResNet, EfficientNet, LSTM, BERT</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>GPT-4o, Claude 3.5 Sonnet, Llama 3.3, Gemini</td>
+                    <td style={{ padding: '12px 14px', fontWeight: 700, color: '#334155' }}>What it gives you (Output)</td>
+                    <td style={{ padding: '12px 14px', color: '#475569' }}>A single score (e.g. 84% probability)</td>
+                    <td style={{ padding: '12px 14px', color: '#475569' }}>Identifies object ("Cat", "Stop Sign")</td>
+                    <td style={{ padding: '12px 14px', color: '#475569' }}>Full articles, software code, actions taken</td>
                   </tr>
                   <tr style={{ background: '#fafafa' }}>
-                    <td style={{ padding: '12px 16px', fontWeight: 700, color: '#334155' }}>Compute Footprint</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>CPU / Single GPU (Seconds to minutes)</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>Multi-GPU clusters (Hours to days)</td>
-                    <td style={{ padding: '12px 16px', color: '#475569' }}>Massive Datacenter Superclusters (Thousands of GPUs)</td>
+                    <td style={{ padding: '12px 14px', fontWeight: 700, color: '#334155' }}>Famous Examples</td>
+                    <td style={{ padding: '12px 14px', color: '#475569' }}>Credit card fraud alerts, spam filter</td>
+                    <td style={{ padding: '12px 14px', color: '#475569' }}>Face ID, Google Translate voice, Tesla vision</td>
+                    <td style={{ padding: '12px 14px', color: '#475569' }}>ChatGPT, Claude, Cursor, Devin, AutoGPT</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            {/* Visual Deep Dive: 3 Pillars */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
-                <h4 style={{ margin: '0 0 0.5rem 0', color: '#2563eb', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Cpu size={18} /> 1. Traditional ML
-                </h4>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: '#475569', lineHeight: 1.6 }}>
-                  Operates by finding mathematical relationships between handcrafted features ($X$) and targets ($Y$). Fast, explainable, and ideal for tabular fraud scores and numerical forecasts.
-                </p>
+            {/* Quick Rule of Thumb Box */}
+            <div style={{ background: '#fffbeb', border: '2px solid #fde68a', borderRadius: 14, padding: '1.25rem' }}>
+              <div style={{ fontWeight: 800, color: '#92400e', fontSize: '0.95rem', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Lightbulb size={20} color="#d97706" /> Golden Rule for Beginners:
               </div>
-
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
-                <h4 style={{ margin: '0 0 0.5rem 0', color: '#7c3aed', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Brain size={18} /> 2. Deep Learning
-                </h4>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: '#475569', lineHeight: 1.6 }}>
-                  Stacks multiple layers of artificial neurons to automatically compress and decode high-dimensional raw inputs (pixels, waveforms, characters) without manual feature engineering.
-                </p>
-              </div>
-
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
-                <h4 style={{ margin: '0 0 0.5rem 0', color: '#ec4899', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Sparkles size={18} /> 3. Generative &amp; Agentic AI
-                </h4>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: '#475569', lineHeight: 1.6 }}>
-                  Pre-trained on trillions of tokens using the Transformer architecture. When paired with tool-calling and memory loops, it behaves as an autonomous agent reasoning across tools and APIs.
-                </p>
-              </div>
+              <p style={{ margin: 0, fontSize: '0.88rem', color: '#78350f', lineHeight: 1.6 }}>
+                • Need to forecast next month's sales numbers? ➡️ <strong>Use Traditional ML</strong><br />
+                • Need to verify customer photo IDs or read road signs? ➡️ <strong>Use Deep Learning</strong><br />
+                • Need to draft emails, summarize long PDFs, or write computer code? ➡️ <strong>Use Generative AI</strong><br />
+                • Need an assistant to research flights, book the hotel, and email the tickets? ➡️ <strong>Use Agentic AI!</strong>
+              </p>
             </div>
 
           </div>
@@ -591,13 +719,13 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
               onClick={() => handleTabChange('orientation')}
               style={{ background: '#f1f5f9', color: '#334155', padding: '0.75rem 1.25rem', borderRadius: 10, border: 'none', fontWeight: 700, cursor: 'pointer' }}
             >
-              ← Back to Roadmap
+              ← Back to Orientation
             </button>
             <button
               onClick={() => handleTabChange('aistack')}
               style={{ background: '#0f172a', color: 'white', padding: '0.75rem 1.5rem', borderRadius: 10, border: 'none', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
             >
-              Explore the Real-World AI Stack <ArrowRight size={16} />
+              Explore the 6 AI Building Blocks <ArrowRight size={16} />
             </button>
           </div>
 
@@ -614,14 +742,14 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 10, marginBottom: '1rem' }}>
               <div>
                 <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <Server size={22} style={{ color: '#10b981' }} /> The 6-Layer Real-World Enterprise AI Stack
+                  <Server size={22} style={{ color: '#10b981' }} /> The 6 Building Blocks of Every AI Application
                 </h2>
-                <p style={{ color: '#475569', fontSize: '0.94rem', margin: 0 }}>
-                  Click each tier in the architectural pyramid to inspect its role, modern technologies, and engineering best practices.
+                <p style={{ color: '#475569', fontSize: '0.94rem', margin: 0, lineHeight: 1.5 }}>
+                  Think of building an AI application like building a modern car. Click on any layer below to see how each part works together:
                 </p>
               </div>
               <span style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', color: '#047857', padding: '4px 12px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 700 }}>
-                Enterprise Blueprint 2026
+                Simple Building Blocks
               </span>
             </div>
 
@@ -630,7 +758,7 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
 
               {/* Stack Layers Clickable Column */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {AI_STACK_LAYERS.map(item => {
+                {AI_STACK_LAYERS_BEGINNER.map(item => {
                   const isSelected = activeStackLayer.layer === item.layer;
                   return (
                     <div
@@ -696,42 +824,54 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
                   </span>
                 </div>
 
-                <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.3rem', fontWeight: 900, color: '#0f172a' }}>
+                <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.25rem', fontWeight: 900, color: '#0f172a' }}>
                   {activeStackLayer.name}
                 </h3>
-                <p style={{ color: '#334155', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 1.25rem 0' }}>
-                  {activeStackLayer.description}
-                </p>
 
-                <div style={{ background: 'white', borderRadius: 10, padding: '1rem', border: '1px solid #e2e8f0', marginBottom: '1.25rem' }}>
-                  <div style={{ fontWeight: 800, fontSize: '0.82rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>
-                    🛠️ Standard Technologies &amp; Industry Leaders:
+                {/* Plain English Explanation */}
+                <div style={{ background: 'white', borderRadius: 10, padding: '1rem', border: '1px solid #e2e8f0', marginBottom: '1rem' }}>
+                  <strong style={{ color: '#0f172a', fontSize: '0.86rem', display: 'block', marginBottom: 4 }}>
+                    💡 What It Means In Simple English:
+                  </strong>
+                  <p style={{ margin: 0, color: '#334155', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                    {activeStackLayer.layman}
+                  </p>
+                </div>
+
+                {/* Relatable Analogy */}
+                <div style={{ background: '#f0fdf4', borderRadius: 10, padding: '1rem', border: '1px solid #bbf7d0', marginBottom: '1rem' }}>
+                  <strong style={{ color: '#166534', fontSize: '0.86rem', display: 'block', marginBottom: 4 }}>
+                    🚗 Real-World Car Analogy:
+                  </strong>
+                  <p style={{ margin: 0, color: '#15803d', fontSize: '0.88rem', lineHeight: 1.5 }}>
+                    {activeStackLayer.analogy}
+                  </p>
+                </div>
+
+                {/* Everyday Example */}
+                <div style={{ background: '#eff6ff', borderRadius: 10, padding: '1rem', border: '1px solid #bfdbfe', marginBottom: '1rem' }}>
+                  <strong style={{ color: '#1e40af', fontSize: '0.86rem', display: 'block', marginBottom: 4 }}>
+                    ✨ Everyday Example:
+                  </strong>
+                  <p style={{ margin: 0, color: '#1d4ed8', fontSize: '0.88rem', lineHeight: 1.5 }}>
+                    {activeStackLayer.example}
+                  </p>
+                </div>
+
+                {/* Famous Tools */}
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: '0.8rem', color: '#64748b', textTransform: 'uppercase', marginBottom: 6 }}>
+                    Popular Tools In This Layer:
                   </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {activeStackLayer.tools.map((tool, idx) => (
-                      <span key={idx} style={{
-                        background: '#f1f5f9',
-                        color: '#1e293b',
-                        padding: '4px 10px',
-                        borderRadius: 8,
-                        fontSize: '0.82rem',
-                        fontWeight: 700,
-                        border: '1px solid #cbd5e1'
-                      }}>
-                        {tool}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {activeStackLayer.tools.map((t, i) => (
+                      <span key={i} style={{ background: '#e2e8f0', color: '#1e293b', fontSize: '0.78rem', fontWeight: 700, padding: '3px 8px', borderRadius: 6 }}>
+                        {t}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div style={{ background: `${activeStackLayer.color}15`, borderRadius: 10, padding: '1rem', border: `1px solid ${activeStackLayer.color}30` }}>
-                  <strong style={{ color: '#0f172a', fontSize: '0.86rem', display: 'block', marginBottom: 4 }}>
-                    💡 Course Alignment Note:
-                  </strong>
-                  <span style={{ fontSize: '0.84rem', color: '#334155', lineHeight: 1.5 }}>
-                    In this certification, you will deeply engineer Layers 2, 3, 4, 5, and 6 — building hands-on projects with Claude 3.5 Sonnet, GPT-4o, Pinecone, LangChain, Flowise, and LangGraph.
-                  </span>
-                </div>
               </div>
 
             </div>
@@ -748,7 +888,7 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
               onClick={() => handleTabChange('simulator')}
               style={{ background: '#0f172a', color: 'white', padding: '0.75rem 1.5rem', borderRadius: 10, border: 'none', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
             >
-              Try the Paradigm Simulator <ArrowRight size={16} />
+              Try the Everyday Paradigm Simulator <ArrowRight size={16} />
             </button>
           </div>
 
@@ -766,7 +906,7 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
               <Cpu size={22} style={{ color: '#ec4899' }} /> Interactive AI Paradigm Simulator
             </h2>
             <p style={{ color: '#475569', fontSize: '0.94rem', margin: '0 0 1.5rem 0', lineHeight: 1.6 }}>
-              Select a real-world enterprise problem below to observe how each tier — from Traditional ML to Autonomous Agentic AI — solves the challenge differently.
+              Pick an everyday real-world situation below to see how each type of AI handles it differently:
             </p>
 
             {/* Problem Selection Pills */}
@@ -786,10 +926,13 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
                       fontWeight: 800,
                       fontSize: '0.88rem',
                       cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
                       boxShadow: isSelected ? '0 3px 10px rgba(236,72,153,0.15)' : 'none'
                     }}
                   >
-                    🎯 {PARADIGM_EXAMPLES[key].title}
+                    {PARADIGM_EXAMPLES[key].icon} {PARADIGM_EXAMPLES[key].title}
                   </button>
                 );
               })}
@@ -799,64 +942,75 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
             {(() => {
               const current = PARADIGM_EXAMPLES[selectedParadigmProblem];
               return (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
-
-                  {/* ML Approach */}
-                  <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.25rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <span style={{ background: '#2563eb', color: 'white', width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', fontWeight: 800 }}>1</span>
-                      <span style={{ fontWeight: 800, color: '#2563eb', fontSize: '0.9rem' }}>Traditional ML</span>
-                    </div>
-                    <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: 8, fontWeight: 600 }}>{current.ml.type}</div>
-                    <div style={{ fontSize: '0.82rem', color: '#1e293b', marginBottom: 8 }}><strong>Input:</strong> {current.ml.input}</div>
-                    <div style={{ fontSize: '0.82rem', color: '#1e293b', marginBottom: 8 }}><strong>Method:</strong> {current.ml.process}</div>
-                    <div style={{ background: '#eff6ff', padding: '8px 10px', borderRadius: 8, fontSize: '0.82rem', color: '#1e40af', fontWeight: 700 }}>
-                      📌 Result: {current.ml.output}
-                    </div>
+                <div>
+                  <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: 12, border: '1px solid #e2e8f0', marginBottom: '1.5rem' }}>
+                    <strong style={{ color: '#0f172a', fontSize: '0.92rem' }}>🎯 The Challenge: </strong>
+                    <span style={{ color: '#475569', fontSize: '0.92rem' }}>{current.problem}</span>
                   </div>
 
-                  {/* Deep Learning Approach */}
-                  <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.25rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <span style={{ background: '#7c3aed', color: 'white', width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', fontWeight: 800 }}>2</span>
-                      <span style={{ fontWeight: 800, color: '#7c3aed', fontSize: '0.9rem' }}>Deep Learning</span>
-                    </div>
-                    <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: 8, fontWeight: 600 }}>{current.dl.type}</div>
-                    <div style={{ fontSize: '0.82rem', color: '#1e293b', marginBottom: 8 }}><strong>Input:</strong> {current.dl.input}</div>
-                    <div style={{ fontSize: '0.82rem', color: '#1e293b', marginBottom: 8 }}><strong>Method:</strong> {current.dl.process}</div>
-                    <div style={{ background: '#f5f3ff', padding: '8px 10px', borderRadius: 8, fontSize: '0.82rem', color: '#5b21b6', fontWeight: 700 }}>
-                      📌 Result: {current.dl.output}
-                    </div>
-                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
 
-                  {/* Generative AI Approach */}
-                  <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.25rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <span style={{ background: '#ec4899', color: 'white', width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', fontWeight: 800 }}>3</span>
-                      <span style={{ fontWeight: 800, color: '#ec4899', fontSize: '0.9rem' }}>Generative AI</span>
+                    {/* ML Approach */}
+                    <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 12, padding: '1.25rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                        <span style={{ background: '#2563eb', color: 'white', width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', fontWeight: 800 }}>1</span>
+                        <span style={{ fontWeight: 800, color: '#1e3a8a', fontSize: '0.9rem' }}>Traditional ML</span>
+                      </div>
+                      <div style={{ fontSize: '0.8rem', color: '#1d4ed8', marginBottom: 6, fontWeight: 700 }}>{current.ml.title}</div>
+                      <p style={{ fontSize: '0.82rem', color: '#1e40af', margin: '0 0 10px 0', lineHeight: 1.5 }}>
+                        {current.ml.action}
+                      </p>
+                      <div style={{ background: 'white', padding: '8px 10px', borderRadius: 8, fontSize: '0.8rem', color: '#1e3a8a', fontWeight: 700, border: '1px solid #bfdbfe' }}>
+                        📌 Output: {current.ml.output}
+                      </div>
                     </div>
-                    <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: 8, fontWeight: 600 }}>{current.genai.type}</div>
-                    <div style={{ fontSize: '0.82rem', color: '#1e293b', marginBottom: 8 }}><strong>Input:</strong> {current.genai.input}</div>
-                    <div style={{ fontSize: '0.82rem', color: '#1e293b', marginBottom: 8 }}><strong>Method:</strong> {current.genai.process}</div>
-                    <div style={{ background: '#fdf2f8', padding: '8px 10px', borderRadius: 8, fontSize: '0.82rem', color: '#9d174d', fontWeight: 700 }}>
-                      📌 Result: {current.genai.output}
-                    </div>
-                  </div>
 
-                  {/* Agentic AI Approach */}
-                  <div style={{ background: '#faf5ff', border: '2px solid #a855f7', borderRadius: 12, padding: '1.25rem', boxShadow: '0 4px 12px rgba(168,85,247,0.12)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <span style={{ background: '#9333ea', color: 'white', width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', fontWeight: 800 }}>4</span>
-                      <span style={{ fontWeight: 800, color: '#9333ea', fontSize: '0.9rem' }}>Agentic AI (Autonomous)</span>
+                    {/* Deep Learning Approach */}
+                    <div style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', borderRadius: 12, padding: '1.25rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                        <span style={{ background: '#7c3aed', color: 'white', width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', fontWeight: 800 }}>2</span>
+                        <span style={{ fontWeight: 800, color: '#5b21b6', fontSize: '0.9rem' }}>Deep Learning</span>
+                      </div>
+                      <div style={{ fontSize: '0.8rem', color: '#6d28d9', marginBottom: 6, fontWeight: 700 }}>{current.dl.title}</div>
+                      <p style={{ fontSize: '0.82rem', color: '#5b21b6', margin: '0 0 10px 0', lineHeight: 1.5 }}>
+                        {current.dl.action}
+                      </p>
+                      <div style={{ background: 'white', padding: '8px 10px', borderRadius: 8, fontSize: '0.8rem', color: '#5b21b6', fontWeight: 700, border: '1px solid #ddd6fe' }}>
+                        📌 Output: {current.dl.output}
+                      </div>
                     </div>
-                    <div style={{ fontSize: '0.8rem', color: '#7e22ce', marginBottom: 8, fontWeight: 600 }}>{current.agentic.type}</div>
-                    <div style={{ fontSize: '0.82rem', color: '#1e293b', marginBottom: 8 }}><strong>Input:</strong> {current.agentic.input}</div>
-                    <div style={{ fontSize: '0.82rem', color: '#1e293b', marginBottom: 8 }}><strong>Method:</strong> {current.agentic.process}</div>
-                    <div style={{ background: '#f3e8ff', padding: '8px 10px', borderRadius: 8, fontSize: '0.82rem', color: '#6b21a8', fontWeight: 700 }}>
-                      🚀 Action: {current.agentic.output}
-                    </div>
-                  </div>
 
+                    {/* Generative AI Approach */}
+                    <div style={{ background: '#fdf2f8', border: '1px solid #fbcfe8', borderRadius: 12, padding: '1.25rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                        <span style={{ background: '#ec4899', color: 'white', width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', fontWeight: 800 }}>3</span>
+                        <span style={{ fontWeight: 800, color: '#831843', fontSize: '0.9rem' }}>Generative AI</span>
+                      </div>
+                      <div style={{ fontSize: '0.8rem', color: '#be185d', marginBottom: 6, fontWeight: 700 }}>{current.genai.title}</div>
+                      <p style={{ fontSize: '0.82rem', color: '#9d174d', margin: '0 0 10px 0', lineHeight: 1.5 }}>
+                        {current.genai.action}
+                      </p>
+                      <div style={{ background: 'white', padding: '8px 10px', borderRadius: 8, fontSize: '0.8rem', color: '#831843', fontWeight: 700, border: '1px solid #fbcfe8' }}>
+                        📌 Output: {current.genai.output}
+                      </div>
+                    </div>
+
+                    {/* Agentic AI Approach */}
+                    <div style={{ background: '#faf5ff', border: '2px solid #a855f7', borderRadius: 12, padding: '1.25rem', boxShadow: '0 4px 12px rgba(168,85,247,0.12)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                        <span style={{ background: '#9333ea', color: 'white', width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', fontWeight: 800 }}>4</span>
+                        <span style={{ fontWeight: 800, color: '#581c87', fontSize: '0.9rem' }}>Agentic AI (Autonomous)</span>
+                      </div>
+                      <div style={{ fontSize: '0.8rem', color: '#7e22ce', marginBottom: 6, fontWeight: 700 }}>{current.agentic.title}</div>
+                      <p style={{ fontSize: '0.82rem', color: '#6b21a8', margin: '0 0 10px 0', lineHeight: 1.5 }}>
+                        {current.agentic.action}
+                      </p>
+                      <div style={{ background: '#9333ea', padding: '8px 10px', borderRadius: 8, fontSize: '0.8rem', color: 'white', fontWeight: 700 }}>
+                        🚀 Action: {current.agentic.output}
+                      </div>
+                    </div>
+
+                  </div>
                 </div>
               );
             })()}
@@ -874,7 +1028,7 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
               onClick={() => handleTabChange('pythonready')}
               style={{ background: '#0f172a', color: 'white', padding: '0.75rem 1.5rem', borderRadius: 10, border: 'none', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
             >
-              Check Python API Readiness <ArrowRight size={16} />
+              Try the Python API Quickstart <ArrowRight size={16} />
             </button>
           </div>
 
@@ -882,71 +1036,165 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
       )}
 
       {/* ========================================================= */}
-      {/* TAB 5: PYTHON API READINESS & QUICKSTART */}
+      {/* TAB 5: PYTHON API READINESS & LIVE SANDBOX */}
       {/* ========================================================= */}
       {activeTab === 'pythonready' && (
         <motion.div variants={containerVariants} initial="hidden" animate="show" exit="exit">
 
           <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '2rem', marginBottom: '2rem' }}>
             <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <Terminal size={22} style={{ color: '#10b981' }} /> Week 1: Python Environment &amp; API Readiness
+              <Terminal size={22} style={{ color: '#10b981' }} /> Understanding AI APIs (Explained Simply)
             </h2>
             <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 1.5rem 0' }}>
-              To complete the practical projects in this certification, you will prepare your local development environment with Python 3.10+, isolated virtual environments, and industry SDKs.
+              Never worked with an API before? Don't worry! Here is what an API actually is in everyday life:
             </p>
 
-            {/* Step 1: Virtual Env */}
-            <div style={{ marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                <span style={{ background: '#0f172a', color: 'white', fontWeight: 800, fontSize: '0.8rem', padding: '2px 8px', borderRadius: 6 }}>STEP 1</span>
-                <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.98rem' }}>Create &amp; Activate an Isolated Virtual Environment</span>
-              </div>
-              <div style={{ background: '#0f172a', color: '#f8fafc', padding: '1rem', borderRadius: 10, fontFamily: 'monospace', fontSize: '0.88rem', overflowX: 'auto' }}>
-                <span style={{ color: '#94a3b8' }}># 1. Open Terminal or PowerShell</span><br />
-                python -m venv ai_cert_env<br /><br />
-                <span style={{ color: '#94a3b8' }}># 2. Activate Environment (Windows):</span><br />
-                .\ai_cert_env\Scripts\activate<br /><br />
-                <span style={{ color: '#94a3b8' }}># 2. Activate Environment (Mac/Linux):</span><br />
-                source ai_cert_env/bin/activate
-              </div>
-            </div>
-
-            {/* Step 2: Install Libraries */}
-            <div style={{ marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                <span style={{ background: '#0f172a', color: 'white', fontWeight: 800, fontSize: '0.8rem', padding: '2px 8px', borderRadius: 6 }}>STEP 2</span>
-                <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.98rem' }}>Install Core Foundation SDKs</span>
-              </div>
-              <div style={{ background: '#0f172a', color: '#f8fafc', padding: '1rem', borderRadius: 10, fontFamily: 'monospace', fontSize: '0.88rem', overflowX: 'auto' }}>
-                pip install openai anthropic google-generativeai langchain-core python-dotenv pydantic requests
+            {/* The Restaurant Waiter Analogy Card */}
+            <div style={{ background: '#fffbeb', border: '2px solid #fde68a', borderRadius: 14, padding: '1.5rem', marginBottom: '2rem' }}>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '1.1rem', color: '#92400e', fontWeight: 800, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Coffee size={20} color="#d97706" /> The Restaurant Waiter Analogy
+              </h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
+                <div style={{ background: 'white', borderRadius: 10, padding: '10px 14px', border: '1px solid #fde68a' }}>
+                  <div style={{ fontWeight: 800, color: '#78350f', fontSize: '0.85rem' }}>1. You (The Customer)</div>
+                  <div style={{ fontSize: '0.8rem', color: '#92400e', marginTop: 4 }}>Your simple Python program running on your laptop.</div>
+                </div>
+                <div style={{ background: 'white', borderRadius: 10, padding: '10px 14px', border: '1px solid #fde68a' }}>
+                  <div style={{ fontWeight: 800, color: '#78350f', fontSize: '0.85rem' }}>2. The Waiter (The API)</div>
+                  <div style={{ fontSize: '0.8rem', color: '#92400e', marginTop: 4 }}>Takes your order (prompt) across the internet to the AI servers.</div>
+                </div>
+                <div style={{ background: 'white', borderRadius: 10, padding: '10px 14px', border: '1px solid #fde68a' }}>
+                  <div style={{ fontWeight: 800, color: '#78350f', fontSize: '0.85rem' }}>3. The Kitchen (OpenAI / Claude)</div>
+                  <div style={{ fontSize: '0.8rem', color: '#92400e', marginTop: 4 }}>The supercomputer cooks the answer and hands it to the waiter.</div>
+                </div>
+                <div style={{ background: 'white', borderRadius: 10, padding: '10px 14px', border: '1px solid #fde68a' }}>
+                  <div style={{ fontWeight: 800, color: '#78350f', fontSize: '0.85rem' }}>4. The Food (The Response)</div>
+                  <div style={{ fontSize: '0.8rem', color: '#92400e', marginTop: 4 }}>The waiter brings your hot answer back to your Python screen!</div>
+                </div>
               </div>
             </div>
 
-            {/* Step 3: Minimal Sample Script */}
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                <span style={{ background: '#0f172a', color: 'white', fontWeight: 800, fontSize: '0.8rem', padding: '2px 8px', borderRadius: 6 }}>STEP 3</span>
-                <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.98rem' }}>Standard Multi-Provider API Pattern (day1_test.py)</span>
+            {/* Interactive In-Browser API Test Simulator */}
+            <div style={{ background: '#f8fafc', border: '2px solid #e2e8f0', borderRadius: 14, padding: '1.5rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: '1rem' }}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <Play size={18} color="#2563eb" /> Live Browser Simulation: Try Calling an AI API!
+                  </h3>
+                  <p style={{ margin: '4px 0 0 0', fontSize: '0.84rem', color: '#64748b' }}>
+                    No setup or API key needed today! Test how a Python API request works right here:
+                  </p>
+                </div>
+                <span style={{ background: '#dbeafe', color: '#1e40af', padding: '3px 10px', borderRadius: 20, fontSize: '0.78rem', fontWeight: 700 }}>
+                  Live Interactive Demo
+                </span>
               </div>
-              <div style={{ background: '#0f172a', color: '#f8fafc', padding: '1.25rem', borderRadius: 10, fontFamily: 'monospace', fontSize: '0.85rem', overflowX: 'auto', lineHeight: 1.6 }}>
-                <span style={{ color: '#64748b' }}># day1_test.py — Verifying Foundation Model API Connectivity</span><br />
-                <span style={{ color: '#ec4899' }}>import</span> os<br />
-                <span style={{ color: '#ec4899' }}>from</span> dotenv <span style={{ color: '#ec4899' }}>import</span> load_dotenv<br />
-                <span style={{ color: '#ec4899' }}>from</span> openai <span style={{ color: '#ec4899' }}>import</span> OpenAI<br /><br />
-                <span style={{ color: '#64748b' }}># Load secure environment variables from .env file</span><br />
-                load_dotenv()<br />
-                client = OpenAI(api_key=os.getenv(<span style={{ color: '#a7f3d0' }}>"OPENAI_API_KEY"</span>))<br /><br />
-                response = client.chat.completions.create(<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;model=<span style={{ color: '#a7f3d0' }}>"gpt-4o"</span>,<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;messages=[<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#123;<span style={{ color: '#a7f3d0' }}>"role"</span>: <span style={{ color: '#a7f3d0' }}>"system"</span>, <span style={{ color: '#a7f3d0' }}>"content"</span>: <span style={{ color: '#a7f3d0' }}>"You are an expert AI Architect assisting in a 60-day certification."</span>&#125;,<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#123;<span style={{ color: '#a7f3d0' }}>"role"</span>: <span style={{ color: '#a7f3d0' }}>"user"</span>, <span style={{ color: '#a7f3d0' }}>"content"</span>: <span style={{ color: '#a7f3d0' }}>"Explain why agents require tools to operate in production in 2 sentences."</span>&#125;<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;],<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;temperature=<span style={{ color: '#fbcfe8' }}>0.3</span><br />
-                )<br /><br />
-                <span style={{ color: '#64748b' }}># Output the generated response &amp; token count</span><br />
-                <span style={{ color: '#38bdf8' }}>print</span>(<span style={{ color: '#a7f3d0' }}>"Generated Output:\n"</span>, response.choices[<span style={{ color: '#fbcfe8' }}>0</span>].message.content)<br />
-                <span style={{ color: '#38bdf8' }}>print</span>(<span style={{ color: '#a7f3d0' }}>"\nTotal Tokens Consumed:"</span>, response.usage.total_tokens)
+
+              {/* Sample Prompt Selector */}
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: '1rem' }}>
+                {samplePrompts.map((p, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setSimPromptIndex(idx);
+                      setSimOutput(null);
+                    }}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: 8,
+                      border: simPromptIndex === idx ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                      background: simPromptIndex === idx ? '#eff6ff' : 'white',
+                      color: simPromptIndex === idx ? '#1e40af' : '#475569',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* The Simulated Code Window */}
+              <div style={{ background: '#0f172a', borderRadius: 10, padding: '1rem', color: '#f8fafc', fontFamily: 'monospace', fontSize: '0.84rem', marginBottom: '1rem', lineHeight: 1.6 }}>
+                <span style={{ color: '#64748b' }}># 1. Your Prompt sent to OpenAI API:</span><br />
+                prompt = <span style={{ color: '#a7f3d0' }}>"{samplePrompts[simPromptIndex].prompt}"</span><br /><br />
+                <span style={{ color: '#64748b' }}># 2. Simulated Python Call:</span><br />
+                response = client.chat.completions.create(model=<span style={{ color: '#a7f3d0' }}>"gpt-4o"</span>, messages=[&#123;"role": "user", "content": prompt&#125;])
+              </div>
+
+              <button
+                onClick={handleRunSimulator}
+                disabled={isSimulating}
+                style={{
+                  background: isSimulating ? '#94a3b8' : 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+                  color: 'white',
+                  padding: '0.65rem 1.25rem',
+                  borderRadius: 8,
+                  border: 'none',
+                  fontWeight: 800,
+                  fontSize: '0.88rem',
+                  cursor: isSimulating ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  marginBottom: '1rem'
+                }}
+              >
+                {isSimulating ? <RefreshCw size={16} className="animate-spin" /> : <Send size={16} />}
+                {isSimulating ? 'Waiting for AI Kitchen to respond...' : '🚀 Send API Request to AI'}
+              </button>
+
+              {/* Simulated Output Card */}
+              {simOutput && (
+                <div style={{ background: '#ffffff', border: '2px solid #86efac', borderRadius: 10, padding: '1.25rem', boxShadow: '0 4px 12px rgba(22,163,74,0.1)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, flexWrap: 'wrap', gap: 6 }}>
+                    <span style={{ color: '#166534', fontWeight: 800, fontSize: '0.86rem', display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <CheckCircle size={16} color="#16a34a" /> 200 OK — Response Received!
+                    </span>
+                    <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                      ⚡ Speed: {simOutput.time} | 🪙 Tokens: {simOutput.tokens}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.9rem', color: '#1e293b', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                    {simOutput.reply}
+                  </div>
+                </div>
+              )}
+
+            </div>
+
+            {/* Gentle 3-Step Local Setup Guide */}
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: '2rem 0 1rem 0' }}>
+              🛠️ Preparing Your Computer (Step-by-Step for Day 2)
+            </h3>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
+                <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem', marginBottom: 4 }}>
+                  Step 1: Download &amp; Install Python
+                </div>
+                <p style={{ margin: '0 0 8px 0', fontSize: '0.85rem', color: '#475569' }}>
+                  If you don't have Python yet, download it for free from <a href="https://python.org" target="_blank" rel="noreferrer" style={{ color: '#2563eb', fontWeight: 700 }}>python.org</a>. Make sure to check the box that says <strong>"Add Python to PATH"</strong> during installation.
+                </p>
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
+                <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem', marginBottom: 4 }}>
+                  Step 2: What is an API Key?
+                </div>
+                <p style={{ margin: '0 0 8px 0', fontSize: '0.85rem', color: '#475569' }}>
+                  An API Key is like a secret digital VIP pass given to you by OpenAI or Google. It tells their servers: "This is a genuine learner, let them use the model." You keep it secret just like your email password.
+                </p>
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
+                <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem', marginBottom: 4 }}>
+                  Step 3: What We Will Do in Day 2
+                </div>
+                <p style={{ margin: 0, fontSize: '0.85rem', color: '#475569' }}>
+                  Tomorrow in Day 2, we will look under the hood of Large Language Models (LLMs): how they read words as "tokens", how context windows work, and write our first real Python script together!
+                </p>
               </div>
             </div>
 
@@ -963,7 +1211,7 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
               onClick={() => handleTabChange('quiz')}
               style={{ background: '#0f172a', color: 'white', padding: '0.75rem 1.5rem', borderRadius: 10, border: 'none', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
             >
-              Take Day 1 Knowledge Quiz <ArrowRight size={16} />
+              Take Day 1 Friendly Quiz <ArrowRight size={16} />
             </button>
           </div>
 
@@ -980,10 +1228,10 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: 10 }}>
               <div>
                 <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <HelpCircle size={22} style={{ color: '#6366f1' }} /> Day 1 Knowledge Check Assessment
+                  <HelpCircle size={22} style={{ color: '#6366f1' }} /> Day 1 Knowledge Check Quiz
                 </h2>
                 <p style={{ color: '#64748b', fontSize: '0.9rem', margin: '4px 0 0 0' }}>
-                  Answer the 5 conceptual questions below to validate your mastery of Day 1 topics.
+                  No stress! Test what you learned today in 5 simple questions. You can retake it anytime.
                 </p>
               </div>
               {quizSubmitted && (
@@ -1124,14 +1372,14 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 10, marginBottom: '1.25rem' }}>
               <div>
                 <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <Award size={22} style={{ color: '#16a34a' }} /> Day 1 Practical Assignment &amp; Staff Evaluation
+                  <Award size={22} style={{ color: '#16a34a' }} /> Day 1 Practical Assignment &amp; Self-Reflection
                 </h2>
                 <p style={{ color: '#64748b', fontSize: '0.92rem', margin: '4px 0 0 0' }}>
-                  Complete the hands-on practical questions below, formulate your learning reflection, and submit for staff review.
+                  Take a few minutes to reflect on what you learned today, write your thoughts, and submit for instructor evaluation.
                 </p>
               </div>
               <span style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '4px 14px', borderRadius: 20, fontWeight: 700, fontSize: '0.82rem' }}>
-                4 Practical Tasks
+                4 Guided Questions
               </span>
             </div>
 
@@ -1141,40 +1389,40 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
               <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
                 <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ background: '#2563eb', color: 'white', width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.78rem' }}>1</span>
-                  Task 1: AI Stack Architecture Mapping
+                  Task 1: Identify Everyday AI in Your Life
                 </div>
                 <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
-                  Choose any real-world AI product you use regularly (e.g., ChatGPT, GitHub Copilot, Midjourney, Perplexity, Cursor IDE). Map out which technologies power each of its 6 layers (Hardware, Foundation Model, Orchestration, Vector Storage, Observability, and UI).
+                  Name at least 2 AI tools or features you have seen or used (e.g. ChatGPT, Apple Siri, Netflix movie suggestions, Gmail spam filter, Google Lens). Based on what you learned today, explain whether each one is Traditional ML, Deep Learning, or Generative AI.
                 </p>
               </div>
 
               <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
                 <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ background: '#2563eb', color: 'white', width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.78rem' }}>2</span>
-                  Task 2: Traditional ML vs. Gen AI Tradeoff Analysis
+                  Task 2: Chatbot vs. Autonomous Agent
                 </div>
                 <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
-                  Suppose a fintech company wants to detect fraudulent credit card transactions in under 50 milliseconds. Explain why Traditional ML (e.g., LightGBM / XGBoost) is vastly superior for this task compared to invoking a large Generative AI LLM like GPT-4o. Contrast latency, compute cost, determinism, and explainability.
+                  In your own simple words, explain the difference between asking ChatGPT a question versus having an Agentic AI assistant (Hint: remember the Chef vs. Personal Butler analogy!).
                 </p>
               </div>
 
               <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
                 <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ background: '#2563eb', color: 'white', width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.78rem' }}>3</span>
-                  Task 3: Local Python AI Environment Setup
+                  Task 3: Your Dream AI Coworker
                 </div>
                 <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
-                  Initialize a virtual environment named <code>ai_cert_env</code> on your local machine. Install <code>openai</code>, <code>anthropic</code>, and <code>python-dotenv</code>. Create a <code>.env.example</code> template illustrating how API keys must be kept secure outside Git repositories.
+                  Think of one boring, repetitive task in your daily life, college, or job (e.g., sorting invoices, organizing study notes, replying to standard emails). Describe how you would want an autonomous AI agent to do it for you.
                 </p>
               </div>
 
               <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
                 <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ background: '#2563eb', color: 'white', width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.78rem' }}>4</span>
-                  Task 4: Comprehensive Learning Reflection
+                  Task 4: Your 60-Day Learning Commitment
                 </div>
                 <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
-                  Write a comprehensive self-reflection (at least 100 characters) detailing your key takeaways from Day 1, your personal 60-day learning objective, and how you will apply the 6-layer AI stack in your career or startup projects.
+                  Write down your personal learning goal for this 60-day certification. What kind of AI project or career milestone are you aiming to achieve by the end of this course?
                 </p>
               </div>
 
@@ -1197,7 +1445,7 @@ export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orien
                   <CheckCircle size={20} color="#16a34a" /> Ready to Submit Your Day 1 Reflection?
                 </h3>
                 <p style={{ margin: 0, color: '#166534', fontSize: '0.9rem', maxWidth: 650, lineHeight: 1.5 }}>
-                  Submitting your reflection unlocks the Day 1 milestone and queues your submission in the Instructor Evaluation Panel for review.
+                  Submitting your reflection unlocks your Day 1 milestone and queues your submission in the Instructor Evaluation Panel for review.
                 </p>
               </div>
 
