@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Brain, Cpu, Bot, Sparkles, Layers, Terminal, Database, Shield, 
-  Workflow, Code, CheckCircle, Zap, Award, ArrowRight, HelpCircle, 
-  Trophy, BookOpen, Clock, Calendar, Check, ExternalLink, RefreshCw, 
+import {
+  Brain, Cpu, Bot, Sparkles, Layers, Terminal, Database, Shield,
+  Workflow, Code, CheckCircle, Zap, Award, ArrowRight, HelpCircle,
+  Trophy, BookOpen, Clock, Calendar, Check, ExternalLink, RefreshCw,
   ChevronRight, Play, Eye, FileCode, Server, Sliders, AlertCircle
 } from 'lucide-react';
 import bannerImg from '../../assets/generative_ai_day1_banner.png';
@@ -231,19 +231,29 @@ const AI_STACK_LAYERS = [
   }
 ];
 
-export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
-  const [activeTab, setActiveTab] = useState('orientation');
+export default function CertGenAIAgenticDay1({ activeTab: propActiveTab = 'orientation', onNavigate, openAITutor }) {
+  const [activeTab, setActiveTab] = useState(propActiveTab || 'orientation');
+
+  useEffect(() => {
+    if (propActiveTab) {
+      setActiveTab(propActiveTab);
+    }
+  }, [propActiveTab]);
+
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    if (onNavigate) {
+      onNavigate('genai_agentic_m1', tabId);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const [selectedParadigmProblem, setSelectedParadigmProblem] = useState('churn');
   const [activeStackLayer, setActiveStackLayer] = useState(AI_STACK_LAYERS[2]); // Default to Layer 4/3
 
   // Quiz State
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
-
-  const handleTabChange = (tabId) => {
-    setActiveTab(tabId);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   const calculateScore = () => {
     let score = 0;
@@ -255,7 +265,7 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
 
   return (
     <div style={{ padding: '1.5rem', maxWidth: 1200, margin: '0 auto', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      
+
       {/* 🚀 TOP HERO BANNER */}
       <div style={{
         background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%)',
@@ -270,13 +280,13 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
       }}>
         <div style={{ position: 'relative', zIndex: 2 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: '1rem' }}>
-            <span style={{ 
-              background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)', 
-              color: 'white', 
-              fontWeight: 800, 
-              fontSize: '0.78rem', 
-              padding: '4px 14px', 
-              borderRadius: 20, 
+            <span style={{
+              background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
+              color: 'white',
+              fontWeight: 800,
+              fontSize: '0.78rem',
+              padding: '4px 14px',
+              borderRadius: 20,
               letterSpacing: '0.5px',
               textTransform: 'uppercase',
               boxShadow: '0 2px 8px rgba(236, 72, 153, 0.35)'
@@ -287,7 +297,7 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
               Cognitive AI Development Track
             </span>
             <span style={{ background: '#10b981', color: '#022c22', fontSize: '0.78rem', padding: '3px 10px', borderRadius: 20, fontWeight: 800 }}>
-              Month 1 • Week 1 • Day 1
+              Day 1
             </span>
           </div>
 
@@ -368,20 +378,20 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
       {/* ========================================================= */}
       {activeTab === 'orientation' && (
         <motion.div variants={containerVariants} initial="hidden" animate="show" exit="exit">
-          
+
           <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '2rem', marginBottom: '2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: 10 }}>
               <Calendar size={22} style={{ color: '#ec4899' }} /> Welcome to the 3-Month (60 Days) Master Curriculum
             </h2>
             <p style={{ color: '#475569', fontSize: '0.98rem', lineHeight: 1.7, margin: '0 0 1.5rem 0' }}>
-              Welcome to the premier professional certification in <strong>Generative AI &amp; Agentic AI</strong> under the Cognitive AI Development track. 
-              Over the next 60 days, you will evolve from understanding LLM tokens and vector embeddings into architecting 
+              Welcome to the premier professional certification in <strong>Generative AI &amp; Agentic AI</strong> under the Cognitive AI Development track.
+              Over the next 60 days, you will evolve from understanding LLM tokens and vector embeddings into architecting
               autonomous, self-healing, multi-agent enterprise systems capable of executing complex workflows in production.
             </p>
 
             {/* 3-Month Journey Timeline Cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
-              
+
               {/* Month 1 Card */}
               <div style={{ background: '#fdf2f8', border: '2px solid #fbcfe8', borderRadius: 14, padding: '1.5rem', position: 'relative' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
@@ -456,10 +466,10 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
             <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>
               🖼️ Architecture Blueprint: From Foundation Models to Autonomous Production Agents
             </h3>
-            <img 
-              src={bannerImg} 
-              alt="Generative & Agentic AI Blueprint" 
-              style={{ maxWidth: '100%', height: 'auto', borderRadius: 12, border: '1px solid #cbd5e1', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }} 
+            <img
+              src={bannerImg}
+              alt="Generative & Agentic AI Blueprint"
+              style={{ maxWidth: '100%', height: 'auto', borderRadius: 12, border: '1px solid #cbd5e1', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}
             />
             <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: 10 }}>
               Figure 1.1: Evolution from foundation model weights into grounded, tool-equipped autonomous agent systems.
@@ -483,7 +493,7 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
       {/* ========================================================= */}
       {activeTab === 'comparison' && (
         <motion.div variants={containerVariants} initial="hidden" animate="show" exit="exit">
-          
+
           <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '2rem', marginBottom: '2rem' }}>
             <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: 10 }}>
               <Layers size={22} style={{ color: '#2563eb' }} /> Understanding the Paradigm Shift
@@ -599,7 +609,7 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
       {/* ========================================================= */}
       {activeTab === 'aistack' && (
         <motion.div variants={containerVariants} initial="hidden" animate="show" exit="exit">
-          
+
           <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '2rem', marginBottom: '2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 10, marginBottom: '1rem' }}>
               <div>
@@ -617,7 +627,7 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
 
             {/* Interactive Stack Visualizer */}
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 1fr) minmax(320px, 1.4fr)', gap: '1.5rem', marginTop: '1.5rem' }}>
-              
+
               {/* Stack Layers Clickable Column */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {AI_STACK_LAYERS.map(item => {
@@ -640,17 +650,17 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <span style={{ 
-                          width: 28, 
-                          height: 28, 
-                          borderRadius: '50%', 
-                          background: item.color, 
-                          color: 'white', 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'center', 
-                          fontWeight: 800, 
-                          fontSize: '0.8rem' 
+                        <span style={{
+                          width: 28,
+                          height: 28,
+                          borderRadius: '50%',
+                          background: item.color,
+                          color: 'white',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontWeight: 800,
+                          fontSize: '0.8rem'
                         }}>
                           {item.layer}
                         </span>
@@ -670,12 +680,12 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
               </div>
 
               {/* Selected Layer Detailed Panel */}
-              <div style={{ 
-                background: '#fafafa', 
-                border: `2px solid ${activeStackLayer.color}40`, 
-                borderRadius: 14, 
+              <div style={{
+                background: '#fafafa',
+                border: `2px solid ${activeStackLayer.color}40`,
+                borderRadius: 14,
                 padding: '1.75rem',
-                boxShadow: '0 4px 14px rgba(0,0,0,0.04)' 
+                boxShadow: '0 4px 14px rgba(0,0,0,0.04)'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                   <span style={{ background: activeStackLayer.color, color: 'white', fontWeight: 800, fontSize: '0.75rem', padding: '3px 10px', borderRadius: 12 }}>
@@ -699,14 +709,14 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {activeStackLayer.tools.map((tool, idx) => (
-                      <span key={idx} style={{ 
-                        background: '#f1f5f9', 
-                        color: '#1e293b', 
-                        padding: '4px 10px', 
-                        borderRadius: 8, 
-                        fontSize: '0.82rem', 
-                        fontWeight: 700, 
-                        border: '1px solid #cbd5e1' 
+                      <span key={idx} style={{
+                        background: '#f1f5f9',
+                        color: '#1e293b',
+                        padding: '4px 10px',
+                        borderRadius: 8,
+                        fontSize: '0.82rem',
+                        fontWeight: 700,
+                        border: '1px solid #cbd5e1'
                       }}>
                         {tool}
                       </span>
@@ -750,7 +760,7 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
       {/* ========================================================= */}
       {activeTab === 'simulator' && (
         <motion.div variants={containerVariants} initial="hidden" animate="show" exit="exit">
-          
+
           <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '2rem', marginBottom: '2rem' }}>
             <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: 10 }}>
               <Cpu size={22} style={{ color: '#ec4899' }} /> Interactive AI Paradigm Simulator
@@ -790,7 +800,7 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
               const current = PARADIGM_EXAMPLES[selectedParadigmProblem];
               return (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
-                  
+
                   {/* ML Approach */}
                   <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 12, padding: '1.25rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
@@ -876,7 +886,7 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
       {/* ========================================================= */}
       {activeTab === 'pythonready' && (
         <motion.div variants={containerVariants} initial="hidden" animate="show" exit="exit">
-          
+
           <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '2rem', marginBottom: '2rem' }}>
             <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: 10 }}>
               <Terminal size={22} style={{ color: '#10b981' }} /> Week 1: Python Environment &amp; API Readiness
@@ -892,11 +902,11 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
                 <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.98rem' }}>Create &amp; Activate an Isolated Virtual Environment</span>
               </div>
               <div style={{ background: '#0f172a', color: '#f8fafc', padding: '1rem', borderRadius: 10, fontFamily: 'monospace', fontSize: '0.88rem', overflowX: 'auto' }}>
-                <span style={{ color: '#94a3b8' }}># 1. Open Terminal or PowerShell</span><br/>
-                python -m venv ai_cert_env<br/><br/>
-                <span style={{ color: '#94a3b8' }}># 2. Activate Environment (Windows):</span><br/>
-                .\ai_cert_env\Scripts\activate<br/><br/>
-                <span style={{ color: '#94a3b8' }}># 2. Activate Environment (Mac/Linux):</span><br/>
+                <span style={{ color: '#94a3b8' }}># 1. Open Terminal or PowerShell</span><br />
+                python -m venv ai_cert_env<br /><br />
+                <span style={{ color: '#94a3b8' }}># 2. Activate Environment (Windows):</span><br />
+                .\ai_cert_env\Scripts\activate<br /><br />
+                <span style={{ color: '#94a3b8' }}># 2. Activate Environment (Mac/Linux):</span><br />
                 source ai_cert_env/bin/activate
               </div>
             </div>
@@ -919,23 +929,23 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
                 <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.98rem' }}>Standard Multi-Provider API Pattern (day1_test.py)</span>
               </div>
               <div style={{ background: '#0f172a', color: '#f8fafc', padding: '1.25rem', borderRadius: 10, fontFamily: 'monospace', fontSize: '0.85rem', overflowX: 'auto', lineHeight: 1.6 }}>
-                <span style={{ color: '#64748b' }}># day1_test.py — Verifying Foundation Model API Connectivity</span><br/>
-                <span style={{ color: '#ec4899' }}>import</span> os<br/>
-                <span style={{ color: '#ec4899' }}>from</span> dotenv <span style={{ color: '#ec4899' }}>import</span> load_dotenv<br/>
-                <span style={{ color: '#ec4899' }}>from</span> openai <span style={{ color: '#ec4899' }}>import</span> OpenAI<br/><br/>
-                <span style={{ color: '#64748b' }}># Load secure environment variables from .env file</span><br/>
-                load_dotenv()<br/>
-                client = OpenAI(api_key=os.getenv(<span style={{ color: '#a7f3d0' }}>"OPENAI_API_KEY"</span>))<br/><br/>
-                response = client.chat.completions.create(<br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;model=<span style={{ color: '#a7f3d0' }}>"gpt-4o"</span>,<br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;messages=[<br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#123;<span style={{ color: '#a7f3d0' }}>"role"</span>: <span style={{ color: '#a7f3d0' }}>"system"</span>, <span style={{ color: '#a7f3d0' }}>"content"</span>: <span style={{ color: '#a7f3d0' }}>"You are an expert AI Architect assisting in a 60-day certification."</span>&#125;,<br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#123;<span style={{ color: '#a7f3d0' }}>"role"</span>: <span style={{ color: '#a7f3d0' }}>"user"</span>, <span style={{ color: '#a7f3d0' }}>"content"</span>: <span style={{ color: '#a7f3d0' }}>"Explain why agents require tools to operate in production in 2 sentences."</span>&#125;<br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;],<br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;temperature=<span style={{ color: '#fbcfe8' }}>0.3</span><br/>
-                )<br/><br/>
-                <span style={{ color: '#64748b' }}># Output the generated response &amp; token count</span><br/>
-                <span style={{ color: '#38bdf8' }}>print</span>(<span style={{ color: '#a7f3d0' }}>"Generated Output:\n"</span>, response.choices[<span style={{ color: '#fbcfe8' }}>0</span>].message.content)<br/>
+                <span style={{ color: '#64748b' }}># day1_test.py — Verifying Foundation Model API Connectivity</span><br />
+                <span style={{ color: '#ec4899' }}>import</span> os<br />
+                <span style={{ color: '#ec4899' }}>from</span> dotenv <span style={{ color: '#ec4899' }}>import</span> load_dotenv<br />
+                <span style={{ color: '#ec4899' }}>from</span> openai <span style={{ color: '#ec4899' }}>import</span> OpenAI<br /><br />
+                <span style={{ color: '#64748b' }}># Load secure environment variables from .env file</span><br />
+                load_dotenv()<br />
+                client = OpenAI(api_key=os.getenv(<span style={{ color: '#a7f3d0' }}>"OPENAI_API_KEY"</span>))<br /><br />
+                response = client.chat.completions.create(<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;model=<span style={{ color: '#a7f3d0' }}>"gpt-4o"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;messages=[<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#123;<span style={{ color: '#a7f3d0' }}>"role"</span>: <span style={{ color: '#a7f3d0' }}>"system"</span>, <span style={{ color: '#a7f3d0' }}>"content"</span>: <span style={{ color: '#a7f3d0' }}>"You are an expert AI Architect assisting in a 60-day certification."</span>&#125;,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#123;<span style={{ color: '#a7f3d0' }}>"role"</span>: <span style={{ color: '#a7f3d0' }}>"user"</span>, <span style={{ color: '#a7f3d0' }}>"content"</span>: <span style={{ color: '#a7f3d0' }}>"Explain why agents require tools to operate in production in 2 sentences."</span>&#125;<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;],<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;temperature=<span style={{ color: '#fbcfe8' }}>0.3</span><br />
+                )<br /><br />
+                <span style={{ color: '#64748b' }}># Output the generated response &amp; token count</span><br />
+                <span style={{ color: '#38bdf8' }}>print</span>(<span style={{ color: '#a7f3d0' }}>"Generated Output:\n"</span>, response.choices[<span style={{ color: '#fbcfe8' }}>0</span>].message.content)<br />
                 <span style={{ color: '#38bdf8' }}>print</span>(<span style={{ color: '#a7f3d0' }}>"\nTotal Tokens Consumed:"</span>, response.usage.total_tokens)
               </div>
             </div>
@@ -965,7 +975,7 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
       {/* ========================================================= */}
       {activeTab === 'quiz' && (
         <motion.div variants={containerVariants} initial="hidden" animate="show" exit="exit">
-          
+
           <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '2rem', marginBottom: '2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: 10 }}>
               <div>
@@ -977,13 +987,13 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
                 </p>
               </div>
               {quizSubmitted && (
-                <div style={{ 
-                  background: calculateScore() >= 4 ? '#dcfce7' : '#fee2e2', 
-                  color: calculateScore() >= 4 ? '#166534' : '#991b1b', 
-                  padding: '6px 14px', 
-                  borderRadius: 20, 
-                  fontWeight: 800, 
-                  fontSize: '0.9rem' 
+                <div style={{
+                  background: calculateScore() >= 4 ? '#dcfce7' : '#fee2e2',
+                  color: calculateScore() >= 4 ? '#166534' : '#991b1b',
+                  padding: '6px 14px',
+                  borderRadius: 20,
+                  fontWeight: 800,
+                  fontSize: '0.9rem'
                 }}>
                   Score: {calculateScore()} / {QUIZ_QUESTIONS.length} ({Math.round((calculateScore() / QUIZ_QUESTIONS.length) * 100)}%)
                 </div>
@@ -1109,7 +1119,7 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
       {/* ========================================================= */}
       {activeTab === 'assignment' && (
         <motion.div variants={containerVariants} initial="hidden" animate="show" exit="exit">
-          
+
           <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '2rem', marginBottom: '2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 10, marginBottom: '1.25rem' }}>
               <div>
@@ -1127,7 +1137,7 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
 
             {/* Practical Task Cards */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
-              
+
               <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '1.25rem' }}>
                 <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ background: '#2563eb', color: 'white', width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.78rem' }}>1</span>
@@ -1171,16 +1181,16 @@ export default function CertGenAIAgenticDay1({ onNavigate, openAITutor }) {
             </div>
 
             {/* Call to Action Banner to Submit on Assignment Page */}
-            <div style={{ 
-              background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', 
-              border: '2px solid #86efac', 
-              borderRadius: 14, 
-              padding: '1.75rem', 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center', 
-              flexWrap: 'wrap', 
-              gap: '1rem' 
+            <div style={{
+              background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+              border: '2px solid #86efac',
+              borderRadius: 14,
+              padding: '1.75rem',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '1rem'
             }}>
               <div>
                 <h3 style={{ margin: '0 0 0.35rem 0', color: '#14532d', fontSize: '1.15rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: 8 }}>

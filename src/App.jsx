@@ -634,7 +634,7 @@ function App() {
       } else if (course === 'agentic_ai') {
         setActiveNode({ moduleId: 'agentic_ai_foundation', tabId: 'day1' });
       } else if (course === 'genai_agentic_ai') {
-        setActiveNode({ moduleId: 'genai_agentic_m1', tabId: 'day1' });
+        setActiveNode({ moduleId: 'genai_agentic_m1', tabId: 'orientation' });
       } else if (course === 'python_fullstack') {
         setActiveNode({ moduleId: 'python_fullstack_demo', tabId: 'intro' });
       } else if (course === 'python_course' || course === 'python_da') {
@@ -1090,8 +1090,8 @@ function App() {
                 {activeNode.moduleId === 'python_final_projects' && <PythonFinalProjects activeTab={activeNode.tabId} onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'python_ai_module' && <AIPowerTools activeTab={activeNode.tabId} onNavigate={handleNavClick} course="python" />}
                 {/* 🎓 Certification in Generative AI & Agentic AI (60 Days Course) */}
-                {activeNode.moduleId === 'genai_agentic_m1' && activeNode.tabId === 'day1' && (
-                  <CertGenAIAgenticDay1 activeTab="orientation" onNavigate={handleNavClick} openAITutor={openAITutor} />
+                {activeNode.moduleId === 'genai_agentic_m1' && (
+                  <CertGenAIAgenticDay1 activeTab={activeNode.tabId || 'orientation'} onNavigate={handleNavClick} openAITutor={openAITutor} />
                 )}
                 {activeNode.moduleId === 'genai_module1' && activeNode.tabId === 'day1' && <GenAIDay1 activeTab="intro" onNavigate={handleNavClick} openAITutor={openAITutor} />}
                 {activeNode.moduleId === 'genai_module1' && activeNode.tabId === 'day2' && <GenAIDay2 activeTab="intro" onNavigate={handleNavClick} openAITutor={openAITutor} />}
